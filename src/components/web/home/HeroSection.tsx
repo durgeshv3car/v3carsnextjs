@@ -1,99 +1,140 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { CiFilter, CiSearch } from 'react-icons/ci';
+import { VscChevronDown, VscChevronRight } from 'react-icons/vsc';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
+// Dummy Slides
+const slides = [
+  {
+    image: 'https://images.pexels.com/photos/3311574/pexels-photo-3311574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    title: 'Tata Altroz Racer',
+    tagline: 'More Performance,\nBig on Features',
+  },
+  {
+    image: 'https://images.pexels.com/photos/3422964/pexels-photo-3422964.jpeg',
+    title: 'Tata Punch EV',
+    tagline: 'Power meets Efficiency',
+  },
+  {
+    image: 'https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg',
+    title: 'Tata Nexon',
+    tagline: 'Next Level SUV',
+  },
+];
 
 const HeroSection: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('budget');
+
   return (
-    <div className="relative min-h-screen bg-blue-100 overflow-hidden">
-      {/* Background */}
-      <Image
-        src="/sea.jpg"
-        alt="Sea Background"
-        fill
-        className="object-cover z-0"
-        priority
-      />
+    <>
+      <div className="relative h-[694px]">
+        {/* Swiper Background */}
+        <Swiper
+          modules={[Pagination, Autoplay]}
+          loop
+          autoplay={{
+            delay: 10000, // 10 seconds
+            disableOnInteraction: false, // keeps autoplay running even after swipe
+          }}
+          pagination={{
+            el: '.custom-pagination',
+            clickable: true,
+            bulletClass: 'swiper-custom-bullet',
+            bulletActiveClass: 'swiper-custom-bullet-active',
+          }}
+          className="h-full w-full"
+        >
+          {slides.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <div
+                className="h-full w-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${slide.image})` }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
 
-      {/* Seagulls */}
-      <div className="absolute top-0 left-0 right-0 flex justify-between p-4 z-10">
-        {[...Array(4)].map((_, i) => (
-          <Image
-            key={i}
-            src="/seagull.png"
-            alt={`Seagull ${i + 1}`}
-            width={50}
-            height={50}
-            className="animate-float"
-          />
-        ))}
-      </div>
+        {/* Search Box Overlay */}
+        <div className="absolute left-[160px] top-[125px] z-20">
+          <div className="w-[403px] bg-white rounded-xl shadow-md border border-gray-300 overflow-hidden font-sans">
+            {/* Header */}
+            <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-300">
+              <CiFilter size={20} />
+              <h2 className="text-gray-800 font-semibold text-lg">
+                SEARCH THE RIGHT CAR
+              </h2>
+            </div>
 
-      {/* Main Container */}
-      <div className="relative z-20 flex flex-col md:flex-row justify-between items-center p-10 gap-10">
-        
-        {/* Search Box */}
-        <div className="bg-white shadow-lg p-6 rounded-lg max-w-md w-full space-y-4">
-          <h2 className="font-bold text-lg flex items-center gap-2">
-            <span role="img" aria-label="search">🔍</span> SEARCH THE RIGHT CAR
-          </h2>
+            {/* Tabs */}
+            <div className="border-b border-gray-200 p-6 space-y-6">
+              <div className="grid grid-cols-2">
+                {['budget', 'model'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`flex items-center justify-center gap-2 py-3 text-sm font-medium ${activeTab === tab
+                      ? 'bg-gray-200 border-b-2 border-yellow-400 text-black'
+                      : 'bg-gray-100 text-gray-600'
+                      }`}
+                  >
+                    <span
+                      className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-gray-400'
+                        }`}
+                    >
+                      <span
+                        className={`w-2 h-2 rounded-full ${activeTab === tab ? 'bg-yellow-400' : ''
+                          }`}
+                      />
+                    </span>
+                    By {tab === 'budget' ? 'Budget' : 'Model'}
+                  </button>
+                ))}
+              </div>
 
-          {/* Tabs */}
-          <div className="flex space-x-4">
-            <button className="text-sm font-medium py-2 px-4 bg-yellow-400 text-white rounded">
-              By Budget
-            </button>
-            <button className="text-sm font-medium py-2 px-4 border rounded text-gray-600">
-              By Model
-            </button>
+              {/* Form */}
+              {activeTab === 'budget' ? (
+                <>
+                  <select className="w-full font-light border-b py-2 text-gray-600 border-gray-300">
+                    <option>Select Budget</option>
+                  </select>
+                  <select className="w-full font-light border-b py-2 text-gray-600 border-gray-300">
+                    <option>All Vehicle Types</option>
+                  </select>
+                </>
+              ) : (
+                <>
+                  <select className="w-full font-light border-b py-2 text-gray-600 border-gray-300">
+                    <option>Select Brand</option>
+                  </select>
+                  <select className="w-full font-light border-b py-2 text-gray-600 border-gray-300">
+                    <option>Select Model</option>
+                  </select>
+                </>
+              )}
+
+              <button className="w-full bg-yellow-400 hover:bg-yellow-500 transition py-3 rounded-full flex items-center justify-center gap-2">
+                <CiSearch size={20} /> SEARCH
+              </button>
+
+              <div className="flex justify-end">
+                <button className="flex items-center text-sm gap-1 cursor-pointer hover:underline">
+                  Advanced Search <VscChevronRight size={18} />
+                </button>
+              </div>
+            </div>
           </div>
-
-          {/* Select Inputs */}
-          <select className="w-full border p-2 rounded">
-            <option>Select Budget</option>
-            <option>5-10 Lakh</option>
-            <option>10-15 Lakh</option>
-          </select>
-          <select className="w-full border p-2 rounded">
-            <option>All Vehicle Types</option>
-            <option>SUV</option>
-            <option>Sedan</option>
-          </select>
-
-          {/* Search Button */}
-          <button className="w-full bg-yellow-400 py-2 rounded font-medium flex items-center justify-center gap-2">
-            <span role="img" aria-label="search">🔍</span> SEARCH
-          </button>
-
-          <p className="text-right text-xs text-gray-500 underline cursor-pointer">Advanced Search</p>
         </div>
-
-        {/* Launch Info + Car Image */}
-        <div className="text-white max-w-xl space-y-4 text-center md:text-left">
-          <p className="text-sm text-yellow-400">Launched</p>
-          <h1 className="text-3xl font-bold">
-            More Performance,<br /> Big on Features
-          </h1>
-          <h2 className="text-4xl font-black text-black">
-            Tata Altroz<br />Racer
-          </h2>
-
-          <button className="mt-4 px-6 py-2 bg-yellow-400 text-black font-semibold rounded shadow hover:bg-yellow-500">
-            Know More
-          </button>
-        </div>
-
-        {/* Car Image */}
-        <Image
-          src="/car.png"
-          alt="Tata Altroz"
-          width={500}
-          height={300}
-          className="z-20"
-          priority
-        />
       </div>
-    </div>
+
+      <div className="custom-pagination flex justify-end items-center sm:mr-20 xl:mr-48 my-2 gap-2" />
+    </>
   );
 };
 
