@@ -6,6 +6,7 @@ import HeroSection from "@/components/web/home/HeroSection";
 export default function Home() {
   return (
     <div className="h-screen flex flex-col justify-between">
+      
       <main className="bg-[#F8F9FA]">
 
         <div className="hidden sm:block">
@@ -25,6 +26,7 @@ export default function Home() {
       <div className="block lg:hidden">
         <MobileFooter />
       </div>
+
     </div>
   );
 }

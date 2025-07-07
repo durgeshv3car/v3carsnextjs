@@ -15,8 +15,11 @@ import { SiGooglenews } from "react-icons/si";
 
 const Footer: React.FC = () => {
   return (
+  
     <footer className="bg-[#E2E2E2] border-t border-gray-300">
+
       <div className="w-[90%] xl:w-[80%] mx-auto pt-8 pb-2 grid grid-cols-1 md:grid-cols-4 gap-10">
+
         {/* Connect */}
         <div className="space-y-6">
           <div>
@@ -135,6 +138,7 @@ const Footer: React.FC = () => {
             <Link href="#" className="border-2 border-black rounded-full p-3"><SiGooglenews /></Link>
           </div>
         </div>
+
       </div>
 
       <div className="bg-yellow-400 text-sm py-6 text-center">
@@ -164,6 +168,7 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="bg-[#343A40] py-2" />
+
     </footer>
   );
 };

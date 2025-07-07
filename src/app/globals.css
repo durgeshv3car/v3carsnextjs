@@ -39,3 +39,14 @@ body {
   height: 5px;
   width: 60px;
 }
+
+.scrollbar-thin-yellow::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin-yellow::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin-yellow::-webkit-scrollbar-thumb {
+  background-color: #facc15; /* Tailwind yellow-400 */
+  border-radius: 9999px;
+}
