@@ -9,11 +9,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import CustomSelect from '@/components/CustomInputs/CustomSelect';
 
 // Dummy Slides
 const slides = [
   {
-    image: 'https://images.pexels.com/photos/3311574/pexels-photo-3311574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    image: '/images/banner-car.png',
     title: 'Tata Altroz Racer',
     tagline: 'More Performance,\nBig on Features',
   },
@@ -23,7 +24,7 @@ const slides = [
     tagline: 'Power meets Efficiency',
   },
   {
-    image: 'https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg',
+    image: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg',
     title: 'Tata Nexon',
     tagline: 'Next Level SUV',
   },
@@ -31,6 +32,16 @@ const slides = [
 
 const HeroSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState('budget');
+  const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+  const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+
+  const handleSelection = (value: string) => {
+    console.log('Selected:', value);
+  };
+
+  const handle = (value: string) => {
+    console.log('Selected:', value);
+  };
 
   return (
     <>
@@ -101,21 +112,13 @@ const HeroSection: React.FC = () => {
               {/* Form */}
               {activeTab === 'budget' ? (
                 <>
-                  <select className="w-full font-light border-b py-2 text-gray-600 border-gray-300">
-                    <option>Select Budget</option>
-                  </select>
-                  <select className="w-full font-light border-b py-2 text-gray-600 border-gray-300">
-                    <option>All Vehicle Types</option>
-                  </select>
+                  <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
+                  <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
                 </>
               ) : (
                 <>
-                  <select className="w-full font-light border-b py-2 text-gray-600 border-gray-300">
-                    <option>Select Brand</option>
-                  </select>
-                  <select className="w-full font-light border-b py-2 text-gray-600 border-gray-300">
-                    <option>Select Model</option>
-                  </select>
+                  <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
+                  <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
                 </>
               )}
 
