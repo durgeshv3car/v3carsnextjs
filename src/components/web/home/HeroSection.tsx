@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { CiFilter, CiSearch } from 'react-icons/ci';
-import { VscChevronDown, VscChevronRight } from 'react-icons/vsc';
+import { VscChevronRight } from 'react-icons/vsc';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
@@ -19,12 +18,12 @@ const slides = [
     tagline: 'More Performance,\nBig on Features',
   },
   {
-    image: 'https://images.pexels.com/photos/3422964/pexels-photo-3422964.jpeg',
+    image: 'https://images.pexels.com/photos/3311574/pexels-photo-3311574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     title: 'Tata Punch EV',
     tagline: 'Power meets Efficiency',
   },
   {
-    image: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg',
+    image: 'https://images.pexels.com/photos/3422964/pexels-photo-3422964.jpeg',
     title: 'Tata Nexon',
     tagline: 'Next Level SUV',
   },
@@ -136,7 +135,7 @@ const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="custom-pagination flex justify-end items-center sm:mr-20 xl:mr-48 my-2 gap-2" />
+      <div className="custom-pagination flex justify-end items-center w-[85%] mx-auto mt-4 gap-2" />
     </>
   );
 };

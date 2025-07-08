@@ -16,7 +16,7 @@ import { SiGooglenews } from "react-icons/si";
 const Footer: React.FC = () => {
   return (
     <footer className="bg-[#E2E2E2] border-t border-gray-300">
-      <div className="w-[90%] xl:w-[85%] mx-auto pt-8 pb-2 grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="w-[90%] xl:w-[85%] mx-auto pt-8 pb-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Connect */}
         <div className="space-y-6">
           <div>
