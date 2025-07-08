@@ -1,10 +1,10 @@
-import MobileFooter from "@/components/mobile/common/Footer";
 import MobileHeroSection from "@/components/mobile/home/HeroSection";
-import Footer from "@/components/web/common/Footer";
+import CategorySection from "@/components/web/home/CategorySection";
 import HeroSection from "@/components/web/home/HeroSection";
 
 export default function Home() {
   return (
+    <>
     <div className="h-screen flex flex-col justify-between">
       
       <main className="bg-[#F8F9FA]">
@@ -13,20 +13,16 @@ export default function Home() {
           <HeroSection />
         </div>
 
-        <div className="block sm:hidden">
+        {/* <div className="block sm:hidden">
           <MobileHeroSection />
-        </div>
+        </div> */}
 
       </main>
 
-      <div className="hidden lg:block">
-        <Footer />
-      </div>
-
-      <div className="block lg:hidden">
-        <MobileFooter />
-      </div>
 
     </div>
+      
+      <CategorySection />
+    </>
   );
 }

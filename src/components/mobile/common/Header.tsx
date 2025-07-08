@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { FiMenu, FiMapPin, FiSearch } from "react-icons/fi";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { IoChevronDownOutline } from "react-icons/io5";
+import MobileLoginModal from "./MobileLoginModal";
 
 const MobileHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [openTab, setOpenTab] = useState<string | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
 
   const toggleTab = (tab: string) => {
     setOpenTab(openTab === tab ? null : tab);
@@ -37,7 +39,9 @@ const MobileHeader = () => {
   }, [isOpen]);
 
   return (
+    <>
     <header className="w-full bg-white  z-50 relative md:hidden ">
+
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left: Hamburger + Logo */}
@@ -77,18 +81,17 @@ const MobileHeader = () => {
 
       {/* Drawer Overlay */}
       <div
-        className={`fixed inset-0 z-[100] bg-black/40 transition-opacity duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`fixed inset-0 z-[100] bg-black/40 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
         onClick={() => setIsOpen(false)}
       />
 
       {/* Sidebar Drawer */}
       <div
-        className={`fixed top-0 left-0 h-full w-[85%] bg-white z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-full w-[85%] bg-white z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
+
         {/* Top: Logo + Login */}
         <div className="flex justify-between items-center mb-4">
           <Image
@@ -97,9 +100,14 @@ const MobileHeader = () => {
             width={90}
             height={40}
           />
-          <button className="bg-yellow-400 text-black text-sm px-4 py-1 rounded-full font-medium">
+          <button
+            onClick={() => setShowLogin(true)}
+            className="bg-yellow-400 text-black text-sm px-4 py-1 rounded-full font-medium"
+          >
             Login
           </button>
+
+         
         </div>
 
         {/* Menu Items */}
@@ -117,18 +125,16 @@ const MobileHeader = () => {
                   {hasSubmenu && (
                     <IoChevronDownOutline
                       size={16}
-                      className={`transition-transform duration-300 ${
-                        openTab === item ? "rotate-180" : ""
-                      }`}
+                      className={`transition-transform duration-300 ${openTab === item ? "rotate-180" : ""
+                        }`}
                     />
                   )}
                 </button>
 
                 {/* Accordion submenu */}
                 <div
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    openTab === item ? "max-h-[1000px]" : "max-h-0"
-                  }`}
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${openTab === item ? "max-h-[1000px]" : "max-h-0"
+                    }`}
                 >
                   {hasSubmenu && (
                     <ul className="pl-4 text-sm text-gray-600 space-y-2 py-2">
@@ -147,8 +153,13 @@ const MobileHeader = () => {
             );
           })}
         </div>
+
       </div>
     </header>
+
+     {showLogin && <MobileLoginModal onClose={() => setShowLogin(false)} />}
+    
+    </>
   );
 };
 
