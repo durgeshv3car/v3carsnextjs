@@ -96,7 +96,7 @@ const Header = () => {
 
                         {/* Variant Explained */}
                         <div
-                            className="relative"
+                            className="relative  py-4"
                             onMouseEnter={() => setHoverTab("variant")}
                             onMouseLeave={() => setHoverTab(null)}
                         >
@@ -110,7 +110,7 @@ const Header = () => {
 
                         {/* Tools */}
                         <div
-                            className="relative"
+                            className="relative  py-4"
                             onMouseEnter={() => setHoverTab("tools")}
                             onMouseLeave={() => setHoverTab(null)}
                         >
