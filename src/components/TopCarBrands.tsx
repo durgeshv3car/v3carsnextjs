@@ -40,7 +40,7 @@ export default function TopCarBrands() {
 
     return (
         <section className="bg-[#F8F9FA] py-6">
-            <div className="w-full lg:w-[85%] px-6 lg:px-0 mx-auto">
+            <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-medium">Top Car Brands</h2>

@@ -1,0 +1,173 @@
+'use client'
+
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
+import { CiCalendarDate } from 'react-icons/ci'
+import { FaRegCalendarAlt, FaPen, FaUserEdit } from 'react-icons/fa'
+
+type NewsItem = {
+    id: number
+    image: string
+    tag: string
+    heading: string
+    description: string
+    author: string
+    date: string
+}
+
+const newsList: NewsItem[] = [
+    {
+        id: 1,
+        image: '/car-review/image1.png',
+        tag: 'June 2024',
+        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
+        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
+        author: 'Mahesh Yadav',
+        date: 'July 31 2024',
+    },
+    {
+        id: 2,
+        image: '/car-review/image2.png',
+        tag: 'Mahindra Thar Roxx',
+        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
+        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
+        author: 'Mahesh Yadav',
+        date: 'July 31 2024',
+    },
+    {
+        id: 3,
+        image: '/car-review/image3.png',
+        tag: 'Upcoming Cars',
+        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
+        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
+        author: 'Mahesh Yadav',
+        date: 'July 31 2024',
+    },
+    {
+        id: 4,
+        image: '/car-review/image1.png',
+        tag: 'Upcoming Cars',
+        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
+        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
+        author: 'Mahesh Yadav',
+        date: 'July 31 2024',
+    },
+    {
+        id: 5,
+        image: '/car-review/image2.png',
+        tag: 'Upcoming Cars',
+        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
+        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
+        author: 'Mahesh Yadav',
+        date: 'July 31 2024',
+    },
+]
+
+
+const MobileExpertCarReviews: React.FC = () => {
+    const scrollRef = useRef<HTMLDivElement>(null)
+    const [isAtStart, setIsAtStart] = useState<boolean>(true)
+    const [isAtEnd, setIsAtEnd] = useState<boolean>(false)
+
+    const handleScroll = () => {
+        const container = scrollRef.current
+        if (!container) return
+
+        const { scrollLeft, scrollWidth, clientWidth } = container
+        setIsAtStart(scrollLeft <= 0)
+        setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 5)
+    }
+
+    const scroll = (dir: 'left' | 'right') => {
+        if (scrollRef.current) {
+            const amount = 520
+            scrollRef.current.scrollBy({
+                left: dir === 'left' ? -amount : amount,
+                behavior: 'smooth',
+            })
+        }
+    }
+
+    useEffect(() => {
+        const container = scrollRef.current
+        if (!container) return
+
+        handleScroll()
+        container.addEventListener('scroll', handleScroll)
+        return () => container.removeEventListener('scroll', handleScroll)
+    }, [])
+
+    return (
+        <>
+            <section className="py-6">
+                <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto space-y-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between w-full lg:w-auto gap-4">
+                            <h2 className="text-lg font-semibold lg:font-medium">Expert Car Reviews</h2>
+                            <Link
+                                href="#"
+                                className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                            >
+                                View All
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                    className="size-4"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </Link>
+                        </div>
+                    </div>
+
+                    <div className="flex space-x-4 overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
+                        {newsList.map((item) => (
+                            <div
+                                key={item.id}
+                                className="bg-white rounded-lg min-w-[311px] border border-[#E2E2E2] lg:min-w-[520px] min-h-[456px] lg:min-h-[495px] shadow-md overflow-hidden hover:shadow-md transition p-2.5 flex flex-col space-y-4"
+                            >
+                                {/* Fixed height image */}
+                                <div className="h-[180px]">
+                                    <img
+                                        src={item.image}
+                                        alt="news"
+                                        className="w-full h-full rounded-lg"
+                                    />
+                                </div>
+
+                                {/* Fills the remaining space */}
+                                <div className="flex flex-col flex-grow space-y-3">
+                                    <span className='text-gray-500'>{item.date}</span>
+                                    <h3 className="text-lg font-semibold line-clamp-3">{item.heading}</h3>
+                                    <p className="text-gray-700 line-clamp-3 text-sm">{item.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Banner Section */}
+            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 flex justify-center items-center'>
+
+                <div className="hidden sm:block w-full lg:w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
+                    <img
+                        src={'/ads/ad1.png'}
+                        alt='ad1'
+                        className='h-full w-full'
+                    />
+                </div>
+
+                <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'>
+
+                </div>
+            </div>
+        </>
+    )
+}
+
+export default MobileExpertCarReviews;

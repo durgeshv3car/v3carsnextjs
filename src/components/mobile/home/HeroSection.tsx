@@ -32,32 +32,30 @@ const MobileHeroSection: React.FC = () => {
     return (
         <div className='space-y-4 px-4 py-2'>
             {/* Top Slider */}
-            <div className="relative">
-                <Swiper
-                    modules={[Pagination, Autoplay]}
-                    loop
-                    autoplay={{ delay: 10000, disableOnInteraction: false }}
-                    pagination={{
-                        el: '.custom-pagination',
-                        clickable: true,
-                        bulletClass: 'swiper-custom-bullet',
-                        bulletActiveClass: 'swiper-custom-bullet-active',
-                    }}
-                    className="h-[200px] w-full"
-                >
-                    {slides.map((slide, index) => (
-                        <SwiperSlide key={index}>
-                            <img
-                                src={slide.image}
-                                alt={`Slide ${index + 1}`}
-                                className="w-full h-full object-cover object-center rounded-[9px]"
-                            />
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+            <Swiper
+                modules={[Pagination, Autoplay]}
+                loop
+                autoplay={{ delay: 10000, disableOnInteraction: false }}
+                pagination={{
+                    el: '.custom-pagination',
+                    clickable: true,
+                    bulletClass: 'swiper-custom-bullet',
+                    bulletActiveClass: 'swiper-custom-bullet-active',
+                }}
+                className="h-[200px] w-full"
+            >
+                {slides.map((slide, index) => (
+                    <SwiperSlide key={index}>
+                        <img
+                            src={slide.image}
+                            alt={`Slide ${index + 1}`}
+                            className="w-full h-full object-cover object-center rounded-[9px]"
+                        />
+                    </SwiperSlide>
+                ))}
+            </Swiper>
 
-                <div className="custom-pagination flex justify-start items-center mt-4 gap-2" />
-            </div>
+            <div className="custom-pagination flex items-center gap-2" />
 
             {/* Feature Tiles */}
             <div className="flex items-center h-[243px] gap-4">

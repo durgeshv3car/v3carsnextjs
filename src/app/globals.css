@@ -20,9 +20,9 @@
 }
 
 body {
-  background: white;
+  background: #F8F9FA;
   color: black;
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: 'Open Sans', 'Helvetica Neue', sans-serif; */
 }
 
 .swiper-custom-bullet {
@@ -32,6 +32,7 @@ body {
   background-color: #B3B3B3;
   transition: all 0.3s ease;
   cursor: pointer;
+  margin-top: 0px;
 }
 
 .swiper-custom-bullet-active {

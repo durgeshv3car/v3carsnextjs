@@ -15,7 +15,7 @@ const categories = [
 
 const CategorySection: React.FC = () => {
     return (
-        <div className="w-full xl:w-[85%] px-6 xl:px-0 xl:mx-auto my-6">
+        <div className="w-full xl:w-[1600px] px-6 xl:px-0 xl:mx-auto my-6">
             <h2 className="text-sm xl:text-lg font-semibold xl:font-medium mb-4">Search By Category</h2>
             <div className="flex gap-4 overflow-x-auto">
                 {categories.map((category, index) => (

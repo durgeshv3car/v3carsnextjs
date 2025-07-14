@@ -135,7 +135,9 @@ const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="custom-pagination flex justify-end items-center w-[85%] mx-auto mt-4 gap-2" />
+      <div className='w-full lg:w-[1600px] px-6 lg:px-0 mx-auto mt-4'>
+        <div className="custom-pagination flex justify-end items-center gap-2" />
+      </div>
     </>
   );
 };

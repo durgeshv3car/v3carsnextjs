@@ -100,7 +100,7 @@ const LatestCarNews: React.FC = () => {
 
     return (
         <section className="py-6">
-            <div className="w-full lg:w-[85%] px-6 lg:px-0 mx-auto space-y-6">
+            <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-medium">Latest Car News</h2>
@@ -165,11 +165,9 @@ const LatestCarNews: React.FC = () => {
                         >
                             {/* Fixed height image */}
                             <div className="relative h-[310px] w-full">
-                                <Image
+                                <img
                                     src={item.image}
                                     alt="news"
-                                    layout="fill"
-                                    objectFit="cover"
                                     className="rounded-xl"
                                 />
                                 <div className="absolute bottom-0 w-full px-4 pt-16 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/90 to-transparent">
