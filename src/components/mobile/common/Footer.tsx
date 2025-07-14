@@ -14,7 +14,8 @@ import { SiGooglenews } from "react-icons/si";
 
 const MobileFooter: React.FC = () => {
   return (
-    <footer className="rounded-t-2xl border">
+    <footer className="relative">
+      <div className="absolute top-0 w-full h-[70px] bg-gradient-to-b from-[#D9D8D8]/40 to-transparent rounded-t-2xl" />
       <div className="mx-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Connect */}
         <div className="space-y-4">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Provider from "./provider";
 
@@ -12,6 +12,13 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'], // Choose the weights you need
+  display: 'swap',
+  variable: '--font-montserrat', // Optional: custom CSS variable
+})
 
 export const metadata: Metadata = {
   title: "V3Cars - Latest Car News, Reviews, Launches, Comparisons & Prices",
@@ -36,9 +43,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={montserrat.className}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`antialiased`}
       >
         <div className="h-screen flex flex-col justify-between">
           <Provider>
