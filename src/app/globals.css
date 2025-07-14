@@ -25,13 +25,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
 .swiper-custom-bullet {
   width: 60px;
   height: 3px;
   border-radius: 9999px;
   background-color: #B3B3B3;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .swiper-custom-bullet-active {
@@ -112,4 +112,12 @@ body {
 .arrow {
   font-size: 12px;
   margin-left: 5px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

@@ -1,15 +1,12 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { CiSearch } from 'react-icons/ci';
 import CustomSelect from '@/components/CustomInputs/CustomSelect';
-
-// Define valid tabs
-type TabOption = 'budget' | 'model';
 
 const slides = [
     {
@@ -23,7 +20,6 @@ const MobileHeroSection: React.FC = () => {
     const [activeTab, setActiveTab] = useState('budget');
     const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
     const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
-    const paginationRef = useRef<HTMLDivElement | null>(null);
 
     const handleSelection = (value: string) => {
         console.log('Selected:', value);
@@ -42,19 +38,10 @@ const MobileHeroSection: React.FC = () => {
                     loop
                     autoplay={{ delay: 10000, disableOnInteraction: false }}
                     pagination={{
-                        el: paginationRef.current!,
+                        el: '.custom-pagination',
                         clickable: true,
                         bulletClass: 'swiper-custom-bullet',
                         bulletActiveClass: 'swiper-custom-bullet-active',
-                    }}
-                    onSwiper={(swiper) => {
-                        if (paginationRef.current) {
-                            // @ts-ignore
-                            swiper.params.pagination.el = paginationRef.current;
-                            swiper.pagination.init();
-                            swiper.pagination.render();
-                            swiper.pagination.update();
-                        }
                     }}
                     className="h-[200px] w-full"
                 >
@@ -69,7 +56,7 @@ const MobileHeroSection: React.FC = () => {
                     ))}
                 </Swiper>
 
-                <div ref={paginationRef} className="custom-pagination flex gap-2 mt-4" />
+                <div className="custom-pagination flex justify-start items-center mt-4 gap-2" />
             </div>
 
             {/* Feature Tiles */}
