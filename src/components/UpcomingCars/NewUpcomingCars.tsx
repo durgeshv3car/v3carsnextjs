@@ -75,15 +75,15 @@ export default function NewUpcomingCars() {
     return (
         <>
             <h2 className="text-xl font-semibold mb-5">New Upcoming Cars</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 p-2 bg-[#FFFFFF] border border-[#DEE2E6] rounded-xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-2 bg-[#FFFFFF] border border-[#DEE2E6] rounded-xl">
                 {upcomingCars.map((car, idx) => (
                     <div
                         key={idx}
-                        className={`rounded-xl shadow-lg overflow-hidden min-h-[275px] xl:h-[487px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 90 ? "border-[#3D923A]" : car.confidence >= 70 ? "border-[#F08200]" : "border-[#D40808]"}`}
+                        className={`rounded-xl shadow-lg overflow-hidden min-h-[275px] lg:h-[487px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 90 ? "border-[#3D923A]" : car.confidence >= 70 ? "border-[#F08200]" : "border-[#D40808]"}`}
                     >
                         {/* Image Section */}
                         <div className='rounded-xl shadow-sm'>
-                            <div className="relative h-[184px] xl:h-[242px]">
+                            <div className="relative h-[184px] lg:h-[242px]">
                                 <img
                                     src={car.image}
                                     alt={car.name}
@@ -103,7 +103,7 @@ export default function NewUpcomingCars() {
                             </div>
 
                             {/* Remaining Space for Content */}
-                            <div className={`grid grid-cols-2 justify-between text-sm xl:text-base items-center my-4 bg-white`}>
+                            <div className={`grid grid-cols-2 justify-between text-sm lg:text-base items-center my-4 bg-white`}>
                                 <div className='border-r border-[#0000004D] text-center mx-4'>
                                     <p className="text-gray-700 font-medium truncate">{car.brand}</p>
                                     <p className="text-gray-900 font-semibold truncate">{car.name}</p>
@@ -116,7 +116,7 @@ export default function NewUpcomingCars() {
                             </div>
                         </div>
 
-                        <div className={`flex flex-col justify-around gap-2 p-4 items-center text-sm xl:text-base flex-grow`}>
+                        <div className={`flex flex-col justify-around gap-2 p-4 items-center text-sm lg:text-base flex-grow`}>
                             <p className="font-medium text-xl">{car.price}</p>
                             <p className="text-gray-600 text-sm">*Expected Launch Price</p>
                             <button className='p-3 font-semibold text-sm w-full flex justify-center gap-2 items-center cursor-pointer rounded-lg bg-yellow-400'>

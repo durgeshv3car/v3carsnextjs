@@ -31,8 +31,8 @@ const ToolsDropdown = () => {
   ];
 
   return (
-    <div className="w-full bg-white shadow-md z-50 border-b-[5px] rounded-[10px] border-gray-500 h-[50vh]">
-      <div className="max-w-[1440px] mx-auto px-6 py-6 flex gap-6 items-start">
+    <div className="w-full bg-white shadow-md border-b-[5px] rounded-b-[10px] border-gray-500 h-full">
+      <div className="max-w-[1600px] mx-auto py-6 flex gap-6 items-start">
         <div className="flex-1 flex gap-6">
           {sections.map((section, index) => (
             <div key={index} className="w-[30%]">

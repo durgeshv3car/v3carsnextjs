@@ -1,4 +1,7 @@
+'use client'
+
 import React, { useEffect, useRef, useState } from 'react';
+import styles from './CustomSelect.module.css'
 
 interface CustomSelectProps {
   options: string[];
@@ -36,10 +39,10 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, placeholder, onSel
   }, []);
 
   return (
-    <div className="custom-select" ref={dropdownRef}>
-      <div className="select-box" onClick={() => setIsOpen((prev) => !prev)}>
+    <div className={styles['custom-select']} ref={dropdownRef}>
+      <div className={styles['select-box']} onClick={() => setIsOpen((prev) => !prev)}>
         {selectedItem || placeholder}
-        <span className="arrow">
+        <span className={styles['arrow']}>
           {isOpen ?
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
@@ -53,23 +56,23 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, placeholder, onSel
       </div>
 
       {isOpen && (
-        <div className="dropdown">
+        <div className={styles['dropdown']}>
           <input
             type="text"
-            className="search-box"
+            className={styles['search-box']}
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <ul className="options-list">
+          <ul className={styles['options-list']}>
             {filteredOptions.length > 0 ? (
               filteredOptions.map((item, index) => (
-                <li key={index} className="option-item" onClick={() => handleSelect(item)}>
+                <li key={index} className={styles['option-item']} onClick={() => handleSelect(item)}>
                   {item}
                 </li>
               ))
             ) : (
-              <li className="no-option">No match found</li>
+              <li className={styles['no-option']}>No match found</li>
             )}
           </ul>
         </div>

@@ -59,10 +59,11 @@ const HeroSection: React.FC = () => {
             bulletClass: 'swiper-custom-bullet',
             bulletActiveClass: 'swiper-custom-bullet-active',
           }}
-          className="h-full w-full"
+          className="relative h-full w-full"
         >
           {slides.map((slide, index) => (
             <SwiperSlide key={index}>
+              <div className=' absolute left-0 top-0 w-full h-full bg-gradient-to-r from-black/35 to-transparent'/>
               <div
                 className="h-full w-full bg-cover bg-center"
                 style={{ backgroundImage: `url(${slide.image})` }}
@@ -72,72 +73,93 @@ const HeroSection: React.FC = () => {
         </Swiper>
 
         {/* Search Box Overlay */}
-        <div className="absolute left-[160px] top-[125px] z-20">
-          <div className="w-[403px] bg-white rounded-xl shadow-md border border-gray-300 overflow-hidden font-sans">
-            {/* Header */}
-            <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-300">
-              <CiFilter size={20} />
-              <h2 className="text-gray-800 font-semibold text-lg">
-                SEARCH THE RIGHT CAR
-              </h2>
-            </div>
+        <div className="absolute top-[125px] left-0 right-0 z-20">
+          <div className="max-w-[1600px] mx-auto">
+            <div className="w-[403px] h-[430px] bg-white rounded-xl shadow-md border border-gray-300 overflow-hidden font-sans flex flex-col">
+              {/* Header */}
+              <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-300">
+                <CiFilter size={20} />
+                <h2 className="text-gray-800 font-semibold text-lg">
+                  SEARCH THE RIGHT CAR
+                </h2>
+              </div>
 
-            {/* Tabs */}
-            <div className="border-b border-gray-200 p-6 space-y-6">
-              <div className="grid grid-cols-2">
-                {['budget', 'model'].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`flex items-center justify-center gap-2 py-3 text-sm font-medium ${activeTab === tab
-                      ? 'bg-gray-200 border-b-2 border-yellow-400 text-black'
-                      : 'bg-gray-100 text-gray-600'
-                      }`}
-                  >
-                    <span
-                      className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-gray-400'
+              {/* Tabs */}
+              <div className="border-b border-gray-200 p-6 flex flex-col justify-around flex-grow">
+                <div className="grid grid-cols-2">
+                  {['budget', 'model'].map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`flex items-center justify-center gap-2 py-3 text-sm font-medium ${activeTab === tab
+                        ? 'bg-gray-200 border-b-2 border-yellow-400 text-black'
+                        : 'bg-gray-100 text-gray-600'
                         }`}
                     >
                       <span
-                        className={`w-2 h-2 rounded-full ${activeTab === tab ? 'bg-yellow-400' : ''
+                        className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-gray-400'
                           }`}
-                      />
-                    </span>
-                    By {tab === 'budget' ? 'Budget' : 'Model'}
-                  </button>
-                ))}
-              </div>
+                      >
+                        <span
+                          className={`w-2 h-2 rounded-full ${activeTab === tab ? 'bg-yellow-400' : ''
+                            }`}
+                        />
+                      </span>
+                      By {tab === 'budget' ? 'Budget' : 'Model'}
+                    </button>
+                  ))}
+                </div>
 
-              {/* Form */}
-              {activeTab === 'budget' ? (
-                <>
-                  <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
-                  <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
-                </>
-              ) : (
-                <>
-                  <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
-                  <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
-                </>
-              )}
+                {/* Form */}
+                {activeTab === 'budget' ? (
+                  <>
+                    <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
+                    <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
+                  </>
+                ) : (
+                  <>
+                    <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
+                    <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
+                  </>
+                )}
 
-              <button className="w-full bg-yellow-400 hover:bg-yellow-500 transition py-3 rounded-full flex items-center justify-center gap-2">
-                <CiSearch size={20} /> SEARCH
-              </button>
-
-              <div className="flex justify-end">
-                <button className="flex items-center text-sm gap-1 cursor-pointer hover:underline">
-                  Advanced Search <VscChevronRight size={18} />
+                <button className="w-full bg-yellow-400 hover:bg-yellow-500 transition py-3 rounded-full flex items-center justify-center gap-2">
+                  <CiSearch size={20} /> SEARCH
                 </button>
+
+                <div className="flex justify-end">
+                  <button className="flex items-center text-sm gap-1 cursor-pointer hover:underline">
+                    Advanced Search <VscChevronRight size={18} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className='w-full lg:w-[1600px] px-6 lg:px-0 mx-auto mt-4'>
+      <div className='w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto mt-4'>
         <div className="custom-pagination flex justify-end items-center gap-2" />
       </div>
+
+
+      <style jsx global>{`
+    .swiper-custom-bullet {
+      width: 60px;
+      height: 3px;
+      border-radius: 9999px;
+      background-color: #b3b3b3;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      margin-top: 0px;
+    }
+
+    .swiper-custom-bullet-active {
+      background-color: #ffcc00;
+      height: 5px;
+      width: 60px;
+    }
+  `}</style>
     </>
   );
 };

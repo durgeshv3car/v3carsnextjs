@@ -36,24 +36,24 @@ function PopularCars() {
             <div className="w-full lg:max-w-[1600px] py-6 px-4 lg:px-0 mx-auto space-y-7">
 
                 
-                <div className="flex flex-col xl:flex-row justify-between gap-5 w-full">
-                    <div className="w-auto xl:min-w-[1190px]">
+                <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
+                    <div className="w-auto lg:max-w-[74%]">
                         <PopularCar />
                         <HottestCarInIndia />
                         <CarsNews />
                         <CarReviews />
                         <PopularCarsVideos />
                     </div>
-                    <div className="w-auto xl:min-w-[390px]">
+                    <div className="w-auto lg:max-w-[24%]">
                         <PopularSideBar />
                     </div>
                 </div>
             </div>
 
             {/* Banner Section */}
-            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 xl:flex justify-center items-center mb-6'>
+            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 lg:flex justify-center items-center mb-6'>
 
-                <div className="hidden sm:block w-full lg:w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
+                <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img
                         src={'/ads/ad1.png'}
                         alt='ad1'

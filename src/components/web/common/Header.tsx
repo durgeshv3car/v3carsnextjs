@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiMapPin, FiSearch } from "react-icons/fi";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { HiOutlineUserCircle } from "react-icons/hi2";
@@ -9,18 +9,26 @@ import NewCarsDropdown from "../header/NewCarsDropdown";
 import NewsVideosDropdown from "../header/NewsVideosDropdown";
 import ToolsDropdown from "../header/ToolsDropdown.";
 import LoginModal from "./LoginModal";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
     const [hoverTab, setHoverTab] = useState<string | null>(null);
     const [showLogin, setShowLogin] = useState(false);
+    const router = useRouter()
+
+    useEffect(() => {
+        const closeOnScroll = () => setHoverTab(null);
+        window.addEventListener('scroll', closeOnScroll);
+        return () => window.removeEventListener('scroll', closeOnScroll);
+    }, []);
 
     return (
         <>
 
-            <header className="w-full bg-white z-50">
-                <div className="max-w-[1440px] mx-auto px-6 py-3 flex items-center justify-between">
+            <header className="w-full bg-white z-50 shadow-xl">
+                <div className="max-w-[1600px] mx-auto py-3 flex items-center justify-between">
                     {/* Logo */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center cursor-pointer gap-2" onClick={() => router.push('/')}>
                         <Image
                             src="/logo/header/v3logo.png"
                             alt="V3 Cars Logo"
@@ -35,8 +43,7 @@ const Header = () => {
                         {/* Location */}
                         <div
                             className="relative py-4"
-                            onMouseEnter={() => setHoverTab("location")}
-                            onMouseLeave={() => setHoverTab(null)}
+                            onClick={() => setHoverTab(hoverTab === "location" ? null : "location")}
                         >
                             <div className={`cursor-pointer flex items-center gap-1 ${hoverTab === "location" ? "text-yellow-500" : ""}`}>
                                 <FiMapPin size={16} />
@@ -46,7 +53,7 @@ const Header = () => {
 
                             {/* Dropdown stays visible while hovering */}
                             {hoverTab === "location" && (
-                                <div className="fixed left-0 top-[65px] w-full z-50">
+                                <div className="fixed left-0 top-[76px] w-full z-50">
                                     <LocationDropdown />
                                 </div>
                             )}
@@ -55,8 +62,7 @@ const Header = () => {
                         {/* New Cars */}
                         <div
                             className="relative"
-                            onMouseEnter={() => setHoverTab("newCars")}
-                            onMouseLeave={() => setHoverTab(null)}
+                            onClick={() => setHoverTab(hoverTab === "newCars" ? null : "newCars")}
                         >
                             <div
                                 className={`cursor-pointer flex items-center gap-1 ${hoverTab === "newCars" ? "text-yellow-500" : ""
@@ -67,7 +73,7 @@ const Header = () => {
                             </div>
 
                             {hoverTab === "newCars" && (
-                                <div className="absolute left-0 top-full pt-2 z-50">
+                                <div className="absolute left-0 top-[48px] z-50">
                                     <NewCarsDropdown />
                                 </div>
                             )}
@@ -76,8 +82,8 @@ const Header = () => {
                         {/* News, Reviews & Videos */}
                         <div
                             className="relative py-4"
-                            onMouseEnter={() => setHoverTab("news")}
-                            onMouseLeave={() => setHoverTab(null)}
+                            onClick={() => setHoverTab(hoverTab === "news" ? null : "news")}
+
                         >
                             <span
                                 className={`cursor-pointer flex items-center gap-1 ${hoverTab === "news" ? "text-yellow-500" : ""
@@ -88,7 +94,7 @@ const Header = () => {
                             </span>
 
                             {hoverTab === "news" && (
-                                <div className="fixed left-0 top-[65px] w-full z-50">
+                                <div className="fixed left-0 top-[76px] w-full z-40">
                                     <NewsVideosDropdown />
                                 </div>
                             )}
@@ -97,8 +103,7 @@ const Header = () => {
                         {/* Variant Explained */}
                         <div
                             className="relative  py-4"
-                            onMouseEnter={() => setHoverTab("variant")}
-                            onMouseLeave={() => setHoverTab(null)}
+                            onClick={() => setHoverTab(hoverTab === "variant" ? null : "variant")}
                         >
                             <span
                                 className={`cursor-pointer ${hoverTab === "variant" ? "text-yellow-500" : ""
@@ -111,8 +116,7 @@ const Header = () => {
                         {/* Tools */}
                         <div
                             className="relative  py-4"
-                            onMouseEnter={() => setHoverTab("tools")}
-                            onMouseLeave={() => setHoverTab(null)}
+                            onClick={() => setHoverTab(hoverTab === "tools" ? null : "tools")}
                         >
                             <span
                                 className={`cursor-pointer flex items-center gap-1 ${hoverTab === "tools" ? "text-yellow-500" : ""
@@ -123,7 +127,7 @@ const Header = () => {
                             </span>
 
                             {hoverTab === "tools" && (
-                                <div className="fixed top-[65px] left-0 w-full z-50">
+                                <div className="fixed top-[76px] left-0 w-full z-40">
                                     <ToolsDropdown />
                                 </div>
                             )}

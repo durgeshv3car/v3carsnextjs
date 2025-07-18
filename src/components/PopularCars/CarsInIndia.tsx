@@ -150,10 +150,10 @@ function HottestCarInIndia() {
                     {upcomingCars.map((car, idx) => (
                         <div
                             key={idx}
-                            className="w-full h-auto xl:h-[454px] border border-[#DEE2E6] rounded-xl overflow-hidden flex flex-col"
+                            className="w-full h-auto lg:h-[454px] border border-[#DEE2E6] rounded-xl overflow-hidden flex flex-col"
                         >
                             {/* Image Section */}
-                            <div className="relative h-[200px] xl:h-[240px]">
+                            <div className="relative h-[200px] lg:h-[240px]">
                                 <img
                                     src={car.image}
                                     alt={car.name}

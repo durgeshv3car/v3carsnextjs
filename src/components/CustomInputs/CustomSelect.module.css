@@ -1,0 +1,81 @@
+.custom-select {
+  width: 100%;
+  position: relative;
+}
+
+.select-box {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+  /* border-radius: 6px; */
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 40;
+
+  /* Scrollbar styling */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #facc15 transparent;
+}
+
+.search-box {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid #eee;
+  outline: none;
+}
+
+.options-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.option-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.option-item:hover {
+  background-color: #f0f0f0;
+}
+
+.no-option {
+  padding: 10px;
+  color: #888;
+  font-style: italic;
+}
+
+.arrow {
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+.dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+  background-color: #facc15; /* Tailwind yellow-400 */
+  border-radius: 9999px;
+}
