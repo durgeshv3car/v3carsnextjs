@@ -40,7 +40,7 @@ export default function TopCarBrands() {
 
     return (
         <section className="bg-[#F8F9FA] py-6">
-            <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto">
+            <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-medium">Top Car Brands</h2>
@@ -80,16 +80,16 @@ export default function TopCarBrands() {
                 >
                     <div className="flex gap-2">
                         {list1.map((brand, i) => (
-                            <div key={`list1-${i}`} className="min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded">
-                                <img src={brand.logo} alt={brand.name} className="max-h-[50px] object-contain" />
+                            <div key={`list1-${i}`} className="min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded overflow-hidden">
+                                <img src={brand.logo} alt={brand.name} className="p-6 object-cover" />
                             </div>
                         ))}
                     </div>
 
                     <div className="flex gap-2">
                         {list2.map((brand, i) => (
-                            <div key={`list2-${i}`} className="min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded">
-                                <img src={brand.logo} alt={brand.name} className="max-h-[50px] object-contain" />
+                            <div key={`list2-${i}`} className="min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded overflow-hidden">
+                                <img src={brand.logo} alt={brand.name} className="p-6 object-cover" />
                             </div>
                         ))}
                     </div>

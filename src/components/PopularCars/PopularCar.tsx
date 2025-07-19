@@ -116,11 +116,11 @@ const PopularCar = () => {
             {/* Rank + Image */}
             <div className="flex items-center gap-2">
               {/* Rank */}
-              <div className="bg-black text-yellow-400 w-[120px] sm:w-[80px] xl:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
-                <span className="text-4xl sm:text-6xl xl:text-8xl font-bold">
+              <div className="bg-black text-yellow-400 w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
+                <span className="text-4xl sm:text-6xl lg:text-8xl font-bold">
                   {car.rank.toString().padStart(2, '0')}
                 </span>
-                <span className="text-base sm:text-xl xl:text-3xl">Rank</span>
+                <span className="text-base sm:text-xl lg:text-3xl">Rank</span>
               </div>
 
               {/* Car Image */}
@@ -139,7 +139,7 @@ const PopularCar = () => {
             <div className="flex flex-col justify-between text-sm w-full">
               <div className="grid grid-cols-2 gap-4">
                 {/* Column 1 */}
-                <div className="divide-y divide-gray-200 xl:space-y-3">
+                <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
                     <p className="text-gray-600 font-medium w-full">Body Style: <span className="text-black font-bold float-end">{car.bodyStyle}</span></p>
                   </div>
@@ -154,7 +154,7 @@ const PopularCar = () => {
                 </div>
 
                 {/* Column 2 */}
-                <div className="divide-y divide-gray-200 xl:space-y-3">
+                <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
                     <p className="text-gray-600 font-medium w-full">May Sales: <span className="text-black font-bold float-end">{car.maySales.toLocaleString()}</span></p>
                   </div>
@@ -188,7 +188,7 @@ const PopularCar = () => {
 
       <div className='h-[331px] md:h-[240px] bg-[#B3B3B3] p-8 flex justify-center items-center'>
 
-        <div className="hidden sm:block w-full xl:w-[970px] xl:h-[180px] sm:h-[200px] mx-auto">
+        <div className="hidden sm:block w-full lg:w-[970px] lg:h-[180px] sm:h-[200px] mx-auto">
           <img
             src={'/ads/ad1.png'}
             alt='ad1'
@@ -216,11 +216,11 @@ const PopularCar = () => {
             {/* Rank + Image */}
             <div className="flex items-center gap-2">
               {/* Rank */}
-              <div className="bg-black text-yellow-400 w-[120px] sm:w-[80px] xl:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
-                <span className="text-4xl sm:text-6xl xl:text-8xl font-bold">
+              <div className="bg-black text-yellow-400 w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
+                <span className="text-4xl sm:text-6xl lg:text-8xl font-bold">
                   {car.rank.toString().padStart(2, '0')}
                 </span>
-                <span className="text-base sm:text-xl xl:text-3xl">Rank</span>
+                <span className="text-base sm:text-xl lg:text-3xl">Rank</span>
               </div>
 
               {/* Car Image */}
@@ -239,7 +239,7 @@ const PopularCar = () => {
             <div className="flex flex-col justify-between text-sm w-full">
               <div className="grid grid-cols-2 gap-4">
                 {/* Column 1 */}
-                <div className="divide-y divide-gray-200 xl:space-y-3">
+                <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
                     <p className="text-gray-600 font-medium w-full">Body Style: <span className="text-black font-bold float-end">{car.bodyStyle}</span></p>
                   </div>
@@ -254,7 +254,7 @@ const PopularCar = () => {
                 </div>
 
                 {/* Column 2 */}
-                <div className="divide-y divide-gray-200 xl:space-y-3">
+                <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
                     <p className="text-gray-600 font-medium w-full">May Sales: <span className="text-black font-bold float-end">{car.maySales.toLocaleString()}</span></p>
                   </div>

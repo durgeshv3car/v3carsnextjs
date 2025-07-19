@@ -20,14 +20,14 @@ const otherCities = [
 const LocationDropdown = () => {
 
     return (
-        <div className="max-w-[1400px] bg-white py-1 mx-auto bg-white shadow-md z-50 border-b-[5px] rounded-xl border-gray-500 ">
+        <div className="max-w-[1600px] bg-white my-1 mx-auto shadow-md z-50 rounded-xl">
             
                 {/* Top Banner */}
-                <div className="bg-[#ffe380] h-[80px] w-full flex items-center justify-between px-6 relative">
+                <div className="bg-[#ffe380] h-[80px] w-full flex items-center justify-between relative rounded-t-xl">
                     <img
                         src="/location/city-illust.png"
                         alt="Cities"
-                        className="object-cover w-full h-full absolute top-0 left-0 opacity-50"
+                        className="object-cover w-full h-full absolute top-0 left-0 opacity-50 rounded-t-xl"
                     />
                     {/* <button className="absolute top-4 right-4 text-black text-2xl">
                     <IoCloseOutline />
@@ -35,9 +35,9 @@ const LocationDropdown = () => {
                 </div>
 
                 {/* Content */}
-                <div className="flex p-6 gap-6 bg-white">
+                <div className="flex p-6 gap-6">
                     {/* Left */}
-                    <div className="w-[45%]">
+                    <div className="w-[50%]">
                         {/* City Dropdown + Detect Location */}
                         <div className="flex gap-4 mb-6 items-center">
                             <div className="flex items-center border rounded-lg px-4 py-2 gap-2 w-1/2 text-sm text-gray-600 cursor-pointer">
@@ -77,7 +77,7 @@ const LocationDropdown = () => {
                     </div>
 
                     {/* Right */}
-                    <div className="w-[55%]">
+                    <div className="w-[50%]">
                         <h3 className="text-xs font-semibold text-gray-600 mb-3 border-l-4 border-yellow-400 pl-2">
                             CONTINUE OTHER CITIES
                         </h3>

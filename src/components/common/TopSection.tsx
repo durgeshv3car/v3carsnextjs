@@ -27,7 +27,7 @@ export default function TopSection() {
         <section>
             {/* Breadcrumb */}
             <div className='bg-black text-white'>
-                <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto text-sm h-[42px] flex items-center gap-2">
+                <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto text-sm h-[42px] flex items-center gap-2">
                     <Link href="/" className="hover:underline">Home</Link>
                     <span className="text-yellow-500">›</span>
                     <span className="font-medium text-yellow-500">
@@ -45,7 +45,7 @@ export default function TopSection() {
             </div>
 
             <div className='w-full bg-white min-h-[186px] py-[30px]'>
-                <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto space-y-5">
+                <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto space-y-5">
                     {/* Title */}
                     <h1 className="text-2xl font-semibold text-gray-900">
                         {
@@ -87,7 +87,7 @@ export default function TopSection() {
             {
                 path === "/upcoming-cars" && (
                     <div className='w-full bg-gradient-to-l bg-[#F1EFF4] to-[#E7E4DF] min-h-[246px] py-[30px]'>
-                        <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto space-y-5">
+                        <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto space-y-5">
                             <h2 className="text-xl font-semibold border-b border-[#CED4DA] pb-2">Upcoming Cars By Month</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                                 {months.map(({ month, year }) => {

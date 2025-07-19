@@ -32,12 +32,12 @@ function UpcomingCars() {
             <TopSection />
             <div className="w-full lg:max-w-[1600px] py-6 px-4 lg:px-0 mx-auto">
 
-                <div className="flex flex-col xl:flex-row justify-between gap-5 w-full">
-                    <div className="w-auto xl:min-w-[1190px]">
+                <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
+                    <div className="w-auto lg:max-w-[74%]">
                         <NewUpcomingCars />
                         <NewCarsLaunched />
                     </div>
-                    <div className="w-auto xl:min-w-[390px] mt-6 xl:mt-12">
+                    <div className="w-auto lg:max-w-[24%] mt-6 lg:mt-12">
                         <UpcomingSideBar />
                     </div>
                 </div>
@@ -47,7 +47,7 @@ function UpcomingCars() {
             {/* Banner Section */}
             <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 flex justify-center items-center mb-6'>
 
-                <div className="hidden sm:block w-full lg:w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
+                <div className="hidden sm:block w-full lg:w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img
                         src={'/ads/ad1.png'}
                         alt='ad1'

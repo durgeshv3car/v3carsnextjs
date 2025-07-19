@@ -5,6 +5,7 @@ import Footer from "@/components/web/common/Footer";
 import MobileFooter from "@/components/mobile/common/Footer";
 import Header from "@/components/common/Header";
 import Provider from "./provider";
+import ScrollFlipIcon from "@/components/common/ScrollFlipIcon";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,9 +58,7 @@ export default function RootLayout({
           <Provider>
             {children}
           </Provider>
-
-
-
+          <ScrollFlipIcon />
         </div>
 
       </body>

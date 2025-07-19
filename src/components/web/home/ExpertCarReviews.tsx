@@ -100,7 +100,7 @@ const ExpertCarReviews: React.FC = () => {
     return (
         <>
             <section className="pb-6">
-                <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto space-y-6">
+                <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto space-y-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-semibold lg:font-medium">Expert Car Reviews</h2>
@@ -198,7 +198,7 @@ const ExpertCarReviews: React.FC = () => {
              {/* Banner Section */}
             <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 flex justify-center items-center'>
 
-                <div className="hidden sm:block w-full lg:w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
+                <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img
                         src={'/ads/ad1.png'}
                         alt='ad1'
