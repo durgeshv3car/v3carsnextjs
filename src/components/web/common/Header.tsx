@@ -32,6 +32,7 @@ const Header = () => {
 
                     {/* Nav Links */}
                     <nav className="flex items-center gap-6 text-sm font-medium text-gray-800">
+
                         {/* Location */}
                         <div
                             className="relative py-4"
@@ -128,6 +129,7 @@ const Header = () => {
                                 </div>
                             )}
                         </div>
+
                     </nav>
 
                     {/* Right Section */}
@@ -153,6 +155,7 @@ const Header = () => {
                             Login / Signup
                         </button>
                     </div>
+                    
                 </div>
             </header>
             {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
