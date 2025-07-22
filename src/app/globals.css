@@ -46,7 +46,7 @@ body {
 
 /* For Chrome, Edge, and Safari */
 ::-webkit-scrollbar {
-  width: 20px;
+  width: 14px;
 }
 
 ::-webkit-scrollbar-track {

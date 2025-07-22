@@ -84,7 +84,7 @@ const UpcomingCars: React.FC = () => {
     return (
         <>
             {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 flex justify-center items-center'>
+            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-10 flex justify-center items-center'>
 
                 <div className="hidden sm:block w-full lg:max-w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
                     <img
@@ -100,8 +100,8 @@ const UpcomingCars: React.FC = () => {
             </div>
 
             {/* Upcoming Car Section */}
-            <div className="bg-gradient-to-l from-[#495057] to-[#343A40] text-white py-6">
-                <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto space-y-6">
+            <div className="bg-gradient-to-l from-[#495057] to-[#343A40] text-white py-6 px-6 lg:px-10">
+                <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
                     <div className="flex items-center justify-between border-b pb-4 border-[#495057]">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-medium">158+ Upcoming Cars In India</h2>

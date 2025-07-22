@@ -42,7 +42,7 @@ const MobileHeader = () => {
 
   return (
     <>
-      <header className="w-full bg-white  z-50 relative md:hidden ">
+      <header className="w-full bg-white  z-50 relative ">
 
         {/* Top bar */}
         <div className="flex items-center justify-between px-4 py-3">

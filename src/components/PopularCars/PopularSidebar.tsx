@@ -32,7 +32,7 @@ function PopularSideBar() {
 
                 <div className="rounded-xl border border-gray-300 overflow-hidden h-[720px]">
                     <div className="bg-[#DEE2E6] px-4 py-3 font-bold text-lg text-black">Popular Cars By Top Brands</div>
-                    <ul className="divide-y divide-gray-200 bg-white h-[663px] text-black overflow-y-auto">
+                    <ul className="divide-y divide-gray-200 bg-white h-[663px] text-black overflow-y-auto scrollbar-thin-yellow">
                         {[
                             "Popular Maruti Arena Cars In India",
                             "Popular Tata Cars In India",

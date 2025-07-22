@@ -68,7 +68,7 @@ const CarWebStories: React.FC = () => {
     return (
         <>
             {/* Banner Section */}
-            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 sm:flex justify-center items-center'>
+            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] p-10 sm:flex justify-center items-center'>
 
                 <div className="w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img
@@ -80,8 +80,8 @@ const CarWebStories: React.FC = () => {
             </div>
 
 
-            <div className="py-6">
-                <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto space-y-4">
+            <div className="py-6 px-6 lg:px-10">
+                <div className="w-full lg:max-w-[1600px] mx-auto space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-medium">Car Web Stories</h2>

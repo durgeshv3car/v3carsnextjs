@@ -73,7 +73,7 @@ const HeroSection: React.FC = () => {
         </Swiper>
 
         {/* Search Box Overlay */}
-        <div className="absolute top-[125px] left-0 right-0 z-20">
+        <div className="absolute top-[125px] left-0 right-0 z-20 px-6 lg:px-10">
           <div className="max-w-[1600px] mx-auto">
             <div className="w-[403px] h-[430px] bg-white rounded-xl shadow-md border border-gray-300 overflow-hidden font-sans flex flex-col">
               {/* Header */}

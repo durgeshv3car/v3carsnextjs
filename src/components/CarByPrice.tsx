@@ -87,7 +87,8 @@ const CarByPrice: React.FC = () => {
     return (
         <>
             {/* Banner Section */}
-            <div className='lg:hidden h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 flex justify-center items-center mt-4'>
+            <section className='px-6 lg:px-10'>
+            <div className='lg:hidden h-[331px] md:h-[407px] bg-[#B3B3B3] flex justify-center items-center mt-4'>
 
                 <div className="hidden sm:block w-full lg:max-w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
                     <img
@@ -103,7 +104,7 @@ const CarByPrice: React.FC = () => {
             </div>
 
             {/* Upcoming Car Section */}
-            <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto space-y-3 py-6">
+            <div className="w-full lg:max-w-[1600px] mx-auto space-y-3 py-6">
                 <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                     <h2 className="text-lg font-semibold lg:font-medium">Search Car By Price</h2>
                     <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
@@ -219,6 +220,7 @@ const CarByPrice: React.FC = () => {
                     </div>
                 </div>
             </div>
+            </section>
         </>
     )
 }

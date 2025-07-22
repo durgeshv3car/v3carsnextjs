@@ -32,24 +32,26 @@ function ElectricCars() {
     return (
         <>
             <TopSection />
-            <div className="w-full lg:max-w-[1600px] py-6 px-4 lg:px-0 mx-auto space-y-7">
+            <div className="px-4 lg:px-10">
+                <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
 
-                {/* Latest Cars */}
-                <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
-                    <div className="w-auto lg:max-w-[74%]">
-                        <ElectricCar />
-                        <ElectricVehicleNews />
-                        <ElectricExpertReviews />
-                        <ElectricVehicleVideos />
-                    </div>
-                    <div className="w-auto lg:max-w-[24%]">
-                        <ElectricSideBar />
+                    {/* Latest Cars */}
+                    <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
+                        <div className="w-auto lg:max-w-[74%]">
+                            <ElectricCar />
+                            <ElectricVehicleNews />
+                            <ElectricExpertReviews />
+                            <ElectricVehicleVideos />
+                        </div>
+                        <div className="w-auto lg:max-w-[24%]">
+                            <ElectricSideBar />
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 flex justify-center items-center mb-6'>
+            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-10 flex justify-center items-center mb-6'>
 
                 <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img

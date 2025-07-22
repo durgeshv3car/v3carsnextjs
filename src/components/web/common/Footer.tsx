@@ -17,6 +17,7 @@ const Footer: React.FC = () => {
   return (
   
     <footer className="bg-[#E2E2E2] border-t border-gray-300">
+      <section className="px-6 lg:px-10">
       <div className="w-full lg:max-w-[1600px] mx-auto pt-8 pb-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Connect */}
         <div className="space-y-6">
@@ -138,9 +139,10 @@ const Footer: React.FC = () => {
         </div>
 
       </div>
+      </section>
 
-      <div className="bg-yellow-400 text-sm py-6 text-center">
-        <div className="w-[90%] xl:max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center">
+      <div className="bg-yellow-400 text-sm py-6 text-center px-6 lg:px-10">
+        <div className="w-full lg:max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center">
           <span>Copyright 2024 V3Cars</span>
           <div className="text-gray-700">
             {[
