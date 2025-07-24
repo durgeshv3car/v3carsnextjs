@@ -47,7 +47,7 @@ function UpcomingCars() {
             </div>
 
             {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-10 flex justify-center items-center mb-6'>
+            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-10 flex justify-center items-center mb-6'>
 
                 <div className="hidden sm:block w-full lg:w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img

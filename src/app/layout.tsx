@@ -49,10 +49,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={montserrat.className}>
       <body
-        className={`antialiased`}
+        className="antialiased transition-colors"
       >
 
-        <div className="h-screen flex flex-col justify-between">
+        <div className="min-h-screen flex flex-col justify-between">
 
           <Header />
           <Provider>

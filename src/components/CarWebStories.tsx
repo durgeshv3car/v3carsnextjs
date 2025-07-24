@@ -68,7 +68,7 @@ const CarWebStories: React.FC = () => {
     return (
         <>
             {/* Banner Section */}
-            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] p-10 sm:flex justify-center items-center'>
+            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-10 sm:flex justify-center items-center'>
 
                 <div className="w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img
@@ -105,7 +105,7 @@ const CarWebStories: React.FC = () => {
                                 />
 
                                 {/* Top-right mute icon (placeholder) */}
-                                <div className="absolute top-2 right-2 bg-[#495057] p-1.5 rounded-full w-10 h-10">
+                                <div className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-10 h-10">
                                     <img
                                         src={'/web-stories/mobile.png'}
                                         alt="Story"

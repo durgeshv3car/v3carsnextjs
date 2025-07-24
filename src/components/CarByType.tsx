@@ -99,15 +99,15 @@ const CarByType: React.FC = () => {
                     </Link>
                 </div>
 
-                <div className="bg-white border border-[#DEE2E6] rounded-lg">
-                    <div className="flex justify-between items-center px-4 pt-4 border-b border-[#DEE2E6]">
+                <div className="border dark:border-[#2E2E2E] border-[#DEE2E6] rounded-lg">
+                    <div className="flex justify-between items-center px-4 pt-4 border-b border-[#DEE2E6] dark:border-[#2E2E2E]">
                         {/* Tabs */}
                         <div className="flex space-x-2 overflow-x-auto scroll-smooth scrollbar-hide">
                             {['SUV', 'Hatchback', 'Sedan', 'MUV'].map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab as 'SUV' | 'Hatchback' | 'Sedan' | 'MUV')}
-                                    className={`pb-3 px-6 font-semibold cursor-pointer capitalize transition-colors ${activeTab === tab ? 'text-black border-b-2 border-yellow-400' : 'text-gray-500'
+                                    className={`pb-3 px-6 font-semibold cursor-pointer capitalize transition-colors ${activeTab === tab ? 'border-b-2 border-yellow-400' : 'text-gray-400'
                                         }`}
                                 >
                                     {tab}
@@ -159,7 +159,7 @@ const CarByType: React.FC = () => {
                         {upcomingCars.map((car, idx) => (
                             <div
                                 key={idx}
-                                className={`rounded-xl border border-[#DEE2E6] overflow-hidden w-[265px] xl:w-[384px] h-[400px] xl:h-[454px] flex-shrink-0 flex flex-col`}
+                                className={`rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden w-[265px] xl:w-[384px] h-[400px] xl:h-[454px] flex-shrink-0 flex flex-col`}
                             >
                                 {/* Image Section */}
                                 <div className="relative h-[166px] xl:h-[241px]">
@@ -171,7 +171,7 @@ const CarByType: React.FC = () => {
                                     <div className="absolute bottom-0 p-3 w-full bg-gradient-to-t from-black/90 to-transparent">
                                         <p className="text-white font-semibold">Maruti Suzuki</p>
                                     </div>
-                                    <button className="absolute top-2 right-2 bg-[#FFFFFF] text-black rounded-full p-2 shadow">
+                                    <button className="absolute top-2 right-2 bg-[#FFFFFF] dark:bg-[#171717] rounded-full p-2 shadow">
                                         <IoMdStarOutline />
                                     </button>
                                 </div>
@@ -179,7 +179,7 @@ const CarByType: React.FC = () => {
                                 {/* Remaining Space for Content */}
                                 <div className={`px-2 py-4 flex-grow text-center flex flex-col justify-between`}>
                                     <p className="font-semibold text-xl">{car.name}</p>
-                                    <div className='flex gap-2 items-center justify-around border-t border-b border-[#E9E9E9] p-2'>
+                                    <div className='flex gap-2 items-center justify-around border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2'>
                                         <p className='flex items-center gap-1 text-sm'>
                                             <PiEngine size={18} />
                                             {car.engine}
@@ -194,7 +194,7 @@ const CarByType: React.FC = () => {
                                         </p>
                                     </div>
                                     <p className="font-semibold">{car.price}</p>
-                                    <button className='p-3 font-semibold text-sm w-full flex justify-between items-center cursor-pointer rounded-lg bg-yellow-400'>
+                                    <button className='p-3 font-semibold text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-yellow-400'>
                                         View Current Offers
                                         <FaArrowRight />
                                     </button>

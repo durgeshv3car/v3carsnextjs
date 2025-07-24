@@ -161,7 +161,7 @@ const ExpertCarReviews: React.FC = () => {
                         {newsList.map((item) => (
                             <div
                                 key={item.id}
-                                className="bg-white rounded-lg min-w-[311px] lg:min-w-[520px] min-h-[456px] lg:min-h-[495px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
+                                className="bg-white dark:bg-[#171717] border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-lg min-w-[311px] lg:min-w-[520px] min-h-[456px] lg:min-h-[495px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
                             >
                                 {/* Fixed height image */}
                                 <div className="relative h-[180px] lg:h-[310px] w-full">
@@ -177,7 +177,7 @@ const ExpertCarReviews: React.FC = () => {
 
                                 {/* Fills the remaining space */}
                                 <div className="flex flex-col flex-grow space-y-4">
-                                    <p className="text-gray-700 line-clamp-3 text-sm/8">{item.description}</p>
+                                    <p className="line-clamp-3 text-sm/8">{item.description}</p>
                                     <div className="flex justify-between items-center text-xs text-gray-500">
                                         <div className="flex items-center gap-1">
                                             <FaUserEdit size={16} />
@@ -196,7 +196,7 @@ const ExpertCarReviews: React.FC = () => {
             </section>
 
              {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 flex justify-center items-center'>
+            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center'>
 
                 <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img

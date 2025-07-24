@@ -11,13 +11,13 @@ const NewCarsDropdown = () => {
   ];
 
   return (
-    <div className="w-64 bg-white shadow-xl border-b-[5px] rounded-b-[10px] border-gray-500 overflow-hidden">
+    <div className="w-64 bg-white dark:bg-[#171717] shadow-xl border-b-[5px] rounded-b-[10px] border-gray-500 dark:border-[#2E2E2E] overflow-hidden">
       <ul className="flex flex-col text-[14px]">
         {items.map((item, idx) => (
           <Link
             href={item.href}
             key={idx}
-            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-200 last:border-b-0"
+            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#27272a] cursor-pointer border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0"
           >
             <Image
               src="/common/v3icon.svg"
@@ -25,7 +25,7 @@ const NewCarsDropdown = () => {
               width={18}
               height={18}
             />
-            <span className="text-gray-800">{item.label}</span>
+            <span>{item.label}</span>
           </Link>
         ))}
       </ul>

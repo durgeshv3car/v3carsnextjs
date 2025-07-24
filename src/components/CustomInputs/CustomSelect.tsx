@@ -39,8 +39,8 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, placeholder, onSel
   }, []);
 
   return (
-    <div className={styles['custom-select']} ref={dropdownRef}>
-      <div className={styles['select-box']} onClick={() => setIsOpen((prev) => !prev)}>
+    <div className={"w-full relative"} ref={dropdownRef}>
+      <div className={"p-2 border-b dark:border-[#2E2E2E] flex justify-between items-center cursor-pointer"} onClick={() => setIsOpen((prev) => !prev)}>
         {selectedItem || placeholder}
         <span className={styles['arrow']}>
           {isOpen ?
@@ -56,18 +56,18 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, placeholder, onSel
       </div>
 
       {isOpen && (
-        <div className={styles['dropdown']}>
+        <div className={`absolute top-full border border-gray-300 rounded-b-lg dark:border-[#2E2E2E] border-t-0 w-full z-30 max-h-[200px] overflow-y-auto ${styles["dropdown"]}`}>
           <input
             type="text"
-            className={styles['search-box']}
+            className={"bg-gray-50 dark:bg-[#171717] w-full p-3 border-b border-gray-300 dark:border-[#2E2E2E] outline-none"}
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <ul className={styles['options-list']}>
+          <ul className={"bg-gray-50 dark:bg-[#171717] p-0 m-0"}>
             {filteredOptions.length > 0 ? (
               filteredOptions.map((item, index) => (
-                <li key={index} className={styles['option-item']} onClick={() => handleSelect(item)}>
+                <li key={index} className={"p-3 cursor-pointer hover:bg-[#f0f0f0] dark:hover:bg-[#27272a]"} onClick={() => handleSelect(item)}>
                   {item}
                 </li>
               ))

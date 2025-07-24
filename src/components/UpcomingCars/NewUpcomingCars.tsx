@@ -75,11 +75,11 @@ export default function NewUpcomingCars() {
     return (
         <>
             <h2 className="text-xl font-semibold mb-5">New Upcoming Cars</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-2 bg-[#FFFFFF] border border-[#DEE2E6] rounded-xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-2 bg-[#FFFFFF] dark:bg-[#27262B] border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
                 {upcomingCars.map((car, idx) => (
                     <div
                         key={idx}
-                        className={`rounded-xl shadow-lg overflow-hidden min-h-[275px] lg:h-[487px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 90 ? "border-[#3D923A]" : car.confidence >= 70 ? "border-[#F08200]" : "border-[#D40808]"}`}
+                        className={`dark:bg-[#171717] rounded-xl shadow-lg overflow-hidden min-h-[275px] lg:h-[487px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 90 ? "border-[#3D923A]" : car.confidence >= 70 ? "border-[#F08200]" : "border-[#D40808]"}`}
                     >
                         {/* Image Section */}
                         <div className='rounded-xl shadow-sm'>
@@ -89,37 +89,37 @@ export default function NewUpcomingCars() {
                                     alt={car.name}
                                     className="h-full w-full object-cover shadow-md"
                                 />
-                                <div className="absolute top-2 left-2 flex items-center bg-[#E7E7E7] px-2 py-1 rounded-full space-x-2">
+                                <div className="absolute top-2 left-2 flex items-center bg-[#E7E7E7] dark:bg-[#171717] px-2 py-1 rounded-full space-x-2">
                                     <span
                                         className={`w-3 h-3 rounded-full ${confidenceColor(
                                             car.confidence
                                         )}`}
                                     />
-                                    <p className="text-xs text-black">Confidence {car.confidence}%</p>
+                                    <p className="text-xs">Confidence {car.confidence}%</p>
                                 </div>
-                                <button className="absolute top-2 right-2 bg-[#E7E7E7] text-black rounded-full p-1 shadow">
+                                <button className="absolute top-2 right-2 bg-[#E7E7E7] dark:bg-[#171717] rounded-full p-1 shadow">
                                     <IoMdStarOutline />
                                 </button>
                             </div>
 
                             {/* Remaining Space for Content */}
-                            <div className={`grid grid-cols-2 justify-between text-sm lg:text-base items-center my-4 bg-white`}>
-                                <div className='border-r border-[#0000004D] text-center mx-4'>
-                                    <p className="text-gray-700 font-medium truncate">{car.brand}</p>
-                                    <p className="text-gray-900 font-semibold truncate">{car.name}</p>
+                            <div className={`grid grid-cols-2 justify-between text-sm lg:text-base items-center my-4`}>
+                                <div className='border-r border-[#0000004D] dark:border-[#2E2E2E] text-center mx-4'>
+                                    <p className="text-gray-500 font-medium truncate">{car.brand}</p>
+                                    <p className="font-semibold truncate">{car.name}</p>
                                 </div>
 
                                 <div className="text-center mx-4">
-                                    <p className="text-gray-600">Expected Launch</p>
-                                    <p className="text-black font-semibold">{car.expectedLaunch}</p>
+                                    <p className="text-gray-500">Expected Launch</p>
+                                    <p className="font-semibold">{car.expectedLaunch}</p>
                                 </div>
                             </div>
                         </div>
 
                         <div className={`flex flex-col justify-around gap-2 p-4 items-center text-sm lg:text-base flex-grow`}>
                             <p className="font-medium text-xl">{car.price}</p>
-                            <p className="text-gray-600 text-sm">*Expected Launch Price</p>
-                            <button className='p-3 font-semibold text-sm w-full flex justify-center gap-2 items-center cursor-pointer rounded-lg bg-yellow-400'>
+                            <p className="text-gray-500 text-sm">*Expected Launch Price</p>
+                            <button className='p-3 font-semibold text-sm w-full flex justify-center gap-2 text-black items-center cursor-pointer rounded-lg bg-yellow-400'>
                                 Alert Me When Launched
                                 <FaArrowRight />
                             </button>

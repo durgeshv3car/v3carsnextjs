@@ -20,7 +20,7 @@ const otherCities = [
 const LocationDropdown = () => {
 
     return (
-        <div className="max-w-[1600px] bg-white my-1 mx-auto shadow-md z-50 rounded-xl">
+        <div className="max-w-[1600px] bg-white dark:bg-[#171717] my-1 mx-auto shadow-md z-50 rounded-xl">
             
                 {/* Top Banner */}
                 <div className="bg-[#ffe380] h-[80px] w-full flex items-center justify-between relative rounded-t-xl">
@@ -40,7 +40,7 @@ const LocationDropdown = () => {
                     <div className="w-[50%]">
                         {/* City Dropdown + Detect Location */}
                         <div className="flex gap-4 mb-6 items-center">
-                            <div className="flex items-center border rounded-lg px-4 py-2 gap-2 w-1/2 text-sm text-gray-600 cursor-pointer">
+                            <div className="flex items-center border dark:border-[#2E2E2E] rounded-lg px-4 py-2 gap-2 w-1/2 text-sm cursor-pointer">
                                 <FiMapPin size={16} />
                                 <span>Gurugram</span>
                             </div>
@@ -52,7 +52,7 @@ const LocationDropdown = () => {
 
                         {/* Popular Cities */}
                         <div>
-                            <h3 className="text-xs font-semibold text-gray-600 mb-3 border-l-4 border-yellow-400 pl-2">
+                            <h3 className="text-xs font-semibold mb-3 border-l-4 border-yellow-400 pl-2">
                                 POPULAR CITIES
                             </h3>
                             <div className="grid grid-cols-4 gap-4 max-h-[300px] overflow-y-auto pr-2 scrollbar-thin-yellow">
@@ -60,7 +60,7 @@ const LocationDropdown = () => {
                                 {popularCities.map((city, idx) => (
                                     <div
                                         key={idx}
-                                        className="border rounded-md flex flex-col items-center justify-center p-2 text-center bg-[#fffceb] hover:shadow transition cursor-pointer"
+                                        className="border dark:border-[#2E2E2E] rounded-md flex flex-col items-center justify-center p-2 text-center bg-[#fffceb] dark:bg-transparent hover:shadow transition cursor-pointer"
                                     >
                                         <Image
                                             src="/location/city-icon.png"
@@ -78,7 +78,7 @@ const LocationDropdown = () => {
 
                     {/* Right */}
                     <div className="w-[50%]">
-                        <h3 className="text-xs font-semibold text-gray-600 mb-3 border-l-4 border-yellow-400 pl-2">
+                        <h3 className="text-xs font-semibold mb-3 border-l-4 border-yellow-400 pl-2">
                             CONTINUE OTHER CITIES
                         </h3>
                         <div className="grid grid-cols-4 gap-3 max-h-[350px] overflow-y-auto pr-2 scrollbar-thin-yellow">
@@ -86,7 +86,7 @@ const LocationDropdown = () => {
                             {otherCities.map((city, idx) => (
                                 <button
                                     key={idx}
-                                    className="bg-gray-100 hover:bg-yellow-100 px-2 py-2 text-sm rounded border  text-gray-700 flex items-center justify-center gap-2 transition duration-200 cursor-pointer"
+                                    className="bg-gray-100 dark:bg-[#171717] hover:bg-yellow-100 px-2 py-2 text-sm rounded border border-[#2E2E2E] flex items-center justify-center gap-2 transition duration-200 cursor-pointer"
                                 >
                                     {city}
                                 </button>

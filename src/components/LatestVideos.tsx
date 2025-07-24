@@ -25,7 +25,7 @@ const videoData = new Array(8).fill({
 const LatestVideos: React.FC = () => {
     return (
         <>
-            <div className="bg-[#E2E2E2] py-6 px-6 lg:px-10">
+            <div className="bg-[#E2E2E2] dark:bg-[#262629] py-6 px-6 lg:px-10">
                 <div className="w-full lg:max-w-[1600px] mx-auto space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
@@ -43,7 +43,7 @@ const LatestVideos: React.FC = () => {
                         {videoData.map((video, index) => (
                             <div
                                 key={index}
-                                className="max-w-[332px] min-h-[450px] xl:max-w-[381px] xl:max-h-[475px] rounded shadow-md overflow-hidden bg-white p-1 flex-shrink-0 flex flex-col"
+                                className="max-w-[332px] min-h-[450px] xl:max-w-[381px] xl:max-h-[475px] rounded shadow-md overflow-hidden bg-white dark:bg-[#171717] border border-[#DEE2E6] dark:border-[#2E2E2E] p-1 flex-shrink-0 flex flex-col"
                             >
                                 {/* Thumbnail with Play Icon */}
                                 <div className="relative h-[180px] xl:h-[207px]">
@@ -66,9 +66,9 @@ const LatestVideos: React.FC = () => {
 
                                 {/* Content */}
                                 <div className="p-2 flex flex-col justify-between flex-grow">
-                                    <p className="text-sm text-gray-500">{video.date}</p>
-                                    <h3 className="text-lg font-semibold text-gray-800 line-clamp-3">{video.title}</h3>
-                                    <p className="text-gray-600 line-clamp-4 text-sm/7 text-justify">{video.description}</p>
+                                    <p className="text-sm text-gray-400">{video.date}</p>
+                                    <h3 className="text-lg font-semibold line-clamp-3">{video.title}</h3>
+                                    <p className="line-clamp-4 text-sm/7 text-justify">{video.description}</p>
                                 </div>
                             </div>
                         ))}

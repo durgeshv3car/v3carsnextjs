@@ -26,7 +26,7 @@ export default function TopSection() {
     return (
         <section>
             {/* Breadcrumb */}
-            <div className='bg-black text-white'>
+            <div className='bg-[#18181b] text-white'>
                 <div className='px-6 lg:px-10'>
                     <div className="w-full lg:max-w-[1600px] mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
@@ -46,11 +46,11 @@ export default function TopSection() {
                 </div>
             </div>
 
-            <div className='w-full bg-white min-h-[186px] py-[30px] '>
+            <div className='w-full min-h-[186px] py-[30px] '>
                 <div className='px-6 lg:px-10'>
                     <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
                         {/* Title */}
-                        <h1 className="text-2xl font-semibold text-gray-900">
+                        <h1 className="text-2xl font-semibold">
                             {
                                 path === "/latest-launched-cars"
                                     ? "Explore Latest Car Launches In India"
@@ -63,7 +63,7 @@ export default function TopSection() {
                         </h1>
 
                         {/* Description */}
-                        <p className="text-sm text-gray-700 text-wrap line-clamp-2">
+                        <p className="text-sm text-wrap line-clamp-2">
                             {
                                 path === "/latest-launched-cars"
                                     ? "Discover the hottest new cars in India! Explore our comprehensive list of the latest car launches, featuring detailed information on prices and specs to help you find your perfect match. We've compiled a list of 46 exciting new models across various car segments, including cars like Mahindra Thar Roxx, Citroen Basalt Coupe, Mercedes-Benz AMG GLC, Mercedes-Benz CLE Cabriolet, and Tata Curvv EV"
@@ -90,10 +90,10 @@ export default function TopSection() {
 
             {
                 path === "/upcoming-cars" && (
-                    <div className='w-full bg-gradient-to-l bg-[#F1EFF4] to-[#E7E4DF] min-h-[246px] py-[30px]'>
+                    <div className='w-full bg-gradient-to-l bg-[#F1EFF4] to-[#E7E4DF] dark:from-[#27272a] dark:to-[#18181b] min-h-[246px] py-[30px]'>
                         <div className='px-6 lg:px-10'>
                         <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
-                            <h2 className="text-xl font-semibold border-b border-[#CED4DA] pb-2">Upcoming Cars By Month</h2>
+                            <h2 className="text-xl font-semibold border-b border-[#CED4DA] dark:border-[#2E2E2E] pb-2">Upcoming Cars By Month</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                                 {months.map(({ month, year }) => {
                                     const key = `${month} ${year}`
@@ -104,7 +104,7 @@ export default function TopSection() {
                                             key={key}
                                             onClick={() => setSelected(key)}
                                             className={`w-full sm:max-w-[250px] h-[57px] grid grid-cols-2 justify-between items-center rounded-md shadow-sm text-left text-sm transition-all duration-200
-                                    ${isSelected ? 'bg-black text-white border border-orange-400' : 'bg-white hover:border hover:border-orange-300'}
+                                    ${isSelected ? 'bg-black text-white border border-orange-400' : 'bg-white dark:bg-transparent border dark:border-[#2E2E2E] hover:border-orange-300'}
                                     `}
                                         >
                                             <div className='border-r border-[#CED4DA] text-center'>

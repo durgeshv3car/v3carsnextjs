@@ -104,7 +104,7 @@ const PopularCar = () => {
       {popularCarsData.slice(0, 2).map((car) => (
         <div
           key={car.rank}
-          className="border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm p-4 space-y-2"
+          className="border border-gray-300 dark:border-[#2E2E2E] rounded-lg overflow-hidden bg-white dark:bg-transparent shadow-sm p-4 space-y-2"
         >
           {/* Title */}
           <h2 className="text-lg font-medium">
@@ -116,7 +116,7 @@ const PopularCar = () => {
             {/* Rank + Image */}
             <div className="flex items-center gap-2">
               {/* Rank */}
-              <div className="bg-black text-yellow-400 w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
+              <div className="bg-black dark:bg-[#171717] text-yellow-400 w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
                 <span className="text-4xl sm:text-6xl lg:text-8xl font-bold">
                   {car.rank.toString().padStart(2, '0')}
                 </span>
@@ -141,30 +141,30 @@ const PopularCar = () => {
                 {/* Column 1 */}
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">Body Style: <span className="text-black font-bold float-end">{car.bodyStyle}</span></p>
+                    <p className="text-gray-500 font-medium w-full">Body Style: <span className="text-black dark:text-white font-bold float-end">{car.bodyStyle}</span></p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">Segment: <span className="text-black font-bold float-end">{car.segment}</span></p>
+                    <p className="text-gray-500 font-medium w-full">Segment: <span className="text-black dark:text-white font-bold float-end">{car.segment}</span></p>
                   </div>
 
                   <div className="gap-2 py-2">
-                    <p className="text-gray-600 font-medium w-full">ESP(Price): <span className="text-black font-bold float-end">{car.priceRange}</span></p>
+                    <p className="text-gray-500 font-medium w-full">ESP(Price): <span className="text-black dark:text-white font-bold float-end">{car.priceRange}</span></p>
                   </div>
                 </div>
 
                 {/* Column 2 */}
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">May Sales: <span className="text-black font-bold float-end">{car.maySales.toLocaleString()}</span></p>
+                    <p className="text-gray-500 font-medium w-full">May Sales: <span className="text-black dark:text-white font-bold float-end">{car.maySales.toLocaleString()}</span></p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">April Sales: <span className="text-black font-bold float-end">{car.aprilSales.toLocaleString()}</span></p>
+                    <p className="text-gray-500 font-medium w-full">April Sales: <span className="text-black dark:text-white font-bold float-end">{car.aprilSales.toLocaleString()}</span></p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">% Change:
+                    <p className="text-gray-500 font-medium w-full">% Change:
                       <span className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         {car.percentChange >= 0 ? '▲' : '▼'} {Math.abs(car.percentChange).toFixed(2)}%
                       </span>
@@ -186,7 +186,7 @@ const PopularCar = () => {
 
       {/* ads block */}
 
-      <div className='h-[331px] md:h-[240px] bg-[#B3B3B3] p-8 flex justify-center items-center'>
+      <div className='h-[331px] md:h-[240px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center'>
 
         <div className="hidden sm:block w-full lg:w-[970px] lg:h-[180px] sm:h-[200px] mx-auto">
           <img
@@ -204,7 +204,7 @@ const PopularCar = () => {
       {popularCarsData.slice(2).map((car) => (
         <div
           key={car.rank}
-          className="border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm p-4 space-y-2"
+          className="border border-gray-300 dark:border-[#2E2E2E] rounded-lg overflow-hidden bg-white dark:bg-transparent shadow-sm p-4 space-y-2"
         >
           {/* Title */}
           <h2 className="text-lg font-medium">
@@ -216,7 +216,7 @@ const PopularCar = () => {
             {/* Rank + Image */}
             <div className="flex items-center gap-2">
               {/* Rank */}
-              <div className="bg-black text-yellow-400 w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
+              <div className="bg-black dark:bg-[#171717] text-yellow-400 w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
                 <span className="text-4xl sm:text-6xl lg:text-8xl font-bold">
                   {car.rank.toString().padStart(2, '0')}
                 </span>
@@ -241,30 +241,30 @@ const PopularCar = () => {
                 {/* Column 1 */}
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">Body Style: <span className="text-black font-bold float-end">{car.bodyStyle}</span></p>
+                    <p className="text-gray-500 font-medium w-full">Body Style: <span className="text-black dark:text-white font-bold float-end">{car.bodyStyle}</span></p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">Segment: <span className="text-black font-bold float-end">{car.segment}</span></p>
+                    <p className="text-gray-500 font-medium w-full">Segment: <span className="text-black dark:text-white font-bold float-end">{car.segment}</span></p>
                   </div>
 
                   <div className="gap-2 py-2">
-                    <p className="text-gray-600 font-medium w-full">ESP(Price): <span className="text-black font-bold float-end">{car.priceRange}</span></p>
+                    <p className="text-gray-500 font-medium w-full">ESP(Price): <span className="text-black dark:text-white font-bold float-end">{car.priceRange}</span></p>
                   </div>
                 </div>
 
                 {/* Column 2 */}
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">May Sales: <span className="text-black font-bold float-end">{car.maySales.toLocaleString()}</span></p>
+                    <p className="text-gray-500 font-medium w-full">May Sales: <span className="text-black dark:text-white font-bold float-end">{car.maySales.toLocaleString()}</span></p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">April Sales: <span className="text-black font-bold float-end">{car.aprilSales.toLocaleString()}</span></p>
+                    <p className="text-gray-500 font-medium w-full">April Sales: <span className="text-black dark:text-white font-bold float-end">{car.aprilSales.toLocaleString()}</span></p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-600 font-medium w-full">% Change:
+                    <p className="text-gray-500 font-medium w-full">% Change:
                       <span className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         {car.percentChange >= 0 ? '▲' : '▼'} {Math.abs(car.percentChange).toFixed(2)}%
                       </span>

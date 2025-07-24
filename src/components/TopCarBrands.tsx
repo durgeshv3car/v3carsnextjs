@@ -39,7 +39,7 @@ export default function TopCarBrands() {
     }, []);
 
     return (
-        <section className="bg-[#F8F9FA] py-6 px-6 lg:px-10">
+        <section className="bg-[#F8F9FA] dark:bg-[#262629] py-6 px-6 lg:px-10">
             <div className="w-full lg:max-w-[1600px] mx-auto">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
@@ -100,11 +100,11 @@ export default function TopCarBrands() {
                         <h3 className="font-bold text-lg">
                             At V3Cars, we help car buyers take an informed decision through research-intensive but simplified content.
                         </h3>
-                           <p className="text-sm text-gray-700">
+                           <p className="text-sm">
                             We aim to be first and the most dependable voice when it comes to recommending a car by excluding personal bias and external influence.
                             The V3 in V3Cars represents a heart. It expresses our unending love for cars.
                         </p>
-                        <p className="text-sm text-gray-700">
+                        <p className="text-sm">
                             Buyers can visit our website www.v3cars.com to read in detail about the cars that they have shortlisted. The website furnishes details about a car’s specifications, prices, features, reviews, the best variant to buy, comparisons and more.
                             Our English text content is supplemented by Hindi videos and that makes us relevant to most of the buyers in India.
                         </p>

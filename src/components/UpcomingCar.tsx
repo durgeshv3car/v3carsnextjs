@@ -84,7 +84,7 @@ const UpcomingCars: React.FC = () => {
     return (
         <>
             {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-10 flex justify-center items-center'>
+            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-10 flex justify-center items-center'>
 
                 <div className="hidden sm:block w-full lg:max-w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
                     <img
@@ -100,11 +100,11 @@ const UpcomingCars: React.FC = () => {
             </div>
 
             {/* Upcoming Car Section */}
-            <div className="bg-gradient-to-l from-[#495057] to-[#343A40] text-white py-6 px-6 lg:px-10">
+            <div className="bg-gradient-to-l from-[#495057] to-[#343A40] dark:from-[#27272a] dark:to-[#18181b] py-6 px-6 lg:px-10">
                 <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
-                    <div className="flex items-center justify-between border-b pb-4 border-[#495057]">
+                    <div className="flex items-center justify-between border-b pb-4 border-[#495057] dark:border-[#2E2E2E]">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
-                            <h2 className="text-lg font-medium">158+ Upcoming Cars In India</h2>
+                            <h2 className="text-lg font-medium text-white">158+ Upcoming Cars In India</h2>
                             <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
                                 View All
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
@@ -147,29 +147,29 @@ const UpcomingCars: React.FC = () => {
                                         alt={car.name}
                                         className="h-full w-full object-cover shadow-md"
                                     />
-                                    <div className="absolute top-2 left-2 flex items-center bg-[#E7E7E7] px-2 py-1 rounded-full space-x-2">
+                                    <div className="absolute top-2 left-2 flex items-center bg-[#E7E7E7] dark:bg-[#171717] px-2 py-1 rounded-full space-x-2">
                                         <span
                                             className={`w-3 h-3 rounded-full ${confidenceColor(
                                                 car.confidence
                                             )}`}
                                         />
-                                        <p className="text-xs text-black">Confidence {car.confidence}%</p>
+                                        <p className="text-xs">Confidence {car.confidence}%</p>
                                     </div>
-                                    <button className="absolute top-2 right-2 bg-[#E7E7E7] text-black rounded-full p-1 shadow">
+                                    <button className="absolute top-2 right-2 bg-[#E7E7E7] dark:bg-[#171717] rounded-full p-1 shadow">
                                         <IoMdStarOutline />
                                     </button>
                                 </div>
 
                                 {/* Remaining Space for Content */}
-                                <div className={`grid grid-cols-2 justify-between text-sm xl:text-base items-center flex-grow bg-white`}>
+                                <div className={`grid grid-cols-2 justify-between text-sm xl:text-base items-center flex-grow bg-white dark:bg-[#171717]`}>
                                     <div className='border-r border-[#0000004D] text-center mx-4'>
-                                        <p className="text-gray-700 font-medium truncate">{car.brand}</p>
-                                        <p className="text-gray-900 font-semibold truncate">{car.name}</p>
+                                        <p className="text-gray-500 font-medium truncate">{car.brand}</p>
+                                        <p className="font-semibold truncate">{car.name}</p>
                                     </div>
 
                                     <div className="text-center mx-4">
-                                        <p className="text-gray-600">Expected Launch</p>
-                                        <p className="text-black font-semibold">{car.expectedLaunch}</p>
+                                        <p className="text-gray-500">Expected Launch</p>
+                                        <p className="font-semibold">{car.expectedLaunch}</p>
                                     </div>
                                 </div>
                             </div>
