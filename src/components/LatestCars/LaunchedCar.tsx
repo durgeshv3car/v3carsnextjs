@@ -140,11 +140,11 @@ const upcomingCars: CarProps[] = [
 function LaunchedCar() {
     return (
         <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-white border border-[#DEE2E6] rounded-xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
                 {upcomingCars.map((car, idx) => (
                     <div
                         key={idx}
-                        className="w-full h-auto lg:h-[454px] border border-[#DEE2E6] rounded-xl overflow-hidden flex flex-col"
+                        className="w-full h-auto lg:h-[454px] border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl overflow-hidden flex flex-col"
                     >
                         {/* Image Section */}
                         <div className="relative h-[200px] lg:h-[240px]">
@@ -156,7 +156,7 @@ function LaunchedCar() {
                             <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent">
                                 <p className="text-white font-semibold">Maruti Suzuki</p>
                             </div>
-                            <button className="absolute top-2 right-2 bg-white text-black rounded-full p-2 shadow">
+                            <button className="absolute top-2 right-2 bg-white dark:bg-[#171717] rounded-full p-2 shadow">
                                 <IoMdStarOutline />
                             </button>
                         </div>
@@ -165,7 +165,7 @@ function LaunchedCar() {
                         <div className="p-3 flex-grow flex flex-col justify-between text-center gap-2">
                             <p className="font-semibold text-lg sm:text-xl">{car.name}</p>
 
-                            <div className="flex justify-between items-center text-sm border-t border-b border-[#E9E9E9] py-2">
+                            <div className="flex justify-between items-center text-sm border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] py-2">
                                 <p className="flex items-center gap-1">
                                     <PiEngine size={18} />
                                     {car.engine}
@@ -192,7 +192,7 @@ function LaunchedCar() {
             </div>
 
             {/* Banner Section */}
-            <div className='h-[331px] md:h-[240px] bg-[#B3B3B3] p-8 flex justify-center items-center my-6'>
+            <div className='h-[331px] md:h-[240px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center my-6'>
 
                 <div className="hidden sm:block w-full lg:w-[970px] lg:h-[180px] sm:h-[200px] mx-auto">
                     <img

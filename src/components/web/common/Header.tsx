@@ -29,15 +29,31 @@ const Header = () => {
             <header className="w-full z-50 shadow-xl px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]">
                 <div className="max-w-[1600px] mx-auto py-3 flex items-center justify-between">
                     {/* Logo */}
-                    <div className="flex items-center cursor-pointer gap-2" onClick={() => router.push('/')}>
+                    <div
+                        className="flex items-center cursor-pointer gap-2"
+                        onClick={() => router.push('/')}
+                    >
+                        {/* Light mode logo */}
                         <Image
                             src="/logo/header/v3logo.png"
                             alt="V3 Cars Logo"
                             width={150}
                             height={40}
                             priority
+                            className="block dark:hidden"
+                        />
+
+                        {/* Dark mode logo */}
+                        <Image
+                            src="/logo/header/v3-white2.png"
+                            alt="V3 Cars Logo Dark"
+                            width={150}
+                            height={40}
+                            priority
+                            className="hidden dark:block"
                         />
                     </div>
+
 
                     {/* Nav Links */}
                     <nav className="flex items-center gap-6 text-sm font-medium">

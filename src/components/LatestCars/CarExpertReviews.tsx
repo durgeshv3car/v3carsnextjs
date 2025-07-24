@@ -161,7 +161,7 @@ const CarExpertReviews: React.FC = () => {
                         {newsList.map((item) => (
                             <div
                                 key={item.id}
-                                className="bg-white rounded-lg min-w-[390px] min-h-[371px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
+                                className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-w-[390px] min-h-[371px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
                             >
                                 {/* Fixed height image */}
                                 <div className="relative h-[230px] w-full">
@@ -177,7 +177,7 @@ const CarExpertReviews: React.FC = () => {
 
                                 {/* Fills the remaining space */}
                                 <div className="flex flex-col flex-grow space-y-4">
-                                    <p className="text-gray-700 line-clamp-3 text-sm/8">{item.description}</p>
+                                    <p className="line-clamp-3 text-sm/8">{item.description}</p>
                                     <div className="flex justify-between items-center text-xs text-gray-500">
                                         <div className="flex items-center gap-1">
                                             <FaUserEdit size={16} />

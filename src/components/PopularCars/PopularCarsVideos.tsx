@@ -100,7 +100,7 @@ const PopularCarsVideos: React.FC = () => {
                     {videoData.map((video, index) => (
                         <div
                             key={index}
-                            className="bg-[#E2E2E2] rounded-lg min-w-[390px] min-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
+                            className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-w-[390px] min-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
                         >
                             {/* Thumbnail with Play Icon */}
                             <div className="relative h-[228px]">
@@ -123,7 +123,7 @@ const PopularCarsVideos: React.FC = () => {
 
                             {/* Content */}
                             <div className="p-2">
-                                <h3 className="font-semibold text-gray-800 line-clamp-2">X-Trail Driven | Nissan’s Plan For India | Upcoming Creta-Alcazar Rival, Mini EV, Magnite FL</h3>
+                                <h3 className="font-semibold line-clamp-2">X-Trail Driven | Nissan’s Plan For India | Upcoming Creta-Alcazar Rival, Mini EV, Magnite FL</h3>
                             </div>
                         </div>
                     ))}

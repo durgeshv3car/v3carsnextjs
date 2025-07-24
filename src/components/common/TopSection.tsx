@@ -94,7 +94,7 @@ export default function TopSection() {
                         <div className='px-6 lg:px-10'>
                         <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
                             <h2 className="text-xl font-semibold border-b border-[#CED4DA] dark:border-[#2E2E2E] pb-2">Upcoming Cars By Month</h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                            <div className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                                 {months.map(({ month, year }) => {
                                     const key = `${month} ${year}`
                                     const isSelected = key === selected
@@ -103,19 +103,19 @@ export default function TopSection() {
                                         <button
                                             key={key}
                                             onClick={() => setSelected(key)}
-                                            className={`w-full sm:max-w-[250px] h-[57px] grid grid-cols-2 justify-between items-center rounded-md shadow-sm text-left text-sm transition-all duration-200
+                                            className={`grid grid-cols-2 justify-between items-center rounded-md shadow-sm text-left text-sm transition-all duration-200
                                     ${isSelected ? 'bg-black text-white border border-orange-400' : 'bg-white dark:bg-transparent border dark:border-[#2E2E2E] hover:border-orange-300'}
                                     `}
                                         >
                                             <div className='border-r border-[#CED4DA] text-center'>
-                                                <div className={`font-semibold text-lg`}>
+                                                <div className={`font-semibold text-sm lg:text-lg truncate`}>
                                                     {month}
                                                 </div>
-                                                <div className="text-xs text-orange-500">{year}</div>
+                                                <div className="text-xs text-orange-500 truncate">{year}</div>
                                             </div>
-                                            <div className={`text-center font-semibold text-lg`}>
+                                            <div className={`text-center font-semibold text-sm lg:text-lg truncate`}>
                                                 50 Cars{" "}
-                                                <p className='text-xs font-normal text-orange-500'>Upcoming</p>
+                                                <p className='text-xs font-normal text-orange-500 truncate'>Upcoming</p>
                                             </div>
                                         </button>
                                     )
