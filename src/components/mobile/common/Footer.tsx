@@ -15,20 +15,20 @@ import { SiGooglenews } from "react-icons/si";
 const MobileFooter: React.FC = () => {
   return (
     <footer className="relative">
-      <div className="absolute top-0 w-full h-[70px] bg-gradient-to-b from-[#D9D8D8]/40 to-transparent rounded-t-2xl" />
+      <div className="absolute top-0 w-full h-[70px] bg-gradient-to-b from-[#D9D8D8]/40 to-transparent dark:from-[#D9D8D8]/20 dark:to-transparent rounded-t-2xl" />
       <div className="mx-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Connect */}
         <div className="space-y-4">
           <div>
-            <h3 className="font-semibold text-lg text-gray-800 inline-block pb-1">Connect</h3>
+            <h3 className="font-semibold text-lg inline-block pb-1">Connect</h3>
           </div>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm">
             V3Cars is your ultimate automotive resource. We provide comprehensive
             information on car specifications, prices, features, reviews, and the best
             variant to buy. Compare different models, explore expert opinions, and make
             informed decisions about your next vehicle.
           </p>
-          <div className="flex items-start text-sm gap-3 text-gray-700">
+          <div className="flex items-start text-sm gap-3">
             <div>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -39,7 +39,7 @@ const MobileFooter: React.FC = () => {
               537, 5th Floor, JMD Megapolis, Sector 48, Gurugram, Haryana 122018
             </span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-gray-700">
+          <div className="flex items-center gap-3 text-sm">
             <div>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
@@ -50,9 +50,9 @@ const MobileFooter: React.FC = () => {
         </div>
 
         {/* Research */}
-        <div className="rounded-xl border border-gray-300 overflow-hidden shadow-sm">
-          <div className="bg-[#D9D8D8] px-4 py-3 font-bold text-lg text-black">Research</div>
-          <ul className="divide-y divide-gray-200 bg-white text-black">
+        <div className="rounded-xl border border-gray-300 dark:border-[#262629] overflow-hidden shadow-sm">
+          <div className="bg-[#D9D8D8] dark:bg-[#262629] px-4 py-3 font-bold text-lg">Research</div>
+          <ul className="divide-y divide-gray-200 dark:divide-[#262629] bg-transparent">
             {[
               "Car Reviews",
               "Variants Explained",
@@ -62,7 +62,7 @@ const MobileFooter: React.FC = () => {
               "Car Segments In India",
               "Car On-Road Price",
             ].map((item, index) => (
-              <li key={index} className="px-4 py-3 bg-[#F2F2F2] cursor-pointer">
+              <li key={index} className="px-4 py-3 cursor-pointer">
                 {item}
               </li>
             ))}
@@ -70,9 +70,9 @@ const MobileFooter: React.FC = () => {
         </div>
 
         {/* Tools */}
-        <div className="rounded-xl border border-gray-300 overflow-hidden shadow-sm">
-          <div className="bg-[#D9D8D8] px-4 py-3 font-bold text-lg">Tools</div>
-          <ul className="divide-y divide-gray-200 bg-white">
+        <div className="rounded-xl border border-gray-300 dark:border-[#262629] overflow-hidden shadow-sm">
+          <div className="bg-[#D9D8D8] dark:bg-[#262629] px-4 py-3 font-bold text-lg">Tools</div>
+          <ul className="divide-y divide-gray-200 dark:divide-[#262629] bg-transparent">
             {[
               "Compare Cars",
               "EMI Calculator",
@@ -83,7 +83,7 @@ const MobileFooter: React.FC = () => {
               "Mileage Calculator",
               "Sell Used Car",
             ].map((item, index) => (
-              <li key={index} className="px-4 py-3 bg-[#F2F2F2] cursor-pointer">
+              <li key={index} className="px-4 py-3 cursor-pointer">
                 {item}
               </li>
             ))}
@@ -93,9 +93,9 @@ const MobileFooter: React.FC = () => {
         {/* Newsletter */}
         <div className="space-y-4">
           <div>
-            <h3 className="font-semibold text-lg inline-block text-gray-800 pb-1">Newsletter</h3>
+            <h3 className="font-semibold text-lg inline-block pb-1">Newsletter</h3>
           </div>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm">
             Sign up for our newsletter to receive the latest car news, reviews, expert
             advice, tips, and exclusive offers.
           </p>
@@ -103,9 +103,9 @@ const MobileFooter: React.FC = () => {
             <input
               type="email"
               placeholder="Enter your email address"
-              className="w-full border border-black bg-white focus:border-yellow-400 rounded-lg px-3 text-sm py-5"
+              className="w-full border border-[#262629] bg-transparent focus:border-yellow-400 focus:outline-none rounded-lg px-3 text-sm py-5"
             />
-            <button className="w-full mt-4 bg-black font-light text-white py-4 rounded-xl hover:bg-gray-700">
+            <button className="w-full mt-4 bg-[#171717] hover:bg-[#0a0a0a] font-light text-white py-4 rounded-xl">
               Subscribe
             </button>
           </div>
@@ -155,7 +155,7 @@ const MobileFooter: React.FC = () => {
             <Link
               key={i}
               href="#"
-              className={`px-3 hover:underline ${i !== 7 ? "border-r" : ""}`}
+              className={`px-3 hover:underline ${i !== 7 ? "border-r border-black" : ""}`}
             >
               {item}
             </Link>

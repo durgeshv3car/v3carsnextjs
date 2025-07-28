@@ -42,7 +42,7 @@ const MobileHeader = () => {
 
   return (
     <>
-      <header className="w-full bg-white  z-50 relative ">
+      <header className="w-full  bg-white dark:bg-[#171717] z-50 relative ">
 
         {/* Top bar */}
         <div className="flex items-center justify-between px-4 py-3">
@@ -57,12 +57,21 @@ const MobileHeader = () => {
               width={100}
               height={40}
               onClick={() => router.push('/')}
+              className="block dark:hidden"
+            />
+            <Image
+              src="/logo/header/v3-white2.png"
+              alt="V3 Cars Logo Dark"
+              width={100}
+              height={40}
+              onClick={() => router.push('/')}
+              className="hidden dark:block"
             />
           </div>
 
           {/* Right: Location + Login Icon */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1 text-md text-gray-700">
+            <div className="flex items-center gap-1 text-md">
               <FiMapPin size={16} />
               Visakhapatnam
             </div>
@@ -71,11 +80,11 @@ const MobileHeader = () => {
         </div>
 
         {/* Search bar */}
-        <div className="flex items-center mx-4 mb-3 border rounded-full overflow-hidden mb-5">
+        <div className="flex items-center mx-4 border dark:border-[#2E2E2E] rounded-full overflow-hidden mb-5">
           <input
             type="text"
             placeholder="Search Car"
-            className="px-4 py-1 w-full outline-none text-sm"
+            className="px-4 py-1 w-full outline-none text-sm bg-transparent"
           />
           <button className="bg-gray-700 p-2 px-6 text-white rounded-full">
             <FiSearch size={16} />
@@ -91,7 +100,7 @@ const MobileHeader = () => {
 
         {/* Sidebar Drawer */}
         <div
-          className={`fixed top-0 left-0 h-full w-[85%] bg-white z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          className={`fixed top-0 left-0 h-full w-[85%] bg-white dark:bg-[#171717] z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
             }`}
         >
 
@@ -102,6 +111,14 @@ const MobileHeader = () => {
               alt="Logo"
               width={90}
               height={40}
+              className="block dark:hidden"
+            />
+            <Image
+              src="/logo/header/v3-white2.png"
+              alt="Logo"
+              width={90}
+              height={40}
+              className="hidden dark:block"
             />
             <button
               onClick={() => setShowLogin(true)}
@@ -121,7 +138,7 @@ const MobileHeader = () => {
               return (
                 <div key={item}>
                   <button
-                    className="flex justify-between items-center w-full text-left font-medium text-gray-800 py-2"
+                    className="flex justify-between items-center w-full text-left font-medium py-2"
                     onClick={() => hasSubmenu && toggleTab(item)}
                   >
                     {item}
@@ -140,11 +157,11 @@ const MobileHeader = () => {
                       }`}
                   >
                     {hasSubmenu && (
-                      <ul className="pl-4 text-sm text-gray-600 space-y-2 py-2">
+                      <ul className="pl-4 text-sm space-y-2 py-2">
                         {subMenus[item].map((link, idx) => (
                           <li
                             key={idx}
-                            className="border-b border-gray-100 pb-2"
+                            className="border-b border-gray-100 dark:border-[#2E2E2E] pb-2"
                           >
                             {link}
                           </li>

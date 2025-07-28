@@ -86,17 +86,17 @@ const MobileLatestCarNews = () => {
                     {chunkedNews.map((group, groupIndex) => (
                         <div
                             key={groupIndex}
-                            className="min-w-[336px] min-h-[475px] bg-white rounded-lg p-4 space-y-3 shadow"
+                            className="min-w-[336px] min-h-[475px] border dark:border-[#262629] rounded-lg p-4 space-y-3 shadow"
                         >
                             {group.map((item) => (
                                 <div
                                     key={item.id}
-                                    className="flex items-center justify-between border-b pb-1 border-[#C8C8C8]"
+                                    className="flex items-center justify-between border-b pb-1 border-[#C8C8C8] dark:border-[#262629]"
                                 >
                                     {/* Text Content */}
                                     <div className="flex flex-col space-y-1 w-3/5">
                                         <span className="text-xs text-gray-500 font-medium">{item.tag}</span>
-                                        <p className="text-sm font-medium text-gray-800 line-clamp-3">
+                                        <p className="text-sm font-medium line-clamp-3">
                                             {item.heading}
                                         </p>
                                     </div>

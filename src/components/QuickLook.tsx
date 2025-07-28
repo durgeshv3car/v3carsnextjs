@@ -116,11 +116,11 @@ const QuickLook: React.FC = () => {
                             </div>
 
                             {/* Scroll buttons */}
-                            <div className="hidden lg:flex items-center space-x-2">
+                            <div className="hidden lg:flex items-center gap-2">
                                 <button
                                     onClick={() => scroll('left')}
                                     disabled={isAtStart}
-                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtStart ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full transition ${isAtStart ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
                                         }`}
                                 >
                                     <svg
@@ -137,7 +137,7 @@ const QuickLook: React.FC = () => {
                                 <button
                                     onClick={() => scroll('right')}
                                     disabled={isAtEnd}
-                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtEnd ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full transition ${isAtEnd ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
                                         }`}
                                 >
                                     <svg

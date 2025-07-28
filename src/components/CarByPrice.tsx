@@ -88,7 +88,7 @@ const CarByPrice: React.FC = () => {
         <>
             {/* Banner Section */}
             <section className='px-6 lg:px-10'>
-                <div className='lg:hidden h-[331px] md:h-[407px] bg-[#B3B3B3] flex justify-center items-center mt-4'>
+                <div className='lg:hidden h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] flex justify-center items-center mt-4'>
 
                     <div className="hidden sm:block w-full lg:max-w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
                         <img
@@ -132,11 +132,11 @@ const CarByPrice: React.FC = () => {
                             </div>
 
                             {/* Scroll buttons */}
-                            <div className="hidden lg:flex items-center space-x-2">
+                            <div className="hidden lg:flex items-center gap-2">
                                 <button
                                     onClick={() => scroll('left')}
                                     disabled={isAtStart}
-                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtStart ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full transition ${isAtStart ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
                                         }`}
                                 >
                                     <svg
@@ -153,7 +153,7 @@ const CarByPrice: React.FC = () => {
                                 <button
                                     onClick={() => scroll('right')}
                                     disabled={isAtEnd}
-                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtEnd ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full transition ${isAtEnd ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
                                         }`}
                                 >
                                     <svg

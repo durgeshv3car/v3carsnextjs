@@ -29,7 +29,7 @@ export default function ScrollFlipIcon() {
     <div
       className={`
         ${path === '/car-loan-emi-calculator' ? 'bottom-[80px] md:bottom-4' : 'bottom-4'}
-        fixed z-50 right-4 bg-white border-2 border-[#FFCC00] 
+        fixed z-50 right-4 bg-white dark:bg-[#171717] border-2 border-[#FFCC00] 
         rounded-full p-3 cursor-pointer 
         transition-opacity duration-[4000ms] ease-in-out 
         ${show ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}

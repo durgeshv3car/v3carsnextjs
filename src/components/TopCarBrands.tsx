@@ -39,7 +39,7 @@ export default function TopCarBrands() {
     }, []);
 
     return (
-        <section className="bg-[#F8F9FA] dark:bg-[#262629] py-6 px-6 lg:px-10">
+        <section className="bg-[#F8F9FA] dark:bg-[#262629] py-6 px-6 lg:px-10 mb-8">
             <div className="w-full lg:max-w-[1600px] mx-auto">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
@@ -55,7 +55,7 @@ export default function TopCarBrands() {
                         <button
                             onClick={() => scroll('left')}
                             disabled={isAtStart}
-                            className={`p-3 rounded-full ${isAtStart ? 'bg-slate-200 text-gray-400 cursor-not-allowed' : 'bg-slate-100 hover:bg-slate-200'}`}
+                            className={`p-3 rounded-full ${isAtStart ? 'bg-slate-200 dark:bg-[#171717] text-gray-400 cursor-not-allowed' : 'bg-slate-100 dark:bg-[#2E2E2E]  hover:bg-slate-200 dark:hover:bg-[#171717]'}`}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="size-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -64,7 +64,7 @@ export default function TopCarBrands() {
                         <button
                             onClick={() => scroll('right')}
                             disabled={isAtEnd}
-                            className={`p-3 rounded-full ${isAtEnd ? 'bg-slate-200 text-gray-400 cursor-not-allowed' : 'bg-slate-100 hover:bg-slate-200'}`}
+                            className={`p-3 rounded-full ${isAtEnd ? 'bg-slate-200 dark:bg-[#171717] text-gray-400 cursor-not-allowed' : 'bg-slate-100 dark:bg-[#2E2E2E]  hover:bg-slate-200 dark:hover:bg-[#171717]'}`}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="size-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
