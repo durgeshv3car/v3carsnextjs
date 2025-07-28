@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/web/common/Footer";
-import MobileFooter from "@/components/mobile/common/Footer";
 import Header from "@/components/common/Header";
 import Provider from "./provider";
 import ScrollFlipIcon from "@/components/common/ScrollFlipIcon";
@@ -53,7 +51,6 @@ export default function RootLayout({
       >
 
         <div className="h-screen flex flex-col justify-between">
-
           <Header />
           <Provider>
             {children}

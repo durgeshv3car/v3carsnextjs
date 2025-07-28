@@ -12,6 +12,7 @@ import LoginModal from "./LoginModal";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
+
     const [hoverTab, setHoverTab] = useState<string | null>(null);
     const [showLogin, setShowLogin] = useState(false);
     const router = useRouter()
@@ -26,7 +27,9 @@ const Header = () => {
         <>
 
             <header className="w-full bg-white z-50 shadow-xl">
+
                 <div className="max-w-[1600px] mx-auto py-3 flex items-center justify-between">
+
                     {/* Logo */}
                     <div className="flex items-center cursor-pointer gap-2" onClick={() => router.push('/')}>
                         <Image
@@ -159,12 +162,13 @@ const Header = () => {
                             Login / Signup
                         </button>
                     </div>
-                    
+
                 </div>
+
             </header>
             {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
-        </>
 
+        </>
 
     );
 };

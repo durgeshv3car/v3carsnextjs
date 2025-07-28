@@ -27,7 +27,7 @@ export default function Home() {
       <UpcomingCars />
       {isMobile ? <MobileLatestCarNews /> : <LatestCarNews />}
       <QuickLook />
-      <CarByType />
+      <CarByType /> 
       <CarByPrice />
       <CarWebStories />
       <LatestVideos />
@@ -37,4 +37,4 @@ export default function Home() {
     </>
   );  
 }
-
+                                                                                                        
