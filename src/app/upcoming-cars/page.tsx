@@ -30,7 +30,7 @@ function UpcomingCars() {
     return (
         <>
             <TopSection />
-            <div className="px-4 lg:px-10">
+            <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto">
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
@@ -47,7 +47,7 @@ function UpcomingCars() {
             </div>
 
             {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-10 flex justify-center items-center mb-6'>
+            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-4 flex justify-center items-center mb-6'>
 
                 <div className="hidden sm:block w-full lg:w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img

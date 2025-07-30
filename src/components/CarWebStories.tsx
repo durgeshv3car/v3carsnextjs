@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 type Story = {
     id: number
@@ -65,6 +66,7 @@ const stories: Story[] = [
 ]
 
 const CarWebStories: React.FC = () => {
+    const router = useRouter()
     return (
         <>
             {/* Banner Section */}
@@ -105,7 +107,10 @@ const CarWebStories: React.FC = () => {
                                 />
 
                                 {/* Top-right mute icon (placeholder) */}
-                                <div className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-10 h-10">
+                                <div
+                                    className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-10 h-10 cursor-pointer"
+                                    onClick={() => router.push('/web-stories')}
+                                >
                                     <img
                                         src={'/web-stories/mobile.png'}
                                         alt="Story"

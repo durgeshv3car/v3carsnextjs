@@ -59,11 +59,12 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[999] bg-white flex flex-col transition-all duration-300 ease-in-out">
+        <div className="fixed inset-0 z-[999] bg-white dark:bg-[#171717] flex flex-col transition-all duration-300 ease-in-out">
 
             {/* Header */}
             <div className="flex items-start justify-between px-4 py-4">
-                <Image src="/logo/header/v3logo.png" alt="V3 Logo" width={100} height={40} />
+                <Image src="/logo/header/v3logo.png" alt="V3 Logo" width={100} height={40} className="block dark:hidden" />
+                <Image src="/logo/header/v3-white2.png" alt="Logo" width={90} height={40} className="hidden dark:block" />
                 <button onClick={onClose}>
                     <IoCloseOutline size={24} />
                 </button>
@@ -76,7 +77,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
 
                         <h2 className="text-xl font-semibold text-center mb-1">OTP Verification</h2>
 
-                        <p className="text-sm text-gray-700 text-center mb-4 flex items-center justify-center gap-1">
+                        <p className="text-sm text-gray-500 text-center mb-4 flex items-center justify-center gap-1">
                             OTP has been sent to <span className="text-yellow-600 font-medium">{email}</span>
                             <TbEdit onClick={() => setStep("login")} size={16} className="cursor-pointer" />
                         </p>
@@ -85,7 +86,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                             <Image src="/common/mobile.png" alt="Mobile" width={224} height={224} />
                         </div>
 
-                        <p className="text-md text-center text-gray-800 font-semibold mb-3">Enter <span className="font-bold">OTP</span></p>
+                        <p className="text-md text-center text-gray-500 font-semibold mb-3">Enter <span className="font-bold">OTP</span></p>
 
                         <div className="flex justify-center gap-2 mb-3">
                             {otp.map((digit, i) => (
@@ -97,7 +98,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                                     value={digit}
                                     onChange={(e) => handleOtpChange(e.target.value, i)}
                                     onKeyDown={(e) => handleBackspace(e, i)}
-                                    className="w-10 h-12 text-center rounded bg-gray-200 text-lg outline-none"
+                                    className="w-10 h-12 text-center rounded bg-transparent border dark:border-[#2E2E2E] text-lg outline-none"
                                 />
                             ))}
                         </div>
@@ -112,7 +113,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                             Login
                         </button>
 
-                        <p className="text-center text-xs text-gray-700 mb-6">
+                        <p className="text-center text-xs text-gray-500 mb-6">
                             Don&apos;t have an account? <span className="text-yellow-600 font-medium cursor-pointer" onClick={() => setStep("signup")}>Sign Up</span>
                         </p>
 
@@ -122,29 +123,29 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
 
                     <>
                         <h2 className="text-xl font-semibold text-center mb-1">
-                            {step === "login" ? <>Login to <span className="font-bold text-black">V3Cars</span></> : <>Sign Up</>}
+                            {step === "login" ? <>Login to <span className="font-bold">V3Cars</span></> : <>Sign Up</>}
                         </h2>
 
-                        <p className="text-sm text-gray-600 text-center mb-6">
+                        <p className="text-sm text-gray-500 text-center mb-6">
                             This is necessary to personalise results for you
                         </p>
 
                         {/* Social Login Buttons */}
-                        <button className="w-full flex items-center gap-2 border border-gray-300 rounded px-4 py-3 text-sm justify-center mb-3">
+                        <button className="w-full flex items-center gap-2 border border-gray-300 dark:border-[#2E2E2E] rounded px-4 py-3 text-sm justify-center mb-3">
                             <Image src="/common/google.svg" alt="Google" width={18} height={18} />
                             Continue with Google
                         </button>
 
-                        <button className="w-full flex items-center gap-2 border border-gray-300 rounded px-4 py-3 text-sm justify-center mb-5">
+                        <button className="w-full flex items-center gap-2 border border-gray-300 dark:border-[#2E2E2E] rounded px-4 py-3 text-sm justify-center mb-5">
                             <Image src="/common/facebook.svg" alt="Facebook" width={18} height={18} />
                             Continue with Facebook
                         </button>
 
                         {/* Divider */}
                         <div className="flex items-center gap-2 px-4 mb-4">
-                            <hr className="flex-1 border-gray-300" />
-                            <span className="text-xs text-gray-400 rounded-full border p-1 w-8 h-8 flex items-center justify-center">or</span>
-                            <hr className="flex-1 border-gray-300" />
+                            <hr className="flex-1 border-gray-300 dark:border-[#2E2E2E]" />
+                            <span className="text-xs text-gray-400 dark:border-[#2E2E2E] rounded-full border p-1 w-8 h-8 flex items-center justify-center">or</span>
+                            <hr className="flex-1 border-gray-300 dark:border-[#2E2E2E]" />
                         </div>
 
 
@@ -159,7 +160,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                     {step === "login" ? (
                         <>
 
-                            <div className="w-full bg-gray-100 rounded-md px-4 py-3 mb-3 flex items-center gap-2">
+                            <div className="w-full border dark:border-[#2E2E2E] rounded-md px-4 py-3 mb-3 flex items-center gap-2">
                                 <FiMail size={16} className="text-gray-500" />
                                 <input
                                     type="email"
@@ -177,7 +178,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                                 Login with OTP
                             </button>
 
-                            <p className="text-center text-xs text-gray-700">
+                            <p className="text-center text-xs text-gray-500">
                                 Don&apos;t have an account?{" "}
                                 <span className="text-yellow-600 font-medium cursor-pointer" onClick={() => setStep("signup")}>
                                     Sign Up
@@ -188,7 +189,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                     ) : (
                         <>
 
-                            <div className="w-full bg-gray-100 rounded-md px-4 py-3 mb-3 flex items-center gap-2">
+                            <div className="w-full border dark:border-[#2E2E2E] rounded-md px-4 py-3 mb-3 flex items-center gap-2">
                                 <FiUser size={16} className="text-gray-500" />
                                 <input
                                     type="text"
@@ -197,7 +198,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                                 />
                             </div>
 
-                            <div className="w-full bg-gray-100 rounded-md px-4 py-3 mb-3 flex items-center gap-2">
+                            <div className="w-full border dark:border-[#2E2E2E] rounded-md px-4 py-3 mb-3 flex items-center gap-2">
                                 <FiMail size={16} className="text-gray-500" />
                                 <input
                                     type="email"
@@ -206,7 +207,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                                 />
                             </div>
 
-                            <div className="w-full bg-gray-100 rounded-md px-4 py-3 mb-3 flex items-center gap-2">
+                            <div className="w-full border dark:border-[#2E2E2E] rounded-md px-4 py-3 mb-3 flex items-center gap-2">
                                 <FiPhone size={16} className="text-gray-500" />
                                 <input
                                     type="tel"
@@ -219,7 +220,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                                 Sign Up
                             </button>
 
-                            <p className="text-center text-xs text-gray-700">
+                            <p className="text-center text-xs text-gray-500">
                                 Already have an account?{" "}
                                 <span className="text-yellow-600 font-medium cursor-pointer" onClick={() => setStep("login")}>
                                     Login

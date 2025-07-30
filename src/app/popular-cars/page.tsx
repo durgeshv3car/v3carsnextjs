@@ -33,7 +33,7 @@ function PopularCars() {
     return (
         <>
             <TopSection />
-            <div className="px-6 lg:px-10">
+            <div className="px-4 xl:px-10">
             <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
 
                 
@@ -53,7 +53,7 @@ function PopularCars() {
             </div>
 
             {/* Banner Section */}
-            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-10 lg:flex justify-center items-center mb-6'>
+            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-4 lg:flex justify-center items-center mb-6'>
 
                 <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img
