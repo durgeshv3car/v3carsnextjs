@@ -6,7 +6,7 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { CiSearch } from 'react-icons/ci';
-import CustomSelect from '@/components/CustomInputs/CustomSelect';
+import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 
 const slides = [
     {

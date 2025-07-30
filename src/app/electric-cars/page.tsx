@@ -1,9 +1,9 @@
-import ElectricCar from "@/components/ElectricCars/ElectricCar";
-import ElectricExpertReviews from "@/components/ElectricCars/ElectricExpertReviews";
-import ElectricSideBar from "@/components/ElectricCars/ElectricSidebar";
-import ElectricVehicleNews from "@/components/ElectricCars/ElectricVehicleNews";
-import ElectricVehicleVideos from "@/components/ElectricCars/ElectricVehicleVideos";
-import TopSection from "@/components/common/TopSection";
+import ElectricCar from "@/components/responsive/electric-cars/ElectricCar";
+import ElectricExpertReviews from "@/components/responsive/electric-cars/ElectricExpertReviews";
+import ElectricSideBar from "@/components/responsive/electric-cars/ElectricSidebar";
+import ElectricVehicleNews from "@/components/responsive/electric-cars/ElectricVehicleNews";
+import ElectricVehicleVideos from "@/components/responsive/electric-cars/ElectricVehicleVideos";
+import TopSection from "@/components/ui/TopSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

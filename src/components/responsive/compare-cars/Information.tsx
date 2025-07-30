@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
-import CustomSelect from "../CustomInputs/CustomSelect";
+import CustomSelect from "../../ui/custom-inputs/CustomSelect";
 
 const carData = [
     {

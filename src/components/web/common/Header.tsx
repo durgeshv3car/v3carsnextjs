@@ -10,9 +10,10 @@ import NewsVideosDropdown from "../header/NewsVideosDropdown";
 import ToolsDropdown from "../header/ToolsDropdown.";
 import LoginModal from "./LoginModal";
 import { usePathname, useRouter } from "next/navigation";
-import ThemeToggle from "@/components/ThemeToggle";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const Header = () => {
+
     const [hoverTab, setHoverTab] = useState<string | null>(null);
     const [showLogin, setShowLogin] = useState(false);
     const router = useRouter()
@@ -23,9 +24,6 @@ const Header = () => {
         window.addEventListener('scroll', closeOnScroll);
         return () => window.removeEventListener('scroll', closeOnScroll);
     }, []);
-
-    console.log(hoverTab);
-
 
     return (
         <>

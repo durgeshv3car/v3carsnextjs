@@ -1,10 +1,6 @@
-import CarComparisonLatestVideos from "@/components/responsive/compare-cars/CarComparisonLatestVideos";
-import CompareNow from "@/components/responsive/compare-cars/CompareNow";
-import ComparisonNews from "@/components/responsive/compare-cars/ComparisonNews";
-import Information from "@/components/responsive/compare-cars/Information";
-import MostPopularCarComparison from "@/components/responsive/compare-cars/MostPopularCarComparison";
 import TopSection from "@/components/ui/TopSection";
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
     title: "Compare Cars in India | Specs, Features, Prices - V3Cars",
@@ -22,19 +18,30 @@ export const metadata: Metadata = {
 
 
 
-function CompareCars() {
+function CarReviewVideos() {
     return (
         <>
-            <TopSection />
+            <div className='bg-[#18181b] text-white'>
+                <div className='px-4 xl:px-10'>
+                    <div className="w-full lg:max-w-[1600px] mx-auto text-sm h-[42px] flex items-center gap-2">
+                        <Link href="/" className="hover:underline">Home</Link>
+                        <span className="text-yellow-500">›</span>
+                        <span className="font-medium text-yellow-500">
+                            Car Review Videos
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
-                    <CompareNow />
-                    <Information />
-                    <div className="hidden lg:block">
-                    <ComparisonNews />
-                    </div>
-                    <MostPopularCarComparison />
-                    <CarComparisonLatestVideos />
+                    {/* <CompareNow /> */}
+                    {/* <Information /> */}
+                    {/* <div className="hidden lg:block"> */}
+                    {/* <ComparisonNews /> */}
+                    {/* </div> */}
+                    {/* <MostPopularCarComparison /> */}
+                    {/* <CarComparisonLatestVideos /> */}
                 </div>
             </div>
 
@@ -57,4 +64,4 @@ function CompareCars() {
     );
 }
 
-export default CompareCars;
+export default CarReviewVideos;

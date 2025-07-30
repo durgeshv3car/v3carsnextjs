@@ -1,10 +1,10 @@
-import TopSection from "@/components/common/TopSection";
-import CarReviews from "@/components/PopularCars/CarReviews";
-import HottestCarInIndia from "@/components/PopularCars/CarsInIndia";
-import CarsNews from "@/components/PopularCars/CarsNews";
-import PopularCar from "@/components/PopularCars/PopularCar";
-import PopularCarsVideos from "@/components/PopularCars/PopularCarsVideos";
-import PopularSideBar from "@/components/PopularCars/PopularSidebar";
+import TopSection from "@/components/ui/TopSection";
+import CarReviews from "@/components/responsive/popular-cars/CarReviews";
+import HottestCarInIndia from "@/components/responsive/popular-cars/CarsInIndia";
+import CarsNews from "@/components/responsive/popular-cars/CarsNews";
+import PopularCar from "@/components/responsive/popular-cars/PopularCar";
+import PopularCarsVideos from "@/components/responsive/popular-cars/PopularCarsVideos";
+import PopularSideBar from "@/components/responsive/popular-cars/PopularSidebar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

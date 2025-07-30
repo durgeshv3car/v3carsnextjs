@@ -10,6 +10,7 @@ interface MobileLoginModalProps {
 }
 
 const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
+    
     const [visible, setVisible] = useState(false);
     const [step, setStep] = useState<"login" | "signup" | "otp">("login");
     const [email, setEmail] = useState("");
@@ -233,6 +234,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
             )}
         </div>
     );
+
 };
 
 export default MobileLoginModal;

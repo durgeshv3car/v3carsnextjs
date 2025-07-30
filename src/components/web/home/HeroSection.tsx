@@ -8,10 +8,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import CustomSelect from '@/components/CustomInputs/CustomSelect';
+import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 
 // Dummy Slides
 const slides = [
+
   {
     image: '/images/banner-car.png',
     title: 'Tata Altroz Racer',
@@ -22,11 +23,13 @@ const slides = [
     title: 'Tata Punch EV',
     tagline: 'Power meets Efficiency',
   },
+
   {
     image: 'https://images.pexels.com/photos/3422964/pexels-photo-3422964.jpeg',
     title: 'Tata Nexon',
     tagline: 'Next Level SUV',
   },
+
 ];
 
 const HeroSection: React.FC = () => {
@@ -86,6 +89,7 @@ const HeroSection: React.FC = () => {
 
               {/* Tabs */}
               <div className="border-b border-gray-300 dark:border-[#2E2E2E] p-6 flex flex-col justify-around flex-grow">
+
                 <div className="grid grid-cols-2">
                   {['budget', 'model'].map((tab) => (
                     <button
@@ -160,6 +164,8 @@ const HeroSection: React.FC = () => {
       width: 60px;
     }
   `}</style>
+ 
+
     </>
   );
 };

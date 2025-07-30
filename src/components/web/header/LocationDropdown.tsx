@@ -1,3 +1,4 @@
+
 "use client";
 import Image from "next/image";
 import { FiMapPin } from "react-icons/fi";
@@ -15,7 +16,6 @@ const otherCities = [
     "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
     "Andhra Pradesh", "Andhra Pradesh", "Andhra Pradesh", "Andhra Pradesh"
 ];
-
 
 const LocationDropdown = () => {
 
@@ -99,6 +99,7 @@ const LocationDropdown = () => {
            
         </div>
     );
+
 };
 
 export default LocationDropdown;

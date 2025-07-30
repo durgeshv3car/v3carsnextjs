@@ -1,6 +1,6 @@
 'use client'
 
-import WebStoryCard from "@/components/WebStories/webStory";
+import WebStoryCard from "@/components/responsive/web-stories/webStory";
 import useIsMobile from "@/hooks/useIsMobile";
 
 export default function Home() {

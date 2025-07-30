@@ -9,6 +9,7 @@ import {
   FaLinkedinIn,
   FaYoutube,
 } from "react-icons/fa";
+
 import { PiWhatsappLogoThin } from "react-icons/pi";
 import { RiTwitterXFill } from "react-icons/ri";
 import { SiGooglenews } from "react-icons/si";
@@ -180,6 +181,15 @@ const Footer: React.FC = () => {
         )}
     </>
   );
+
 };
 
 export default Footer;
+
+
+
+
+
+
+
+

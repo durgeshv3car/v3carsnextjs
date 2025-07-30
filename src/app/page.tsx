@@ -1,21 +1,21 @@
 'use client'
 import MobileHeroSection from "@/components/mobile/home/HeroSection";
-import CategorySection from "@/components/CategorySection";
+import CategorySection from "@/components/responsive/home/CategorySection";
 import HeroSection from "@/components/web/home/HeroSection";
 import useIsMobile from "@/hooks/useIsMobile";
-import TopCarBrands from "@/components/TopCarBrands";
-import UpcomingCars from "@/components/UpcomingCar";
+import TopCarBrands from "@/components/responsive/home/TopCarBrands";
+import UpcomingCars from "@/components/responsive/home/UpcomingCar";
 import LatestCarNews from "@/components/web/home/LatestCarNews";
 import MobileLatestCarNews from "@/components/mobile/home/LatestCarNews";
-import QuickLook from "@/components/QuickLook";
-import CarByType from "@/components/CarByType";
-import CarByPrice from "@/components/CarByPrice";
+import QuickLook from "@/components/responsive/home/QuickLook";
+import CarByType from "@/components/responsive/home/CarByType";
+import CarByPrice from "@/components/responsive/home/CarByPrice";
 import VariantsExplained from "@/components/web/home/VariantsExplained";
 import MobileVariantsExplained from "@/components/mobile/home/VariantsExplained";
 import ExpertCarReviews from "@/components/web/home/ExpertCarReviews";
 import MobileExpertCarReviews from "@/components/mobile/home/ExpertCarReviews";
-import LatestVideos from "@/components/LatestVideos";
-import CarWebStories from "@/components/CarWebStories";
+import LatestVideos from "@/components/responsive/home/LatestVideos";
+import CarWebStories from "@/components/responsive/home/CarWebStories";
 
 export default function Home() {
   const isMobile = useIsMobile()
@@ -27,7 +27,7 @@ export default function Home() {
       <UpcomingCars />
       {isMobile ? <MobileLatestCarNews /> : <LatestCarNews />}
       <QuickLook />
-      <CarByType />
+      <CarByType /> 
       <CarByPrice />
       <CarWebStories />
       <LatestVideos />
@@ -37,4 +37,3 @@ export default function Home() {
     </>
   );  
 }
-

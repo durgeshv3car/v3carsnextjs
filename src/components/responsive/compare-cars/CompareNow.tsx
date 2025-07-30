@@ -3,7 +3,7 @@
 import { IoIosArrowDown } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
 import { MdCompareArrows } from "react-icons/md";
-import CustomSelect from "../CustomInputs/CustomSelect";
+import CustomSelect from "../../ui/custom-inputs/CustomSelect";
 
 export default function CompareNow() {
     const boxes = Array(4).fill(0);
