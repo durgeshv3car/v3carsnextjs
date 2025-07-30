@@ -3,7 +3,7 @@ import ElectricExpertReviews from "@/components/responsive/electric-cars/Electri
 import ElectricSideBar from "@/components/responsive/electric-cars/ElectricSidebar";
 import ElectricVehicleNews from "@/components/responsive/electric-cars/ElectricVehicleNews";
 import ElectricVehicleVideos from "@/components/responsive/electric-cars/ElectricVehicleVideos";
-import TopSection from "@/components/ui/TopSection";
+import TopSection from "@/components/common/TopSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

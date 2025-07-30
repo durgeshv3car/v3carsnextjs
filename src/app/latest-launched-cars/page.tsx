@@ -3,7 +3,7 @@ import CarVideos from "@/components/responsive/latest-cars/CarVideos";
 import CarNewsUpdates from "@/components/responsive/latest-cars/CarsNewsUpdates";
 import LaunchedCar from "@/components/responsive/latest-cars/LaunchedCar";
 import SideBar from "@/components/responsive/latest-cars/SideBar";
-import TopSection from "@/components/ui/TopSection";
+import TopSection from "@/components/common/TopSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

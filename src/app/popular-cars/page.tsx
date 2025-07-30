@@ -1,4 +1,4 @@
-import TopSection from "@/components/ui/TopSection";
+import TopSection from "@/components/common/TopSection";
 import CarReviews from "@/components/responsive/popular-cars/CarReviews";
 import HottestCarInIndia from "@/components/responsive/popular-cars/CarsInIndia";
 import CarsNews from "@/components/responsive/popular-cars/CarsNews";

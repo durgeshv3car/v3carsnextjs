@@ -1,6 +1,6 @@
 import NewCarsLaunched from "@/components/responsive/upcoming-cars/NewCarsLaunched";
 import NewUpcomingCars from "@/components/responsive/upcoming-cars/NewUpcomingCars";
-import TopSection from "@/components/ui/TopSection";
+import TopSection from "@/components/common/TopSection";
 import UpcomingSideBar from "@/components/responsive/upcoming-cars/UpcomingSidebar";
 import { Metadata } from "next";
 
