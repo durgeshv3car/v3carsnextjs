@@ -6,7 +6,7 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { CiSearch } from 'react-icons/ci';
-import CustomSelect from '@/components/CustomInputs/CustomSelect';
+import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 
 const slides = [
     {
@@ -88,7 +88,7 @@ const MobileHeroSection: React.FC = () => {
                     {/* Bottom Two Tiles */}
                     <div className="flex gap-4 h-[116px]">
 
-                        <div className="bg-black flex-1 relative rounded-lg overflow-hidden flex flex-col">
+                        <div className="bg-black flex-1 relative rounded-lg overflow-hidden flex flex-col border dark:border-[#262629]">
                             <span className="absolute top-2 left-2 text-white text-sm font-medium">
                                 Fuel cost calculator
                             </span>
@@ -122,7 +122,7 @@ const MobileHeroSection: React.FC = () => {
             </div>
 
             {/* Filter Card */}
-            <div className="bg-[#EEEEEE] rounded-xl shadow-md border border-gray-300 overflow-hidden">
+            <div className="bg-[#EEEEEE] dark:bg-[#171717] rounded-xl shadow-md border border-gray-300 dark:border-[#262629] overflow-hidden">
 
                 <div className="grid grid-cols-2 mt-2">
                     {['budget', 'model'].map((tab) => (
@@ -158,7 +158,7 @@ const MobileHeroSection: React.FC = () => {
                         </div>
                     )}
 
-                    <button className="w-full font-semibold text-xs bg-yellow-400 hover:bg-yellow-500 py-3 rounded-md flex items-center justify-center gap-1">
+                    <button className="w-full font-semibold text-xs bg-yellow-400 hover:bg-yellow-500 text-black py-3 rounded-md flex items-center justify-center gap-1">
                         <CiSearch size={16} /> SEARCH
                     </button>
                 </div>

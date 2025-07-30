@@ -1,25 +1,21 @@
 import type { Metadata } from "next";
-import { Montserrat, Geist, Geist_Mono } from "next/font/google";
+import { Montserrat, Roboto } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/common/Header";
+import Header from "@/components/ui/Header";
 import Provider from "./provider";
-import ScrollFlipIcon from "@/components/common/ScrollFlipIcon";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import ScrollFlipIcon from "@/components/ui/ScrollFlipIcon";
 
 const montserrat = Montserrat({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'], // Choose the weights you need
   display: 'swap',
   variable: '--font-montserrat', // Optional: custom CSS variable
+})
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '700'], // include weights as needed
+  display: 'swap', // optional but recommended for better UX
 })
 
 export const metadata: Metadata = {
@@ -44,21 +40,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" className={montserrat.className}>
-      <body
-        className={`antialiased`}
-      >
 
-        <div className="h-screen flex flex-col justify-between">
+  return (
+
+    <html lang="en" className={roboto.className}>
+      <body
+        className="antialiased transition-colors"
+      >
+        <div className="min-h-screen flex flex-col justify-between">
           <Header />
           <Provider>
             {children}
           </Provider>
           <ScrollFlipIcon />
         </div>
-
       </body>
     </html>
+
   );
 }

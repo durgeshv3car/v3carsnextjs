@@ -1,10 +1,10 @@
-import TopSection from "@/components/common/TopSection";
-import CarReviews from "@/components/PopularCars/CarReviews";
-import HottestCarInIndia from "@/components/PopularCars/CarsInIndia";
-import CarsNews from "@/components/PopularCars/CarsNews";
-import PopularCar from "@/components/PopularCars/PopularCar";
-import PopularCarsVideos from "@/components/PopularCars/PopularCarsVideos";
-import PopularSideBar from "@/components/PopularCars/PopularSidebar";
+import TopSection from "@/components/ui/TopSection";
+import CarReviews from "@/components/responsive/popular-cars/CarReviews";
+import HottestCarInIndia from "@/components/responsive/popular-cars/CarsInIndia";
+import CarsNews from "@/components/responsive/popular-cars/CarsNews";
+import PopularCar from "@/components/responsive/popular-cars/PopularCar";
+import PopularCarsVideos from "@/components/responsive/popular-cars/PopularCarsVideos";
+import PopularSideBar from "@/components/responsive/popular-cars/PopularSidebar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -33,7 +33,8 @@ function PopularCars() {
     return (
         <>
             <TopSection />
-            <div className="w-full lg:max-w-[1600px] py-6 px-4 lg:px-0 mx-auto space-y-7">
+            <div className="px-6 lg:px-10">
+            <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
 
                 
                 <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
@@ -49,9 +50,10 @@ function PopularCars() {
                     </div>
                 </div>
             </div>
+            </div>
 
             {/* Banner Section */}
-            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 lg:flex justify-center items-center mb-6'>
+            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-10 lg:flex justify-center items-center mb-6'>
 
                 <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
                     <img

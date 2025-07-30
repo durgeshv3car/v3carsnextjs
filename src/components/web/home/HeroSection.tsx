@@ -8,10 +8,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import CustomSelect from '@/components/CustomInputs/CustomSelect';
+import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 
 // Dummy Slides
 const slides = [
+
   {
     image: '/images/banner-car.png',
     title: 'Tata Altroz Racer',
@@ -22,11 +23,13 @@ const slides = [
     title: 'Tata Punch EV',
     tagline: 'Power meets Efficiency',
   },
+
   {
     image: 'https://images.pexels.com/photos/3422964/pexels-photo-3422964.jpeg',
     title: 'Tata Nexon',
     tagline: 'Next Level SUV',
   },
+
 ];
 
 const HeroSection: React.FC = () => {
@@ -73,31 +76,32 @@ const HeroSection: React.FC = () => {
         </Swiper>
 
         {/* Search Box Overlay */}
-        <div className="absolute top-[125px] left-0 right-0 z-20">
+        <div className="absolute top-[125px] left-0 right-0 z-20 px-6 lg:px-10">
           <div className="max-w-[1600px] mx-auto">
-            <div className="w-[403px] h-[430px] bg-white rounded-xl shadow-md border border-gray-300 overflow-hidden font-sans flex flex-col">
+            <div className="w-[403px] h-[430px] bg-gray-50 dark:bg-[#171717] rounded-xl shadow-md border border-gray-300 dark:border-[#2E2E2E] overflow-hidden flex flex-col">
               {/* Header */}
-              <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-300">
+              <div className="bg-gray-50 dark:bg-[#171717] px-4 py-3 flex items-center gap-2 border-b border-gray-300 dark:border-[#2E2E2E]">
                 <CiFilter size={20} />
-                <h2 className="text-gray-800 font-semibold text-lg">
+                <h2 className="font-semibold text-lg">
                   SEARCH THE RIGHT CAR
                 </h2>
               </div>
 
               {/* Tabs */}
-              <div className="border-b border-gray-200 p-6 flex flex-col justify-around flex-grow">
+              <div className="border-b border-gray-300 dark:border-[#2E2E2E] p-6 flex flex-col justify-around flex-grow">
+
                 <div className="grid grid-cols-2">
                   {['budget', 'model'].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
                       className={`flex items-center justify-center gap-2 py-3 text-sm font-medium ${activeTab === tab
-                        ? 'bg-gray-200 border-b-2 border-yellow-400 text-black'
-                        : 'bg-gray-100 text-gray-600'
+                        ? 'bg-gray-200 dark:bg-[#2E2E2E] border-b-2 border-yellow-400'
+                        : 'bg-gray-100 dark:bg-[#171717]'
                         }`}
                     >
                       <span
-                        className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-gray-400'
+                        className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-[#2E2E2E]'
                           }`}
                       >
                         <span
@@ -123,7 +127,7 @@ const HeroSection: React.FC = () => {
                   </>
                 )}
 
-                <button className="w-full bg-yellow-400 hover:bg-yellow-500 transition py-3 rounded-full flex items-center justify-center gap-2">
+                <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium transition py-3 rounded-full flex items-center justify-center gap-2">
                   <CiSearch size={20} /> SEARCH
                 </button>
 
@@ -160,6 +164,8 @@ const HeroSection: React.FC = () => {
       width: 60px;
     }
   `}</style>
+ 
+
     </>
   );
 };

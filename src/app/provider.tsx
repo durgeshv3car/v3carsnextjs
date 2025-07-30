@@ -13,7 +13,7 @@ const Provider: React.FC<ProviderProps> = ({ children }) => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="bg-[#F8F9FA]">
+    <div>
       {children}
       {isMobile ? <MobileFooter /> : <Footer />}
     </div>

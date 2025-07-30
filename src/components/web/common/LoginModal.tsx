@@ -68,12 +68,12 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
     <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40">
 
       <div
-        className={`relative p-24 w-[900px] bg-white rounded-2xl shadow-xl p-6 overflow-hidden transform transition-all duration-300 ${
+        className={`relative w-[900px] bg-white dark:bg-black rounded-3xl shadow-xl overflow-hidden transform transition-all duration-300 ${
           visible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
       >
 
-        <div className="w-[60%] mx-auto">
+        <div className="w-[60%] mx-auto min-h-[600px] flex justify-center items-center">
 
           <Image
             src="/common/v3.png"
@@ -84,24 +84,24 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-black z-10"
+            className="absolute top-4 right-4 z-10"
           >
             <IoCloseOutline size={22} />
           </button>
 
-          <div className="relative z-10">
+          <div className="relative z-10 flex flex-col justify-between gap-6">
 
             {step === "login" && (
 
               <>
-                <h2 className="text-2xl font-semibold text-center mb-2">
-                  Login to <span className="font-bold text-black">V3Cars</span>
+                <h2 className="text-4xl font-semibold text-center">
+                  Login to <span className="font-bold">V3Cars</span>
                 </h2>
-                <p className="text-sm text-center text-gray-600 mb-6">
+                <p className="text-center text-gray-500">
                   This is necessary to personalise results for you
                 </p>
 
-                <div className="flex items-center gap-2 border border-gray-200 bg-gray-200 rounded-md px-4 py-3 mb-4">
+                <div className="flex items-center gap-2 border border-gray-200 bg-gray-200 dark:bg-[#171717] dark:border-[#2E2E2E] rounded-md px-4 py-3">
                   <FiMail size={16} className="text-gray-500" />
                   <input
                     type="email"
@@ -118,29 +118,31 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                     setStep("otp");
                     setTimer(16);
                   }}
-                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm mb-5 disabled:opacity-50"
+                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm disabled:opacity-50"
                 >
                   Login with OTP
                 </button>
 
-                <div className="flex items-center gap-2 mb-5">
-                  <hr className="flex-1 border-gray-300" />
+                <div className="flex items-center">
+                  <hr className="flex-1 border-gray-300 dark:border-[#2E2E2E]" />
+                  <div className="w-12 h-12 rounded-full flex justify-center items-center border dark:border-[#2E2E2E]">
                   <span className="text-md text-gray-400">or</span>
-                  <hr className="flex-1 border-gray-300" />
+                  </div>
+                  <hr className="flex-1 border-gray-300 dark:border-[#2E2E2E]" />
                 </div>
 
-                <div className="flex gap-3 justify-center mb-5">
-                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white">
+                <div className="flex gap-3 justify-center">
+                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
                     <Image src="/common/google.svg" alt="Google" width={16} height={16} />
                     Continue with Google
                   </button>
-                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white">
+                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
                     <Image src="/common/facebook.svg" alt="Facebook" width={16} height={16} />
                     Continue with Facebook
                   </button>
                 </div>
 
-                <p className="text-center text-xs text-gray-700">
+                <p className="text-center text-xs text-gray-500">
                   Don&apos;t have an account?{" "}
                   <span
                     onClick={() => setStep("signup")}
@@ -154,11 +156,11 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
             {step === "otp" && (
               <>
-                <h2 className="text-2xl font-semibold text-center mb-2">
+                <h2 className="text-4xl font-semibold text-center">
                   OTP Verification
                 </h2>
                 
-                <p className="text-sm text-center text-gray-600 mb-6 flex items-center justify-center gap-2">
+                <p className="text-center text-gray-500 flex items-center justify-center gap-2">
                   <span>OTP has been sent to</span>
                   <span className="text-yellow-600 font-semibold">{email}</span>
                   <TbEdit
@@ -168,11 +170,11 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   />
                 </p>
 
-                <p className="text-md font-semibold text-center mb-4">
+                <p className="text-md font-semibold text-center">
                   Enter <span className="font-bold">OTP</span>
                 </p>
 
-                <div className="flex justify-center gap-2 mb-2">
+                <div className="flex justify-center gap-2">
                   {otp.map((digit, i) => (
                     <input
                       key={i}
@@ -182,12 +184,12 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                       maxLength={1}
                       onChange={(e) => handleOtpChange(e.target.value, i)}
                       onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                      className="w-10 h-12 text-center rounded bg-gray-200 text-lg outline-none"
+                      className="w-10 h-12 text-center rounded bg-gray-200 dark:bg-[#171717] text-lg outline-none"
                     />
                   ))}
                 </div>
 
-                <p className="text-center text-xs text-gray-600 mb-4">
+                <p className="text-center text-xs text-gray-500">
                   {timer > 0 ? (
                     <>Resend OTP in {timer} sec</>
                   ) : (
@@ -200,11 +202,11 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   )}
                 </p>
 
-                <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm mb-5">
+                <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm">
                   Login
                 </button>
 
-                <p className="text-center text-xs text-gray-700">
+                <p className="text-center text-xs text-gray-500">
                   Don&apos;t have an account?{" "}
                   <span
                     onClick={() => setStep("signup")}
@@ -219,12 +221,12 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
             {step === "signup" && (
               <>
-                <h2 className="text-2xl font-semibold text-center mb-2">Sign Up</h2>
-                <p className="text-sm text-center text-gray-600 mb-6">
+                <h2 className="text-4xl font-semibold text-center">Sign Up</h2>
+                <p className="text-sm text-center text-gray-500">
                   This is necessary to personalise results for you
                 </p>
 
-                <div className="flex items-center gap-2 border border-gray-200 bg-gray-200 rounded-md px-4 py-3 mb-4">
+                <div className="flex items-center gap-2 border border-gray-200 dark:border-[#2E2E2E] bg-gray-200 dark:bg-[#171717] rounded-md px-4 py-3">
                   <FiUser size={16} className="text-gray-500" />
                   <input
                     type="text"
@@ -235,7 +237,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   />
                 </div>
 
-                <div className="flex items-center gap-2 border border-gray-200 bg-gray-200 rounded-md px-4 py-3 mb-4">
+                <div className="flex items-center gap-2 border border-gray-200 dark:border-[#2E2E2E] bg-gray-200 dark:bg-[#171717] rounded-md px-4 py-3">
                   <FiMail size={16} className="text-gray-500" />
                   <input
                     type="email"
@@ -246,7 +248,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   />
                 </div>
 
-                <div className="flex items-center gap-2 border border-gray-200 bg-gray-200 rounded-md px-4 py-3 mb-6">
+                <div className="flex items-center gap-2 border border-gray-200 dark:border-[#2E2E2E] bg-gray-200 dark:bg-[#171717] rounded-md px-4 py-3">
                   <FiPhone size={16} className="text-gray-500" />
                   <input
                     type="tel"
@@ -257,28 +259,28 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   />
                 </div>
 
-                <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm mb-5">
+                <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm">
                   Sign Up
                 </button>
 
-                <div className="flex items-center gap-2 mb-5">
+                <div className="flex items-center gap-2">
                   <hr className="flex-1 border-gray-300" />
                   <span className="text-md text-gray-400">or</span>
                   <hr className="flex-1 border-gray-300" />
                 </div>
 
-                <div className="flex gap-3 justify-center mb-5">
-                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white">
+                <div className="flex gap-3 justify-center">
+                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white dark:border-[#2E2E2E] dark:bg-[#171717]">
                     <Image src="/common/google.svg" alt="Google" width={16} height={16} />
                     Continue with Google
                   </button>
-                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white">
+                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white dark:border-[#2E2E2E] dark:bg-[#171717]">
                     <Image src="/common/facebook.svg" alt="Facebook" width={16} height={16} />
                     Continue with Facebook
                   </button>
                 </div>
 
-                <p className="text-center text-xs text-gray-700">
+                <p className="text-center text-xs text-gray-500">
                   Already have an account?{" "}
                   <span
                     className="text-yellow-600 font-medium cursor-pointer"

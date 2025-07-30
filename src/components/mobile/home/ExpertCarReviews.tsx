@@ -101,7 +101,7 @@ const MobileExpertCarReviews: React.FC = () => {
     return (
         <>
             <section className="py-6">
-                <div className="w-full lg:w-[1600px] px-6 lg:px-0 mx-auto space-y-6">
+                <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto space-y-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-semibold lg:font-medium">Expert Car Reviews</h2>
@@ -128,7 +128,7 @@ const MobileExpertCarReviews: React.FC = () => {
                         {newsList.map((item) => (
                             <div
                                 key={item.id}
-                                className="bg-white rounded-lg min-w-[311px] border border-[#E2E2E2] lg:min-w-[520px] min-h-[456px] lg:min-h-[495px] shadow-md overflow-hidden hover:shadow-md transition p-2.5 flex flex-col space-y-4"
+                                className="bg-white dark:bg-[#171717] rounded-lg min-w-[311px] border border-[#E2E2E2] dark:border-[#262629] lg:min-w-[520px] min-h-[456px] lg:min-h-[495px] shadow-md overflow-hidden hover:shadow-md transition p-2.5 flex flex-col space-y-4"
                             >
                                 {/* Fixed height image */}
                                 <div className="h-[180px]">
@@ -143,7 +143,7 @@ const MobileExpertCarReviews: React.FC = () => {
                                 <div className="flex flex-col flex-grow space-y-3">
                                     <span className='text-gray-500'>{item.date}</span>
                                     <h3 className="text-lg font-semibold line-clamp-3">{item.heading}</h3>
-                                    <p className="text-gray-700 line-clamp-3 text-sm">{item.description}</p>
+                                    <p className="text-gray-500 line-clamp-3 text-sm">{item.description}</p>
                                 </div>
                             </div>
                         ))}
@@ -152,7 +152,7 @@ const MobileExpertCarReviews: React.FC = () => {
             </section>
 
             {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] p-8 flex justify-center items-center'>
+            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center'>
 
                 <div className="hidden sm:block w-full lg:w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
                     <img

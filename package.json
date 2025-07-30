@@ -1,4 +1,5 @@
 {
+  
   "name": "v3cars",
   "version": "0.1.0",
   "private": true,
@@ -8,6 +9,7 @@
     "start": "next start",
     "lint": "next lint"
   },
+
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^2.8.2",
@@ -19,6 +21,7 @@
     "redux-persist": "^6.0.0",
     "swiper": "^11.2.10"
   },
+
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
@@ -27,7 +30,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
   }
 }

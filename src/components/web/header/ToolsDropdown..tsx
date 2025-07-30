@@ -31,7 +31,7 @@ const ToolsDropdown = () => {
   ];
 
   return (
-    <div className="w-full bg-white shadow-md border-b-[5px] rounded-b-[10px] border-gray-500 h-full">
+    <div className="w-full bg-white dark:bg-[#171717] shadow-md border-b-[5px] rounded-b-[10px] border-gray-500 dark:border-[#2E2E2E] h-full px-10">
       <div className="max-w-[1600px] mx-auto py-6 flex gap-6 items-start">
         <div className="flex-1 flex gap-6">
           {sections.map((section, index) => (
@@ -45,11 +45,11 @@ const ToolsDropdown = () => {
                 <p className="text-xs text-gray-700 mb-4">{section.desc}</p>
               </div>
 
-              <ul className="text-[13px] text-gray-800">
+              <ul className="text-[13px]">
                 {section.links.map((text, i) => (
                   <li
                     key={i}
-                    className="flex items-center gap-2 hover:underline cursor-pointer py-2 border-b border-gray-200 last:border-b-0"
+                    className="flex items-center gap-2 hover:underline cursor-pointer py-2 border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0"
                   >
                     <Image
                       src="/common/v3icon.svg"

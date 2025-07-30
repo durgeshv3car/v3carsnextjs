@@ -10,6 +10,7 @@ import NewsVideosDropdown from "../header/NewsVideosDropdown";
 import ToolsDropdown from "../header/ToolsDropdown.";
 import LoginModal from "./LoginModal";
 import { useRouter } from "next/navigation";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const Header = () => {
 
@@ -26,24 +27,38 @@ const Header = () => {
     return (
         <>
 
-            <header className="w-full bg-white z-50 shadow-xl">
-
+            <header className="w-full z-50 shadow-xl px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]">
                 <div className="max-w-[1600px] mx-auto py-3 flex items-center justify-between">
 
                     {/* Logo */}
-                    <div className="flex items-center cursor-pointer gap-2" onClick={() => router.push('/')}>
+                    <div
+                        className="flex items-center cursor-pointer gap-2"
+                        onClick={() => router.push('/')}
+                    >
+                        {/* Light mode logo */}
                         <Image
                             src="/logo/header/v3logo.png"
                             alt="V3 Cars Logo"
                             width={150}
                             height={40}
                             priority
+                            className="block dark:hidden"
+                        />
+
+                        {/* Dark mode logo */}
+                        <Image
+                            src="/logo/header/v3-white2.png"
+                            alt="V3 Cars Logo Dark"
+                            width={150}
+                            height={40}
+                            priority
+                            className="hidden dark:block"
                         />
                     </div>
 
-                    {/* Nav Links */}
-                    <nav className="flex items-center gap-6 text-sm font-medium text-gray-800">
 
+                    {/* Nav Links */}
+                    <nav className="flex items-center gap-6 text-sm font-medium">
                         {/* Location */}
                         <div
                             className="relative py-4"
@@ -57,7 +72,7 @@ const Header = () => {
 
                             {/* Dropdown stays visible while hovering */}
                             {hoverTab === "location" && (
-                                <div className="fixed left-0 top-[76px] w-full z-50">
+                                <div className="fixed left-0 top-[76px] w-full z-50 px-10">
                                     <LocationDropdown />
                                 </div>
                             )}
@@ -66,7 +81,8 @@ const Header = () => {
                         {/* New Cars */}
                         <div
                             className="relative"
-                            onClick={() => setHoverTab(hoverTab === "newCars" ? null : "newCars")}
+                            onMouseEnter={() => setHoverTab("newCars")}
+                            onMouseLeave={() => setHoverTab(null)}
                         >
                             <div
                                 className={`cursor-pointer flex items-center gap-1 ${hoverTab === "newCars" ? "text-yellow-500" : ""
@@ -77,7 +93,7 @@ const Header = () => {
                             </div>
 
                             {hoverTab === "newCars" && (
-                                <div className="absolute left-0 top-[48px] z-50">
+                                <div className="absolute left-0 top-0 pt-12 z-50">
                                     <NewCarsDropdown />
                                 </div>
                             )}
@@ -86,7 +102,8 @@ const Header = () => {
                         {/* News, Reviews & Videos */}
                         <div
                             className="relative py-4"
-                            onClick={() => setHoverTab(hoverTab === "news" ? null : "news")}
+                            onMouseEnter={() => setHoverTab("news")}
+                            onMouseLeave={() => setHoverTab(null)}
 
                         >
                             <span
@@ -98,7 +115,7 @@ const Header = () => {
                             </span>
 
                             {hoverTab === "news" && (
-                                <div className="fixed left-0 top-[76px] w-full z-40">
+                                <div className="fixed left-0 top-[60px] w-full z-40">
                                     <NewsVideosDropdown />
                                 </div>
                             )}
@@ -107,7 +124,8 @@ const Header = () => {
                         {/* Variant Explained */}
                         <div
                             className="relative  py-4"
-                            onClick={() => setHoverTab(hoverTab === "variant" ? null : "variant")}
+                            onMouseEnter={() => setHoverTab("variant")}
+                            onMouseLeave={() => setHoverTab(null)}
                         >
                             <span
                                 className={`cursor-pointer ${hoverTab === "variant" ? "text-yellow-500" : ""
@@ -120,7 +138,8 @@ const Header = () => {
                         {/* Tools */}
                         <div
                             className="relative  py-4"
-                            onClick={() => setHoverTab(hoverTab === "tools" ? null : "tools")}
+                            onMouseEnter={() => setHoverTab("tools")}
+                            onMouseLeave={() => setHoverTab(null)}
                         >
                             <span
                                 className={`cursor-pointer flex items-center gap-1 ${hoverTab === "tools" ? "text-yellow-500" : ""
@@ -131,7 +150,7 @@ const Header = () => {
                             </span>
 
                             {hoverTab === "tools" && (
-                                <div className="fixed top-[76px] left-0 w-full z-40">
+                                <div className="fixed top-[60px] left-0 w-full z-40">
                                     <ToolsDropdown />
                                 </div>
                             )}
@@ -142,11 +161,11 @@ const Header = () => {
                     {/* Right Section */}
                     <div className="flex items-center gap-4">
                         {/* Search */}
-                        <div className="flex items-center border rounded-full overflow-hidden">
+                        <div className="flex items-center border border-[#e5e5e5] dark:border-[#3a3a3a] rounded-full overflow-hidden">
                             <input
                                 type="text"
                                 placeholder="Search Car"
-                                className="px-4 py-1 w-48 outline-none text-sm rounded-l-full"
+                                className="px-4 py-1 w-48 outline-none bg-transparent text-sm rounded-l-full"
                             />
                             <button className="bg-gray-700 p-2 flex items-center justify-center h-full w-20 rounded-r-full rounded-l-full">
                                 <FiSearch size={18} color="#fff" />
@@ -161,6 +180,8 @@ const Header = () => {
                             <HiOutlineUserCircle size={20} />
                             Login / Signup
                         </button>
+
+                        <ThemeToggle />
                     </div>
 
                 </div>
