@@ -1,10 +1,14 @@
+import BottomAd from "@/components/common/BottomAd";
+import PopularBrands from "@/components/common/PopularBrands";
+import SideBarAdLong from "@/components/common/SideBarAdLong";
+import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import TopSection from "@/components/common/TopSection";
+import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
 import CarReviews from "@/components/responsive/popular-cars/CarReviews";
 import HottestCarInIndia from "@/components/responsive/popular-cars/CarsInIndia";
 import CarsNews from "@/components/responsive/popular-cars/CarsNews";
 import PopularCar from "@/components/responsive/popular-cars/PopularCar";
 import PopularCarsVideos from "@/components/responsive/popular-cars/PopularCarsVideos";
-import PopularSideBar from "@/components/responsive/popular-cars/PopularSidebar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -33,40 +37,30 @@ function PopularCars() {
     return (
         <>
             <TopSection />
-            <div className="px-6 lg:px-10">
-            <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
+            <div className="px-4 xl:px-10">
+                <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
 
-                
-                <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
-                    <div className="w-auto lg:max-w-[74%]">
-                        <PopularCar />
-                        <HottestCarInIndia />
-                        <CarsNews />
-                        <CarReviews />
-                        <PopularCarsVideos />
+
+                    <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
+                        <div className="w-auto lg:max-w-[74%]">
+                            <PopularCar />
+                            <HottestCarInIndia />
+                            <CarsNews />
+                            <CarReviews />
+                            <PopularCarsVideos />
+                        </div>
+                        <div className="w-auto lg:max-w-[24%] space-y-10">
+                            <SideBarAdSmall />
+                            <UpcomingTopBrands />
+                            <SideBarAdSmall />
+                            <PopularBrands />
+                            <SideBarAdLong />
+                        </div>
                     </div>
-                    <div className="w-auto lg:max-w-[24%]">
-                        <PopularSideBar />
-                    </div>
                 </div>
             </div>
-            </div>
 
-            {/* Banner Section */}
-            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-10 lg:flex justify-center items-center mb-6'>
-
-                <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
-                    <img
-                        src={'/ads/ad1.png'}
-                        alt='ad1'
-                        className='h-full w-full'
-                    />
-                </div>
-
-                <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'>
-
-                </div>
-            </div>
+            <BottomAd />
         </>
     );
 }
