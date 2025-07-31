@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Montserrat, Roboto } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/ui/Header";
-import Provider from "./provider";
-import ScrollFlipIcon from "@/components/ui/ScrollFlipIcon";
+import Layout from "../components/layouts/Layout";
+import ScrollFlipIcon from "@/components/common/ScrollFlipIcon";
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -48,10 +47,11 @@ export default function RootLayout({
         className="antialiased transition-colors"
       >
         <div className="min-h-screen flex flex-col justify-between">
-          <Header />
-          <Provider>
+         
+          <Layout>
             {children}
-          </Provider>
+          </Layout>
+
           <ScrollFlipIcon />
         </div>
       </body>

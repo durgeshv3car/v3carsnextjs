@@ -10,7 +10,7 @@ import NewsVideosDropdown from "../header/NewsVideosDropdown";
 import ToolsDropdown from "../header/ToolsDropdown.";
 import LoginModal from "./LoginModal";
 import { usePathname, useRouter } from "next/navigation";
-import ThemeToggle from "@/components/ui/ThemeToggle";
+import ThemeToggle from "@/components/common/ThemeToggle";
 
 const Header = () => {
 

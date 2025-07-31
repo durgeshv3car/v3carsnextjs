@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
         path !== "/web-stories" && (
           <>
             <footer className="bg-[#E2E2E2] dark:bg-[#171717] border-t border-gray-300 dark:border-[#262629]">
-              <section className="px-6 lg:px-10">
+              <section className="px-4 lg:px-10">
                 <div className="w-full lg:max-w-[1600px] mx-auto pt-8 pb-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
                   {/* Connect */}
                   <div className="space-y-6">

@@ -1,8 +1,12 @@
 import NewCarsLaunched from "@/components/responsive/upcoming-cars/NewCarsLaunched";
 import NewUpcomingCars from "@/components/responsive/upcoming-cars/NewUpcomingCars";
-import TopSection from "@/components/ui/TopSection";
+import TopSection from "@/components/common/TopSection";
 import UpcomingSideBar from "@/components/responsive/upcoming-cars/UpcomingSidebar";
 import { Metadata } from "next";
+import BottomAd from "@/components/common/BottomAd";
+import SideBarAdSmall from "@/components/common/SideBarAdSmall";
+import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import Upcoming from "@/components/common/UpcomingCars";
 
 export const metadata: Metadata = {
     title: "Upcoming Cars in India 2024-2025 | Latest Launches, Prices, Images",
@@ -38,29 +42,19 @@ function UpcomingCars() {
                             <NewUpcomingCars />
                             <NewCarsLaunched />
                         </div>
-                        <div className="w-auto lg:max-w-[24%] mt-6 lg:mt-12">
-                            <UpcomingSideBar />
+                        <div className="w-auto lg:max-w-[24%] mt-6 lg:mt-12 space-y-10">
+                            <SideBarAdSmall />
+                            <UpcomingTopBrands />
+                            <SideBarAdSmall />
+                            <Upcoming />
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-4 flex justify-center items-center mb-6'>
+            <BottomAd />
 
-                <div className="hidden sm:block w-full lg:w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
-                    <img
-                        src={'/ads/ad1.png'}
-                        alt='ad1'
-                        className='h-full w-full'
-                    />
-                </div>
-
-                <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'>
-
-                </div>
-            </div>
         </>
     );
 }

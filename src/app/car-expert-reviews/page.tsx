@@ -1,7 +1,9 @@
 import PopularVideos from "@/components/common/PopularVideos";
-import RecentVideos from "@/components/common/RecentVideo";
-import LatestVideos from "@/components/responsive/car-review-video/LatestVideo";
-import TopBanner from "@/components/responsive/car-review-video/TopBanner";
+import SideBarAdSmall from "@/components/common/SideBarAdSmall";
+import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import LatestExpertReview from "@/components/responsive/car-expert-review/LatestExpertReview";
+import TopComparisonReviews from "@/components/responsive/car-expert-review/TopComparisonReviews";
+import TrendingComparisonReviews from "@/components/responsive/car-expert-review/TrendingComparisonReviews";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
 
 
 
-function CarReviewVideos() {
+function CarExpertReviews() {
     return (
         <>
             <div className='bg-[#18181b] text-white'>
@@ -30,7 +32,7 @@ function CarReviewVideos() {
                         <Link href="/" className="hover:underline">Home</Link>
                         <span className="text-yellow-500">›</span>
                         <span className="font-medium text-yellow-500">
-                            Car Review Videos
+                            Car Expert Reviews
                         </span>
                     </div>
                 </div>
@@ -38,14 +40,17 @@ function CarReviewVideos() {
 
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] mx-auto pb-6">
-                    <TopBanner />
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%]">
-                            <LatestVideos />
+                            <LatestExpertReview />
+                            <TrendingComparisonReviews />
+                            <TopComparisonReviews />
                         </div>
-                        <div className="w-auto lg:max-w-[24%] lg:mt-12 space-y-4">
-                            <RecentVideos />
+                        <div className="w-auto lg:max-w-[24%] lg:mt-12 space-y-10">
+                            <SideBarAdSmall />
+                            <UpcomingTopBrands />
                             <PopularVideos />
+                            <SideBarAdSmall />
                         </div>
                     </div>
                 </div>
@@ -54,4 +59,4 @@ function CarReviewVideos() {
     );
 }
 
-export default CarReviewVideos;
+export default CarExpertReviews;

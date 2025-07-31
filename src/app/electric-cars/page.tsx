@@ -1,10 +1,14 @@
 import ElectricCar from "@/components/responsive/electric-cars/ElectricCar";
 import ElectricExpertReviews from "@/components/responsive/electric-cars/ElectricExpertReviews";
-import ElectricSideBar from "@/components/responsive/electric-cars/ElectricSidebar";
 import ElectricVehicleNews from "@/components/responsive/electric-cars/ElectricVehicleNews";
 import ElectricVehicleVideos from "@/components/responsive/electric-cars/ElectricVehicleVideos";
-import TopSection from "@/components/ui/TopSection";
+import TopSection from "@/components/common/TopSection";
 import { Metadata } from "next";
+import SideBarAdSmall from "@/components/common/SideBarAdSmall";
+import UpcomingCars from "@/components/common/UpcomingCars";
+import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import PopularBrands from "@/components/common/PopularBrands";
+import BottomAd from "@/components/common/BottomAd";
 
 export const metadata: Metadata = {
     title: "Electric Cars in India 2024 | Prices, Range, Images & More - V3Cars",
@@ -43,28 +47,18 @@ function ElectricCars() {
                             <ElectricExpertReviews />
                             <ElectricVehicleVideos />
                         </div>
-                        <div className="w-auto lg:max-w-[24%]">
-                            <ElectricSideBar />
+                        <div className="w-auto lg:max-w-[24%] space-y-10">
+                            <SideBarAdSmall />
+                            <UpcomingCars />
+                            <UpcomingTopBrands />
+                            <PopularBrands />
+                            <SideBarAdSmall />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-4 flex justify-center items-center mb-6'>
-
-                <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
-                    <img
-                        src={'/ads/ad1.png'}
-                        alt='ad1'
-                        className='h-full w-full'
-                    />
-                </div>
-
-                <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'>
-
-                </div>
-            </div>
+           <BottomAd />
         </>
     );
 }
