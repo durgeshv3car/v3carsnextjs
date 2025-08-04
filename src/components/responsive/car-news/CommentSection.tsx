@@ -53,7 +53,7 @@ const initialComments: Comment[] = [
     likedByAuthor: true,
   },
 
-   {
+  {
     id: 2,
     name: "@ravidhaiya97",
     time: "2 days ago",
@@ -102,11 +102,11 @@ export default function CommentSection() {
             key={i}
             className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80"
           >
-            <Icon />
+            <Icon className="text-gray-800" />
           </span>
         ))}
         <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80">
-          <HiOutlineDotsVertical />
+          <HiOutlineDotsVertical className="text-gray-800" />
         </span>
       </div>
 
@@ -126,22 +126,22 @@ export default function CommentSection() {
         {comments.map((c) => (
           <div key={c.id} className="space-y-2">
             <div className="flex gap-3 items-start">
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-sm font-semibold text-gray-700">
+              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-sm font-semibold ">
                 {c.name.charAt(1)}
               </div>
               <div className="flex-1">
                 <div className="flex justify-between items-center">
                   <div className="text-sm">
-                    <span className="font-semibold text-gray-900 mr-1">{c.name}</span>
-                    <span className="text-gray-500 text-xs">{c.time}</span>
+                    <span className="font-semibold  mr-1">{c.name}</span>
+                    <span className=" text-xs">{c.time}</span>
                     {c.author && (
                       <FaUserCheck className="inline ml-2 text-blue-600 text-[14px]" title="Author" />
                     )}
                   </div>
-                  <HiOutlineDotsVertical className="text-gray-400 text-lg cursor-pointer" />
+                  <HiOutlineDotsVertical className=" text-lg cursor-pointer" />
                 </div>
-                <p className="text-sm text-gray-800 mt-1 whitespace-pre-line">{c.text}</p>
-                <div className="flex items-center gap-4 text-xs text-gray-500 mt-2">
+                <p className="text-sm  mt-1 whitespace-pre-line">{c.text}</p>
+                <div className="flex items-center gap-4 text-xs  mt-2">
                   <button onClick={() => handleLike(c.id)} className="hover:opacity-80">
                     <FaRegThumbsUp className="inline mr-1 text-base" />{c.likes > 0 && c.likes}
                   </button>
@@ -158,8 +158,8 @@ export default function CommentSection() {
 
             {/* Reply Section */}
             {c.replies.length > 0 && (
-              <div className="pl-10 flex gap-2 items-start text-sm text-gray-600">
-                <HiChevronDown className="text-gray-500 text-base mt-1" />
+              <div className="pl-10 flex gap-2 items-start text-sm ">
+                <HiChevronDown className=" text-base mt-1" />
                 <span className="text-blue-600 hover:underline cursor-pointer">
                   • {c.replies.length} {c.replies.length === 1 ? "reply" : "replies"}
                 </span>
@@ -168,7 +168,7 @@ export default function CommentSection() {
           </div>
         ))}
       </div>
-      
+
     </div>
   );
 }

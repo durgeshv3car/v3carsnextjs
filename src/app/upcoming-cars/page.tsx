@@ -5,7 +5,7 @@ import UpcomingSideBar from "@/components/responsive/upcoming-cars/UpcomingSideb
 import { Metadata } from "next";
 import BottomAd from "@/components/common/BottomAd";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
-import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import Upcoming from "@/components/common/UpcomingCars";
 
 export const metadata: Metadata = {

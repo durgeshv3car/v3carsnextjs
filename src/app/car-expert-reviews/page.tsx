@@ -1,6 +1,6 @@
 import PopularVideos from "@/components/common/PopularVideos";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
-import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import LatestExpertReview from "@/components/responsive/car-expert-review/LatestExpertReview";
 import TopComparisonReviews from "@/components/responsive/car-expert-review/TopComparisonReviews";
 import TrendingComparisonReviews from "@/components/responsive/car-expert-review/TrendingComparisonReviews";

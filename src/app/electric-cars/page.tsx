@@ -6,7 +6,7 @@ import TopSection from "@/components/common/TopSection";
 import { Metadata } from "next";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingCars from "@/components/common/UpcomingCars";
-import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import PopularBrands from "@/components/common/PopularBrands";
 import BottomAd from "@/components/common/BottomAd";
 

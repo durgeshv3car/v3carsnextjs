@@ -18,10 +18,11 @@ import LatestVideos from "@/components/responsive/home/LatestVideos";
 import CarWebStories from "@/components/responsive/home/CarWebStories";
 
 export default function Home() {
-  const isMobile = useIsMobile()
+
+  const isMobile = useIsMobile() 
 
   return (
-    <>
+    <> 
       {isMobile ? <MobileHeroSection /> : <HeroSection />}
       <CategorySection />
       <UpcomingCars />
@@ -35,5 +36,6 @@ export default function Home() {
       {isMobile ? <MobileExpertCarReviews /> : <ExpertCarReviews />}
       <TopCarBrands />
     </>
-  );  
+  );
 }
+

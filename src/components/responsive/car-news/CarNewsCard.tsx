@@ -6,24 +6,27 @@ export default function CarNewsCard() {
     return (
 
         <div className="lg:p-8 p-4">
-            <div className=" flex gap-5 flex-col md:flex-row rounded-lg overflow-hidden shadow-sm w-full lg:max-w-[1600px] mx-auto">
+
+            <div className=" flex gap-5 flex-col lg:flex-row rounded-lg overflow-hidden shadow-sm w-full lg:max-w-[1600px] mx-auto">
 
                 {/* Left: Thumbnail */}
-                <div className="">
+                <div className="mx-auto w-full lg:w-[600px]">
+
                     <Image
                         src="/car-news/top-selling.png" // change to your actual image path
                         alt="Car News Thumbnail"
                         width={600}
                         height={300}
-                        className="rounded-xl"
+                        className="rounded-xl w-full lg:w-[600px]"
                     />
+
                 </div>
 
                 {/* Right: Text Content */}
                 <div className="space-y-5 flex flex-col py-2">
 
                     {/* Title */}
-                    <h2 className="text-4xl  ">
+                    <h2 className="lg:text-4xl text-2xl font-semibold text-gray-600 dark:text-white">
                         Maruti Suzuki Ciaz CSD Price Vs Ex-Showroom Price Comparison
                     </h2>
 
@@ -46,13 +49,16 @@ export default function CarNewsCard() {
                             </span>
                         </div>
 
-                        <button className="bg-yellow-400 hover:bg-yellow-500 text-sm px-4 py-2 rounded font-medium text-gray-800">
+                        <button className="bg-yellow-400 hover:bg-yellow-500 text-sm px-4 py-2 rounded font-medium text-gray-800 w-full lg:w-auto transition-colors duration-300">
                             Read More
                         </button>
+                        
                     </div>
                 </div>
+
             </div>
 
         </div>
+
     )
 }

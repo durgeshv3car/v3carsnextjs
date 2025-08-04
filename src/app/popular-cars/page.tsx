@@ -3,7 +3,7 @@ import PopularBrands from "@/components/common/PopularBrands";
 import SideBarAdLong from "@/components/common/SideBarAdLong";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import TopSection from "@/components/common/TopSection";
-import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import CarReviews from "@/components/responsive/popular-cars/CarReviews";
 import HottestCarInIndia from "@/components/responsive/popular-cars/CarsInIndia";
 import CarsNews from "@/components/responsive/popular-cars/CarsNews";
