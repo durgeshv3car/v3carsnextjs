@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
 import { CiCalendarDate } from 'react-icons/ci'
 import { FaUserEdit } from 'react-icons/fa'
 
@@ -65,44 +64,13 @@ const newsList: NewsItem[] = [
 
 
 const TrendingComparisonReviews: React.FC = () => {
-    const scrollRef = useRef<HTMLDivElement>(null)
-    const [isAtStart, setIsAtStart] = useState<boolean>(true)
-    const [isAtEnd, setIsAtEnd] = useState<boolean>(false)
-
-    const handleScroll = () => {
-        const container = scrollRef.current
-        if (!container) return
-
-        const { scrollLeft, scrollWidth, clientWidth } = container
-        setIsAtStart(scrollLeft <= 0)
-        setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 5)
-    }
-
-    const scroll = (dir: 'left' | 'right') => {
-        if (scrollRef.current) {
-            const amount = 390;
-            scrollRef.current.scrollBy({
-                left: dir === 'left' ? -amount : amount,
-                behavior: 'smooth',
-            })
-        }
-    }
-
-    useEffect(() => {
-        const container = scrollRef.current
-        if (!container) return
-
-        handleScroll()
-        container.addEventListener('scroll', handleScroll)
-        return () => container.removeEventListener('scroll', handleScroll)
-    }, [])
 
     return (
         <>
             <section>
                 <h2 className="text-lg font-semibold lg:font-medium my-6">Trending Comparison Reviews</h2>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 border p-2 rounded-lg" >
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 border p-2 rounded-lg dark:border-[#2E2E2E]" >
                     {newsList.slice(0, 3).map((item) => (
                         <div
                             key={item.id}
@@ -113,7 +81,7 @@ const TrendingComparisonReviews: React.FC = () => {
                                 <img
                                     src={item.image}
                                     alt="news"
-                                    className="rounded-lg"
+                                    className="w-full h-full rounded-lg"
                                 />
                             </div>
 

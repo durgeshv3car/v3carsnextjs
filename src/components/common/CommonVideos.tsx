@@ -3,17 +3,21 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
-const videoData = new Array(8).fill({
-    thumbnail: '/latest-video/image2.png',
-    playIcon: '/latest-video/youtube.png',
-    date: 'July 30 2024',
-    title:
-        'Summer Range Impact and Charging Issue in EVs | 4 Months & 4000km Driv EVs | 4 Months & 4000km Dr...',
-    description:
-        'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
-})
+interface CommonVideosProps {
+    title: string;
+    view: string;
+    videoList: VideoItem[];
+}
 
-const CarComparisonLatestVideos: React.FC = () => {
+type VideoItem = {
+    thumbnail: string
+    playIcon: string
+    date: string
+    title: string
+    description: string
+}
+
+const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) => {
     const scrollRef = useRef<HTMLDivElement>(null)
     const [isAtStart, setIsAtStart] = useState<boolean>(true)
     const [isAtEnd, setIsAtEnd] = useState<boolean>(false)
@@ -52,9 +56,9 @@ const CarComparisonLatestVideos: React.FC = () => {
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
-                            <h2 className="text-lg font-semibold">Car Comparison Latest Videos</h2>
+                            <h2 className="text-lg font-medium">{title}</h2>
                             <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
-                                View All
+                                View All {view}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                 </svg>
@@ -98,7 +102,7 @@ const CarComparisonLatestVideos: React.FC = () => {
                     </div>
 
                     <div className='flex space-x-2 overflow-x-auto scroll-smooth scrollbar-hide' ref={scrollRef}>
-                        {videoData.map((video, index) => (
+                        {videoList.map((video, index) => (
                             <div
                                 key={index}
                                 className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-w-[390px] min-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
@@ -135,4 +139,4 @@ const CarComparisonLatestVideos: React.FC = () => {
     )
 }
 
-export default CarComparisonLatestVideos;
+export default CommonVideos;

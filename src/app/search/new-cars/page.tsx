@@ -1,11 +1,7 @@
-import NewCarsLaunched from "@/components/responsive/upcoming-cars/NewCarsLaunched";
-import NewUpcomingCars from "@/components/responsive/upcoming-cars/NewUpcomingCars";
-import TopSection from "@/components/common/TopSection";
 import { Metadata } from "next";
-import BottomAd from "@/components/common/BottomAd";
-import SideBarAdSmall from "@/components/common/SideBarAdSmall";
-import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
-import Upcoming from "@/components/common/UpcomingCars";
+import FiltersSection from "@/components/responsive/advance-search/FilterSection";
+import Link from "next/link";
+import SearchResult from "@/components/responsive/advance-search/SearchResult";
 
 export const metadata: Metadata = {
     title: "Upcoming Cars in India 2024-2025 | Latest Launches, Prices, Images",
@@ -29,33 +25,38 @@ export const metadata: Metadata = {
 };
 
 
-function UpcomingCars() {
+function AdvanceSearch() {
     return (
         <>
-            <TopSection />
+            <div className='bg-[#18181b] text-white'>
+                <div className='px-4 xl:px-10'>
+                    <div className="w-full lg:max-w-[1600px] mx-auto text-sm h-[42px] flex items-center gap-2">
+                        <Link href="/" className="hover:underline">Home</Link>
+                        <span className="text-yellow-500">›</span>
+                        <span className="font-medium text-yellow-500">
+                            Search / New Cars
+                        </span>
+                    </div>
+                </div>
+            </div>
+
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto">
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
-                        <div className="w-auto lg:max-w-[74%]">
-                            <NewUpcomingCars />
-                            <NewCarsLaunched />
+                        <div className="w-full lg:min-w-[24%] space-y-10">
+                            <FiltersSection />
                         </div>
-                        <div className="w-auto lg:max-w-[24%] mt-6 lg:mt-12 space-y-10">
-                            <SideBarAdSmall />
-                            <UpcomingTopBrands />
-                            <SideBarAdSmall />
-                            <Upcoming />
+                        <div className="w-auto lg:min-w-[74%]">
+                            <SearchResult />
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            <BottomAd />
-
         </>
     );
 }
 
-export default UpcomingCars;
+export default AdvanceSearch;

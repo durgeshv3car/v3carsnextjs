@@ -5,7 +5,13 @@ import { useEffect, useRef, useState } from 'react'
 import { CiCalendarDate } from 'react-icons/ci'
 import { FaUserEdit } from 'react-icons/fa'
 
-type NewsItem = {
+interface CommonExpertReviewProps {
+    title: string;
+    view: string;
+    reviewList: ReviewItem[];
+}
+
+type ReviewItem = {
     id: number
     image: string
     tag: string
@@ -15,56 +21,8 @@ type NewsItem = {
     date: string
 }
 
-const newsList: NewsItem[] = [
-    {
-        id: 1,
-        image: '/car-review/image1.png',
-        tag: 'June 2024',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 2,
-        image: '/car-review/image2.png',
-        tag: 'Mahindra Thar Roxx',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 3,
-        image: '/car-review/image3.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 4,
-        image: '/car-review/image1.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 5,
-        image: '/car-review/image2.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-]
 
-
-const ElectricExpertReviews: React.FC = () => {
+const CommonExpertReviews: React.FC<CommonExpertReviewProps> = ({ title, view, reviewList }) => {
     const scrollRef = useRef<HTMLDivElement>(null)
     const [isAtStart, setIsAtStart] = useState<boolean>(true)
     const [isAtEnd, setIsAtEnd] = useState<boolean>(false)
@@ -103,12 +61,12 @@ const ElectricExpertReviews: React.FC = () => {
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
-                            <h2 className="text-lg font-semibold lg:font-medium">Electric Vehicle (EV) Expert Reviews</h2>
+                            <h2 className="text-lg font-semibold lg:font-medium">{title}</h2>
                             <Link
                                 href="#"
                                 className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
                             >
-                                View All EV Expert Reviews
+                                View All {view}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -158,7 +116,7 @@ const ElectricExpertReviews: React.FC = () => {
                     </div>
 
                     <div className="flex space-x-2 overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
-                        {newsList.map((item) => (
+                        {reviewList.map((item) => (
                             <div
                                 key={item.id}
                                 className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-w-[390px] min-h-[371px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
@@ -198,4 +156,4 @@ const ElectricExpertReviews: React.FC = () => {
     )
 }
 
-export default ElectricExpertReviews;
+export default CommonExpertReviews;
