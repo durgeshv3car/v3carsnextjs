@@ -16,6 +16,7 @@ export default function CarNewsTile({
   author,
   date,
 }: CarNewsTileProps) {
+
   return (
 
     <div className=" border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
@@ -49,9 +50,12 @@ export default function CarNewsTile({
           </div>
 
         </div>
-       
+
       </div>
     </div>
   );
 }
+
+
+
 

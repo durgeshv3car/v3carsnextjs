@@ -1,6 +1,7 @@
 import PopularVideos from "@/components/common/PopularVideos";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
-import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
+import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
+import CarExpertReview from "@/components/mobile/car-expert-review/CarExpertReview";
 import LatestExpertReview from "@/components/responsive/car-expert-review/LatestExpertReview";
 import TopComparisonReviews from "@/components/responsive/car-expert-review/TopComparisonReviews";
 import TrendingComparisonReviews from "@/components/responsive/car-expert-review/TrendingComparisonReviews";
@@ -21,8 +22,6 @@ export const metadata: Metadata = {
     ],
 };
 
-
-
 function CarExpertReviews() {
     return (
         <>
@@ -41,14 +40,38 @@ function CarExpertReviews() {
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] mx-auto pb-6">
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
-                        <div className="w-auto lg:max-w-[74%]">
+
+                        <div className="hidden lg:block w-auto lg:max-w-[74%] space-y-6">
                             <LatestExpertReview />
+
+                            <div className="flex justify-center">
+                                <img
+                                    src={"/ads/ad2.png"}
+                                    alt="ads Image"
+                                    className="w-[970px] h-[90px] object-cover"
+                                />
+                            </div>
+
                             <TrendingComparisonReviews />
+
+                            <div className="flex justify-center">
+                                <img
+                                    src={"/ads/ad2.png"}
+                                    alt="ads Image"
+                                    className="w-[970px] h-[90px] object-cover"
+                                />
+                            </div>
+
                             <TopComparisonReviews />
                         </div>
+
+                        <div className="lg:hidden">
+                            <CarExpertReview />
+                        </div>
+
                         <div className="w-auto lg:max-w-[24%] lg:mt-12 space-y-10">
                             <SideBarAdSmall />
-                            <UpcomingTopBrands />
+                            <UpcomingCarByTopBrands />
                             <PopularVideos />
                             <SideBarAdSmall />
                         </div>

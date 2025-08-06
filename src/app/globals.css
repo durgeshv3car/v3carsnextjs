@@ -50,3 +50,17 @@ body {
   background-color: #FFCC00;
   /* border: 2px solid #f1f1f1; */
 }
+
+.scrollbar-filter::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-filter::-webkit-scrollbar-track {
+  background: #eeeeee;
+  border-radius: 10px;
+}
+
+.scrollbar-filter::-webkit-scrollbar-thumb {
+  background-color: #b0b0b0;
+  border-radius: 10px;
+}

@@ -21,6 +21,7 @@ export default function CarSpecsBlock() {
                         MG Hector Plus Price Increased By Up To Rs. 30,000- Latest
                     </h1>
 
+
                     {/* Meta Info */}
                     <div className="flex flex-wrap gap-y-2 text-sm  justify-between">
                         <p className="mr-6">
@@ -46,6 +47,7 @@ export default function CarSpecsBlock() {
                             </span>
                         ))}
                     </div>
+
                 </div>
 
                 <div className="md:block hidden space-y-3">
@@ -86,6 +88,7 @@ export default function CarSpecsBlock() {
 
                 {/* ===== Block 1: Single Column Table ===== */}
                 <div className="rounded-xl border border-gray-200 overflow-hidden mb-5">
+
                     {/* Table Header */}
                     <div className="bg-[#F5F5F5] dark:bg-[#27272a] text-center py-3 px-2 border-b border-gray-200">
                         <h3 className="text-[16px] font-bold ">2024 MAHINDRA THAR</h3>
@@ -123,6 +126,8 @@ export default function CarSpecsBlock() {
                             </div>
                         ))}
                     </div>
+
+
                 </div>
 
                 {/* ===== Paragraph ===== */}

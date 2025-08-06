@@ -42,6 +42,7 @@ export default function Page() {
 
   return (
     <div>
+
       <CarNewsCard />
 
       <div className="lg:p-8 p-4">
@@ -131,7 +132,13 @@ export default function Page() {
       </div>
 
     </div>
+
   );
 }
+
+
+
+
+
 
 

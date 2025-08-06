@@ -1,5 +1,5 @@
+import CommonVideos from "@/components/common/CommonVideos";
 import TopSection from "@/components/common/TopSection";
-import CarComparisonLatestVideos from "@/components/responsive/compare-cars/CarComparisonLatestVideos";
 import CompareNow from "@/components/responsive/compare-cars/CompareNow";
 import ComparisonNews from "@/components/responsive/compare-cars/ComparisonNews";
 import Information from "@/components/responsive/compare-cars/Information";
@@ -20,7 +20,15 @@ export const metadata: Metadata = {
     ],
 };
 
-
+const videoList = new Array(8).fill({
+    thumbnail: '/latest-video/image2.png',
+    playIcon: '/latest-video/youtube.png',
+    date: 'July 30 2024',
+    title:
+        'Summer Range Impact and Charging Issue in EVs | 4 Months & 4000km Driv EVs | 4 Months & 4000km Dr...',
+    description:
+        'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
+})
 
 function CompareCars() {
     return (
@@ -30,11 +38,19 @@ function CompareCars() {
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
                     <CompareNow />
                     <Information />
+                    
                     <div className="hidden lg:block">
                         <ComparisonNews />
                     </div>
+
                     <MostPopularCarComparison />
-                    <CarComparisonLatestVideos />
+
+                    <CommonVideos
+                        title="Car Comparison Latest Videos"
+                        view="Videos"
+                        videoList={videoList}
+                    />
+
                 </div>
             </div>
         </>

@@ -140,7 +140,7 @@ const upcomingCars: CarProps[] = [
 
 function HottestCarInIndia() {
     return (
-        <section>
+        <section className='mb-4'>
             <h2 className="text-lg font-medium my-6">Hottest Cars In India 2024</h2>
 
             <div className='p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl'>

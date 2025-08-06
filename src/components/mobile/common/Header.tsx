@@ -47,7 +47,7 @@ const MobileHeader = () => {
       {
         path !== "/web-stories" && (
           <>
-            <header className="w-full  bg-white dark:bg-[#171717] z-50 relative ">
+            <header className="w-full  bg-white dark:bg-[#171717] z-40 relative ">
 
               {/* Top bar */}
               <div className="flex items-center justify-between px-4 py-3">
