@@ -45,11 +45,17 @@ export default function CompareNow() {
                         </div>
 
                         {/* Dropdowns */}
-                        <CustomSelect options={items} placeholder={"Select Brands"} onSelect={handleBrand} />
+                        <div className='w-full border dark:border-[#2E2E2E] rounded-lg text-sm'>
+                            <CustomSelect options={items} placeholder={"Select Brands"} onSelect={handleBrand} />
+                        </div>
 
-                        <CustomSelect options={items2} placeholder={"Select Type"} onSelect={handleType} />
+                        <div className='w-full border dark:border-[#2E2E2E] rounded-lg text-sm'>
+                            <CustomSelect options={items2} placeholder={"Select Type"} onSelect={handleType} />
+                        </div>
 
-                        <CustomSelect options={items3} placeholder={"Select Variant"} onSelect={handleVariant} />
+                        <div className='w-full border dark:border-[#2E2E2E] rounded-lg text-sm'>
+                            <CustomSelect options={items3} placeholder={"Select Variant"} onSelect={handleVariant} />
+                        </div>
                     </div>
                 ))}
             </div>

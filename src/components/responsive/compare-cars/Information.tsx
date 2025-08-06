@@ -86,7 +86,7 @@ export default function Information() {
                                     </div>
 
                                     {/* Variant Dropdown */}
-                                    <div className="mt-4">
+                                    <div className="mt-4 w-full border dark:border-[#2E2E2E] rounded-lg text-sm">
                                         <CustomSelect
                                             options={items3}
                                             placeholder="Select Variant"

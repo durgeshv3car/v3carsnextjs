@@ -39,9 +39,11 @@ export default function TopSection() {
                                         ? "Popular Cars"
                                         : path === "/compare-cars"
                                             ? "Compare Cars"
-                                            : path === "/electric-cars"
-                                                ? "Electric Cars"
-                                                : "Upcoming Cars"
+                                            : path === "/car-loan-emi-calculator"
+                                                ? "Car Loan EMI Calculator"
+                                                : path === "/electric-cars"
+                                                    ? "Electric Cars"
+                                                    : "Upcoming Cars"
                             }
                         </span>
                     </div>
@@ -60,9 +62,11 @@ export default function TopSection() {
                                         ? "Popular Cars In India 2024"
                                         : path === "/compare-cars"
                                             ? "Compare to choose the right car!"
-                                            : path === "/electric-cars"
-                                                ? "Electric Cars in India"
-                                                : "Upcoming Cars In India (2024-2025)"
+                                            : path === "/car-loan-emi-calculator"
+                                                ? "CAR LOAN EMI CALCULATOR"
+                                                : path === "/electric-cars"
+                                                    ? "Electric Cars in India"
+                                                    : "Upcoming Cars In India (2024-2025)"
                             }
                         </h1>
 
@@ -75,9 +79,11 @@ export default function TopSection() {
                                         ? "Looking for the best-selling cars in India? Look no further! This section reveals the top 20 cars dominating the Indian market based on monthly sales figures. Some of the most popular cars in the month of July 2024 are Maruti Suzuki Grand Vitara, Maruti Suzuki Fronx, Maruti Suzuki Brezza, Tata Nexon, Tata Punch and many more. Explore detailed information on each car, including segment, body"
                                         : path === "/compare-cars"
                                             ? "Want to buy a Car but confused how to select the best car as per your requirements? V3Cars compare car tool can help you to finalize your car. To compare cars you just need to select two or more cars of your choice as per your requirements and get the comparison instantly. You can compare Car price, engine specifications, dimensions & interior exterior features. So now compare your favourite"
-                                            : path === "/electric-cars"
-                                                ? "Here is the list of the most popular electric cars in India 2024. Some of the most popular EV cars in India are Tata Punch EV, MG Comet EV, Mahindra XUV400 EV, Tata Tiago EV, MG ZS EV and many more. These best electric cars were identified based on user interest in the V3Cars platform. Explore the list of 2024 popular electric cars in India and check which car suits your requirements. Check "
-                                                : `Gear up for exciting new car launches in India (2024-2025)! We’ve compiled a comprehensive list featuring over 164 upcoming cars across various segments like SUVs, hatchbacks, sedans, and more. Top brands like Maruti Suzuki, Hyundai, Tata, Mahindra, Kia and others are all set to unveil their latest offerings. Explore expected prices, model image and launch dates for each car.`
+                                            : path === "/car-loan-emi-calculator"
+                                                ? "Regardless of whether you are salaried or self-employed, you can purchase your dream car without the need to be wealthy or save up a significant amount of money, unlike a few decades ago. Simply apply for a new car loan and drive your dream car sooner."
+                                                : path === "/electric-cars"
+                                                    ? "Here is the list of the most popular electric cars in India 2024. Some of the most popular EV cars in India are Tata Punch EV, MG Comet EV, Mahindra XUV400 EV, Tata Tiago EV, MG ZS EV and many more. These best electric cars were identified based on user interest in the V3Cars platform. Explore the list of 2024 popular electric cars in India and check which car suits your requirements. Check "
+                                                    : `Gear up for exciting new car launches in India (2024-2025)! We’ve compiled a comprehensive list featuring over 164 upcoming cars across various segments like SUVs, hatchbacks, sedans, and more. Top brands like Maruti Suzuki, Hyundai, Tata, Mahindra, Kia and others are all set to unveil their latest offerings. Explore expected prices, model image and launch dates for each car.`
                             }
                         </p>
 

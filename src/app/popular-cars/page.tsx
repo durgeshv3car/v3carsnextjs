@@ -1,4 +1,5 @@
 import BottomAd from "@/components/common/BottomAd";
+import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
 import CommonExpertReviews from "@/components/common/CommonExpertReviews";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonVideos from "@/components/common/CommonVideos";
@@ -7,11 +8,7 @@ import SideBarAdLong from "@/components/common/SideBarAdLong";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import TopSection from "@/components/common/TopSection";
 import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
-import CarReviews from "@/components/responsive/popular-cars/CarReviews";
-import HottestCarInIndia from "@/components/responsive/popular-cars/CarsInIndia";
-import CarsNews from "@/components/responsive/popular-cars/CarsNews";
 import PopularCar from "@/components/responsive/popular-cars/PopularCar";
-import PopularCarsVideos from "@/components/responsive/popular-cars/PopularCarsVideos";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -152,6 +149,17 @@ const videoList = new Array(8).fill({
         'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
 })
 
+const carsData = [
+    {
+        image: "/popular-cars/grand-vitara.png",
+        name: "Grand Vitara",
+        engine: "103PS",
+        nitro: "137Nm",
+        mileage: "21.11kmpl",
+        price: "₹10.99 - 19.93 lakh*",
+    },
+]
+
 function PopularCars() {
     return (
         <>
@@ -164,7 +172,17 @@ function PopularCars() {
                         <div className="w-auto lg:max-w-[74%]">
                             <PopularCar />
 
-                            <HottestCarInIndia />
+                            <div className='mb-4'>
+                                <h2 className="text-lg font-medium my-6">Hottest Cars In India 2024</h2>
+
+                                <div className='p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl'>
+                                    <p className='mb-2'>Discover India's Most-Loved Cars! This section dives into user interest on the V3Cars platform, showcasing the top 30 cars capturing hearts and minds. Go beyond just sales figures and explore the vehicles generating the most buzz! We provide detailed information on each car, including price, specifications, and mileage. Find the car that ignites your passion and explore your options with confidence.</p>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <CurrentOffersCard carsData={carsData} />
+                                    </div>
+                                </div>
+                            </div>
 
                             <CommonNewsUpdate
                                 title="Cars News Updates"

@@ -66,7 +66,7 @@ const HeroSection: React.FC = () => {
         >
           {slides.map((slide, index) => (
             <SwiperSlide key={index}>
-              <div className=' absolute left-0 top-0 w-full h-full bg-gradient-to-r from-black/35 to-transparent'/>
+              <div className=' absolute left-0 top-0 w-full h-full bg-gradient-to-r from-black/35 to-transparent' />
               <div
                 className="h-full w-full bg-cover bg-center"
                 style={{ backgroundImage: `url(${slide.image})` }}
@@ -117,13 +117,21 @@ const HeroSection: React.FC = () => {
                 {/* Form */}
                 {activeTab === 'budget' ? (
                   <>
-                    <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
-                    <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
+                    <div className='border-b dark:border-[#2E2E2E]'>
+                      <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
+                    </div>
+                    <div className='border-b dark:border-[#2E2E2E]'>
+                      <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
+                    </div>
                   </>
                 ) : (
                   <>
-                    <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
-                    <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
+                    <div className='border-b dark:border-[#2E2E2E]'>
+                      <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
+                    </div>
+                    <div className='border-b dark:border-[#2E2E2E]'>
+                      <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
+                    </div>
                   </>
                 )}
 
@@ -164,7 +172,7 @@ const HeroSection: React.FC = () => {
       width: 60px;
     }
   `}</style>
- 
+
 
     </>
   );

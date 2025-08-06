@@ -148,13 +148,24 @@ const MobileHeroSection: React.FC = () => {
                 <div className="p-4 space-y-4">
                     {activeTab === 'budget' ? (
                         <div className='flex items-center gap-2 text-xs'>
-                            <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
-                            <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
+
+                            <div className='w-full border-b dark:border-[#2E2E2E]'>
+                                <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
+                            </div>
+
+                            <div className='w-full border-b dark:border-[#2E2E2E]'>
+                                <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
+                            </div>
+
                         </div>
                     ) : (
                         <div className='flex items-center gap-2 text-xs'>
-                            <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
-                            <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
+                            <div className='w-full border-b dark:border-[#2E2E2E]'>
+                                <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
+                            </div>
+                            <div className='w-full border-b dark:border-[#2E2E2E]'>
+                                <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
+                            </div>
                         </div>
                     )}
 

@@ -40,7 +40,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, placeholder, onSel
 
   return (
     <div className={"w-full relative"} ref={dropdownRef}>
-      <div className={"p-2 border-b dark:border-[#2E2E2E] flex justify-between items-center cursor-pointer"} onClick={() => setIsOpen((prev) => !prev)}>
+      <div className={"p-2 flex justify-between items-center cursor-pointer"} onClick={() => setIsOpen((prev) => !prev)}>
         {selectedItem || placeholder}
         <span className={styles['arrow']}>
           {isOpen ?

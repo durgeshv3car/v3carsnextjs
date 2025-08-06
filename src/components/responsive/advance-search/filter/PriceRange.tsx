@@ -5,7 +5,6 @@ import React, { useRef, useEffect, useState } from 'react';
 
 type PriceRangeFilterProps = {
     openSection: string | null;
-    toggleSection: (section: string) => void;
 };
 
 const priceRanges: string[] = [
@@ -18,7 +17,7 @@ const priceRanges: string[] = [
     'Above ₹ 1 Crore',
 ];
 
-function PriceRangeFilter({ openSection, toggleSection }: PriceRangeFilterProps) {
+function PriceRangeFilter({ openSection }: PriceRangeFilterProps) {
     const contentRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<string>('0px');
 
@@ -31,30 +30,6 @@ function PriceRangeFilter({ openSection, toggleSection }: PriceRangeFilterProps)
     }, [openSection]);
 
     return (
-        <div className="pt-3">
-            <div
-                className="flex justify-between items-center cursor-pointer"
-                onClick={() => toggleSection('price')}
-            >
-                <h3 className="font-semibold text-lg">Price Range</h3>
-                <div className={`${openSection === 'price' ? "rotate-180" : "rotate-0"} transition-transform duration-300`}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="size-5"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                        />
-                    </svg>
-                </div>
-            </div>
-
             <div
                 ref={contentRef}
                 className="transition-all duration-500 ease-in-out overflow-hidden"
@@ -93,7 +68,6 @@ function PriceRangeFilter({ openSection, toggleSection }: PriceRangeFilterProps)
                     </div>
                 </div>
             </div>
-        </div>
     );
 }
 
