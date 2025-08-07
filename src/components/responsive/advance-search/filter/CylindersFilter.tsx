@@ -1,11 +1,9 @@
 'use client';
 
-import Slider from '@/components/ui/custom-range-input/Slider';
 import React, { useRef, useEffect, useState } from 'react';
 
 type CylindersFilterProps = {
     openSection: string | null;
-    toggleSection: (section: string) => void;
 };
 
 const cylinderRanges: string[] = [
@@ -18,7 +16,7 @@ const cylinderRanges: string[] = [
     '8 Cylinder & above',
 ];
 
-function CylindersFilter({ openSection, toggleSection }: CylindersFilterProps) {
+function CylindersFilter({ openSection }: CylindersFilterProps) {
     const contentRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<string>('0px');
 
@@ -31,30 +29,6 @@ function CylindersFilter({ openSection, toggleSection }: CylindersFilterProps) {
     }, [openSection]);
 
     return (
-        <div className="pt-3">
-            <div
-                className="flex justify-between items-center cursor-pointer"
-                onClick={() => toggleSection('cylinders')}
-            >
-                <h3 className="font-semibold text-lg">Cylinders</h3>
-                <div className={`${openSection === 'cylinders' ? "rotate-180" : "rotate-0"} transition-transform duration-300`}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="size-5"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                        />
-                    </svg>
-                </div>
-            </div>
-
             <div
                 ref={contentRef}
                 className="transition-all duration-500 ease-in-out overflow-hidden"
@@ -88,7 +62,6 @@ function CylindersFilter({ openSection, toggleSection }: CylindersFilterProps) {
                         ))}
                 </div>
             </div>
-        </div>
     );
 }
 

@@ -1,11 +1,9 @@
 'use client';
 
-import Slider from '@/components/ui/custom-range-input/Slider';
 import React, { useRef, useEffect, useState } from 'react';
 
 type MileageFilterProps = {
     openSection: string | null;
-    toggleSection: (section: string) => void;
 };
 
 const cylinderRanges: string[] = [
@@ -14,7 +12,7 @@ const cylinderRanges: string[] = [
     '15 kmpl and above',
 ];
 
-function MileageFilter({ openSection, toggleSection }: MileageFilterProps) {
+function MileageFilter({ openSection }: MileageFilterProps) {
     const contentRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<string>('0px');
 
@@ -27,30 +25,6 @@ function MileageFilter({ openSection, toggleSection }: MileageFilterProps) {
     }, [openSection]);
 
     return (
-        <div className="pt-3">
-            <div
-                className="flex justify-between items-center cursor-pointer"
-                onClick={() => toggleSection('mileage')}
-            >
-                <h3 className="font-semibold text-lg">Mileage</h3>
-                <div className={`${openSection === 'mileage' ? "rotate-180" : "rotate-0"} transition-transform duration-300`}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="size-5"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                        />
-                    </svg>
-                </div>
-            </div>
-
             <div
                 ref={contentRef}
                 className="transition-all duration-500 ease-in-out overflow-hidden"
@@ -84,7 +58,6 @@ function MileageFilter({ openSection, toggleSection }: MileageFilterProps) {
                         ))}
                 </div>
             </div>
-        </div>
     );
 }
 

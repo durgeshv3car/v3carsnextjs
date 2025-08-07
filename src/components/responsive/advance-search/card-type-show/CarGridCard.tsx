@@ -17,7 +17,7 @@ interface CarProps {
 
 const CarGridCard: React.FC<CarProps> = ({ name, price, mileage, engine, fuel, seats, image }) => {
   return (
-    <div className="rounded-xl min-h-[460px] shadow-md overflow-hidden w-full flex flex-col flex-shrink">
+    <div className="rounded-xl border min-h-[460px] dark:border-[#2E2E2E] overflow-hidden w-full flex flex-col flex-shrink">
       <div className="min-w-[344px] h-[215px]">
         <img src={image} alt={name} className="w-full h-full object-cover rounded-t-xl" />
       </div>
@@ -25,7 +25,7 @@ const CarGridCard: React.FC<CarProps> = ({ name, price, mileage, engine, fuel, s
         <h3 className="text-2xl font-semibold">{name}</h3>
         <p className="">{price}</p>
         <p className="text-xs text-yellow-300">*Ex-Showroom Price</p>
-        <div className="flex items-center justify-between gap-8 text-xs border-t w-full pt-3 px-3">
+        <div className="flex items-center justify-between gap-8 text-xs border-t dark:border-[#2E2E2E] w-full pt-3 px-3">
           <span className="flex flex-col items-center justify-center gap-2">
             <IoSpeedometerOutline size={20} />
             {mileage}
@@ -44,8 +44,8 @@ const CarGridCard: React.FC<CarProps> = ({ name, price, mileage, engine, fuel, s
           </span>
         </div>
         <div className="flex items-center gap-2 w-full justify-between">
-          <button className="bg-yellow-400 text-sm w-full font-medium h-10 rounded-md">View Details</button>
-          <button className="bg-yellow-400 text-sm w-full font-medium h-10 rounded-md">Get On Road Price</button>
+          <button className="bg-yellow-400 text-black text-sm w-full font-medium h-10 rounded-md">View Details</button>
+          <button className="bg-yellow-400 text-black text-sm w-full font-medium h-10 rounded-md">Get On Road Price</button>
         </div>
       </div>
     </div>

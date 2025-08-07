@@ -56,18 +56,18 @@ export default function SearchResult() {
                     <p>258  Cars in India With Search Options</p>
                 </div>
                 <div className="flex gap-2">
-                    <div className='w-[300px]'>
+                    <div className='w-[300px] border dark:border-[#2E2E2E] rounded-lg text-sm'>
                         <CustomSelect options={items} placeholder={"Select Type"} onSelect={handleSelection} />
                     </div>
                     <button
                         onClick={() => setView("list")}
-                        className={`p-2 border rounded ${view === "list" ? "bg-gray-200" : ""}`}
+                        className={`w-10 h-10 flex justify-center items-center border dark:border-[#2E2E2E] rounded ${view === "list" ? "bg-gray-200 dark:bg-[#27272a]" : ""}`}
                     >
                         <FaThList />
                     </button>
                     <button
                         onClick={() => setView("grid")}
-                        className={`p-2 border rounded ${view === "grid" ? "bg-gray-200" : ""}`}
+                        className={`w-10 h-10 flex justify-center items-center border dark:border-[#2E2E2E] rounded ${view === "grid" ? "bg-gray-200 dark:bg-[#27272a]" : ""}`}
                     >
                         <IoGrid />
                     </button>

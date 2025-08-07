@@ -1,4 +1,3 @@
-import ElectricCar from "@/components/responsive/electric-cars/ElectricCar";
 import TopSection from "@/components/common/TopSection";
 import { Metadata } from "next";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
@@ -9,6 +8,7 @@ import BottomAd from "@/components/common/BottomAd";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonExpertReviews from "@/components/common/CommonExpertReviews";
 import CommonVideos from "@/components/common/CommonVideos";
+import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
 
 export const metadata: Metadata = {
     title: "Electric Cars in India 2024 | Prices, Range, Images & More - V3Cars",
@@ -146,6 +146,17 @@ const videoList = new Array(8).fill({
         'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
 })
 
+const carsData = [
+    {
+        image: "/ford.jpg",
+        name: "S-Presso",
+        engine: "83PS",
+        nitro: "113Nm",
+        mileage: "21.11kmpl",
+        price: "₹90.99 - 200.93 lakh*",
+    },
+]
+
 function ElectricCars() {
     return (
         <>
@@ -155,7 +166,10 @@ function ElectricCars() {
                     {/* Main Section */}
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%]">
-                            <ElectricCar />
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
+                                <CurrentOffersCard carsData={carsData} />
+                            </div>
 
                             <CommonNewsUpdate
                                 title="Electric Vehicle (EV) News Update"

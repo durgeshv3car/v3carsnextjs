@@ -1,4 +1,3 @@
-import LaunchedCar from "@/components/responsive/latest-cars/LaunchedCar";
 import TopSection from "@/components/common/TopSection";
 import { Metadata } from "next";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
@@ -9,6 +8,7 @@ import BottomAd from "@/components/common/BottomAd";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonExpertReviews from "@/components/common/CommonExpertReviews";
 import CommonVideos from "@/components/common/CommonVideos";
+import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
 
 export const metadata: Metadata = {
     title: "Latest Car Launches in India 2024 | New Car Prices, Images & Specs",
@@ -147,6 +147,16 @@ const videoList = new Array(8).fill({
         'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
 })
 
+const carsData = [
+    {
+        image: "/popular-cars/fronx.png",
+        name: "Fronx",
+        engine: "103PS",
+        nitro: "137Nm",
+        mileage: "21.11kmpl",
+        price: "₹10.99 - 19.93 lakh*",
+    },
+]
 
 function LatestCars() {
     return (
@@ -158,7 +168,9 @@ function LatestCars() {
                     {/* Latest Cars */}
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%]">
-                            <LaunchedCar />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
+                                <CurrentOffersCard carsData={carsData} />
+                            </div>
 
                             <CommonNewsUpdate
                                 title="Cars News & Updates"
