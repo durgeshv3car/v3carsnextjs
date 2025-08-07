@@ -30,7 +30,7 @@ const Header = () => {
             {
                 path !== "/web-stories" && (
                     <>
-                        <header className="w-full z-50 shadow-xl lg:px-4 xl:px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]">
+                        <header className="w-full z-99 shadow-xl lg:px-4 xl:px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]">
                             <div className="max-w-[1600px] mx-auto py-3 flex items-center justify-between">
                                 {/* Logo */}
                                 <div

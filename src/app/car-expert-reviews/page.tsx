@@ -1,6 +1,6 @@
 import PopularVideos from "@/components/common/PopularVideos";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
-import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import CarExpertReview from "@/components/mobile/car-expert-review/CarExpertReview";
 import LatestExpertReview from "@/components/responsive/car-expert-review/LatestExpertReview";
 import TopComparisonReviews from "@/components/responsive/car-expert-review/TopComparisonReviews";
@@ -71,7 +71,7 @@ function CarExpertReviews() {
 
                         <div className="w-auto lg:max-w-[24%] lg:mt-12 space-y-10">
                             <SideBarAdSmall />
-                            <UpcomingTopBrands />
+                            <UpcomingCarByTopBrands />
                             <PopularVideos />
                             <SideBarAdSmall />
                         </div>

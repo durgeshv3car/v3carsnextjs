@@ -1,4 +1,4 @@
-function UpcomingTopBrands() {
+function UpcomingCarByTopBrands() {
     return (
         <div className="rounded-xl border border-gray-300 dark:border-[#2E2E2E] overflow-hidden h-[720px]">
             <div className="bg-[#DEE2E6] dark:bg-[#27272a] px-4 py-3 font-bold text-lg">Upcoming Cars By Top Brands</div>
@@ -27,4 +27,4 @@ function UpcomingTopBrands() {
     );
 }
 
-export default UpcomingTopBrands;
+export default UpcomingCarByTopBrands;

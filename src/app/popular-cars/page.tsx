@@ -7,7 +7,7 @@ import PopularBrands from "@/components/common/PopularBrands";
 import SideBarAdLong from "@/components/common/SideBarAdLong";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import TopSection from "@/components/common/TopSection";
-import UpcomingTopBrands from "@/components/common/UpcomingTopBrands";
+import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import PopularCar from "@/components/responsive/popular-cars/PopularCar";
 import { Metadata } from "next";
 
@@ -205,7 +205,7 @@ function PopularCars() {
                         </div>
                         <div className="w-auto lg:max-w-[24%] space-y-10">
                             <SideBarAdSmall />
-                            <UpcomingTopBrands />
+                            <UpcomingCarByTopBrands />
                             <SideBarAdSmall />
                             <PopularBrands />
                             <SideBarAdLong />
