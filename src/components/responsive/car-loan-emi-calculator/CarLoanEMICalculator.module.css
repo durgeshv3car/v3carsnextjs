@@ -1,0 +1,28 @@
+input[type='range'].custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background-color: black;
+  border: 3px solid #facc15; /* Tailwind yellow-400 */
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+input[type='range'].custom-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background-color: black;
+  border: 3px solid #facc15;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+input[type='range'].custom-slider::-ms-thumb {
+  width: 24px;
+  height: 24px;
+  background-color: black;
+  border: 3px solid #facc15;
+  border-radius: 9999px;
+  cursor: pointer;
+}

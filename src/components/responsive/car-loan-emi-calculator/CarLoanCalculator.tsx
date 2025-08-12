@@ -2,6 +2,7 @@
 
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 import React, { useState, useEffect } from 'react';
+import styles from './CarLoanEMICalculator.module.css'
 
 const CarLoanCalculator = () => {
   const [brand, setBrand] = useState('');
@@ -34,8 +35,8 @@ const CarLoanCalculator = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-4 gap-6">
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
         <div className='space-y-1'>
           <label className='text-sm'>Select Brand</label>
@@ -64,58 +65,121 @@ const CarLoanCalculator = () => {
         </div>
       </div>
 
-      <div className='flex gap-4 justify-between border-2 border-b-8 p-6 rounded-2xl'>
+      <div className='flex flex-col-reverse lg:flex-row gap-4 justify-between border-2 border-b-8 dark:border-[#2E2E2E] p-3 lg:p-6 rounded-2xl'>
 
-        <div className='w-full'>
+        <div className='w-full flex flex-col justify-between gap-4'>
 
-          <div className="w-full">
-            <label>Car Loan Amount</label>
-            <div className="flex items-center gap-4">
-              <div className='w-full space-y-2'>
-                <input
-                  type="range"
-                  min={100000}
-                  max={10000000}
-                  step={10000}
-                  value={loanAmount}
-                  onChange={(e) => setLoanAmount(Number(e.target.value))}
-                  className="w-full accent-yellow-400 h-2 appearance-none bg-gray-200 rounded-lg"
-                  style={{
-                    background: `linear-gradient(to right, #facc15 0%, #facc15 ${(loanAmount - 100000) / (10000000 - 100000) * 100}%, #e5e7eb ${(loanAmount - 100000) / (10000000 - 100000) * 100}%, #e5e7eb 100%)`,
-                  }}
-                />
-                <div className='flex items-center justify-between gap-4'>
-                  <p className="text-sm w-8">1L</p>
-                  <p className="text-sm w-10 text-right">1Cr</p>
-                </div>
+          <div className="flex items-center gap-4">
+            <div className='w-full'>
+              <label>Car Loan Amount</label>
+              <input
+                type="range"
+                min={100000}
+                max={10000000}
+                step={10000}
+                value={loanAmount}
+                onChange={(e) => setLoanAmount(Number(e.target.value))}
+                className={`w-full h-2 appearance-none bg-gray-200 rounded-lg ${styles["custom-slider"]}`}
+                style={{
+                  background: `linear-gradient(to right, #facc15 0%, #facc15 ${((loanAmount - 100000) / (10000000 - 100000)) * 100
+                    }%, #e5e7eb ${((loanAmount - 100000) / (10000000 - 100000)) * 100
+                    }%, #e5e7eb 100%)`,
+                }}
+              />
+              <div className='flex items-center justify-between gap-4'>
+                <p className="text-sm w-8">1L</p>
+                <p className="text-sm w-10 text-right">1Cr</p>
               </div>
-              <div className="p-2 rounded-full border bg-gray-100 text-black font-bold text-center min-w-[150px]">
-                ₹ {loanAmount.toLocaleString()}
-              </div>
+            </div>
+            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 text-black font-bold text-center min-w-[180px]">
+              ₹ {loanAmount.toLocaleString()}
             </div>
           </div>
 
-
-          <div>
-            <label className="block mb-1">Down Payment</label>
-            <input type="range" min={20000} max={5000000} step={10000} value={downPayment} onChange={(e) => setDownPayment(Number(e.target.value))} className="w-full" />
-            <div>₹ {downPayment.toLocaleString()}</div>
+          <div className="flex items-center gap-4">
+            <div className="w-full">
+              <label>Down Payment</label>
+              <input
+                type="range"
+                min={20000}
+                max={5000000}
+                step={10000}
+                value={downPayment}
+                onChange={(e) => setDownPayment(Number(e.target.value))}
+                className={`w-full h-2 appearance-none bg-gray-200 rounded-lg ${styles["custom-slider"]}`}
+                style={{
+                  background: `linear-gradient(to right, #facc15 0%, #facc15 ${((downPayment - 20000) / (5000000 - 20000)) * 100
+                    }%, #e5e7eb ${((downPayment - 20000) / (5000000 - 20000)) * 100
+                    }%, #e5e7eb 100%)`,
+                }}
+              />
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm w-8">20K</p>
+                <p className="text-sm w-10 text-right">50L</p>
+              </div>
+            </div>
+            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 text-black font-bold text-center min-w-[180px]">
+              ₹ {downPayment.toLocaleString()}
+            </div>
           </div>
 
-          <div>
-            <label className="block mb-1">Interest Rate (%)</label>
-            <input type="range" min={5} max={20} step={0.1} value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} className="w-full" />
-            <div>{interestRate}%</div>
+          <div className="flex items-center gap-4">
+            <div className="w-full">
+              <label>Interest Rate (%)</label>
+              <input
+                type="range"
+                min={5}
+                max={20}
+                step={0.1}
+                value={interestRate}
+                onChange={(e) => setInterestRate(Number(e.target.value))}
+                className={`w-full h-2 appearance-none bg-gray-200 rounded-lg ${styles["custom-slider"]}`}
+                style={{
+                  background: `linear-gradient(to right, #facc15 0%, #facc15 ${((interestRate - 5) / (20 - 5)) * 100
+                    }%, #e5e7eb ${((interestRate - 5) / (20 - 5)) * 100
+                    }%, #e5e7eb 100%)`,
+                }}
+              />
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm w-8">5%</p>
+                <p className="text-sm w-10 text-right">20%</p>
+              </div>
+            </div>
+            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 text-black font-bold text-center min-w-[180px]">
+              {interestRate.toFixed(1)}%
+            </div>
           </div>
 
-          <div>
-            <label className="block mb-1">Loan Tenure (Years)</label>
-            <input type="range" min={1} max={7} step={1} value={loanTenure} onChange={(e) => setLoanTenure(Number(e.target.value))} className="w-full" />
-            <div>{loanTenure} Years</div>
+          <div className="flex items-center gap-4">
+            <div className="w-full">
+              <label>Loan Tenure (Years)</label>
+              <input
+                type="range"
+                min={1}
+                max={7}
+                step={1}
+                value={loanTenure}
+                onChange={(e) => setLoanTenure(Number(e.target.value))}
+                className={`w-full h-2 appearance-none bg-gray-200 rounded-lg ${styles["custom-slider"]}`}
+                style={{
+                  background: `linear-gradient(to right, #facc15 0%, #facc15 ${((loanTenure - 1) / (7 - 1)) * 100
+                    }%, #e5e7eb ${((loanTenure - 1) / (7 - 1)) * 100
+                    }%, #e5e7eb 100%)`,
+                }}
+              />
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm w-8">1Y</p>
+                <p className="text-sm w-10 text-right">7Y</p>
+              </div>
+            </div>
+            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 text-black font-bold text-center min-w-[180px]">
+              {loanTenure} Years
+            </div>
           </div>
+
         </div>
 
-        <div className="flex flex-col justify-between gap-2 bg-black p-3 rounded-2xl min-w-[425px] h-[481px]">
+        <div className="flex flex-col justify-between gap-2 bg-black p-3 rounded-2xl w-auto lg:min-w-[425px] h-[420px] lg:h-[481px]">
           <div className='flex flex-col justify-center items-center gap-1 flex-grow'>
             <div className="text-center text-sm text-white">Equated Monthly Installment (EMI)</div>
             <div className="text-center text-5xl text-yellow-400 font-bold">₹{emi.toLocaleString()}</div>

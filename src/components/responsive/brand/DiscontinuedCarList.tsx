@@ -5,7 +5,9 @@ interface DiscontinuedCarListProps {
 
 export default function DiscontinuedCarList({ title, cars }: DiscontinuedCarListProps) {
     return (
+
         <div className=" rounded-xl overflow-hidden">
+
             {/* Header */}
             <div className="text-white text-[18px] font-semibold px-2 py-3 border-b border-[#2A2A2A]">
                 {title}
@@ -21,5 +23,6 @@ export default function DiscontinuedCarList({ title, cars }: DiscontinuedCarList
             </ul>
 
         </div>
+
     );
 }
