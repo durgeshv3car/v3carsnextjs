@@ -29,7 +29,7 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
                     <div key={index}>
                         {/* Question Block */}
                         <div
-                            className={`bg-gray-100 hover:bg-gray-200 transition-colors px-4 py-3 cursor-pointer flex items-center justify-between ${openIndex === index ? "rounded-t-2xl" : "rounded-2xl"}`}
+                            className={`border dark:border-[#2E2E2E] transition-colors px-4 py-3 cursor-pointer flex items-center justify-between ${openIndex === index ? "rounded-t-2xl" : "rounded-2xl"}`}
                             onClick={() => toggle(index)}
                         >
                             <div className="flex items-center gap-3">
@@ -57,7 +57,7 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
                             className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${openIndex === index ? "max-h-96" : "max-h-0"
                                 }`}
                         >
-                            <div className="bg-white rounded-b-2xl p-4 text-sm text-gray-700">
+                            <div className="border dark:border-[#2E2E2E] rounded-b-2xl p-4 border-t-0 text-sm">
                                 {item.answer}
                             </div>
                         </div>
