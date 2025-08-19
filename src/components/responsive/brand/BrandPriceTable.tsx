@@ -13,7 +13,7 @@ interface BrandPriceTableProps {
 export default function BrandPriceTable({ title, cars }: BrandPriceTableProps) {
   return (
     <div className="mt-8 overflow-x-auto rounded-xl border border-[#D1D1D1]">
-      <table className="min-w-[800px] w-full text-sm bg-white border-separate border-spacing-0">
+      <table className="min-w-[800px] w-full text-sm  border-separate border-spacing-0">
         {/* Table Header Title */}
         <thead>
           <tr className="bg-[#5B5B5B] text-white text-[15px] text-center">
@@ -32,6 +32,7 @@ export default function BrandPriceTable({ title, cars }: BrandPriceTableProps) {
             <th className="px-4 py-3 font-semibold border-r border-[#DCDCDC]">Check On-Road Price</th>
             <th className="px-4 py-3 font-semibold ">Mahindra Sales August 2024</th>
           </tr>
+          
         </thead>
 
         <tbody>

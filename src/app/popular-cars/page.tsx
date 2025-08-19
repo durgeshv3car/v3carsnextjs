@@ -33,6 +33,7 @@ export const metadata: Metadata = {
     ],
 };
 
+
 const newsList = [
     {
         id: "1",
@@ -92,6 +93,7 @@ const newsList = [
 ];
 
 const reviewList = [
+    
     {
         id: 1,
         image: '/car-review/image1.png',
@@ -101,6 +103,7 @@ const reviewList = [
         author: 'Mahesh Yadav',
         date: 'July 31 2024',
     },
+
     {
         id: 2,
         image: '/car-review/image2.png',
@@ -110,6 +113,7 @@ const reviewList = [
         author: 'Mahesh Yadav',
         date: 'July 31 2024',
     },
+
     {
         id: 3,
         image: '/car-review/image3.png',
@@ -119,6 +123,7 @@ const reviewList = [
         author: 'Mahesh Yadav',
         date: 'July 31 2024',
     },
+
     {
         id: 4,
         image: '/car-review/image1.png',
@@ -128,6 +133,7 @@ const reviewList = [
         author: 'Mahesh Yadav',
         date: 'July 31 2024',
     },
+
     {
         id: 5,
         image: '/car-review/image2.png',
@@ -137,6 +143,7 @@ const reviewList = [
         author: 'Mahesh Yadav',
         date: 'July 31 2024',
     },
+
 ]
 
 const videoList = new Array(8).fill({

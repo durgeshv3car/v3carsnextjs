@@ -62,6 +62,7 @@ const customStyles = {
 
 
 export default function BrandSelector() {
+
     const [selectedBrand, setSelectedBrand] = useState(brandOptions[0]);
 
     const handleChange = (selected: any) => {
@@ -73,6 +74,7 @@ export default function BrandSelector() {
 
             {/* Select dropdown */}
             <div className="relative ">
+
                 <Select
                     options={brandOptions}
                     styles={customStyles}
@@ -81,10 +83,12 @@ export default function BrandSelector() {
                     isSearchable
                     defaultValue={selectedBrand}
                 />
+
             </div>
 
             {/* Brand Image */}
             {selectedBrand?.image && (
+
                 <div className="bg-white p-2 rounded-xl shadow">
                     <Image
                         src={selectedBrand.image}
@@ -94,8 +98,8 @@ export default function BrandSelector() {
                         className="w-full object-contain rounded-md"
                     />
                 </div>
+                
             )}
-
 
         </div>
     );

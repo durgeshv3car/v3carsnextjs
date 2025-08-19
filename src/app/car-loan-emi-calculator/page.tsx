@@ -77,8 +77,11 @@ const faqData = [
 
 function CarLoanEMICalculator() {
     return (
+
         <>
+
             <TopSection />
+
             <div className="px-4 xl:px-10 bg-[#F9F8FA] dark:bg-[#171720] border-t dark:border-[#2E2E2E]">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-14">
                     <CarLoanCalculator />
@@ -89,6 +92,7 @@ function CarLoanEMICalculator() {
             </div>
 
             {/* <BottomAd /> */}
+
         </>
     );
 }

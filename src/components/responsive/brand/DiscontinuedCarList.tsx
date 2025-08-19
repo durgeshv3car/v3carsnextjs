@@ -21,5 +21,6 @@ export default function DiscontinuedCarList({ title, cars }: DiscontinuedCarList
             </ul>
 
         </div>
+
     );
 }

@@ -10,6 +10,7 @@ interface SimilarBrandsProps {
     brands: SimilarBrand[];
 }
 
+
 export default function SimilarBrands({ brands }: SimilarBrandsProps) {
     return (
 
@@ -17,7 +18,7 @@ export default function SimilarBrands({ brands }: SimilarBrandsProps) {
 
             {/* Header */}
             <div className="text-white text-[18px] font-semibold px-2 py-3 border-b border-[#2A2A2A]">
-                Similar Brands
+                Similar Brands 
             </div>
 
             {/* Grid */}
@@ -42,8 +43,9 @@ export default function SimilarBrands({ brands }: SimilarBrandsProps) {
                     
                 ))}
             </div>
-
         </div>
 
     );
-}
+} 
+
+

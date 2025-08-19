@@ -29,7 +29,7 @@ const FilterSection: React.FC = () => {
                     <img
                         src="/car-on-road-price.png"
                         alt="Car"
-                        className="w-96 object-contain"
+                        className="w-96 object-contain grayscale"
                     />
                 </div>
 

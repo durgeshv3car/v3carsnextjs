@@ -73,14 +73,15 @@ const LocationDropdown = () => {
                                 ))}
                             </div>
                         </div>
-
                     </div>
 
                     {/* Right */}
                     <div className="w-[50%]">
+                        
                         <h3 className="text-xs font-semibold mb-3 border-l-4 border-yellow-400 pl-2">
                             CONTINUE OTHER CITIES
                         </h3>
+
                         <div className="grid grid-cols-4 gap-3 max-h-[350px] overflow-y-auto pr-2 scrollbar-thin-yellow">
 
                             {otherCities.map((city, idx) => (
@@ -91,10 +92,10 @@ const LocationDropdown = () => {
                                     {city}
                                 </button>
                             ))}
+
                         </div>
                     </div>
 
-                    
                 </div>
            
         </div>
