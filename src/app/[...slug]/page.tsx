@@ -2,10 +2,10 @@ import CommonFaqAccordion from "@/components/common/CommonFaqAccordion";
 import PopularBrands from "@/components/common/PopularBrands";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import TopSection from "@/components/common/TopSection";
-import FuelPrices from "@/components/web/pages/FuelPrices";
-import SearchSection from "@/components/web/pages/SearchSection";
-import StateWiseFuelChart from "@/components/web/pages/StateWiseFuelChart";
-import StateWiseFuelList from "@/components/web/pages/StateWiseFuelList";
+import FuelPrices from "@/components/responsive/pages/FuelPrices";
+import SearchSection from "@/components/responsive/pages/SearchSection";
+import StateWiseFuelChart from "@/components/responsive/pages/StateWiseFuelChart";
+import StateWiseFuelList from "@/components/responsive/pages/StateWiseFuelList";
 
 const faqData = [
     {
