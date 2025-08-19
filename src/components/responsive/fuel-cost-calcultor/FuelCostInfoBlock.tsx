@@ -2,10 +2,10 @@
 
 export default function FuelCostInfoBlock() {
     return (
-        <div className="bg-[#F6F6F6] p-6 rounded-md text-sm text-gray-800 mx-auto mt-6">
+        <div className="bg-[#F6F6F6] dark:bg-black dark:text-white p-6 rounded-md text-sm text-gray-800 mx-auto mt-6">
 
-            <div className="max-w-[1600px] mx-auto">
-                <h2 className="text-lg font-semibold text-black mb-3">
+            <div className="max-w-[1600px] mx-auto ">
+                <h2 className="text-lg font-semibold text-black mb-3  dark:text-white">
                     Fuel Cost Calculator India
                 </h2>
                 <p className="mb-3">
@@ -18,7 +18,7 @@ export default function FuelCostInfoBlock() {
                     <li>Customize Mileage: Input your car's specific mileage (fuel efficiency) for a personalized estimate.</li>
                     <li>Calculate: Enter driving distance (daily/monthly/yearly), fuel type (petrol, diesel, CNG), fuel efficiency (mileage), and fuel price to see your estimated daily, monthly, and yearly fuel costs.</li>
                 </ul>
-                <p className="text-[13px] text-gray-600">
+                <p className="text-[13px] text-gray-600  dark:text-white">
                     Fuel Price Disclaimer: The displayed fuel prices are for representation only. Update with your local gas (fuel) station prices for a more accurate estimate.
                 </p>
 

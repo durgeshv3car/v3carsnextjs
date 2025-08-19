@@ -27,6 +27,7 @@ export default function ScrollFlipIcon() {
   };
 
   return (
+
     <div
       className={`
         ${path === '/car-loan-emi-calculator' ? 'bottom-[80px] md:bottom-4' : 'bottom-4'}
@@ -52,5 +53,6 @@ export default function ScrollFlipIcon() {
         />
       </svg>
     </div>
+    
   );
 }
