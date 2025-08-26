@@ -12,7 +12,7 @@ const persistConfig = {
   key: "root",
   storage,
   // add here only if you want to persist selections across refresh
-  whitelist: ["auth", "common", "sellUsed"], // 👈 add sellUsed (optional)
+  whitelist: ["auth", "common"], // 👈 add sellUsed (optional)
 };
 
 const rootReducer = combineReducers({
