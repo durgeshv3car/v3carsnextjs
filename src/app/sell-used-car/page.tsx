@@ -1,4 +1,5 @@
-import SellUsedCarPage from "@/components/responsive/sell-used-car/SellUsedCarPage";
+
+import SellUsedCarPage from "@/components/responsive/sell-used/SellUsedCarPage";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 function SellUsedCar() {
     return (
         <>
-            <SellUsedCarPage />
+          <SellUsedCarPage/>
         </>
     );
 }

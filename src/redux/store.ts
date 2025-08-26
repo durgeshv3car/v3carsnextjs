@@ -1,15 +1,18 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+
 import { authApi } from "./api/authApi";
 import { commonApi } from "./api/commonApi";
 import authReducer from "./slices/authSlice";
 import commonReducer from "./slices/commonSlice";
+import sellUsedReducer from "./slices/sellUsedSlice"; // 👈 add
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "common"],
+  // add here only if you want to persist selections across refresh
+  whitelist: ["auth", "common"], // 👈 add sellUsed (optional)
 };
 
 const rootReducer = combineReducers({
@@ -17,6 +20,7 @@ const rootReducer = combineReducers({
   [commonApi.reducerPath]: commonApi.reducer,
   auth: authReducer,
   common: commonReducer,
+  sellUsed: sellUsedReducer, // 👈 add
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -33,6 +37,6 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
-// ✅ Type helper for useSelector and useDispatch
+// types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

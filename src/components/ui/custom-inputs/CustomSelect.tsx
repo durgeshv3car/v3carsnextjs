@@ -40,8 +40,12 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, placeholder, onSel
 
   return (
     <div className={"w-full relative"} ref={dropdownRef}>
-      <div className={"p-2 flex justify-between items-center cursor-pointer"} onClick={() => setIsOpen((prev) => !prev)}>
+      <div className={"p-2 flex justify-between items-center cursor-pointer "} onClick={() => setIsOpen((prev) => !prev)}>
+
+        <p className='dark:text-white text-black'>
         {selectedItem || placeholder}
+        </p>
+
         <span className={styles['arrow']}>
           {isOpen ?
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
@@ -59,7 +63,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, placeholder, onSel
         <div className={`absolute top-full border border-gray-300 rounded-b-lg dark:border-[#2E2E2E] border-t-0 w-full z-30 max-h-[200px] overflow-y-auto ${styles["dropdown"]}`}>
           <input
             type="text"
-            className={"bg-gray-50 dark:bg-[#171717] w-full p-3 border-b border-gray-300 dark:border-[#2E2E2E] outline-none"}
+            className={"bg-gray-50 dark:bg-[#171717] w-full p-3 border-b  border-gray-300 dark:border-[#2E2E2E] outline-none"}
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
