@@ -47,6 +47,7 @@ const BodyTypeFilter = ({ openSection }: BodyFilterProps) => {
                                 alt={type.label}
                                 width={60}
                                 height={60}
+                                className='dark:invert'
                             />
                             {type.label}
                         </div>

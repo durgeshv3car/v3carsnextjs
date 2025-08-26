@@ -58,17 +58,9 @@ const MobileFooter: React.FC = () => {
               <div className="rounded-xl border border-gray-300 dark:border-[#262629] overflow-hidden shadow-sm">
                 <div className="bg-[#D9D8D8] dark:bg-[#262629] px-4 py-3 font-bold text-lg">Research</div>
                 <ul className="divide-y divide-gray-200 dark:divide-[#262629] bg-transparent">
-                  {[
-                    "Car Reviews",
-                    "Variants Explained",
-                    "Car Videos",
-                    "Upcoming Cars",
-                    "New Cars",
-                    "Car Segments In India",
-                    "Car On-Road Price",
-                  ].map((item, index) => (
+                  {items.map((item, index) => (
                     <li key={index} className="px-4 py-3 cursor-pointer">
-                      {item}
+                    <Link href={item.href}>{item.label}</Link>
                     </li>
                   ))}
                 </ul>
@@ -78,18 +70,9 @@ const MobileFooter: React.FC = () => {
               <div className="rounded-xl border border-gray-300 dark:border-[#262629] overflow-hidden shadow-sm">
                 <div className="bg-[#D9D8D8] dark:bg-[#262629] px-4 py-3 font-bold text-lg">Tools</div>
                 <ul className="divide-y divide-gray-200 dark:divide-[#262629] bg-transparent">
-                  {[
-                    "Compare Cars",
-                    "EMI Calculator",
-                    "Fuel Cost Calculator",
-                    "Buy / Renew Car Insurance",
-                    "Fuel Price In India",
-                    "Apply For Car Loan",
-                    "Mileage Calculator",
-                    "Sell Used Car",
-                  ].map((item, index) => (
+                  {tools.map((item, index) => (
                     <li key={index} className="px-4 py-3 cursor-pointer">
-                      {item}
+                    <Link href={item.href}>{item.label}</Link>
                     </li>
                   ))}
                 </ul>
@@ -178,3 +161,25 @@ const MobileFooter: React.FC = () => {
 };
 
 export default MobileFooter;
+
+
+const tools = [
+  { label: "Compare Cars", href: "/compare-cars" },
+  { label: "EMI Calculator", href: "/car-loan-emi-calculator" },
+  { label: "Fuel Cost Calculator", href: "/fuel-cost-calculator" },
+  { label: "Buy / Renew Car Insurance", href: "/car-insurance-india" },
+  { label: "Fuel Price In India", href: "/fuel-price-in-india" },
+  { label: "Apply For Car Loan", href: "/apply-car-loan-india" },
+  { label: "Mileage Calculator", href: "/mileage-calculator" },
+  { label: "Sell Used Car", href: "/sell-used-car" },
+];
+
+const items = [
+  { label: "Car reviews", href: "/car-expert-reviews" },
+  { label: "Variants explained", href: "/variants-explained-videos" },
+  { label: "Car videos", href: "/car-review-videos" },
+  { label: "Upcoming cars", href: "/upcoming-cars" },
+  { label: "New cars", href: "/new-cars" },
+  { label: "Car segments In India", href: "/car-guide" },
+  { label: "Car On-Road Price", href: "/car-on-road-price-in-india" },
+];

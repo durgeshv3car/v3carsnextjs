@@ -14,7 +14,7 @@ const images = [
 
 export default function PopularNews() {
     return (
-        <div className=" rounded-xl p-4 space-y-4 border my-5 hidden lg:block">
+        <div className=" rounded-xl p-4 space-y-4 border my-5 hidden lg:block dark:border-[#2E2E2E]">
             {/* Heading */}
             <div className="bg-gray-700 text-white px-4 py-2 rounded-lg">
                 <h3 className="text-[18px] font-semibold">Popular News</h3>

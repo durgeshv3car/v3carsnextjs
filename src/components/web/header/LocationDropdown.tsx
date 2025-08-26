@@ -67,6 +67,7 @@ const LocationDropdown = () => {
                                             alt="City Icon"
                                             height={24}
                                             width={24}
+                                            className="dark:invert"
                                         />
                                         <span className="text-[13px] font-medium mt-2">{city}</span>
                                     </div>

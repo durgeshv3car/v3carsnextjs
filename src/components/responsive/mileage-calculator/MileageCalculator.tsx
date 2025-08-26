@@ -57,7 +57,7 @@ export default function MileageCalculator() {
     <div className="w-full max-w-[1600px] mx-auto px-4 py-6">
       <div className="grid lg:grid-cols-2 gap-5">
         {/* LEFT: Form Card */}
-        <div className="rounded-xl border border-neutral-200 bg-white  dark:bg-gray-900 shadow-sm overflow-hidden">
+        <div className="rounded-xl border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] shadow-sm overflow-hidden">
           {/* Top Banner */}
           <div className="bg-black text-yellow-400 px-5 py-4 text-lg md:text-xl font-semibold tracking-wide">
             Mileage: {mileageValue ? mileageValue.toFixed(2) : '0.00'} {mileageLabel}
@@ -74,7 +74,7 @@ export default function MileageCalculator() {
                   placeholder={`Enter Distance ${distanceUnit === 'km' ? 'Km' : 'Miles'}`}
                   value={distance}
                   onChange={(e) => setDistance(e.target.value)}
-                  className="w-full h-10 rounded-lg border border-neutral-300 px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
+                  className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
                 />
                 <UnitToggle<DistanceUnit>
                   options={[
@@ -98,7 +98,7 @@ export default function MileageCalculator() {
                   placeholder={`Enter Fuel ${fuelUnit === 'ltr' ? 'Ltr' : 'Gal'}`}
                   value={fuel}
                   onChange={(e) => setFuel(e.target.value)}
-                  className="w-full h-10 rounded-lg border border-neutral-300 px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
+                  className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
                 />
 
                 <UnitToggle<FuelUnit>
@@ -123,12 +123,12 @@ export default function MileageCalculator() {
                   placeholder="Today Price (Total Amount)"
                   value={totalAmount}
                   onChange={(e) => setTotalAmount(e.target.value)}
-                  className="w-full h-10 rounded-lg border border-neutral-300 px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
+                  className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
                 />
                 <select
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value as Currency)}
-                  className="h-10 rounded-lg border border-neutral-300 px-3 text-sm outline-none bg-white focus:ring-2 focus:ring-yellow-400 dark:text-black"
+                  className="h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
                 >
                   <option>INR</option>
                   <option>USD</option>
@@ -151,9 +151,9 @@ export default function MileageCalculator() {
 
         {/* RIGHT: Result Table */}
         <div className="space-y-10">
-          <div className="rounded-xl border border-neutral-200 bg-white dark:bg-gray-900 overflow-hidden">
+          <div className="rounded-xl border dark:border-[#2E2E2E] dark:bg-[#171717] overflow-hidden">
 
-            <div className="grid grid-cols-2 bg-neutral-200 dark:bg-gray-800 text-neutral-800 text-sm font-semibold  dark:text-white">
+            <div className="grid grid-cols-2 bg-neutral-200 dark:bg-black text-neutral-800 text-sm font-semibold  dark:text-white">
 
               <div className="px-4 py-3 text-2xl ">Units</div>
               <div className="px-4 py-3 text-2xl">Output</div>
@@ -174,7 +174,7 @@ export default function MileageCalculator() {
           </div>
 
           {/* Bottom Black Highlight */}
-          <div className="rounded-xl bg-black text-white px-6 py-5">
+          <div className="rounded-xl bg-black text-white border dark:border-[#2E2E2E] px-6 py-5">
             <div className="text-lg font-semibold">Mileage</div>
             <div className="text-3xl md:text-5xl font-extrabold tracking-wide mt-1">
               {mileageValue ? mileageValue.toFixed(2) : '0.00'} {mileageLabel}
@@ -190,7 +190,7 @@ export default function MileageCalculator() {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid grid-cols-2 border-t border-neutral-200 dark:text-white">
+    <div className="grid grid-cols-2 border-t dark:border-[#2E2E2E] dark:text-white">
       <div className="px-4 py-3 text-lg text-neutral-600 dark:text-white">{label}</div>
       <div className="px-4 py-3 text-lg font-medium">{value}</div>
     </div>
@@ -222,7 +222,7 @@ function UnitToggle<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="flex items-center rounded-full border border-neutral-300 px-1 h-10">
+    <div className="flex items-center rounded-full border dark:border-[#2E2E2E] px-1 h-10">
       {options.map((opt) => {
         const active = opt.key === value;
         return (
@@ -230,7 +230,7 @@ function UnitToggle<T extends string>({
             key={opt.key}
             onClick={() => onChange(opt.key)}
             className={`px-3 h-8 rounded-full text-sm font-medium transition ${
-              active ? 'bg-yellow-400 text-black' : 'text-neutral-600 hover:bg-neutral-100'
+              active ? 'bg-yellow-400 text-black' : 'text-neutral-600 dark:hover:bg-black'
             }`}
             type="button"
           >

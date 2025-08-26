@@ -15,6 +15,27 @@ import { RiTwitterXFill } from "react-icons/ri";
 import { SiGooglenews } from "react-icons/si";
 import { usePathname } from "next/navigation";
 
+const tools = [
+  { label: "Compare Cars", href: "/compare-cars" },
+  { label: "EMI Calculator", href: "/car-loan-emi-calculator" },
+  { label: "Fuel Cost Calculator", href: "/fuel-cost-calculator" },
+  { label: "Buy / Renew Car Insurance", href: "/car-insurance-india" },
+  { label: "Fuel Price In India", href: "/fuel-price-in-india" },
+  { label: "Apply For Car Loan", href: "/apply-car-loan-india" },
+  { label: "Mileage Calculator", href: "/mileage-calculator" },
+  { label: "Sell Used Car", href: "/sell-used-car" },
+];
+
+const items = [
+  { label: "Car reviews", href: "/car-expert-reviews" },
+  { label: "Variants explained", href: "/variants-explained-videos" },
+  { label: "Car videos", href: "/car-review-videos" },
+  { label: "Upcoming cars", href: "/upcoming-cars" },
+  { label: "New cars", href: "/new-cars" },
+  { label: "Car segments In India", href: "/car-guide" },
+  { label: "Car On-Road Price", href: "/car-on-road-price-in-india" },
+];
+
 const Footer: React.FC = () => {
   const path = usePathname()
   return (
@@ -60,25 +81,25 @@ const Footer: React.FC = () => {
                   </div>
 
                   {/* Research */}
-                  <div className="space-y-6">
+                  <div className="space-y-3">
                     <div>
                       <h3 className="font-semibold text-lg inline-block pb-1">Research</h3>
                       <div className="h-0.5 rounded-full bg-gradient-to-r from-black to-transparent dark:from-[#262629] dark:to-transparent w-full"></div>
                     </div>
                     <ul className="text-sm">
-                      {[
-                        "Car reviews",
-                        "Variants explained",
-                        "Car videos",
-                        "Upcoming cars",
-                        "New cars",
-                        "Car segments In India",
-                        "Car On-Road Price",
-                      ].map((text, index) => (
+                      {items.map((item, index) => (
                         <React.Fragment key={index}>
                           <li className="flex gap-2 items-center py-3">
-                            <Image src="/logo/v3.svg" alt="v3-icon" width={16} height={16} />
-                            <span>{text}</span>
+                            <Image
+                              src="/common/v3icon.svg"
+                              alt="v3-icon"
+                              width={16}
+                              height={16}
+                              className="dark:invert"
+                            />
+                            <Link href={item.href} className="hover:underline">
+                              {item.label}
+                            </Link>
                           </li>
                           <div className="h-0.5 w-full rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:from-transparent dark:via-[#262629] dark:to-transparent" />
                         </React.Fragment>
@@ -87,26 +108,25 @@ const Footer: React.FC = () => {
                   </div>
 
                   {/* Tools */}
-                  <div className="space-y-6">
+                  <div className="space-y-3">
                     <div className="mb-2">
                       <h3 className="font-semibold text-lg inline-block pb-1">Tools</h3>
                       <div className="h-0.5 rounded-full bg-gradient-to-r from-black to-transparent dark:from-[#262629] dark:to-transparent w-full"></div>
                     </div>
                     <ul className="text-sm">
-                      {[
-                        "Compare Cars",
-                        "EMI Calculator",
-                        "Fuel Cost Calculator",
-                        "Buy / Renew Car Insurance",
-                        "Fuel Price In India",
-                        "Apply For Car Loan",
-                        "Mileage Calculator",
-                        "Sell Used Car",
-                      ].map((tool, index) => (
+                      {tools.map((tool, index) => (
                         <React.Fragment key={index}>
                           <li className="flex gap-2 items-center py-3">
-                            <Image src="/logo/v3.svg" alt="v3-icon" width={16} height={16} />
-                            <span>{tool}</span>
+                            <Image
+                              src="/common/v3icon.svg"
+                              alt="v3-icon"
+                              width={16}
+                              height={16}
+                              className="dark:invert"
+                            />
+                            <Link href={tool.href} className="hover:underline">
+                              {tool.label}
+                            </Link>
                           </li>
                           <div className="h-0.5 w-full rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:from-transparent dark:via-[#262629] dark:to-transparent" />
                         </React.Fragment>
@@ -185,11 +205,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-
-
-
-
-
-
-
-

@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { IoArrowForwardOutline } from "react-icons/io5";
 
 const NewsVideosDropdown = () => {
@@ -7,32 +8,37 @@ const NewsVideosDropdown = () => {
         {
             title: "News",
             desc: "Stay updated with the latest automotive news.",
-            links: ["Latest News", "Auto Expo", "Press Release"],
+            links: [
+                { text: "Latest News", url: "/news" },
+                { text: "Auto Expo", url: "/news/auto-expo" },
+                { text: "Press Release", url: "/latest-press-release" }
+            ],
         },
         {
             title: "Reviews",
             desc: "Discover expert car reviews and comparisons.",
             links: [
-                "Expert Review",
-                "Comparison Review",
-                "Feature Explained",
-                "Car Guide",
-                "User Review",
+                { text: "Expert Review", url: "/car-expert-reviews" },
+                { text: "Comparison Review", url: "/comparison" },
+                { text: "Feature Explained", url: "/features-explained" },
+                { text: "Car Guide", url: "/car-guide" },
+                { text: "User Review", url: "/car-user-review" },
             ],
         },
         {
             title: "Videos",
             desc: "Watch in-depth video reviews, comparison, variants explained and more.",
             links: [
-                "Review Videos",
-                "Compare Videos",
-                "Variants Explained Videos",
-                "More Videos",
-                "Auto Expo Videos",
-                "V3Cars YouTube Channel",
+                { text: "Review Videos", url: "/car-review-videos" },
+                { text: "Compare Videos", url: "/car-comparison-videos" },
+                { text: "Variants Explained Videos", url: "/variants-explained-videos" },
+                { text: "More Videos", url: "/other-videos" },
+                { text: "Auto Expo Videos", url: "/auto-expo-videos" },
+                { text: "V3Cars YouTube Channel", url: "https://www.youtube.com/c/V3cars-Official" },
             ],
         },
     ];
+
 
     return (
         <div className="w-full bg-white dark:bg-[#171717] shadow-md border-b-[5px] rounded-b-[10px] border-gray-500 dark:border-[#2E2E2E] h-full px-10">
@@ -62,9 +68,9 @@ const NewsVideosDropdown = () => {
                                             alt="icon"
                                             width={16}
                                             height={16}
-                                            className="mt-[2px]"
+                                            className="mt-[2px] dark:invert"
                                         />
-                                        <span>{text}</span>
+                                        <Link href={text.url}>{text.text}</Link>
                                     </li>
                                 ))}
                             </ul>

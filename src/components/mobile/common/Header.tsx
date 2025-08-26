@@ -1,37 +1,66 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiMenu, FiMapPin, FiSearch } from "react-icons/fi";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { IoChevronDownOutline } from "react-icons/io5";
 import MobileLoginModal from "./MobileLoginModal";
 import { usePathname, useRouter } from "next/navigation";
+import ThemeToggle from "@/components/common/ThemeToggle";
 
 const MobileHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [openTab, setOpenTab] = useState<string | null>(null);
   const [showLogin, setShowLogin] = useState(false);
-  const router = useRouter()
-  const path = usePathname()
+  const router = useRouter();
+  const path = usePathname();
 
   const toggleTab = (tab: string) => {
     setOpenTab(openTab === tab ? null : tab);
   };
 
   const toolsLinks = [
-    "Car Loan EMI Calculator",
-    "Fuel Cost Calculator",
-    "Mileage Calculator",
-    "Car On-Road Price",
-    "Buy/Renew Car Insurance",
-    "Sell Used Car",
-    "Apply For Car Loan",
-    "Compare Cars",
-    "Fuel Price In India",
+    { label: "Car Loan EMI Calculator", href: "/car-loan-emi-calculator" },
+    { label: "Fuel Cost Calculator", href: "/fuel-cost-calculator" },
+    { label: "Mileage Calculator", href: "/mileage-calculator" },
+    { label: "Car On-Road Price", href: "/car-on-road-price-in-india" },
+    { label: "Buy/Renew Car Insurance", href: "/car-insurance-india" },
+    { label: "Sell Used Car", href: "/sell-used-car" },
+    { label: "Apply For Car Loan", href: "/apply-car-loan-india" },
+    { label: "Compare Cars", href: "/compare-cars" },
+    { label: "Fuel Price In India", href: "/fuel-price-in-india" },
   ];
 
-  const subMenus: Record<string, string[]> = {
+  const newCarsLinks = [
+    { label: "Upcoming Cars", href: "/upcoming-cars" },
+    { label: "Popular Cars", href: "/popular-cars" },
+    { label: "Latest Cars", href: "/latest-launched-cars" },
+    { label: "Electric Cars", href: "/electric-cars" },
+  ];
+
+  const newsReviewsVideosLinks = [
+    { label: "Latest News", href: "/news" },
+    { label: "Auto Expo", href: "/news/auto-expo" },
+    { label: "Press Release", href: "/latest-press-release" },
+    { label: "Expert Review", href: "/car-expert-reviews" },
+    { label: "Comparison Review", href: "/comparison" },
+    { label: "Feature Explained", href: "/features-explained" },
+    { label: "Car Guide", href: "/car-guide" },
+    { label: "User Review", href: "/car-user-review" },
+    { label: "Review Videos", href: "/car-review-videos" },
+    { label: "Compare Videos", href: "/car-comparison-videos" },
+    { label: "Variants Explained Videos", href: "/variants-explained-videos" },
+    { label: "More Videos", href: "/other-videos" },
+    { label: "Auto Expo Videos", href: "/auto-expo-videos" },
+    { label: "V3Cars YouTube Channel", href: "https://www.youtube.com/c/V3cars-Official" },
+  ];
+
+  // ✅ fix type: each submenu holds an array of {label, href}
+  const subMenus: Record<string, { label: string; href: string }[]> = {
     Tools: toolsLinks,
+    "New Cars": newCarsLinks,
+    "News, Reviews & Videos": newsReviewsVideosLinks,
   };
 
   useEffect(() => {
@@ -43,88 +72,85 @@ const MobileHeader = () => {
 
   return (
     <>
-
-      {
-        path !== "/web-stories" && (
-          <>
-            <header className="w-full  bg-white dark:bg-[#171717] z-40 relative ">
-
-              {/* Top bar */}
-              <div className="flex items-center justify-between px-4 py-3">
-                {/* Left: Hamburger + Logo */}
-                <div className="flex items-center gap-3">
-                  <button onClick={() => setIsOpen(true)}>
-                    <FiMenu size={22} />
-                  </button>
-                  <Image
-                    src="/logo/header/v3logo.png"
-                    alt="Logo"
-                    width={100}
-                    height={40}
-                    onClick={() => router.push('/')}
-                    className="block dark:hidden"
-                  />
-                  <Image
-                    src="/logo/header/v3-white2.png"
-                    alt="V3 Cars Logo Dark"
-                    width={100}
-                    height={40}
-                    onClick={() => router.push('/')}
-                    className="hidden dark:block"
-                  />
-                </div>
-
-                {/* Right: Location + Login Icon */}
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1 text-md">
-                    <FiMapPin size={16} />
-                    Visakhapatnam
-                  </div>
-                  <HiOutlineUserCircle size={24} />
-                </div>
-              </div>
-
-              {/* Search bar */}
-              <div className="flex items-center mx-4 border dark:border-[#2E2E2E] rounded-full overflow-hidden mb-5">
-                <input
-                  type="text"
-                  placeholder="Search Car"
-                  className="px-4 py-1 w-full outline-none text-sm bg-transparent"
-                />
-                <button className="bg-gray-700 p-2 px-6 text-white rounded-full">
-                  <FiSearch size={16} />
+      {path !== "/web-stories" && (
+        <>
+          <header className="w-full bg-white dark:bg-[#171717] z-40 relative">
+            {/* Top bar */}
+            <div className="flex items-center justify-between px-4 py-3">
+              {/* Left: Hamburger + Logo */}
+              <div className="flex items-center gap-3">
+                <button onClick={() => setIsOpen(true)}>
+                  <FiMenu size={22} />
                 </button>
+                <Image
+                  src="/logo/header/v3logo.png"
+                  alt="Logo"
+                  width={100}
+                  height={40}
+                  onClick={() => router.push("/")}
+                  className="block dark:hidden cursor-pointer"
+                />
+                <Image
+                  src="/logo/header/v3-white2.png"
+                  alt="V3 Cars Logo Dark"
+                  width={100}
+                  height={40}
+                  onClick={() => router.push("/")}
+                  className="hidden dark:block cursor-pointer"
+                />
               </div>
 
-              {/* Drawer Overlay */}
-              <div
-                className={`fixed inset-0 z-[100] bg-black/40 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-                  }`}
-                onClick={() => setIsOpen(false)}
+              {/* Right: Location + Login Icon */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1 text-md">
+                  <FiMapPin size={16} />
+                  Visakhapatnam
+                </div>
+                <HiOutlineUserCircle size={24} />
+              </div>
+            </div>
+
+            {/* Search bar */}
+            <div className="flex items-center mx-4 border dark:border-[#2E2E2E] rounded-full overflow-hidden mb-5">
+              <input
+                type="text"
+                placeholder="Search Car"
+                className="px-4 py-1 w-full outline-none text-sm bg-transparent"
               />
+              <button className="bg-gray-700 p-2 px-6 text-white rounded-full">
+                <FiSearch size={16} />
+              </button>
+            </div>
 
-              {/* Sidebar Drawer */}
-              <div
-                className={`fixed top-0 left-0 h-full w-[85%] bg-white dark:bg-[#171717] z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
-                  }`}
-              >
+            {/* Drawer Overlay */}
+            <div
+              className={`fixed inset-0 z-[100] bg-black/40 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+                }`}
+              onClick={() => setIsOpen(false)}
+            />
 
-                {/* Top: Logo + Login */}
-                <div className="flex justify-between items-center mb-4">
-                  <Image
-                    src="/logo/header/v3logo.png"
-                    alt="Logo"
-                    width={90}
-                    height={40}
-                    className="block dark:hidden"
-                  />
-                  <Image
-                    src="/logo/header/v3-white2.png"
-                    alt="Logo"
-                    width={90}
-                    height={40}
-                    className="hidden dark:block"
-                  />
+            {/* Sidebar Drawer */}
+            <div
+              className={`fixed top-0 left-0 h-full w-[85%] bg-white dark:bg-[#171717] z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
+            >
+              {/* Top: Logo + Login */}
+              <div className="flex justify-between items-center mb-4">
+                <Image
+                  src="/logo/header/v3logo.png"
+                  alt="Logo"
+                  width={90}
+                  height={40}
+                  className="block dark:hidden"
+                />
+                <Image
+                  src="/logo/header/v3-white2.png"
+                  alt="Logo"
+                  width={90}
+                  height={40}
+                  className="hidden dark:block"
+                />
+                <div className="flex gap-2 items-center">
                   <button
                     onClick={() => setShowLogin(true)}
                     className="bg-yellow-400 text-black text-sm px-4 py-1 rounded-full font-medium"
@@ -132,12 +158,14 @@ const MobileHeader = () => {
                     Login
                   </button>
 
-
+                  <ThemeToggle />
                 </div>
+              </div>
 
-                {/* Menu Items */}
-                <div className="flex flex-col gap-2">
-                  {["New Cars", "News, Reviews & Videos", "Variant Explained", "Tools"].map((item) => {
+              {/* Menu Items */}
+              <div className="flex flex-col gap-2">
+                {["New Cars", "News, Reviews & Videos", "Variant Explained", "Tools"].map(
+                  (item) => {
                     const hasSubmenu = !!subMenus[item];
 
                     return (
@@ -168,7 +196,9 @@ const MobileHeader = () => {
                                   key={idx}
                                   className="border-b border-gray-100 dark:border-[#2E2E2E] pb-2"
                                 >
-                                  {link}
+                                  <Link href={link.href} className="hover:underline">
+                                    {link.label}
+                                  </Link>
                                 </li>
                               ))}
                             </ul>
@@ -176,16 +206,15 @@ const MobileHeader = () => {
                         </div>
                       </div>
                     );
-                  })}
-                </div>
-
+                  }
+                )}
               </div>
-            </header>
+            </div>
+          </header>
 
-            {showLogin && <MobileLoginModal onClose={() => setShowLogin(false)} />}
-
-          </>
-        )}
+          {showLogin && <MobileLoginModal onClose={() => setShowLogin(false)} />}
+        </>
+      )}
     </>
   );
 };

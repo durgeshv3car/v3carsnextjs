@@ -9,6 +9,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
+import { useRouter } from 'next/navigation';
 
 // Dummy Slides
 const slides = [
@@ -36,6 +37,7 @@ const HeroSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState('budget');
   const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
   const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+  const router = useRouter()
 
   const handleSelection = (value: string) => {
     console.log('Selected:', value);
@@ -140,7 +142,7 @@ const HeroSection: React.FC = () => {
                 </button>
 
                 <div className="flex justify-end">
-                  <button className="flex items-center text-sm gap-1 cursor-pointer hover:underline">
+                  <button className="flex items-center text-sm gap-1 cursor-pointer hover:underline" onClick={()=>{router.push('/search/new-cars')}}>
                     Advanced Search <VscChevronRight size={18} />
                   </button>
                 </div>

@@ -65,10 +65,10 @@ const StateWiseFuelList = () => {
                                 key={idx}
                                 className={idx % 2 === 0 ? "bg-transparent" : "bg-gray-50 dark:bg-[#171717]"}
                             >
-                                <td className="p-4 border">{row.state}</td>
-                                <td className="p-4 border">{row.petrol}</td>
-                                <td className="p-4 border">{row.diesel}</td>
-                                <td className="p-4 border">{row.cng}</td>
+                                <td className="p-4 border dark:border-[#2E2E2E]">{row.state}</td>
+                                <td className="p-4 border dark:border-[#2E2E2E]">{row.petrol}</td>
+                                <td className="p-4 border dark:border-[#2E2E2E]">{row.diesel}</td>
+                                <td className="p-4 border dark:border-[#2E2E2E]">{row.cng}</td>
                             </tr>
                         ))}
                     </tbody>

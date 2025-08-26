@@ -22,13 +22,14 @@ const CategorySection: React.FC = () => {
                     {categories.map((category, index) => (
                         <div
                             key={index}
-                            className="bg-white dark:bg-transparent dark:border dark:border-[#2E2E2E] min-w-[152px] h-[104px] xl:min-w-[180px] xl:h-[136px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition"
+                            className="bg-white dark:bg-transparent border dark:border-[#2E2E2E] min-w-[152px] h-[104px] xl:min-w-[180px] xl:h-[136px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition"
                         >
                             <img
                                 src={category.icon}
                                 alt={category.label}
                                 width={80}
                                 height={80}
+                                className='dark:invert'
                             />
                             <span className="mt-1.5 capitalize">{category.label}</span>
                         </div>

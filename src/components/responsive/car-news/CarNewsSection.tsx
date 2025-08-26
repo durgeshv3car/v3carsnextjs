@@ -23,8 +23,8 @@ export default function CarNewsSection({
   data,
 }: CarNewsSectionProps) {
   return (
-    <section className="">
-      <div className="lg:border border-gray-200 rounded-lg lg:p-4  shadow-sm">
+    <section>
+      <div className="lg:border dark:border-[#2E2E2E] rounded-lg lg:p-4  shadow-sm">
         {/* Top Heading */}
         <div className="mb-4">
           <h2 className="text-[18px] font-semibold  hidden lg:block">{title}</h2>

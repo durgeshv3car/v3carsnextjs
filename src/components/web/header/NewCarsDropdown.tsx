@@ -24,6 +24,7 @@ const NewCarsDropdown = () => {
               alt="icon"
               width={18}
               height={18}
+              className=" dark:invert"
             />
             <span>{item.label}</span>
           </Link>

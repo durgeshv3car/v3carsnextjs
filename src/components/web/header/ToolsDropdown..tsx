@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { IoArrowForwardOutline } from "react-icons/io5";
 
 const ToolsDropdown = () => {
@@ -8,27 +9,31 @@ const ToolsDropdown = () => {
       title: "Calculators",
       desc: "Estimate costs and savings with our handy automotive calculators.",
       links: [
-        "Car Loan EMI Calculator",
-        "Fuel Cost Calculator",
-        "Mileage Calculator",
-        "Car On-Road Price",
+        { text: "Car Loan EMI Calculator", url: "/car-loan-emi-calculator" },
+        { text: "Fuel Cost Calculator", url: "/fuel-cost-calculator" },
+        { text: "Mileage Calculator", url: "/mileage-calculator" },
+        { text: "Car On-Road Price", url: "/car-on-road-price-in-india" },
       ],
     },
     {
       title: "Buy, Sell, Renew",
       desc: "Simplify your car ownership journey with our buying, selling, and renewal tools.",
       links: [
-        "Buy/Renew Car Insurance",
-        "Sell Used Car",
-        "Apply For Car Loan",
+        { text: "Buy/Renew Car Insurance", url: "/car-insurance-india" },
+        { text: "Sell Used Car", url: "/sell-used-car" },
+        { text: "Apply For Car Loan", url: "/apply-car-loan-india" },
       ],
     },
     {
       title: "Others",
       desc: "Explore additional resources and comparisons for car enthusiasts.",
-      links: ["Compare Cars", "Fuel Price In India"],
+      links: [
+        { text: "Compare Cars", url: "/compare-cars" },
+        { text: "Fuel Price In India", url: "/fuel-price-in-india" },
+      ],
     },
   ];
+
 
   return (
     <div className="w-full bg-white dark:bg-[#171717] shadow-md border-b-[5px] rounded-b-[10px] border-gray-500 dark:border-[#2E2E2E] h-full px-10">
@@ -56,19 +61,19 @@ const ToolsDropdown = () => {
                       alt="icon"
                       width={16}
                       height={16}
-                      className="mt-[2px]"
+                      className="mt-[2px] dark:invert"
                     />
-                    <span>{text}</span>
+                    <Link href={text.url}>{text.text}</Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
 
-            {/* Ad Box */}
-                    <div className=" bg-gray-500 h-[250px] rounded-md flex items-center justify-center p-3 w-[30%]">
+          {/* Ad Box */}
+          <div className=" bg-gray-500 h-[250px] rounded-md flex items-center justify-center p-3 w-[30%]">
 
-                    </div>
+          </div>
         </div>
       </div>
     </div>

@@ -89,7 +89,7 @@ export default function page() {
                 setDistanceValue={setDistanceValue}
             />
 
-            <div className="max-w-[1600px] mx-auto px-4 pb-16 ">
+            <div className="max-w-[1600px] mx-auto px-4 lg:px-0">
                 <FuelCostTable
                     currency={currency}
                     distanceUnit={distanceUnit}
@@ -106,9 +106,8 @@ export default function page() {
             <FuelCostBarGraph />
             <QuickLinks />
 
-            <div className='w-[1600px] mx-auto'>
+            <div className='max-w-[1600px] mx-auto px-4 lg:px-0'>
                 <CommonFaqAccordion faqData={faqData} />
-
             </div>
 
         </div>

@@ -117,7 +117,7 @@ export default function BrandPage() {
                 <div className="flex flex-col lg:flex-row gap-5 w-full">
 
                     {/* Sidebar */}
-                    <div className="w-auto lg:w-[25%] bg-black p-5 rounded-xl">
+                    <div className="w-auto lg:w-[25%] bg-black border dark:border-[#2E2E2E] p-5 rounded-xl">
 
                         <BrandSelector />
 

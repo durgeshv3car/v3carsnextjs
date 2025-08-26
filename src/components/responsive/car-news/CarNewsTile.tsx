@@ -19,7 +19,7 @@ export default function CarNewsTile({
 
   return (
 
-    <div className=" border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+    <div className=" border dark:border-[#2E2E2E] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
 
       <Image
         src={image}

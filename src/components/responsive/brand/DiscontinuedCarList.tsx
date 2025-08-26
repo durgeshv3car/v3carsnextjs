@@ -5,9 +5,9 @@ interface DiscontinuedCarListProps {
 
 export default function DiscontinuedCarList({ title, cars }: DiscontinuedCarListProps) {
     return (
-        <div className=" rounded-xl overflow-hidden border dark:border-[#2A2A2A]">
+        <div className="bg-white dark:bg-transparent mt-8 rounded-xl overflow-hidden border dark:border-[#2A2A2A]">
             {/* Header */}
-            <div className="text-[18px] font-semibold px-2 py-3 border-b dark:border-[#2A2A2A] bg-slate-100 dark:bg-[#171717]">
+            <div className="text-[18px] font-semibold px-4 py-3 border-b dark:border-[#2A2A2A] bg-slate-100 dark:bg-[#171717]">
                 {title}
             </div>
 

@@ -49,16 +49,16 @@ export default function WhatIsCarInsurance() {
         <table className="min-w-[760px] w-full text-[13px] md:text-sm text-gray-900 border border-[#E7E7E7] rounded-xl overflow-hidden">
           <thead>
 
-            <tr className="bg-[#F6F6F6]  dark:bg-gray-800 text-center dark:text-white">
+            <tr className="bg-[#F6F6F6] dark:border-[#2E2E2E] dark:bg-[#171717] text-center dark:text-white">
               <th className="py-3 rounded-tl-xl"></th>
-              <th className="py-3 font-semibold border-l border-[#E7E7E7]">
+              <th className="py-3 font-semibold border-l border-[#E7E7E7] dark:border-[#2E2E2E]">
                 2024 MAHINDRA THAR
                 <div className="block text-[10px] text-gray-500 font-medium">
                   POWERTRAIN‑WISE MILEAGE (ARAI)
                 </div>
               </th>
-              <th className="py-3 font-semibold border-l border-[#E7E7E7]">2.2L Diesel</th>
-              <th className="py-3 font-semibold border-l border-[#E7E7E7] rounded-tr-xl">
+              <th className="py-3 font-semibold border-l border-[#E7E7E7] dark:border-[#2E2E2E]">2.2L Diesel</th>
+              <th className="py-3 font-semibold border-l border-[#E7E7E7] dark:border-[#2E2E2E] rounded-tr-xl">
                 1.5L Diesel
               </th>
             </tr>
@@ -66,46 +66,46 @@ export default function WhatIsCarInsurance() {
 
           <tbody>
             {/* Engine */}
-            <tr className="border-t border-[#E7E7E7] dark:text-white ">
-              <td className="w-[160px] px-4 py-3 bg-[#FAFAFA] dark:bg-gray-800 font-semibold">Engine</td>
-              <td className="px-4 py-3 text-left border-l border-[#E7E7E7]">2.0L Turbo Petrol</td>
-              <td className="px-4 py-3 text-left border-l border-[#E7E7E7]">2.2L Diesel</td>
-              <td className="px-4 py-3 text-left border-l border-[#E7E7E7]">1.5L Diesel</td>
+            <tr className="border-t border-[#E7E7E7] dark:border-[#2E2E2E] dark:text-white ">
+              <td className="w-[160px] px-4 py-3 bg-[#FAFAFA] dark:bg-[#171717] font-semibold">Engine</td>
+              <td className="px-4 py-3 text-left border-l border-[#E7E7E7] dark:border-[#2E2E2E]">2.0L Turbo Petrol</td>
+              <td className="px-4 py-3 text-left border-l border-[#E7E7E7] dark:border-[#2E2E2E]">2.2L Diesel</td>
+              <td className="px-4 py-3 text-left border-l border-[#E7E7E7] dark:border-[#2E2E2E]">1.5L Diesel</td>
             </tr>
 
             {/* Transmission */}
-            <tr className="border-t border-[#E7E7E7] dark:text-white">
-              <td className="px-4 py-3 bg-[#FAFAFA]  dark:bg-gray-800 font-semibold">Transmission</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">6MT, 6TC</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">6MT, 6TC</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">6MT</td>
+            <tr className="border-t border-[#E7E7E7] dark:border-[#2E2E2E] dark:text-white">
+              <td className="px-4 py-3 bg-[#FAFAFA]  dark:bg-[#171717] font-semibold">Transmission</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">6MT, 6TC</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">6MT, 6TC</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">6MT</td>
             </tr>
 
             {/* Drivetrain */}
-            <tr className="border-t border-[#E7E7E7] dark:text-white">
-              <td className="px-4 py-3 bg-[#FAFAFA]  dark:bg-gray-800 font-semibold">Drivetrain</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">4WD</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">4WD</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">RWD</td>
+            <tr className="border-t border-[#E7E7E7] dark:border-[#2E2E2E] dark:text-white">
+              <td className="px-4 py-3 bg-[#FAFAFA]  dark:bg-[#171717] font-semibold">Drivetrain</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">4WD</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">4WD</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">RWD</td>
             </tr>
 
             {/* Power */}
-            <tr className="border-t dark:text-white">
-              <td className="px-4 py-3 bg-[#FAFAFA]  dark:bg-gray-800 font-semibold">Power</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">152PS @ 5000rpm</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">132PS @ 3750rpm</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">119PS @ 3500rpm</td>
+            <tr className="border-t dark:border-[#2E2E2E] dark:text-white">
+              <td className="px-4 py-3 bg-[#FAFAFA]  dark:bg-[#171717] font-semibold">Power</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">152PS @ 5000rpm</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">132PS @ 3750rpm</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">119PS @ 3500rpm</td>
             </tr>
 
             {/* Torque */}
-            <tr className="border-t border-b border-[#E7E7E7] dark:text-white">
-              <td className="px-4 py-3 bg-[#FAFAFA]  dark:bg-gray-800 font-semibold rounded-bl-xl">Torque</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">
+            <tr className="border-t border-b border-[#E7E7E7] dark:border-[#2E2E2E] dark:text-white">
+              <td className="px-4 py-3 bg-[#FAFAFA]  dark:bg-[#171717] font-semibold rounded-bl-xl">Torque</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">
                 300Nm @ 1250–3000rpm (MT)
                 <br /> 320Nm @ 1500–3000rpm (AT)
               </td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7]">300Nm @ 1600–2800rpm</td>
-              <td className="px-4 py-3 border-l border-[#E7E7E7] rounded-br-xl">
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E]">300Nm @ 1600–2800rpm</td>
+              <td className="px-4 py-3 border-l border-[#E7E7E7] dark:border-[#2E2E2E] rounded-br-xl">
                 300Nm @ 1750–2500rpm
               </td>
             </tr>

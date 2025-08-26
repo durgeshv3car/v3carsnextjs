@@ -15,7 +15,7 @@ export default function CarSpecsBlock() {
             <div className="mb-6">
 
                 {/* ===== Mobile Layout ===== */}
-                <div className="block md:hidden space-y-3 bg-gray-200 p-4 border-b border-gray-600">
+                <div className="block md:hidden space-y-3 bg-gray-200 dark:bg-[#171717] p-4 border-b border-gray-600 dark:border-[#2E2E2E]">
                     {/* Title */}
                     <h1 className="text-[18px] font-bold  leading-snug">
                         MG Hector Plus Price Increased By Up To Rs. 30,000- Latest
@@ -25,23 +25,23 @@ export default function CarSpecsBlock() {
                     {/* Meta Info */}
                     <div className="flex flex-wrap gap-y-2 text-sm  justify-between">
                         <p className="mr-6">
-                            <span className="font-medium text-black">Author :</span> Saloni Chaudhary
+                            <span className="font-medium">Author :</span> Saloni Chaudhary
                         </p>
 
                         <p>
-                            <span className="font-medium text-black">Read Time :</span> 6 min
+                            <span className="font-medium">Read Time :</span> 6 min
                         </p>
                     </div>
 
                     {/* Social Icons */}
                     <div className="flex gap-3 mt-1">
                         <p className="mr-6">
-                            <span className="font-medium text-black">Published :</span> August 22, 2024
+                            <span className="font-medium">Published :</span> August 22, 2024
                         </p>
                         {[FaFacebookF, FaXTwitter, FaLinkedinIn, FaWhatsapp].map((Icon, idx) => (
                             <span
                                 key={idx}
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-[#e4e4e4] text-black text-[14px] hover:opacity-80 cursor-pointer"
+                                className="w-8 h-8 flex items-center justify-center rounded-full bg-[#e4e4e4] dark:bg-black border dark:border-[#2E2E2E] text-[14px] hover:opacity-80 cursor-pointer"
                             >
                                 <Icon />
                             </span>
@@ -87,22 +87,22 @@ export default function CarSpecsBlock() {
                 </div>
 
                 {/* ===== Block 1: Single Column Table ===== */}
-                <div className="rounded-xl border border-gray-200 overflow-hidden mb-5">
+                <div className="rounded-xl border border-gray-200 dark:border-[#2E2E2E] overflow-hidden mb-5">
 
                     {/* Table Header */}
-                    <div className="bg-[#F5F5F5] dark:bg-[#27272a] text-center py-3 px-2 border-b border-gray-200">
+                    <div className="bg-[#F5F5F5] dark:bg-[#171717] text-center py-3 px-2 border-b border-gray-200 dark:border-[#2E2E2E]">
                         <h3 className="text-[16px] font-bold ">2024 MAHINDRA THAR</h3>
                         <p className="text-xs  uppercase tracking-wide">Powertrain-Wise Mileage (ARAI)</p>
                     </div>
 
                     {/* Desktop Table */}
-                    <table className="w-full text-sm hidden md:table bg-white dark:bg-[#27272a]">
+                    <table className="w-full text-sm hidden md:table bg-white dark:bg-[#171717]">
                         <tbody>
-                            <tr className="border-b border-gray-200">
+                            <tr className="border-b border-gray-200 dark:border-[#2E2E2E]">
                                 <td className="p-4 font-medium ">2.0L Turbo Petrol (MT, AT)</td>
                                 <td className="p-4 ">12.40kmpl</td>
                             </tr>
-                            <tr className="border-b border-gray-200">
+                            <tr className="border-b border-gray-200 dark:border-[#2E2E2E]">
                                 <td className="p-4 font-medium ">2.2L Diesel (MT, AT)</td>
                                 <td className="p-4 ">15.20kmpl</td>
                             </tr>
@@ -145,16 +145,16 @@ export default function CarSpecsBlock() {
                     </p>
 
                     {/* Scrollable Table Wrapper */}
-                    <div className="bg-[#F8F8F8] dark:bg-[#27272a] rounded-xl overflow-hidden border border-gray-200">
+                    <div className="bg-[#F8F8F8] dark:bg-[#171717] rounded-xl overflow-hidden border border-gray-200 dark:border-[#2E2E2E]">
                         {/* Table Header */}
-                        <div className="border-b border-gray-300 text-center py-3 px-2">
+                        <div className="border-b border-gray-300 dark:border-[#2E2E2E] text-center py-3 px-2">
                             <h3 className="text-[16px] font-bold ">2024 MAHINDRA THAR</h3>
                             <p className="text-xs  uppercase tracking-wide">Powertrain-Wise Mileage (ARAI)</p>
                         </div>
 
                         {/* Horizontal Scroll Container */}
                         <div className="overflow-x-auto scrollbar-hide">
-                            <table className="w-full min-w-[600px] text-sm bg-white dark:bg-[#27272a]">
+                            <table className="w-full min-w-[600px] text-sm bg-white dark:bg-[#171717]">
                                 <thead className=" ">
                                     <tr>
                                         <th className="p-3 text-left">Engine</th>
@@ -164,25 +164,25 @@ export default function CarSpecsBlock() {
                                     </tr>
                                 </thead>
                                 <tbody className="">
-                                    <tr className="border-t border-gray-200">
+                                    <tr className="border-t border-gray-200 dark:border-[#2E2E2E]">
                                         <td className="p-3 font-medium">Transmission</td>
                                         <td className="p-3">6MT, 6TC</td>
                                         <td className="p-3">6MT, 6TC</td>
                                         <td className="p-3">6MT</td>
                                     </tr>
-                                    <tr className="border-t border-gray-200">
+                                    <tr className="border-t border-gray-200 dark:border-[#2E2E2E]">
                                         <td className="p-3 font-medium">Drivetrain</td>
                                         <td className="p-3">4WD</td>
                                         <td className="p-3">4WD</td>
                                         <td className="p-3">RWD</td>
                                     </tr>
-                                    <tr className="border-t border-gray-200">
+                                    <tr className="border-t border-gray-200 dark:border-[#2E2E2E]">
                                         <td className="p-3 font-medium">Power</td>
                                         <td className="p-3">152PS @ 5000rpm</td>
                                         <td className="p-3">132PS @ 3750rpm</td>
                                         <td className="p-3">119PS @ 3500rpm</td>
                                     </tr>
-                                    <tr className="border-t">
+                                    <tr className="border-t dark:border-[#2E2E2E]">
                                         <td className="p-3 font-medium">Torque</td>
                                         <td className="p-3">
                                             300Nm @ 1250–3000rpm (MT)<br />

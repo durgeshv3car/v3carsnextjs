@@ -37,7 +37,8 @@ const quickLinks = [
 
 export default function QuickLinks() {
   return (
-    <div className="mt-10 max-w-[1600px] mx-auto my-10">
+    <div className='px-4 lg:px-0 my-10'>
+    <div className="max-w-[1600px] mx-auto">
       <h3 className="text-[28px] font-semibold text-gray-900 mb-4 dark:text-white">Quick Links</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {quickLinks.map((item, index) => (
@@ -51,6 +52,7 @@ export default function QuickLinks() {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }

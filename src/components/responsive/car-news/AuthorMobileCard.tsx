@@ -9,26 +9,26 @@ import Image from "next/image";
 
 export default function AuthorMobileCard() {
   return (
-    <div className="md:hidden px-4 mt-8 space-y-5">
+    <div className="md:hidden px-4 my-8 space-y-5 ">
       {/* Social Icons Row */}
-      <div className="flex justify-between items-center bg-[#f5f5f5] px-4 py-2 rounded-xl mb-28">
+      <div className="flex justify-between items-center bg-[#f5f5f5] dark:bg-[#171717] px-4 py-2 rounded-xl mb-28">
         <div className="flex gap-3">
           {[FaFacebookF, FaXTwitter, FaLinkedinIn, FaWhatsapp].map((Icon, i) => (
             <span
               key={i}
-              className="w-9 h-9 flex items-center justify-center bg-white rounded-full text-black text-[14px] shadow-sm"
+              className="w-9 h-9 flex items-center justify-center bg-white dark:bg-black rounded-full text-[14px] shadow-sm"
             >
               <Icon />
             </span>
           ))}
         </div>
-        <span className="w-9 h-9 flex items-center justify-center bg-white rounded-full text-black text-[14px] shadow-sm">
+        <span className="w-9 h-9 flex items-center justify-center bg-white dark:bg-black rounded-full text-[14px] shadow-sm">
           <FaShare />
         </span>
       </div>
 
       {/* Author Card */}
-      <div className="relative bg-[#2b2b2b] text-white rounded-2xl pt-16 pb-5 px-5 space-y-4 text-center ">
+      <div className="relative bg-[#2b2b2b] text-white rounded-2xl pt-16 pb-5 px-5 space-y-4 text-center">
         {/* Floating Image */}
         <div className="absolute -top-20 left-1/2 -translate-x-1/2 ">
           <Image

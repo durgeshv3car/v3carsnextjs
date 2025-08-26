@@ -44,6 +44,7 @@ const FuelTypeFilter = ({ openSection }: FuelFilterProps) => {
                                     alt={type.label}
                                     width={60}
                                     height={60}
+                                    className='dark:invert'
                                 />
                                 {type.label}
                             </div>

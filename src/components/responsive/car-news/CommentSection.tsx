@@ -93,20 +93,20 @@ export default function CommentSection() {
   };
 
   return (
-    <div className="py-6 px-4 md:px-6 rounded-lg space-y-6 mt-5">
+    <div className="py-6 px-4 rounded-lg space-y-6 mt-5">
       {/* Share icons */}
 
       <div className="flex justify-end items-center gap-4 pr-2">
         {[FaFacebookF, FaXTwitter, FaLinkedinIn, FaWhatsapp].map((Icon, i) => (
           <span
             key={i}
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80"
+            className="w-10 h-10 rounded-full bg-white dark:bg-[#171717] flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80"
           >
-            <Icon className="text-gray-800" />
+            <Icon className="" />
           </span>
         ))}
-        <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80">
-          <HiOutlineDotsVertical className="text-gray-800" />
+        <span className="w-10 h-10 rounded-full bg-white dark:bg-[#171717] flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80">
+          <HiOutlineDotsVertical className="" />
         </span>
       </div>
 
@@ -117,7 +117,7 @@ export default function CommentSection() {
         </div>
         <input
           placeholder="Add a comment..."
-          className="flex-1 border-b border-gray-300 bg-transparent text-sm outline-none py-1"
+          className="flex-1 border-b border-gray-300 dark:border-[#2E2E2E] bg-transparent text-sm outline-none py-1"
         />
       </div>
 
@@ -126,7 +126,7 @@ export default function CommentSection() {
         {comments.map((c) => (
           <div key={c.id} className="space-y-2">
             <div className="flex gap-3 items-start">
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-sm font-semibold ">
+              <div className="w-8 h-8 bg-gray-200 dark:bg-[#171717] rounded-full flex items-center justify-center text-sm font-semibold ">
                 {c.name.charAt(1)}
               </div>
               <div className="flex-1">

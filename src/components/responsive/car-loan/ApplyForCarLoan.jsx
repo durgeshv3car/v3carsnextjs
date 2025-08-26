@@ -9,11 +9,11 @@ const variants = ['Base', 'Mid', 'Top'];
 export default function ApplyForCarLoan() {
 
   return (
-    <section className="max-w-[1600px] mx-auto px-4 sm:px-8 py-6">
+    <section className="max-w-[1600px] mx-auto px-4 py-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
         {/* Left: Form Card */}
-        <div className="bg-[#E9E9E9] dark:bg-gray-800 rounded-2xl p-5 sm:p-6 md:py-10 md:px-10">
+        <div className="bg-[#E9E9E9] dark:bg-[#171717] rounded-2xl p-5 sm:p-6 md:py-10 md:px-10">
 
           <h3 className="text-[20px] sm:text-[22px] font-semibold text-gray-800 dark:text-white mb-4">
             APPLY FOR CAR LOAN
@@ -25,9 +25,9 @@ export default function ApplyForCarLoan() {
           >
 
             {/* Row 1 */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 dark:text-black">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 
-              <select className="h-[44px] rounded-md px-3 bg-white border border-gray-300 outline-none">
+              <select className="h-[44px] rounded-md px-3 bg-white dark:bg-[#171717] border border-gray-300 outline-none dark:border-[#2E2E2E]">
                 <option value="">Select Brands</option>
                 {brands.map((b) => (
                   <option key={b} value={b}>
@@ -36,7 +36,7 @@ export default function ApplyForCarLoan() {
                 ))}
               </select>
 
-              <select className="h-[44px] rounded-md px-3 bg-white border border-gray-300 outline-none">
+              <select className="h-[44px] rounded-md px-3 bg-white dark:bg-[#171717] border border-gray-300 outline-none dark:border-[#2E2E2E]">
                 <option value="">Select Model</option>
                 {models.map((m) => (
                   <option key={m} value={m}>
@@ -45,7 +45,7 @@ export default function ApplyForCarLoan() {
                 ))}
               </select>
 
-              <select className="h-[44px] rounded-md px-3 bg-white border border-gray-300 outline-none">
+              <select className="h-[44px] rounded-md px-3 bg-white dark:bg-[#171717] border border-gray-300 outline-none dark:border-[#2E2E2E]">
                 <option value="">Select Variant</option>
                 {variants.map((v) => (
                   <option key={v} value={v}>
@@ -57,7 +57,7 @@ export default function ApplyForCarLoan() {
 
             {/* Row 2 */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <select className="h-[44px] rounded-md px-3 bg-white border border-gray-300 outline-none dark:text-black">
+              <select className="h-[44px] rounded-md px-3 bg-white dark:bg-[#171717] border border-gray-300 outline-none dark:border-[#2E2E2E]">
                 <option>Mr.</option>
                 <option>Ms.</option>
                 <option>Mrs.</option>
@@ -66,7 +66,7 @@ export default function ApplyForCarLoan() {
               <input
                 type="text"
                 placeholder="Full Name As Per Pan Card"
-                className="sm:col-span-2 h-[44px] rounded-md px-3 bg-white border border-gray-300 outline-none"
+                className="sm:col-span-2 h-[44px] rounded-md px-3 bg-white dark:bg-[#171717] border border-gray-300 outline-none dark:border-[#2E2E2E]"
               />
             </div>
 
@@ -76,10 +76,10 @@ export default function ApplyForCarLoan() {
               <input
                 type="email"
                 placeholder="Email*"
-                className="h-[44px] rounded-md px-3 bg-white border border-gray-300 outline-none"
+                className="h-[44px] rounded-md px-3 bg-white dark:bg-[#171717] border border-gray-300 outline-none dark:border-[#2E2E2E]"
               />
 
-              <select className="sm:col-span-2 h-[44px] rounded-md px-3 bg-white dark:text-black border border-gray-300 outline-none">
+              <select className="sm:col-span-2 h-[44px] rounded-md px-3 bg-white dark:bg-[#171717] border border-gray-300 outline-none dark:border-[#2E2E2E]">
                 <option value="">Select Variant</option>
                 {variants.map((v) => (
                   <option key={v} value={v}>
@@ -93,7 +93,7 @@ export default function ApplyForCarLoan() {
             <input
               type="tel"
               placeholder="Mobile"
-              className="w-full h-[44px] rounded-md px-3 bg-white border border-gray-300 outline-none"
+              className="w-full h-[44px] rounded-md px-3 bg-white dark:bg-[#171717] border border-gray-300 outline-none dark:border-[#2E2E2E]"
             />
 
             {/* Button */}
@@ -105,7 +105,7 @@ export default function ApplyForCarLoan() {
             </button>
 
             {/* Privacy text */}
-            <p className="text-[12px] text-gray-600 mt-1 text-center">
+            <p className="text-[12px] text-gray-500 mt-1 text-center">
               By proceeding ahead you expressly agree to the{' '}
               <a href="#" className="font-semibold underline">
                 V3Cars privacy policy

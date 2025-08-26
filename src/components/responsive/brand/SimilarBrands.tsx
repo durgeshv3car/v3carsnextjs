@@ -17,12 +17,12 @@ export default function SimilarBrands({ brands }: SimilarBrandsProps) {
         <div className=" rounded-xl overflow-hidden">
 
             {/* Header */}
-            <div className="text-white text-[18px] font-semibold px-2 py-3 border-b border-[#2A2A2A]">
+            <div className="text-white text-[18px] font-semibold px-2 py-3">
                 Similar Brands 
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-2 gap-2 bg-[#2A2A2A]">
+            <div className="grid grid-cols-2 gap-2 ">
 
                 {brands.map((brand, i) => (
 
