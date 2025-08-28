@@ -32,7 +32,11 @@ export const metadata: Metadata = {
 function UpcomingCars() {
     return (
         <>
-            <TopSection />
+            <TopSection
+                title={"Upcoming Cars In India (2024-2025)"}
+                description={"Gear up for exciting new car launches in India (2024-2025)! We’ve compiled a comprehensive list featuring over 164 upcoming cars across various segments like SUVs, hatchbacks, sedans, and more. Top brands like Maruti Suzuki, Hyundai, Tata, Mahindra, Kia and others are all set to unveil their latest offerings. Explore expected prices, model image and launch dates for each car."}
+            />
+
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto">
 

@@ -93,7 +93,7 @@ const newsList = [
 ];
 
 const reviewList = [
-    
+
     {
         id: 1,
         image: '/car-review/image1.png',
@@ -170,7 +170,11 @@ const carsData = [
 function PopularCars() {
     return (
         <>
-            <TopSection />
+            <TopSection
+                title={"Popular Cars In India 2024"}
+                description={"Looking for the best-selling cars in India? Look no further! This section reveals the top 20 cars dominating the Indian market based on monthly sales figures. Some of the most popular cars in the month of July 2024 are Maruti Suzuki Grand Vitara, Maruti Suzuki Fronx, Maruti Suzuki Brezza, Tata Nexon, Tata Punch and many more. Explore detailed information on each car, including segment, body"}
+            />
+
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
 

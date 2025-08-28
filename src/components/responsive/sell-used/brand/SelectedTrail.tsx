@@ -49,7 +49,7 @@ function CongratsRedirect({
       </button>
 
       <div className="mt-6 text-center">
-        <div className="text-black font-semibold text-[18px] leading-none">
+        <div className="font-semibold text-[18px] leading-none">
           {Math.max(count, 0)}s
         </div>
         <div className="text-gray-500 text-sm mt-1">Auto Redirecting</div>
@@ -80,7 +80,7 @@ export default function SelectedTrail() {
   const showCTA = step === "location" && complete;
 
   return (
-    <Card variant="white" className="p-0 overflow-hidden border border-black/10">
+    <Card variant="white" className="p-0 overflow-hidden border dark:border-[#2E2E2E] dark:bg-[#171717]">
       <ul className="px-4 py-3">
         {rows.map((r, i) => {
           const nextDone = rows[i + 1]?.done;
@@ -94,8 +94,8 @@ export default function SelectedTrail() {
                   className={cn(
                     "mt-2 h-5 w-5 rounded-full grid place-items-center text-[11px] font-bold",
                     r.done
-                      ? "bg-green-600 text-white"
-                      : "bg-white border border-gray-300 text-transparent"
+                      ? "bg-green-600"
+                      : "bg-white border border-gray-300 "
                   )}
                 >
                   ✓
@@ -111,8 +111,8 @@ export default function SelectedTrail() {
                 )}
               </div>
 
-              <div className="py-3 border-b last:border-b-0 border-gray-200">
-                <span className={cn("text-[15px]", r.done ? "font-semibold text-neutral-900" : "text-gray-500")}>
+              <div className="py-1.5">
+                <span className={cn("text-[15px]", r.done ? "font-semibold" : "")}>
                   {r.label}
                 </span>
               </div>

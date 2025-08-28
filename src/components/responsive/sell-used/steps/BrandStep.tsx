@@ -43,7 +43,7 @@ export default function BrandStep() {
   };
 
   return (
-    <div className="min-h-screen dark:bg-neutral-950 text-white">
+    <div className="min-h-screen dark:bg-neutral-950">
       <StepHeader
         current={0}
         onBack={() => dispatch(setStep("landing"))}
@@ -79,7 +79,7 @@ export default function BrandStep() {
         {/* Right */}
         <div className="col-span-12 lg:col-span-4">
           <SelectedTrail />
-          <Card variant="white" className="mt-4 p-4 text-sm text-gray-500">
+          <Card variant="white" className="mt-4 p-4 text-sm text-gray-500 dark:bg-[#171717] border dark:border-[#2E2E2E]">
             Tip: Use the search to quickly find your brand. Your selection appears here with a green tick.
           </Card>
         </div>

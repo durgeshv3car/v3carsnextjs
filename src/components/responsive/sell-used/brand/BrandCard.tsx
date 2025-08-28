@@ -23,7 +23,7 @@ export default function BrandCard({
       <Card
         variant="white"
         className={cn(
-          "grid place-items-center h-24 md:h-28 px-3 bg-white border border-black/10 rounded-xl",
+          "grid place-items-center h-24 md:h-28 px-3 dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-xl",
           active ? "ring-yellow-400 ring-2 border-transparent shadow-md" : ""
         )}
       >
@@ -32,7 +32,7 @@ export default function BrandCard({
           alt={brand.name || "Brand"}
           width={96}
           height={60}
-          className="object-contain opacity-95 max-h-12"
+          className="object-contain opacity-95 max-h-12 dark:invert"
         />
       </Card>
 

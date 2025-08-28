@@ -91,7 +91,7 @@ export default function StepHeader({
               </button>
             </div>
 
-            <nav className="mt-3 flex items-center gap-6 overflow-x-auto text-sm text-white/70">
+            <nav className="mt-3 flex items-center gap-6 overflow-x-auto scrollbar-hide text-sm text-white/70">
               {STEP_META.map((step, i) => {
                 const isActive = i === current;
                 const isDone = completed[step.key];

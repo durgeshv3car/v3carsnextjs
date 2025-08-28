@@ -34,7 +34,7 @@ export default function PeriodStep() {
   };
 
   return (
-    <div className="min-h-screen dark:bg-neutral-950 text-white dark:text-black">
+    <div className="min-h-screen dark:bg-neutral-950">
       <StepHeader
         current={1}
         onBack={() => dispatch(setStep("brand"))}
@@ -46,11 +46,11 @@ export default function PeriodStep() {
         <div className="col-span-12 lg:col-span-8 space-y-4">
           {/* Top bar */}
           <StepTopBar
-  title="Select the registration year"
-  query={q}
-  onQueryChange={setQ}
-  placeholder="Search year"
-/>
+            title="Select the registration year"
+            query={q}
+            onQueryChange={setQ}
+            placeholder="Search year"
+          />
 
           {/* Years list */}
           <div className="h-[62vh] overflow-y-auto pr-1 custom-scroll p-2">
@@ -63,11 +63,15 @@ export default function PeriodStep() {
                       onClick={() => pickYear(y)}
                       className={`w-full flex items-center justify-between rounded-md border px-4 py-4 text-left transition
                         ${active
-                          ? "bg-white border-yellow-400 ring-1 ring-yellow-400 text-neutral-900"
-                          : "bg-white/90 hover:bg-white border-neutral-200 text-neutral-900"}`}
+                          ? "bg-white dark:bg-[#171717] border-yellow-400 ring-1 ring-yellow-400"
+                          : "bg-white/90 hover:bg-white dark:bg-[#171717] border-neutral-200 dark:border-[#2E2E2E]"}`}
                     >
-                      <span className=" text-black">{y}</span>
-                      <span className="text-white/70">{">"}</span>
+                      <span className="">{y}</span>
+                      <span className="">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                      </span>
                     </button>
                   </li>
                 );
@@ -79,7 +83,7 @@ export default function PeriodStep() {
         {/* Right */}
         <div className="col-span-12 lg:col-span-4">
           <SelectedTrail />
-          <Card variant="white" className="mt-4 p-4 text-sm text-gray-500">
+          <Card variant="white" className="mt-4 p-4 text-sm text-gray-500 dark:bg-[#171717] border dark:border-[#2E2E2E]">
             Tip: Pick registration year to continue.
           </Card>
         </div>

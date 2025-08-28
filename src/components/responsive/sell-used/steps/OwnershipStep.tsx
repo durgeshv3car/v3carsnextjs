@@ -48,7 +48,7 @@ export default function OwnershipStep() {
     };
 
     return (
-        <div className="min-h-screen dark:bg-neutral-950 text-white">
+        <div className="min-h-screen dark:bg-neutral-950">
             <StepHeader
                 current={4}
                 onBack={() => dispatch(setStep("variant"))}
@@ -71,10 +71,10 @@ export default function OwnershipStep() {
                                         key={o.count}
                                         onClick={() => pick(o.label)}
                                         className={cn(
-                                            "relative rounded-xl border grid gap-3 px-4 py-7 bg-white transition place-items-center",
+                                            "relative rounded-xl border grid gap-3 px-4 py-7 bg-white dark:bg-[#171717] transition place-items-center",
                                             active
                                                 ? "ring-2 ring-yellow-400 border-transparent shadow-md"
-                                                : "border-black/10 hover:border-yellow-300/60"
+                                                : "border-[#2E2E2E] hover:border-yellow-400/90"
                                         )}
                                     >
                                         {/* Overlapped one-row triangle (/_\) using same image */}
@@ -90,14 +90,14 @@ export default function OwnershipStep() {
                                                         alt={`${o.label} icon`}
                                                         width={56}
                                                         height={56}
-                                                        className="object-contain"
+                                                        className="object-contain dark:invert"
                                                         style={{ transform: `scale(${s})` }}
                                                     />
                                                 </div>
                                             ))}
                                         </div>
 
-                                        <span className="text-neutral-500 text-sm">{o.label}</span>
+                                        <span className="text-gray-500 text-sm">{o.label}</span>
                                     </button>
                                 );
                             })}
@@ -108,7 +108,7 @@ export default function OwnershipStep() {
                 {/* Right */}
                 <div className="col-span-12 lg:col-span-4">
                     <SelectedTrail />
-                    <Card variant="white" className="mt-4 p-4 text-sm text-gray-500">
+                    <Card variant="white" className="mt-4 p-4 text-sm text-gray-500 dark:bg-[#171717] border dark:border-[#2E2E2E]">
                         Tip: Choose the number of previous owners for your car.
                     </Card>
                 </div>

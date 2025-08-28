@@ -50,12 +50,14 @@ export default function StepTopBar({
               placeholder={placeholder}
               aria-label={placeholder}
               className={cn(
-                "h-9 rounded-full bg-white pl-4 pr-9 text-sm text-neutral-800 placeholder:text-neutral-400 outline-none",
+                "h-9 rounded-full bg-transparent text-white border border-[#2E2E2E] pl-4 pr-9 text-sm outline-none",
                 inputWidthClass
               )}
             />
             <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 grid h-7 w-7 place-items-center rounded-full bg-neutral-900 text-white text-xs">
-              🔍
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
             </span>
           </form>
         )}

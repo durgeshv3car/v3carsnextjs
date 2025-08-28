@@ -59,7 +59,7 @@ export default function Page() {
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key)}
                       className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap ${
-                        activeTab === tab.key ? 'bg-black text-white font-medium' : 'bg-gray-100 text-gray-800'
+                        activeTab === tab.key ? 'bg-yellow-400 text-black font-medium' : 'bg-slate-100 dark:bg-[#171717] border dark:border-[#2E2E2E]'
                       }`}
                     >
                       {tab.label}
