@@ -33,12 +33,12 @@ export default function BrandSection() {
       <div className="w-full lg:max-w-[1600px] mx-auto">
         {/* Search */}
         <div className="mb-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#EEF2FF] px-3 py-2 ring-1 ring-black/5">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#EEF2FF] dark:bg-[#171717] px-3 py-2 ring-1 ring-black/5">
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Enter Brand Name"
-              className="w-56 md:w-72 bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-500"
+              className="w-56 md:w-72 bg-transparent dark:bg-[#171717] outline-none text-sm"
             />
             <span className="text-gray-500 text-base leading-none">▾</span>
           </div>
@@ -50,11 +50,11 @@ export default function BrandSection() {
             <button
               key={`${b.name}-${i}`}
               onClick={() => handlePick(b as any, i)}
-              className="relative overflow-hidden rounded-2xl bg-white ring-1 ring-black/10 hover:shadow-md transition"
+              className="relative overflow-hidden rounded-2xl border dark:border-[#2E2E2E] ring-1 ring-black/10 hover:shadow-md transition"
               aria-label={b.name}
             >
               <div className="h-28 grid place-items-center p-3">
-                <Image src={b.logo} alt={b.name} width={96} height={54} className="object-contain" />
+                <Image src={b.logo} alt={b.name} width={96} height={54} className="object-contain dark:invert" />
               </div>
 
               {/* bottom-left soft gradient */}
@@ -66,7 +66,7 @@ export default function BrandSection() {
                 }}
               />
 
-              <span className="pointer-events-none absolute bottom-2 left-3 text-[13px] md:text-sm font-medium text-neutral-900">
+              <span className="pointer-events-none absolute bottom-2 left-3 text-[13px] md:text-sm font-medium">
                 {b.name}
               </span>
             </button>

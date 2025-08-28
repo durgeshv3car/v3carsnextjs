@@ -2,26 +2,54 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 const months = [
-    { month: 'August', year: 2024 },
-    { month: 'September', year: 2024 },
-    { month: 'October', year: 2024 },
-    { month: 'November', year: 2024 },
-    { month: 'December', year: 2024 },
-    { month: 'January', year: 2025 },
-    { month: 'February', year: 2025 },
-    { month: 'March', year: 2024 },
-    { month: 'April', year: 2025 },
+    { month: 'Aug', year: 2024 },
+    { month: 'Sep', year: 2024 },
+    { month: 'Oct', year: 2024 },
+    { month: 'Nov', year: 2024 },
+    { month: 'Dec', year: 2024 },
+    { month: 'Jan', year: 2025 },
+    { month: 'Feb', year: 2025 },
+    { month: 'Mar', year: 2024 },
+    { month: 'Apr', year: 2025 },
     { month: 'May', year: 2025 },
-    { month: 'June', year: 2025 },
-    { month: 'July', year: 2025 },
+    { month: 'Jun', year: 2025 },
+    { month: 'Jul', year: 2025 },
 ]
 
-export default function TopSection() {
+interface TopSectionProps {
+    title: string;
+    description: string;
+}
+
+export default function TopSection({ title, description }: TopSectionProps) {
     const [selected, setSelected] = useState('August 2024')
+    const [isExpanded, setIsExpanded] = useState(false)
+    const [maxHeight, setMaxHeight] = useState("3rem") // 2 line approx
+    const contentRef = useRef<HTMLDivElement>(null)
     const path = usePathname()
+
+    // ✅ Smooth expand/collapse
+    useEffect(() => {
+        if (isExpanded && contentRef.current) {
+            setMaxHeight(contentRef.current.scrollHeight + "px")
+        } else {
+            setMaxHeight("3rem") // collapsed height
+        }
+    }, [isExpanded, description])
+
+    const descriptionText =
+        path === "/latest-launched-cars" ? description :
+            path === "/popular-cars" ? description :
+                path === "/compare-cars" ? description :
+                    path === "/car-loan-emi-calculator" ? description :
+                        path === "/petrol-price-in-india" ? description :
+                            path === "/diesel-price-in-india" ? description :
+                                path === "/cng-price-in-india" ? description :
+                                    path === "/electric-cars" ? description :
+                                        description
 
     return (
         <section>
@@ -32,25 +60,15 @@ export default function TopSection() {
                         <Link href="/" className="hover:underline">Home</Link>
                         <span className="text-yellow-500">›</span>
                         <span className="font-medium text-yellow-500">
-                            {
-                                path === "/latest-launched-cars"
-                                    ? "Latest Cars"
-                                    : path === "/popular-cars"
-                                        ? "Popular Cars"
-                                        : path === "/compare-cars"
-                                            ? "Compare Cars"
-                                            : path === "/car-loan-emi-calculator"
-                                                ? "Car Loan EMI Calculator"
-                                                : path === "/petrol-price-in-india"
-                                                    ? "Petrol Price In India"
-                                                    : path === "/diesel-price-in-india"
-                                                        ? "Diesel Price In India"
-                                                        : path === "/cng-price-in-india"
-                                                            ? "CNG Price In India"
-                                                            : path === "/electric-cars"
-                                                                ? "Electric Cars"
-                                                                : "Upcoming Cars"
-                            }
+                            {path === "/latest-launched-cars" ? "Latest Cars" :
+                                path === "/popular-cars" ? "Popular Cars" :
+                                    path === "/compare-cars" ? "Compare Cars" :
+                                        path === "/car-loan-emi-calculator" ? "Car Loan EMI Calculator" :
+                                            path === "/petrol-price-in-india" ? "Petrol Price In India" :
+                                                path === "/diesel-price-in-india" ? "Diesel Price In India" :
+                                                    path === "/cng-price-in-india" ? "CNG Price In India" :
+                                                        path === "/electric-cars" ? "Electric Cars" :
+                                                            "Upcoming Cars"}
                         </span>
                     </div>
                 </div>
@@ -59,58 +77,41 @@ export default function TopSection() {
             <div className='w-full min-h-[186px] py-[30px] '>
                 <div className='px-4 xl:px-10'>
                     <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
+
                         {/* Title */}
-                        <h1 className="text-2xl font-semibold">
-                            {
-                                path === "/latest-launched-cars"
-                                    ? "Explore Latest Car Launches In India"
-                                    : path === "/popular-cars"
-                                        ? "Popular Cars In India 2024"
-                                        : path === "/compare-cars"
-                                            ? "Compare to choose the right car!"
-                                            : path === "/car-loan-emi-calculator"
-                                                ? "CAR LOAN EMI CALCULATOR"
-                                                : path === "/petrol-price-in-india"
-                                                    ? "Today's Fuel Prices in India - September 18, 2024"
-                                                    : path === "/diesel-price-in-india"
-                                                        ? "Today's Diesel Prices in India - September 18, 2024"
-                                                        : path === "/cng-price-in-india"
-                                                            ? "Today's CNG Prices in India - September 18, 2024"
-                                                            : path === "/electric-cars"
-                                                                ? "Electric Cars in India"
-                                                                : "Upcoming Cars In India (2024-2025)"
-                            }
-                        </h1>
+                        <h1 className="text-2xl font-semibold">{title}</h1>
 
-                        {/* Description */}
-                        <p className="text-sm text-wrap line-clamp-2">
-                            {
-                                path === "/latest-launched-cars"
-                                    ? "Discover the hottest new cars in India! Explore our comprehensive list of the latest car launches, featuring detailed information on prices and specs to help you find your perfect match. We've compiled a list of 46 exciting new models across various car segments, including cars like Mahindra Thar Roxx, Citroen Basalt Coupe, Mercedes-Benz AMG GLC, Mercedes-Benz CLE Cabriolet, and Tata Curvv EV"
-                                    : path === "/popular-cars"
-                                        ? "Looking for the best-selling cars in India? Look no further! This section reveals the top 20 cars dominating the Indian market based on monthly sales figures. Some of the most popular cars in the month of July 2024 are Maruti Suzuki Grand Vitara, Maruti Suzuki Fronx, Maruti Suzuki Brezza, Tata Nexon, Tata Punch and many more. Explore detailed information on each car, including segment, body"
-                                        : path === "/compare-cars"
-                                            ? "Want to buy a Car but confused how to select the best car as per your requirements? V3Cars compare car tool can help you to finalize your car. To compare cars you just need to select two or more cars of your choice as per your requirements and get the comparison instantly. You can compare Car price, engine specifications, dimensions & interior exterior features. So now compare your favourite"
-                                            : path === "/car-loan-emi-calculator"
-                                                ? "Regardless of whether you are salaried or self-employed, you can purchase your dream car without the need to be wealthy or save up a significant amount of money, unlike a few decades ago. Simply apply for a new car loan and drive your dream car sooner."
-                                                : path === "/petrol-price-in-india"
-                                                    ? "Looking for the latest fuel prices in India? Look no further! This page provides you with up-to-date information on fuel prices across major Indian cities (as of September 18, 2024). We understand fuel prices fluctuate, so we offer daily updates to help you find and compare fuel prices in and around your city. Today on September 18, 2024 the price of petrol in your city (Saharanpur) is ₹95.08 per liter"
-                                                    : path === "/diesel-price-in-india"
-                                                        ? "Looking for the latest fuel prices in India? Look no further! This page provides you with up-to-date information on fuel prices across major Indian cities (as of September 18, 2024). We understand fuel prices fluctuate, so we offer daily updates to help you find and compare fuel prices in and around your city. Today on September 18, 2024 the price of petrol in your city (Saharanpur) is ₹95.08 per liter"
-                                                        : path === "/cng-price-in-india"
-                                                            ? "Looking for the latest fuel prices in India? Look no further! This page provides you with up-to-date information on fuel prices across major Indian cities (as of September 18, 2024). We understand fuel prices fluctuate, so we offer daily updates to help you find and compare fuel prices in and around your city. Today on September 18, 2024 the price of petrol in your city (Saharanpur) is ₹95.08 per liter"
-                                                            : path === "/electric-cars"
-                                                                ? "Here is the list of the most popular electric cars in India 2024. Some of the most popular EV cars in India are Tata Punch EV, MG Comet EV, Mahindra XUV400 EV, Tata Tiago EV, MG ZS EV and many more. These best electric cars were identified based on user interest in the V3Cars platform. Explore the list of 2024 popular electric cars in India and check which car suits your requirements. Check "
-                                                                : `Gear up for exciting new car launches in India (2024-2025)! We’ve compiled a comprehensive list featuring over 164 upcoming cars across various segments like SUVs, hatchbacks, sedans, and more. Top brands like Maruti Suzuki, Hyundai, Tata, Mahindra, Kia and others are all set to unveil their latest offerings. Explore expected prices, model image and launch dates for each car.`
-                            }
-                        </p>
+                        {/* Description with smooth expand */}
+                        <div
+                            ref={contentRef}
+                            style={{ maxHeight }}
+                            className="overflow-hidden transition-all duration-500 ease-in-out"
+                        >
+                            <p className="text-wrap">{descriptionText}</p>
+                        </div>
 
-                        {/* Read More */}
-                        <button className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-1">
-                            Read More
-                            <span className="transform">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        {/* Read More / Read Less */}
+                        <button
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-1"
+                        >
+                            {isExpanded ? "Read Less" : "Read More"}
+                            <span
+                                className={`transform transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="size-4"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                    />
                                 </svg>
                             </span>
                         </button>
@@ -118,44 +119,45 @@ export default function TopSection() {
                 </div>
             </div>
 
-            {
-                path === "/upcoming-cars" && (
-                    <div className='w-full bg-gradient-to-l bg-[#F1EFF4] to-[#E7E4DF] dark:from-[#27272a] dark:to-[#18181b] min-h-[246px] py-[30px]'>
-                        <div className='px-4 xl:px-10'>
-                            <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
-                                <h2 className="text-xl font-semibold border-b border-[#CED4DA] dark:border-[#2E2E2E] pb-2">Upcoming Cars By Month</h2>
-                                <div className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-                                    {months.map(({ month, year }) => {
-                                        const key = `${month} ${year}`
-                                        const isSelected = key === selected
+            {/* Upcoming cars by month */}
+            {path === "/upcoming-cars" && (
+                <div className='w-full bg-gradient-to-l bg-[#F1EFF4] to-[#E7E4DF] dark:from-[#27272a] dark:to-[#18181b] min-h-[246px] py-[30px]'>
+                    <div className='px-4 xl:px-10'>
+                        <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
+                            <h2 className="text-xl font-semibold border-b border-[#CED4DA] dark:border-[#2E2E2E] pb-2">
+                                Upcoming Cars By Month
+                            </h2>
+                            <div className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
+                                {months.map(({ month, year }) => {
+                                    const key = `${month} ${year}`
+                                    const isSelected = key === selected
 
-                                        return (
-                                            <button
-                                                key={key}
-                                                onClick={() => setSelected(key)}
-                                                className={`grid grid-cols-2 justify-between items-center rounded-md shadow-sm text-left text-sm transition-all duration-200
-                                    ${isSelected ? 'bg-black text-white border border-orange-400' : 'bg-white dark:bg-transparent border dark:border-[#2E2E2E] hover:border-orange-300'}
-                                    `}
-                                            >
-                                                <div className='border-r border-[#CED4DA] text-center'>
-                                                    <div className={`font-semibold text-sm lg:text-lg truncate`}>
-                                                        {month}
-                                                    </div>
-                                                    <div className="text-xs text-orange-500 truncate">{year}</div>
+                                    return (
+                                        <button
+                                            key={key}
+                                            onClick={() => setSelected(key)}
+                                            className={`grid grid-cols-2 justify-between py-2 items-center rounded-md shadow-sm text-left text-sm transition-all duration-200
+                        ${isSelected ? 'bg-black text-white border border-orange-400' : 'bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] hover:border-orange-300'}
+                      `}
+                                        >
+                                            <div className='border-r border-[#CED4DA] dark:border-[#2E2E2E] text-center'>
+                                                <div className="font-semibold text-sm lg:text-lg truncate">
+                                                    {month}
                                                 </div>
-                                                <div className={`text-center font-semibold text-sm lg:text-lg truncate`}>
-                                                    50 Cars{" "}
-                                                    <p className='text-xs font-normal text-orange-500 truncate'>Upcoming</p>
-                                                </div>
-                                            </button>
-                                        )
-                                    })}
-                                </div>
+                                                <div className="text-[10px] lg:text-xs text-orange-500 truncate">{year}</div>
+                                            </div>
+                                            <div className="text-center font-semibold text-sm lg:text-lg truncate">
+                                                50 Cars{" "}
+                                                <p className='text-[10px] lg:text-xs font-normal text-orange-500 truncate'>Upcoming</p>
+                                            </div>
+                                        </button>
+                                    )
+                                })}
                             </div>
                         </div>
                     </div>
-                )
-            }
+                </div>
+            )}
         </section>
     )
 }

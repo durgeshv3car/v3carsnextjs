@@ -118,7 +118,10 @@ export default function Slug() {
 
     return (
         <>
-            <TopSection />
+            <TopSection
+                title={"Today's Fuel Prices in India - September 18, 2024"}
+                description={"Looking for the latest fuel prices in India? Look no further! This page provides you with up-to-date information on fuel prices across major Indian cities (as of September 18, 2024). We understand fuel prices fluctuate, so we offer daily updates to help you find and compare fuel prices in and around your city. Today on September 18, 2024 the price of petrol in your city (Saharanpur) is ₹95.08 per liter"}
+            />
 
             <SearchSection />
 

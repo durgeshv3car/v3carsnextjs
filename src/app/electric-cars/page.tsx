@@ -160,7 +160,11 @@ const carsData = [
 function ElectricCars() {
     return (
         <>
-            <TopSection />
+            <TopSection
+                title={"Electric Cars in India"}
+                description={"Here is the list of the most popular electric cars in India 2024. Some of the most popular EV cars in India are Tata Punch EV, MG Comet EV, Mahindra XUV400 EV, Tata Tiago EV, MG ZS EV and many more. These best electric cars were identified based on user interest in the V3Cars platform. Explore the list of 2024 popular electric cars in India and check which car suits your requirements. Check "}
+            />
+
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
                     {/* Main Section */}

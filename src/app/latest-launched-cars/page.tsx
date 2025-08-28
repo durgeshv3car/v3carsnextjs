@@ -161,7 +161,11 @@ const carsData = [
 function LatestCars() {
     return (
         <>
-            <TopSection />
+            <TopSection
+                title={"Explore Latest Car Launches In India"}
+                description={"Discover the hottest new cars in India! Explore our comprehensive list of the latest car launches, featuring detailed information on prices and specs to help you find your perfect match. We've compiled a list of 46 exciting new models across various car segments, including cars like Mahindra Thar Roxx, Citroen Basalt Coupe, Mercedes-Benz AMG GLC, Mercedes-Benz CLE Cabriolet, and Tata Curvv EV"}
+            />
+
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
 

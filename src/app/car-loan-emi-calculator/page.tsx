@@ -28,12 +28,12 @@ export const metadata: Metadata = {
 };
 
 const data = [
-  { year: 2024, principal: 25363, interest: 10279, balance: 424637, emi: 35642, totalPayment: 35642, loanPaidToDate: 5.64 },
-  { year: 2025, principal: 79728, interest: 27199, balance: 344909, emi: 106926, totalPayment: 106926, loanPaidToDate: 23.35 },
-  { year: 2026, principal: 85491, interest: 21435, balance: 259418, emi: 106926, totalPayment: 106926, loanPaidToDate: 42.35 },
-  { year: 2027, principal: 91671, interest: 15255, balance: 167747, emi: 106926, totalPayment: 106926, loanPaidToDate: 62.72 },
-  { year: 2028, principal: 89428, interest: 8628, balance: 69449, emi: 106926, totalPayment: 106926, loanPaidToDate: 84.57 },
-  { year: 2029, principal: 69449, interest: 1835, balance: 0, emi: 71284, totalPayment: 71284, loanPaidToDate: 100.00 },
+    { year: 2024, principal: 25363, interest: 10279, balance: 424637, emi: 35642, totalPayment: 35642, loanPaidToDate: 5.64 },
+    { year: 2025, principal: 79728, interest: 27199, balance: 344909, emi: 106926, totalPayment: 106926, loanPaidToDate: 23.35 },
+    { year: 2026, principal: 85491, interest: 21435, balance: 259418, emi: 106926, totalPayment: 106926, loanPaidToDate: 42.35 },
+    { year: 2027, principal: 91671, interest: 15255, balance: 167747, emi: 106926, totalPayment: 106926, loanPaidToDate: 62.72 },
+    { year: 2028, principal: 89428, interest: 8628, balance: 69449, emi: 106926, totalPayment: 106926, loanPaidToDate: 84.57 },
+    { year: 2029, principal: 69449, interest: 1835, balance: 0, emi: 71284, totalPayment: 71284, loanPaidToDate: 100.00 },
 ];
 
 const faqData = [
@@ -80,7 +80,10 @@ function CarLoanEMICalculator() {
 
         <>
 
-            <TopSection />
+            <TopSection
+                title={"CAR LOAN EMI CALCULATOR"}
+                description={"Regardless of whether you are salaried or self-employed, you can purchase your dream car without the need to be wealthy or save up a significant amount of money, unlike a few decades ago. Simply apply for a new car loan and drive your dream car sooner."}
+            />
 
             <div className="px-4 xl:px-10 bg-[#F9F8FA] dark:bg-[#171720] border-t dark:border-[#2E2E2E]">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-14">
