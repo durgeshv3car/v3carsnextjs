@@ -32,6 +32,7 @@ const Header = () => {
                     <>
                         <header className="w-full z-[200] lg:px-4 xl:px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]">
                             <div className="max-w-[1600px] mx-auto py-3 flex items-center justify-between">
+
                                 {/* Logo */}
                                 <div
                                     className="flex items-center cursor-pointer gap-2"
@@ -58,10 +59,10 @@ const Header = () => {
                                     />
                                 </div>
 
-
                                 {/* Nav Links */}
                                 <nav className="flex items-center gap-6 text-sm font-medium">
                                     {/* Location */}
+
                                     <div
                                         className="relative py-4"
                                         onClick={() => setHoverTab(hoverTab === "location" ? null : "location")}
@@ -78,6 +79,7 @@ const Header = () => {
                                                 <LocationDropdown />
                                             </div>
                                         )}
+
                                     </div>
 
                                     {/* New Cars */}
@@ -121,6 +123,7 @@ const Header = () => {
                                                 <NewsVideosDropdown />
                                             </div>
                                         )}
+                                        
                                     </div>
 
                                     {/* Variant Explained */}
@@ -156,6 +159,8 @@ const Header = () => {
                                                 <ToolsDropdown />
                                             </div>
                                         )}
+
+
                                     </div>
                                 </nav>
 
@@ -182,8 +187,11 @@ const Header = () => {
                                         Login / Signup
                                     </button>
 
-                                    {/* <ThemeToggle /> */}
+                                    <ThemeToggle />
                                 </div>
+
+
+
                             </div>
                         </header>
                         {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
@@ -195,3 +203,5 @@ const Header = () => {
 };
 
 export default Header;
+
+
