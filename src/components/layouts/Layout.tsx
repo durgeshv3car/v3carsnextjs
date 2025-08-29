@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "@/redux/store";
@@ -16,6 +16,14 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme')
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+    const shouldUseDark = saved === 'dark' || (!saved && prefersDark)
+    document.documentElement.classList.toggle('dark', shouldUseDark)
+  }, [])
 
   return (
     <Provider store={store}>

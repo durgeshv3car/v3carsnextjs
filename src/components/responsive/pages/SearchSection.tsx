@@ -13,18 +13,20 @@ function SearchSection() {
 
     return (
         <>
-            <div className="lg:bg-[url('/figma-banner.png')] lg:h-[217px] flex items-center justify-center bg-center bg-cover px-4 xl:px-10">
-                <div className="w-full lg:max-w-4xl grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
-                    <div className="border dark:border-[#2E2E2E] lg:dark:border-white rounded-lg">
-                        <CustomSelect options={items} placeholder={"Select Fuel Type"} onSelect={handleSelection} />
-                    </div>
+            <div className="lg:bg-[#244261]">
+                <div className="lg:bg-[url('/figma-banner.png')] lg:h-[217px] flex items-center justify-center bg-center bg-cover max-w-[1900px] mx-auto px-4 xl:px-10">
+                    <div className="w-full lg:max-w-4xl grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
+                        <div className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg">
+                            <CustomSelect options={items} placeholder={"Select Fuel Type"} onSelect={handleSelection} />
+                        </div>
 
-                    <div className="border dark:border-[#2E2E2E] lg:dark:border-white rounded-lg">
-                        <CustomSelect options={items} placeholder={"Select State"} onSelect={handleSelection} />
-                    </div>
+                        <div className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg">
+                            <CustomSelect options={items} placeholder={"Select State"} onSelect={handleSelection} />
+                        </div>
 
-                    <div className="border dark:border-[#2E2E2E] lg:dark:border-white rounded-lg">
-                        <CustomSelect options={items} placeholder={"Select City"} onSelect={handleSelection} />
+                        <div className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg">
+                            <CustomSelect options={items} placeholder={"Select City"} onSelect={handleSelection} />
+                        </div>
                     </div>
                 </div>
             </div>
