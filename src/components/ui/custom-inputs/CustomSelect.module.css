@@ -1,7 +1,7 @@
 .dropdown {
   /* Scrollbar styling */
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: #facc15 transparent;
+  /* scrollbar-width: thin; */
+  scrollbar-color: transparent;
 }
 
 .no-option {
@@ -21,10 +21,10 @@
 }
 
 .dropdown::-webkit-scrollbar-track {
-  background: black;
+  background: #f1f1f1;
 }
 
 .dropdown::-webkit-scrollbar-thumb {
   background-color: #facc15; /* Tailwind yellow-400 */
-  border-radius: 9999px;
+  /* border-radius: 9999px; */
 }

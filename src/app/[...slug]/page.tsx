@@ -1,5 +1,3 @@
-'use client'
-
 import React from "react";
 
 import CommonFaqAccordion from "@/components/common/CommonFaqAccordion";
@@ -10,54 +8,8 @@ import FuelPrices from "@/components/responsive/pages/FuelPrices";
 import SearchSection from "@/components/responsive/pages/SearchSection";
 import StateWiseFuelChart from "@/components/responsive/pages/StateWiseFuelChart";
 import StateWiseFuelList from "@/components/responsive/pages/StateWiseFuelList";
-import { useParams } from "next/navigation";
+import { redirect } from "next/navigation";
 
-// ----------------- Types -----------------
-type SlugParams = {
-    slug?: string[];
-};
-
-type ParsedSlug = {
-    fuelType: string;
-    state: string | null;
-    city: string | null;
-};
-
-// ----------------- Helper Functions -----------------
-function parseSlug(slug?: string[]): ParsedSlug {
-    let fuelType = "Petrol";
-    let state: string | null = null;
-    let city: string | null = null;
-
-    if (!slug || slug.length === 0 || slug[0] === "fuel-price-in-india") {
-        // Default
-    } else if (slug.length === 1 && slug[0].endsWith("-price-in-india")) {
-        fuelType = slug[0].replace("-price-in-india", "").replace(/-/g, " ");
-    } else if (slug.length === 2 && slug[1].endsWith("-price")) {
-        state = slug[0];
-        fuelType = slug[1].replace("-price", "").replace(/-/g, " ");
-    } else if (slug.length === 2 && slug[1].includes("-price-in-")) {
-        state = slug[0];
-        const [ft, ct] = slug[1].split("-price-in-");
-        fuelType = ft.replace(/-/g, " ");
-        city = ct.replace(/-/g, " ");
-    }
-
-    return {
-        fuelType: capitalize(fuelType),
-        state: state ? capitalize(state) : null,
-        city: city ? capitalize(city) : null,
-    };
-}
-
-function capitalize(str: string): string {
-    return str
-        .split(" ")
-        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-        .join(" ");
-}
-
-// ----------------- FAQ Data -----------------
 type FAQItem = {
     question: string;
     answer: string;
@@ -111,16 +63,27 @@ const faqData: FAQItem[] = [
     },
 ];
 
-// ----------------- Main Page -----------------
-export default function Slug() {
-    const { slug } = useParams<SlugParams>();
-    const { fuelType, state, city } = parseSlug(slug);
+export default async function Slug({ params }: { params: { slug?: string[] } }) {
+    const { slug } = await params;
+
+    const allowedSlugs: Record<string, string> = {
+        "fuel-price-in-india": "Fuel",
+        "petrol-price-in-india": "Petrol",
+        "diesel-price-in-india": "Diesel",
+        "cng-price-in-india": "CNG",
+    };
+    const currentSlug = slug?.[0] || "";
+    const type = allowedSlugs[currentSlug] || null;
+
+    if (!type) {
+        redirect('/fuel-price-in-india')
+    }
 
     return (
         <>
             <TopSection
-                title={"Today's Fuel Prices in India - September 18, 2024"}
-                description={"Looking for the latest fuel prices in India? Look no further! This page provides you with up-to-date information on fuel prices across major Indian cities (as of September 18, 2024). We understand fuel prices fluctuate, so we offer daily updates to help you find and compare fuel prices in and around your city. Today on September 18, 2024 the price of petrol in your city (Saharanpur) is ₹95.08 per liter"}
+                title={`Today's ${type} Prices in India - September 18, 2024`}
+                description={`Looking for the latest ${type.toLowerCase()} prices in India? Look no further! This page provides you with up-to-date information on ${type.toLowerCase()} prices across major Indian cities (as of September 18, 2024). We understand prices fluctuate, so we offer daily updates to help you find and compare ${type.toLowerCase()} prices in and around your city. Today on September 18, 2024 the price of ${type.toLowerCase()} in your city (Saharanpur) is ₹95.08 per liter.`}
             />
 
             <SearchSection />
@@ -144,4 +107,5 @@ export default function Slug() {
             </div>
         </>
     );
+
 }
