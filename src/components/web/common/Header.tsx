@@ -275,7 +275,7 @@ const Header = () => {
                                 </button>
                             </div>
 
-                            <ThemeToggle/>
+                            {/* <ThemeToggle/> */}
 
 
                         </div>
