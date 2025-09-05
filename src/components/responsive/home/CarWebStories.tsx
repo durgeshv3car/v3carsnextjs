@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -69,19 +70,6 @@ const CarWebStories: React.FC = () => {
     const router = useRouter()
     return (
         <>
-            {/* Banner Section */}
-            <div className='hidden h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-10 sm:flex justify-center items-center'>
-
-                <div className="w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
-                    <img
-                        src={'/ads/ad1.png'}
-                        alt='ad1'
-                        className='h-full w-full'
-                    />
-                </div>
-            </div>
-
-
             <div className="py-6 px-6 lg:px-10">
                 <div className="w-full lg:max-w-[1600px] mx-auto space-y-4">
                     <div className="flex items-center justify-between">
@@ -100,21 +88,26 @@ const CarWebStories: React.FC = () => {
                     <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth">
                         {stories.map((story) => (
                             <div key={story.id} className="relative min-w-[270px] h-[480px]">
-                                <img
+                                <Image
                                     src={story.image}
-                                    alt="Story"
-                                    className="rounded-[10px] object-cover w-full h-full"
+                                    alt={story.heading || "Story"}
+                                    fill
+                                    priority={false}
+                                    sizes="(max-width: 768px) 100vw, 270px"
+                                    className="rounded-[10px] object-cover"
                                 />
 
-                                {/* Top-right mute icon (placeholder) */}
+                                {/* Top-right mute icon */}
                                 <div
                                     className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-10 h-10 cursor-pointer"
-                                    onClick={() => router.push('/web-stories')}
+                                    onClick={() => router.push("/web-stories")}
                                 >
-                                    <img
-                                        src={'/web-stories/mobile.png'}
-                                        alt="Story"
-                                        className="object-cover w-full h-full"
+                                    <Image
+                                        src="/web-stories/mobile.png"
+                                        alt="Mobile Icon"
+                                        width={40}
+                                        height={40}
+                                        className="object-contain"
                                     />
                                 </div>
 

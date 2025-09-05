@@ -1,7 +1,6 @@
 'use client'
 
-import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 const videoData = new Array(8).fill({
     thumbnail: '/latest-video/image2.png',
@@ -15,26 +14,14 @@ const videoData = new Array(8).fill({
 
 const LatestVideos: React.FC = () => {
     const scrollRef = useRef<HTMLDivElement>(null)
-    const [isAtStart, setIsAtStart] = useState<boolean>(true)
-    const [isAtEnd, setIsAtEnd] = useState<boolean>(false)
 
     const handleScroll = () => {
         const container = scrollRef.current
         if (!container) return
 
-        const { scrollLeft, scrollWidth, clientWidth } = container
-        setIsAtStart(scrollLeft <= 0)
-        setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 5)
-    }
-
-    const scroll = (dir: 'left' | 'right') => {
-        if (scrollRef.current) {
-            const amount = 396;
-            scrollRef.current.scrollBy({
-                left: dir === 'left' ? -amount : amount,
-                behavior: 'smooth',
-            })
-        }
+        // const { scrollLeft, scrollWidth, clientWidth } = container
+        // setIsAtStart(scrollLeft <= 0)
+        // setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 5)
     }
 
     useEffect(() => {

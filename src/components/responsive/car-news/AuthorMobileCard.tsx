@@ -48,7 +48,7 @@ export default function AuthorMobileCard() {
 
         {/* Bio */}
         <p className="text-[14px] text-gray-200 leading-[1.7]">
-          Nikil's A Huge Fan Of Classic Cars, Especially Italian Beauties Such
+          Nikil&apos;s A Huge Fan Of Classic Cars, Especially Italian Beauties Such
           As The Alfa Romeo Giulia Sprint And The Iso Grifo. His Love For Cars
           And Bikes Originated When He First Laid His Eyes On A Poster Of The
           Ferrari F40 And The MV Agusta F4 When He Was Just A Child. He Also

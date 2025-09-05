@@ -63,8 +63,13 @@ const faqData: FAQItem[] = [
     },
 ];
 
-export default async function Slug({ params }: { params: { slug?: string[] } }) {
-    const { slug } = await params;
+interface SlugPageProps {
+    params: Promise<{ slug?: string[] }>;
+    searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default async function Slug({ params }: SlugPageProps) {
+    const { slug } = await params; // 👈 yahan await zaroori hai
 
     const allowedSlugs: Record<string, string> = {
         "fuel-price-in-india": "Fuel",
@@ -72,11 +77,12 @@ export default async function Slug({ params }: { params: { slug?: string[] } }) 
         "diesel-price-in-india": "Diesel",
         "cng-price-in-india": "CNG",
     };
+
     const currentSlug = slug?.[0] || "";
     const type = allowedSlugs[currentSlug] || null;
 
     if (!type) {
-        redirect('/fuel-price-in-india')
+        redirect("/fuel-price-in-india");
     }
 
     return (
@@ -90,7 +96,6 @@ export default async function Slug({ params }: { params: { slug?: string[] } }) 
 
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
-
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:min-w-[74%] space-y-6">
                             <FuelPrices />
@@ -107,6 +112,4 @@ export default async function Slug({ params }: { params: { slug?: string[] } }) 
             </div>
         </>
     );
-
 }
-

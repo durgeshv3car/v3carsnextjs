@@ -52,6 +52,7 @@ export default function TopControls({
               <button
                 type="button"
                 className="mt-1 flex w-full items-center justify-between text-sm"
+                onClick={()=>{setCountry("India")}}
               >
                 <span className="truncate">{country}</span>
                 <FiChevronDown className="opacity-80" />

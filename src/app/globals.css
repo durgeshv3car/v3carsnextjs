@@ -20,6 +20,7 @@ body {
 
 .scrollbar-thin-yellow::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 .scrollbar-thin-yellow::-webkit-scrollbar-track {
   background: transparent;

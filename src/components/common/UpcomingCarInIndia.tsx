@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
@@ -136,24 +137,30 @@ const UpcomingCarInIndia: React.FC = () => {
                                 className={`rounded-xl shadow-lg overflow-hidden w-[293px] xl:w-[384px] h-[275px] xl:h-[336px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 90 ? "border-[#3D923A]" : car.confidence >= 70 ? "border-[#F08200]" : "border-[#D40808]"}`}
                             >
                                 {/* Image Section */}
-                                <div className="relative h-[184px] xl:h-[240px]">
-                                    <img
+                                <div className="relative h-[184px] xl:h-[240px] w-full">
+                                    <Image
                                         src={car.image}
                                         alt={car.name}
-                                        className="h-full w-full object-cover shadow-md"
+                                        width={400}          // estimated width
+                                        height={240}         // estimated height
+                                        className="h-full w-full object-cover shadow-md rounded-md"
+                                        priority={false}     // true only if above-the-fold
                                     />
+
+                                    {/* Confidence Badge */}
                                     <div className="absolute top-2 left-2 flex items-center bg-[#E7E7E7] dark:bg-[#171717] px-2 py-1 rounded-full space-x-2">
                                         <span
-                                            className={`w-3 h-3 rounded-full ${confidenceColor(
-                                                car.confidence
-                                            )}`}
+                                            className={`w-3 h-3 rounded-full ${confidenceColor(car.confidence)}`}
                                         />
                                         <p className="text-xs">Confidence {car.confidence}%</p>
                                     </div>
+
+                                    {/* Favorite Button */}
                                     <button className="absolute top-2 right-2 bg-[#E7E7E7] dark:bg-[#171717] rounded-full p-1 shadow">
                                         <IoMdStarOutline />
                                     </button>
                                 </div>
+
 
                                 {/* Remaining Space for Content */}
                                 <div className={`grid grid-cols-2 justify-between text-sm xl:text-base items-center flex-grow bg-white dark:bg-[#171717]`}>

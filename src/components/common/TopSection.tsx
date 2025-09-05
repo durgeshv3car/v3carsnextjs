@@ -87,7 +87,7 @@ export default function TopSection({ title, description }: TopSectionProps) {
           <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
 
             {/* Title */}
-            <h1 className="text-2xl font-semibold">{title}</h1>
+            <h1 className="text-4xl font-semibold">{title}</h1>
 
             {/* Description with smooth expand */}
             <div

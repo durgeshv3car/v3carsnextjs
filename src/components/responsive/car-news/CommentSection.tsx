@@ -5,7 +5,6 @@ import {
   FaXTwitter,
   FaLinkedinIn,
   FaWhatsapp,
-  FaRegHeart,
   FaHeart,
   FaRegThumbsDown,
   FaRegThumbsUp,

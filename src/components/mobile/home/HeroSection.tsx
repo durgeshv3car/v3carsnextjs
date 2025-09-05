@@ -7,10 +7,11 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { CiSearch } from 'react-icons/ci';
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
+import Image from 'next/image';
 
 const slides = [
     {
-        image: '/images/mobile-banner.png',
+        image: '/images/mobile-banner.webp',
         title: 'Tata Altroz Racer',
         tagline: 'More Performance,\nBig on Features',
     },
@@ -46,10 +47,13 @@ const MobileHeroSection: React.FC = () => {
             >
                 {slides.map((slide, index) => (
                     <SwiperSlide key={index}>
-                        <img
+                        <Image
                             src={slide.image}
                             alt={`Slide ${index + 1}`}
-                            className="w-full h-full object-cover object-center rounded-[9px]"
+                            width={400}
+                            height={200}
+                            priority
+                            className=""
                         />
                     </SwiperSlide>
                 ))}
@@ -72,49 +76,55 @@ const MobileHeroSection: React.FC = () => {
                 {/* Right Side Grid */}
                 <div className="w-[222px] h-full flex flex-col justify-between gap-4">
                     <div className="h-[116px] bg-[#338177] relative rounded-lg overflow-hidden flex items-end justify-end">
-                        <span className="absolute top-2 left-2 text-white text-sm font-medium">
+                        <span className="absolute top-2 left-2 text-white text-sm font-medium z-20">
                             Fuel price in India
                         </span>
 
-                        <div className="w-[120px] h-[120px]">
-                            <img
-                                src="/images/fuel-price-in-india.png"
-                                alt="fuel-price-in-india"
-                                className="h-full w-full object-cover"
-                            />
-                        </div>
+
+                        <Image
+                            src="/images/fuel-price-in-india.png"
+                            alt="fuel-price-in-india"
+                            width={222}
+                            height={116}
+                            loading="lazy"
+                            className="object-contain object-right w-full h-full"
+                        />
+
                     </div>
 
                     {/* Bottom Two Tiles */}
                     <div className="flex gap-4 h-[116px]">
 
                         <div className="bg-black flex-1 relative rounded-lg overflow-hidden flex flex-col border dark:border-[#262629]">
-                            <span className="absolute top-2 left-2 text-white text-sm font-medium">
+                            <span className="absolute top-2 left-2 text-white text-sm font-medium z-20">
                                 Fuel cost calculator
                             </span>
 
-                            <div className="w-[70px] h-[70px] mt-auto self-center">
-                                <img
-                                    src="/images/fuel-cost-calculator.png"
-                                    alt="fuel-cost-calculator"
-                                    className="w-full h-full object-contain"
-                                />
-                            </div>
+                            <Image
+                                src="/images/fuel-cost-calculator.png"
+                                alt="fuel-cost-calculator"
+                                width={100}
+                                height={100}
+                                loading="lazy"
+                                className="object-contain object-bottom p-3 w-full h-full"
+                            />
                         </div>
 
                         {/* Right Bottom Tile */}
                         <div className="bg-[#FFC414] flex-1 relative rounded-lg overflow-hidden flex flex-col">
-                            <span className="absolute top-2 left-2 text-sm font-medium">
+                            <span className="absolute top-2 left-2 text-sm font-medium z-20">
                                 Mileage calculator
                             </span>
 
-                            <div className="w-[80px] h-[80px] mt-auto self-center">
-                                <img
-                                    src="/images/mileage-calculator.png"
-                                    alt="mileage-calculator"
-                                    className="w-full h-full object-contain"
-                                />
-                            </div>
+                            <Image
+                                src="/images/mileage-calculator.png"
+                                alt="mileage-calculator"
+                                width={100}
+                                height={100}
+                                loading="lazy"
+                                className="object-contain object-bottom p-3 w-full h-full"
+                            />
+
                         </div>
 
                     </div>

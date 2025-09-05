@@ -7,7 +7,7 @@ type DistanceUnit = 'km' | 'mi';
 type FuelUnit = 'ltr' | 'gal';
 type Currency = 'INR' | 'USD' | 'EUR' | 'AED';
 
-const GALLON_TO_LITER = 3.78541;
+// const GALLON_TO_LITER = 3.78541;
 const MILE_TO_KM = 1.60934;
 
 export default function MileageCalculator() {
@@ -28,7 +28,7 @@ export default function MileageCalculator() {
 
   // Normalize for internal math (km + liters)
   const distanceKm = distanceUnit === 'km' ? parsedDistance : parsedDistance * MILE_TO_KM;
-  const fuelLtr = fuelUnit === 'ltr' ? parsedFuel : parsedFuel * GALLON_TO_LITER;
+  // const fuelLtr = fuelUnit === 'ltr' ? parsedFuel : parsedFuel * GALLON_TO_LITER;
 
   // Mileage in selected display units (keep original unit choices in label)
   const mileageValue = useMemo(() => {

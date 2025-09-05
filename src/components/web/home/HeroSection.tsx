@@ -142,7 +142,7 @@ const HeroSection: React.FC = () => {
                 </button>
 
                 <div className="flex justify-end">
-                  <button className="flex items-center text-sm gap-1 cursor-pointer hover:underline" onClick={()=>{router.push('/search/new-cars')}}>
+                  <button className="flex items-center text-sm gap-1 cursor-pointer hover:underline" onClick={() => { router.push('/search/new-cars') }}>
                     Advanced Search <VscChevronRight size={18} />
                   </button>
                 </div>
@@ -152,29 +152,28 @@ const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      <div className='w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto mt-4'>
+      <div className='w-full lg:max-w-[1600px] px-6 lg:px-10 mx-auto mt-4'>
         <div className="custom-pagination flex justify-end items-center gap-2" />
       </div>
 
 
       <style jsx global>{`
-    .swiper-custom-bullet {
-      width: 60px;
-      height: 3px;
-      border-radius: 9999px;
-      background-color: #b3b3b3;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      margin-top: 0px;
-    }
+        .swiper-custom-bullet {
+          width: 60px;
+          height: 3px;
+          border-radius: 9999px;
+          background-color: #b3b3b3;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          margin-top: 0px;
+        }
 
-    .swiper-custom-bullet-active {
-      background-color: #ffcc00;
-      height: 5px;
-      width: 60px;
-    }
-  `}</style>
-
+        .swiper-custom-bullet-active {
+          background-color: #ffcc00;
+          height: 5px;
+          width: 60px;
+        }
+      `}</style>
 
     </>
   );

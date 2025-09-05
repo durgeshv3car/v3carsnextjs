@@ -1,5 +1,6 @@
 'use client'
 
+import Image from "next/image";
 import { BiTachometer } from "react-icons/bi";
 import { FaArrowRight } from "react-icons/fa";
 import { IoMdStarOutline } from "react-icons/io";
@@ -27,15 +28,23 @@ const CurrentOffersCard: React.FC<CommonCurrentOffersCardProps> = ({ carsData })
                     className="w-full h-auto lg:h-[454px] border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl overflow-hidden flex flex-col"
                 >
                     {/* Image Section */}
-                    <div className="relative h-[200px] lg:h-[240px]">
-                        <img
+                    <div className="relative h-[200px] lg:h-[240px] w-full rounded-lg overflow-hidden">
+                        {/* Optimized Image */}
+                        <Image
                             src={car.image}
                             alt={car.name}
-                            className="w-full h-full object-cover"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                            className="object-cover"
+                            priority={false} // true agar above-the-fold ho
                         />
+
+                        {/* Gradient + Text */}
                         <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent">
                             <p className="text-white font-semibold">FORD</p>
                         </div>
+
+                        {/* Action Button */}
                         <button className="absolute top-2 right-2 bg-white dark:bg-[#171717] rounded-full p-2 shadow">
                             <IoMdStarOutline />
                         </button>

@@ -20,12 +20,6 @@ interface FilterModelProps {
 }
 
 const FilterModel: React.FC<FilterModelProps> = ({ showFilter, setShowFilter, showOthers, setShowOthers }) => {
-    const [price, setPrice] = useState<number[]>([50000, 7000000]);
-
-    const handlePriceChange = (_: Event, newValue: number | number[]) => {
-        setPrice(newValue as number[]);
-    };
-
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
         setMounted(true);

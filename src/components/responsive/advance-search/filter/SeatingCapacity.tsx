@@ -1,6 +1,5 @@
 'use client';
 
-import Slider from '@/components/ui/custom-range-input/Slider';
 import React, { useRef, useEffect, useState } from 'react';
 
 type SeatingCapacityFilterProps = {

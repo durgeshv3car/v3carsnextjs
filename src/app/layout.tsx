@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
-import { Montserrat, Roboto } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "./globals.css";
 import Layout from "../components/layouts/Layout";
 import ScrollFlipIcon from "@/components/common/ScrollFlipIcon";
-
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'], // Choose the weights you need
-  display: 'swap',
-  variable: '--font-montserrat', // Optional: custom CSS variable
-})
 
 const roboto = Roboto({
   subsets: ['latin'],

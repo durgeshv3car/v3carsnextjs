@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { BiTachometer } from 'react-icons/bi'
@@ -86,24 +87,7 @@ const CarByPrice: React.FC = () => {
 
     return (
         <>
-            {/* Banner Section */}
             <section className='px-6 lg:px-10'>
-                <div className='lg:hidden h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] flex justify-center items-center mt-4'>
-
-                    <div className="hidden sm:block w-full lg:max-w-[1600px] xl:h-[346px] sm:h-[200px] mx-auto">
-                        <img
-                            src={'/ads/ad1.png'}
-                            alt='ad1'
-                            className='h-full w-full'
-                        />
-                    </div>
-
-                    <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'>
-
-                    </div>
-                </div>
-
-                {/* Upcoming Car Section */}
                 <div className="w-full lg:max-w-[1600px] mx-auto space-y-3 py-6">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-semibold lg:font-medium">Search Car By Price</h2>
@@ -178,16 +162,23 @@ const CarByPrice: React.FC = () => {
                                     className={`rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden w-[265px] xl:w-[384px] h-[400px] xl:h-[454px] flex-shrink-0 flex flex-col`}
                                 >
                                     {/* Image Section */}
-                                    <div className="relative h-[166px] xl:h-[241px]">
-                                        <img
+                                    <div className="relative h-[166px] xl:h-[241px] w-full rounded-md overflow-hidden">
+                                        <Image
                                             src={car.image}
                                             alt={car.name}
-                                            className="h-full w-full object-cover shadow-md"
+                                            fill
+                                            sizes="(max-width: 1280px) 100vw, 400px"
+                                            priority={false}
+                                            className="object-cover shadow-md rounded-md"
                                         />
+
+                                        {/* Gradient Overlay */}
                                         <div className="absolute bottom-0 p-3 w-full bg-gradient-to-t from-black/90 to-transparent">
                                             <p className="text-white font-semibold">Maruti Suzuki</p>
                                         </div>
-                                        <button className="absolute top-2 right-2 bg-[#FFFFFF] dark:bg-[#171717] rounded-full p-2 shadow">
+
+                                        {/* Action Button */}
+                                        <button className="absolute top-2 right-2 bg-white dark:bg-[#171717] rounded-full p-2 shadow">
                                             <IoMdStarOutline />
                                         </button>
                                     </div>

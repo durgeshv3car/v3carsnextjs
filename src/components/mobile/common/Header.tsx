@@ -7,7 +7,6 @@ import { HiOutlineUserCircle } from "react-icons/hi2";
 import { IoChevronDownOutline } from "react-icons/io5";
 import MobileLoginModal from "./MobileLoginModal";
 import { usePathname, useRouter } from "next/navigation";
-import ThemeToggle from "@/components/common/ThemeToggle";
 
 const MobileHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -158,7 +157,6 @@ const MobileHeader = () => {
                     Login
                   </button>
 
-                  {/* <ThemeToggle /> */}
                 </div>
               </div>
 

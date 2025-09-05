@@ -103,8 +103,15 @@ const MobileLatestCarNews = () => {
 
                                     {/* Thumbnail */}
                                     <div className="w-[104px] h-[65px] relative rounded-md overflow-hidden flex-shrink-0">
-                                        <img src={item.image} alt="news" className="object-cover" />
+                                        <Image
+                                            src={item.image}
+                                            alt={item.heading || "news"}
+                                            width={104}
+                                            height={65}
+                                            className="object-cover rounded-md"
+                                        />
                                     </div>
+
                                 </div>
                             ))}
                         </div>

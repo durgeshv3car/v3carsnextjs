@@ -10,20 +10,28 @@ function toId(name: string, i: number) {
   return `${name.toLowerCase().replace(/\s+/g, "-")}-${i}`;
 }
 
+// Define brand shape (from BRANDS)
+type BrandItem = {
+  name: string;
+  logo: string;
+};
 
 export default function BrandSection() {
-
   const dispatch = useDispatch();
   const [q, setQ] = useState("");
 
-  const list = useMemo(() => {
+  const list: BrandItem[] = useMemo(() => {
     const t = q.trim().toLowerCase();
     if (!t) return BRANDS;
     return BRANDS.filter((b) => b.name.toLowerCase().includes(t));
   }, [q]);
 
-  const handlePick = (b: { name: string; logo: string }, i: number) => {
-    const normalized: BrandType = { id: toId(b.name, i), name: b.name, logo: b.logo };
+  const handlePick = (b: BrandItem, i: number) => {
+    const normalized: BrandType = {
+      id: toId(b.name, i),
+      name: b.name,
+      logo: b.logo,
+    };
     dispatch(selectBrand(normalized));
     dispatch(setStep("brand")); // 👈 same URL par Step-1 view
   };
@@ -49,12 +57,18 @@ export default function BrandSection() {
           {list.map((b, i) => (
             <button
               key={`${b.name}-${i}`}
-              onClick={() => handlePick(b as any, i)}
+              onClick={() => handlePick(b, i)} // ✅ no "any" now
               className="relative overflow-hidden rounded-2xl border dark:border-[#2E2E2E] ring-1 ring-black/10 hover:shadow-md transition"
               aria-label={b.name}
             >
               <div className="h-28 grid place-items-center p-3">
-                <Image src={b.logo} alt={b.name} width={96} height={54} className="object-contain dark:invert" />
+                <Image
+                  src={b.logo}
+                  alt={b.name}
+                  width={96}
+                  height={54}
+                  className="object-contain dark:invert"
+                />
               </div>
 
               {/* bottom-left soft gradient */}

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from 'react';
 
@@ -39,7 +40,7 @@ export default function TopCarBrands() {
     }, []);
 
     return (
-        <section className="bg-[#F8F9FA] dark:bg-[#262629] py-6 px-6 lg:px-10 mb-8">
+        <section className="bg-[#F8F9FA] dark:bg-[#262629] py-6 px-6 lg:px-10">
             <div className="w-full lg:max-w-[1600px] mx-auto">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
@@ -80,16 +81,38 @@ export default function TopCarBrands() {
                 >
                     <div className="flex gap-2">
                         {list1.map((brand, i) => (
-                            <div key={`list1-${i}`} className="min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded overflow-hidden">
-                                <img src={brand.logo} alt={brand.name} className="p-6 object-cover" />
+                            <div
+                                key={`list1-${i}`}
+                                className="relative min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded overflow-hidden"
+                            >
+                                <Image
+                                    src={brand.logo}
+                                    alt={brand.name}
+                                    fill
+                                    sizes="(max-width: 768px) 143px, 260px"
+                                    className="p-6 object-contain"
+                                    placeholder="blur"
+                                    blurDataURL="/images/placeholder.png"
+                                />
                             </div>
                         ))}
                     </div>
 
                     <div className="flex gap-2">
                         {list2.map((brand, i) => (
-                            <div key={`list2-${i}`} className="min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded overflow-hidden">
-                                <img src={brand.logo} alt={brand.name} className="p-6 object-cover" />
+                            <div
+                                key={`list1-${i}`}
+                                className="relative min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded overflow-hidden"
+                            >
+                                <Image
+                                    src={brand.logo}
+                                    alt={brand.name}
+                                    fill
+                                    sizes="(max-width: 768px) 143px, 260px"
+                                    className="p-6 object-contain"
+                                    placeholder="blur"
+                                    blurDataURL="/images/placeholder.png"
+                                />
                             </div>
                         ))}
                     </div>
@@ -100,7 +123,7 @@ export default function TopCarBrands() {
                         <h3 className="font-bold text-lg">
                             At V3Cars, we help car buyers take an informed decision through research-intensive but simplified content.
                         </h3>
-                           <p className="text-sm">
+                        <p className="text-sm">
                             We aim to be first and the most dependable voice when it comes to recommending a car by excluding personal bias and external influence.
                             The V3 in V3Cars represents a heart. It expresses our unending love for cars.
                         </p>
@@ -114,8 +137,14 @@ export default function TopCarBrands() {
                             </button>
                         </div>
                     </div>
-                    <div className="flex justify-end lg:min-h-[266px] lg:min-w-[375px] w-[250px] h-[244px]">
-                        <img src="/logo/v3.svg" alt="Heart V3Cars" className="h-full" />
+                    <div className="flex justify-end lg:min-h-[266px] lg:min-w-[375px] w-[250px] h-[244px] relative">
+                        <Image
+                            src="/logo/v3.svg"
+                            alt="Heart V3Cars"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                 </div>
             </div>

@@ -91,7 +91,7 @@ const MobileFooter: React.FC = () => {
                   <input
                     type="email"
                     placeholder="Enter your email address"
-                    className="w-full border border-[#262629] bg-transparent focus:border-yellow-400 focus:outline-none rounded-lg px-3 text-sm py-5"
+                    className="w-full border border-[#262629] bg-transparent focus:border-yellow-400 focus:outline-none rounded-xl p-4"
                   />
                   <button className="w-full mt-4 bg-[#171717] hover:bg-[#0a0a0a] font-light text-white py-4 rounded-xl">
                     Subscribe

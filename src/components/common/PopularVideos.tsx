@@ -31,17 +31,26 @@ const PopularVideos = () => {
             {/* Grid */}
             <div className="grid grid-cols-2 gap-2 p-2">
                 {videos.map((video) => (
-                    <div key={video.id} className="relative aspect-video rounded-md overflow-hidden hover:opacity-90 transition">
+                    <div
+                        key={video.id}
+                        className="relative aspect-video rounded-md overflow-hidden hover:opacity-90 transition"
+                    >
+                        {/* Video thumbnail */}
                         <Image
                             src={video.thumbnail}
                             alt={`Video ${video.id}`}
                             fill
+                            priority={false}
                             className="object-cover"
                         />
+
+                        {/* Overlay */}
                         <div className="absolute inset-0 bg-black/30 rounded" />
+
+                        {/* Play Icon */}
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <img
-                                src={'/latest-video/youtube.png'}
+                            <Image
+                                src="/latest-video/youtube.png"
                                 alt="Play"
                                 width={30}
                                 height={30}

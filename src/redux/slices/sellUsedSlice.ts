@@ -23,7 +23,7 @@ export const STEP_ORDER: Exclude<StepKey, "landing">[] = [
 ];
 
 type SellUsedState = {
-  step: StepKey;        // 👈 controls what to show on the same URL
+  step: StepKey; // 👈 controls what to show on the same URL
   brand: Brand | null;
   year: number | null;
   model: string | null;
@@ -52,16 +52,22 @@ const sellUsedSlice = createSlice({
       state.step = action.payload;
     },
     nextStep(state) {
-      if (state.step === "landing") { state.step = "brand"; return; }
-      const idx = STEP_ORDER.indexOf(state.step as any);
+      if (state.step === "landing") {
+        state.step = "brand";
+        return;
+      }
+      const idx = STEP_ORDER.indexOf(state.step as Exclude<StepKey, "landing">); // ✅ no "any"
       if (idx >= 0 && idx < STEP_ORDER.length - 1) {
         state.step = STEP_ORDER[idx + 1];
       }
     },
     prevStep(state) {
       if (state.step === "landing") return;
-      if (state.step === "brand") { state.step = "landing"; return; }
-      const idx = STEP_ORDER.indexOf(state.step as any);
+      if (state.step === "brand") {
+        state.step = "landing";
+        return;
+      }
+      const idx = STEP_ORDER.indexOf(state.step as Exclude<StepKey, "landing">); // ✅ no "any"
       state.step = idx > 0 ? STEP_ORDER[idx - 1] : "brand";
     },
 
@@ -71,27 +77,27 @@ const sellUsedSlice = createSlice({
       // NOTE: view switching is handled by caller via setStep('brand')
     },
 
-     selectYear(state, action: PayloadAction<number>) {
+    selectYear(state, action: PayloadAction<number>) {
       state.year = action.payload;
     },
 
-     selectModel(state, action: PayloadAction<string>) {
+    selectModel(state, action: PayloadAction<string>) {
       state.model = action.payload;
     },
 
-      selectVariant(state, action: PayloadAction<string>) {
+    selectVariant(state, action: PayloadAction<string>) {
       state.variant = action.payload;
     },
 
-     selectOwnership(state, action: PayloadAction<string>) {
+    selectOwnership(state, action: PayloadAction<string>) {
       state.ownership = action.payload;
     },
 
-     selectOdometer(state, action: PayloadAction<string>) {
+    selectOdometer(state, action: PayloadAction<string>) {
       state.odometer = action.payload;
     },
 
-     selectLocation(state, action: PayloadAction<string>) {
+    selectLocation(state, action: PayloadAction<string>) {
       state.location = action.payload;
     },
 
@@ -101,6 +107,17 @@ const sellUsedSlice = createSlice({
   },
 });
 
-export const { setStep, nextStep, prevStep, selectBrand, resetSellUsed, selectYear, selectModel, selectVariant, selectOwnership, selectOdometer, selectLocation } =
-  sellUsedSlice.actions;
+export const {
+  setStep,
+  nextStep,
+  prevStep,
+  selectBrand,
+  resetSellUsed,
+  selectYear,
+  selectModel,
+  selectVariant,
+  selectOwnership,
+  selectOdometer,
+  selectLocation,
+} = sellUsedSlice.actions;
 export default sellUsedSlice.reducer;

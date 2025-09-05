@@ -9,7 +9,7 @@ interface Video {
 }
 
 const videos: Video[] = [
-  
+
     {
         id: 1,
         thumbnail: '/recent-video/video1.png',
@@ -53,18 +53,27 @@ const RecentVideos = () => {
             <div className="flex flex-col divide-y divide-gray-200 dark:divide-[#262626]">
 
                 {videos.map((video) => (
-                    <div key={video.id} className="flex items-start gap-3 px-4 py-3 transition-all cursor-pointer">
+                    <div
+                        key={video.id}
+                        className="flex items-start gap-3 px-4 py-3 transition-all cursor-pointer"
+                    >
+                        {/* Thumbnail Section */}
                         <div className="w-28 h-16 relative flex-shrink-0">
                             <Image
                                 src={video.thumbnail}
                                 alt={video.title}
                                 fill
+                                sizes="112px" // (28 * 4px = 112px) ensures correct responsive loading
                                 className="rounded-md object-cover"
                             />
+
+                            {/* Overlay */}
                             <div className="absolute inset-0 bg-black/20 rounded" />
+
+                            {/* Play Icon */}
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <img
-                                    src={'/latest-video/youtube.png'}
+                                <Image
+                                    src="/latest-video/youtube.png"
                                     alt="Play"
                                     width={30}
                                     height={30}
@@ -72,6 +81,8 @@ const RecentVideos = () => {
                                 />
                             </div>
                         </div>
+
+                        {/* Video Title */}
                         <p className="text-sm leading-snug line-clamp-3">{video.title}</p>
                     </div>
                 ))}

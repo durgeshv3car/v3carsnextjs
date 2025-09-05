@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image';
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
@@ -108,15 +109,22 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                                 className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-w-[390px] min-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
                             >
                                 {/* Thumbnail with Play Icon */}
-                                <div className="relative h-[228px]">
-                                    <img
+                                <div className="relative h-[228px] w-full rounded overflow-hidden">
+                                    <Image
                                         src={video.thumbnail}
                                         alt="Video thumbnail"
-                                        className="object-cover w-full h-full rounded"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                                        className="object-cover rounded"
+                                        priority={false} 
                                     />
+
+                                    {/* Overlay */}
                                     <div className="absolute inset-0 bg-black/10 rounded" />
+
+                                    {/* Play Icon */}
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <img
+                                        <Image
                                             src={video.playIcon}
                                             alt="Play"
                                             width={50}
