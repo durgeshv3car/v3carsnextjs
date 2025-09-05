@@ -9,7 +9,7 @@ export default function LoanInfoCard() {
             {/* Placeholder image */}
             <div className="relative w-auto lg:min-w-[483px] h-[350px] lg:h-[453px]">
                 <Image
-                    src="/placeholder.png" // 🔄 Replace with your image path
+                    src="/placeholder.png"
                     alt="Loan Info"
                     fill
                     className="object-cover rounded-2xl"
@@ -26,7 +26,7 @@ export default function LoanInfoCard() {
                 </p>
 
                 <p>
-                    Utilize V3Cars' interactive auto loan EMI calculator to estimate your monthly car loan payments.
+                    Utilize V3Cars&apos; interactive auto loan EMI calculator to estimate your monthly car loan payments.
                     Simply enter the required loan amount, the interest rate, and the desired tenure period to obtain
                     the car loan EMI. The instalment in the EMI calculator is computed on a reducing balance.
                 </p>
@@ -44,7 +44,7 @@ export default function LoanInfoCard() {
                 </p>
 
                 <p className="text-xs text-gray-500">
-                    Note: The calculator's rate is only indicative, and the actual rate may vary.
+                    Note: The calculator&apos;s rate is only indicative, and the actual rate may vary.
                 </p>
                 
             </div>

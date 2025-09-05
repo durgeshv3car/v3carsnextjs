@@ -1,5 +1,7 @@
 'use client'
 
+import Image from "next/image";
+
 const brands = [
     { name: "Maruti Suzuki Arena", logo: "/car-brands/suzuki.png" },
     { name: "Mahindra", logo: "/car-brands/mahindra.png" },
@@ -23,8 +25,17 @@ function UpcomingCars() {
 
             <div className="grid grid-cols-2 gap-4 flex-grow">
                 {brands.slice(0, 10).map((brand, i) => (
-                    <div key={i} className="min-w-[156px] h-[96px] bg-white flex items-center justify-center shadow border border-[#D9D9D9] rounded-2xl">
-                        <img src={brand.logo} alt={brand.name} className="max-h-[50px] object-contain" />
+                    <div
+                        key={i}
+                        className="min-w-[156px] h-[96px] bg-white flex items-center justify-center shadow border border-[#D9D9D9] rounded-2xl"
+                    >
+                        <Image
+                            src={brand.logo}
+                            alt={brand.name}
+                            width={120}   // max width for logo
+                            height={50}   // max height
+                            className="object-contain max-h-[50px]"
+                        />
                     </div>
                 ))}
             </div>

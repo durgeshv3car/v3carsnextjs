@@ -147,21 +147,21 @@ const Footer: React.FC = () => {
                     <input
                       type="email"
                       placeholder="Enter your email address"
-                      className="w-full border border-[#262629] bg-transparent outline-none rounded-lg px-3 text-sm py-5"
+                      className="w-full border border-[#262629] bg-transparent focus:border-yellow-400 focus:outline-none rounded-xl p-4"
                     />
-                    <button className="w-full bg-black font-light text-white py-4 rounded-xl">
+                    <button className="w-full bg-black text-white py-4 rounded-xl">
                       Subscribe
                     </button>
 
                     <h4 className="font-semibold mb-4">Connect With Us</h4>
                     <div className="flex flex-wrap justify-center items-center space-x-1 xl:space-x-2">
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaYoutube /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaFacebookF /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaInstagram /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaLinkedinIn /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><RiTwitterXFill /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaYoutube size={24} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaFacebookF size={24} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaInstagram size={24} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaLinkedinIn size={24} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><RiTwitterXFill size={24} /></Link>
                       <Link href="#"><PiWhatsappLogoThin size={50} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><SiGooglenews /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><SiGooglenews size={24} /></Link>
                     </div>
                   </div>
 
@@ -194,7 +194,7 @@ const Footer: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-[#343A40] py-2" />
+              {/* <div className="bg-[#343A40] py-2" /> */}
 
             </footer>
           </>

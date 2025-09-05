@@ -12,7 +12,8 @@ import { selectBrand, setStep, type Brand } from "@/redux/slices/sellUsedSlice";
 import { RootState } from "@/redux/store";
 import StepTopBar from "../common/StepTopBar";
 
-const toId = (name: string, i: number) => `${name.toLowerCase().replace(/\s+/g, "-")}-${i}`;
+const toId = (name: string, i: number) =>
+  `${name.toLowerCase().replace(/\s+/g, "-")}-${i}`;
 
 export default function BrandStep() {
   const dispatch = useDispatch();
@@ -21,9 +22,12 @@ export default function BrandStep() {
 
   // normalize data + ensure id present
   const ALL: Brand[] = useMemo(() => {
-    return (RAW_BRANDS as any[])
+    return (RAW_BRANDS as Partial<Brand>[])
       .filter(Boolean)
-      .filter((b) => b?.name && b?.logo)
+      .filter(
+        (b): b is Partial<Brand> & { name: string; logo: string } =>
+          !!b?.name && !!b?.logo
+      )
       .map((b, i) => ({
         id: b.id ?? toId(b.name, i),
         name: b.name,
@@ -51,7 +55,6 @@ export default function BrandStep() {
       />
 
       <div className="mx-auto max-w-[1600px] px-4 py-6 grid grid-cols-12 gap-6">
-
         {/* Left */}
         <div className="col-span-12 lg:col-span-8 space-y-4">
           {/* top bar */}
@@ -79,21 +82,35 @@ export default function BrandStep() {
         {/* Right */}
         <div className="col-span-12 lg:col-span-4">
           <SelectedTrail />
-          <Card variant="white" className="mt-4 p-4 text-sm text-gray-500 dark:bg-[#171717] border dark:border-[#2E2E2E]">
-            Tip: Use the search to quickly find your brand. Your selection appears here with a green tick.
+          <Card
+            variant="white"
+            className="mt-4 p-4 text-sm text-gray-500 dark:bg-[#171717] border dark:border-[#2E2E2E]"
+          >
+            Tip: Use the search to quickly find your brand. Your selection
+            appears here with a green tick.
           </Card>
         </div>
-
       </div>
 
       {/* optional subtle texture */}
       <div className="pointer-events-none fixed inset-x-0 top-0 -z-10 opacity-20">
-        <Image src="/sell-used/header-texture.png" alt="" width={1600} height={300} className="w-full h-auto" />
+        <Image
+          src="/sell-used/header-texture.png"
+          alt=""
+          width={1600}
+          height={300}
+          className="w-full h-auto"
+        />
       </div>
 
       <style jsx global>{`
-        .custom-scroll::-webkit-scrollbar { width: 8px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #facc15; border-radius: 8px; }
+        .custom-scroll::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+          background: #facc15;
+          border-radius: 8px;
+        }
       `}</style>
     </div>
   );

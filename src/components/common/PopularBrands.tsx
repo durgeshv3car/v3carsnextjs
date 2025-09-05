@@ -1,5 +1,6 @@
 'use client'
 
+import Image from "next/image";
 import Link from "next/link";
 
 const brands = [
@@ -25,8 +26,17 @@ function PopularBrands() {
 
             <div className="grid grid-cols-2 gap-4 flex-grow">
                 {brands.slice(0, 10).map((brand, i) => (
-                    <div key={i} className="min-w-[156px] h-[96px] bg-white flex items-center justify-center shadow border border-[#D9D9D9] rounded-2xl">
-                        <img src={brand.logo} alt={brand.name} className="max-h-[50px] object-contain" />
+                    <div
+                        key={i}
+                        className="min-w-[156px] h-[96px] bg-white flex items-center justify-center shadow border border-[#D9D9D9] rounded-2xl"
+                    >
+                        <Image
+                            src={brand.logo}
+                            alt={brand.name}
+                            width={120}       
+                            height={50}       
+                            className="object-contain max-h-[50px]"
+                        />
                     </div>
                 ))}
 

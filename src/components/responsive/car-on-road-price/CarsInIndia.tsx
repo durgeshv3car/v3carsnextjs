@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { CiCalendarDate } from 'react-icons/ci'
 import { FaUserEdit } from 'react-icons/fa'
 

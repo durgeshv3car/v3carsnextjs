@@ -8,7 +8,7 @@ interface SendOtpRequest {
   otp_options?: {
     type?: string;
     purpose?: string;
-    [key: string]: any; // optional for any additional fields
+    [key: string]: unknown; // ✅ safer than "any"
   };
 }
 
@@ -16,7 +16,7 @@ interface SendOtpRequest {
 interface SendOtpResponse {
   success: boolean;
   message: string;
-  data?: any;
+  data?: Record<string, unknown>; // ✅ avoids "any"
 }
 
 // API definition

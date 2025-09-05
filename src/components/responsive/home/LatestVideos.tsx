@@ -1,16 +1,7 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
-import React, { useEffect, useRef, useState } from 'react'
-import { IoMdStarOutline } from 'react-icons/io'
-
-type CarProps = {
-    image: string
-    name: string
-    brand: string
-    confidence: number
-    expectedLaunch: string
-}
 
 const videoData = new Array(8).fill({
     thumbnail: '/latest-video/image.png',
@@ -45,16 +36,21 @@ const LatestVideos: React.FC = () => {
                                 key={index}
                                 className="max-w-[332px] min-h-[450px] xl:max-w-[381px] xl:max-h-[475px] rounded shadow-md overflow-hidden bg-white dark:bg-[#171717] border border-[#DEE2E6] dark:border-[#2E2E2E] p-1 flex-shrink-0 flex flex-col"
                             >
-                                {/* Thumbnail with Play Icon */}
                                 <div className="relative h-[180px] xl:h-[207px]">
-                                    <img
+                                    <Image
                                         src={video.thumbnail}
                                         alt="Video thumbnail"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 207px"
                                         className="object-cover w-full h-full rounded"
+                                        priority={false} 
                                     />
+
                                     <div className="absolute inset-0 bg-black/10 rounded" />
+
+                                    {/* Play Icon */}
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <img
+                                        <Image
                                             src={video.playIcon}
                                             alt="Play"
                                             width={50}

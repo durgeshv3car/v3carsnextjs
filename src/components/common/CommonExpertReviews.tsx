@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { CiCalendarDate } from 'react-icons/ci'
@@ -122,12 +123,17 @@ const CommonExpertReviews: React.FC<CommonExpertReviewProps> = ({ title, view, r
                                 className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-w-[390px] min-h-[371px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
                             >
                                 {/* Fixed height image */}
-                                <div className="relative h-[230px] w-full">
-                                    <img
+                                <div className="relative h-[230px] w-full rounded-xl overflow-hidden">
+                                    <Image
                                         src={item.image}
-                                        alt="news"
-                                        className="rounded-xl"
+                                        alt={item.heading}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                                        className="object-cover rounded-xl"
+                                        priority={false}
                                     />
+
+                                    {/* Gradient + Text */}
                                     <div className="absolute bottom-0 w-full px-4 pt-16 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/90 to-transparent">
                                         <h3 className="text-lg line-clamp-2">{item.heading}</h3>
                                     </div>

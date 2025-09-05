@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { CiCalendarDate } from 'react-icons/ci'
-import { FaRegCalendarAlt, FaPen, FaUserEdit } from 'react-icons/fa'
+import { FaUserEdit } from 'react-icons/fa'
 
 type NewsItem = {
     id: number
@@ -165,15 +165,20 @@ const CommonLatestCarNews: React.FC = () => {
                         >
                             {/* Fixed height image */}
                             <div className="relative h-[310px] w-full">
-                                <img
+                                <Image
                                     src={item.image}
-                                    alt="news"
-                                    className="rounded-xl"
+                                    alt={item.heading || "news"}
+                                    width={600}         // estimated width
+                                    height={310}        // estimated height
+                                    className="rounded-xl object-cover"
                                 />
+
+                                {/* Gradient Overlay + Text */}
                                 <div className="absolute bottom-0 w-full px-4 pt-16 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/90 to-transparent">
                                     <h3 className="text-lg line-clamp-2">{item.heading}</h3>
                                 </div>
                             </div>
+
 
                             {/* Fills the remaining space */}
                             <div className="flex flex-col flex-grow space-y-4">

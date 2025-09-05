@@ -50,7 +50,7 @@ const faqData = [
     },
 ];
 
-export default function page() {
+export default function Page() {
 
     // shared state
     const [country, setCountry] = useState('India');

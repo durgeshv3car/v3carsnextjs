@@ -1,22 +1,11 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
-import { FaArrowRight, FaThList } from 'react-icons/fa'
-import { IoMdStarOutline } from 'react-icons/io'
+import { FaThList } from 'react-icons/fa'
 import CarGridCard from './card-type-show/CarGridCard'
 import CarListCard from './card-type-show/CarListCard'
 import { IoGrid } from 'react-icons/io5'
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect'
-
-type CarProps = {
-    image: string
-    name: string
-    brand: string
-    confidence: number
-    price: string
-    expectedLaunch: string
-}
 
 const dummyData = [
     {

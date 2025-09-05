@@ -5,11 +5,6 @@ import React, { useState, useEffect } from 'react';
 import styles from './CarLoanEMICalculator.module.css'
 
 const CarLoanCalculator = () => {
-  const [brand, setBrand] = useState('');
-  const [model, setModel] = useState('');
-  const [variant, setVariant] = useState('');
-
-  const [carValue, setCarValue] = useState(25670000);
   const [loanAmount, setLoanAmount] = useState(23103000);
   const [downPayment, setDownPayment] = useState(2567000);
   const [interestRate, setInterestRate] = useState(7);
@@ -61,7 +56,7 @@ const CarLoanCalculator = () => {
 
         <div className='space-y-1'>
           <label className='text-sm'>Selected Your Car Value</label>
-          <div className="font-bold text-4xl">₹ {carValue.toLocaleString()}</div>
+          <div className="font-bold text-4xl">₹ {25670000}</div>
         </div>
       </div>
 

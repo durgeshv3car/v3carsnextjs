@@ -104,7 +104,15 @@ const MobileVariantsExplained = () => {
 
                                         {/* Thumbnail */}
                                         <div className="w-[104px] h-[65px] relative rounded-md overflow-hidden flex-shrink-0">
-                                            <img src={item.image} alt="news" className="object-cover" />
+                                            <Image
+                                                src={item.image}
+                                                alt="news"
+                                                fill
+                                                sizes="104px"
+                                                className="object-cover"
+                                                placeholder="blur"
+                                                blurDataURL="/images/placeholder.png" // fallback blur image
+                                            />
                                         </div>
                                     </div>
                                 ))}

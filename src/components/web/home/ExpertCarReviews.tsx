@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { CiCalendarDate } from 'react-icons/ci'
@@ -165,10 +166,14 @@ const ExpertCarReviews: React.FC = () => {
                             >
                                 {/* Fixed height image */}
                                 <div className="relative h-[180px] lg:h-[310px] w-full">
-                                    <img
+                                    <Image
                                         src={item.image}
                                         alt="news"
-                                        className="rounded-xl"
+                                        fill
+                                        sizes="(max-width: 1024px) 100vw, 800px"
+                                        className="rounded-xl object-cover"
+                                        placeholder="blur"
+                                        blurDataURL="/images/placeholder.png" // low-res placeholder
                                     />
                                     <div className="absolute bottom-0 w-full px-4 pt-16 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/90 to-transparent">
                                         <h3 className="text-lg line-clamp-2">{item.heading}</h3>
@@ -195,17 +200,6 @@ const ExpertCarReviews: React.FC = () => {
                 </div>
             </section>
 
-             {/* Banner Section */}
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center'>
-
-                <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto">
-                    <img
-                        src={'/ads/ad1.png'}
-                        alt='ad1'
-                        className='h-full w-full'
-                    />
-                </div>
-            </div>
         </>
     )
 }

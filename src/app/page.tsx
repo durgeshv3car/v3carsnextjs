@@ -33,11 +33,14 @@ export default function Home() {
       {isMobile ? <MobileLatestCarNews /> : <CommonLatestCarNews />}
       <QuickLook />
       <CarByType />
+      <BottomAd />
       <CarByPrice />
+      <BottomAd />
       <CarWebStories />
       <LatestVideos />
       {isMobile ? <MobileVariantsExplained /> : <VariantsExplained />}
       {isMobile ? <MobileExpertCarReviews /> : <ExpertCarReviews />}
+      <BottomAd />
       <TopCarBrands />
     </>
   );

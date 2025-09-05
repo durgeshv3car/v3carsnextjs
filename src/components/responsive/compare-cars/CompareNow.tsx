@@ -1,7 +1,5 @@
 'use client'
 
-import { IoIosArrowDown } from "react-icons/io";
-import { FaPlus } from "react-icons/fa6";
 import { MdCompareArrows } from "react-icons/md";
 import CustomSelect from "../../ui/custom-inputs/CustomSelect";
 

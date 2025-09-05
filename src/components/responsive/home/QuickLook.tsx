@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { BiTachometer } from 'react-icons/bi'
@@ -162,16 +163,23 @@ const QuickLook: React.FC = () => {
                                     className={`rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden w-[265px] xl:w-[384px] h-[400px] xl:h-[454px] flex-shrink-0 flex flex-col`}
                                 >
                                     {/* Image Section */}
-                                    <div className="relative h-[166px] xl:h-[241px]">
-                                        <img
+                                    <div className="relative h-[166px] xl:h-[241px] w-full rounded-md overflow-hidden">
+                                        <Image
                                             src={car.image}
                                             alt={car.name}
-                                            className="h-full w-full object-cover shadow-md"
+                                            fill
+                                            sizes="(max-width: 1280px) 100vw, 400px"
+                                            priority={false}
+                                            className="object-cover shadow-md rounded-md"
                                         />
+
+                                        {/* Gradient Overlay */}
                                         <div className="absolute bottom-0 p-3 w-full bg-gradient-to-t from-black/90 to-transparent">
                                             <p className="text-white font-semibold">Maruti Suzuki</p>
                                         </div>
-                                        <button className="absolute top-2 right-2 bg-[#FFFFFF] dark:bg-[#171717] rounded-full p-2 shadow">
+
+                                        {/* Favorite Button */}
+                                        <button className="absolute top-2 right-2 bg-white dark:bg-[#171717] rounded-full p-2 shadow">
                                             <IoMdStarOutline />
                                         </button>
                                     </div>
