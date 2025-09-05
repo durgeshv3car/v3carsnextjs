@@ -5,7 +5,7 @@ import WhatIsCarInsurance from '@/components/responsive/car-insurance/WhatIsCarI
 
 export default function page() {
     return (
-        <div>
+        <div className='bg-white dark:bg-[#171717]'>
             <CarLoanIntro />
             <ApplyForCarLoan />
             <WhatIsCarInsurance />
