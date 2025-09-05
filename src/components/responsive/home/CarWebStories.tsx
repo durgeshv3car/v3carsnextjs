@@ -87,14 +87,17 @@ const CarWebStories: React.FC = () => {
 
                     <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth">
                         {stories.map((story) => (
-                            <div key={story.id} className="relative min-w-[270px] h-[480px]">
+                            <div
+                                key={story.id}
+                                className="relative min-w-[270px] aspect-[9/16] rounded-[10px] overflow-hidden bg-black"
+                            >
                                 <Image
                                     src={story.image}
                                     alt={story.heading || "Story"}
                                     fill
                                     priority={false}
                                     sizes="(max-width: 768px) 100vw, 270px"
-                                    className="rounded-[10px] object-cover"
+                                    className="object-contain"
                                 />
 
                                 {/* Top-right mute icon */}
@@ -112,13 +115,14 @@ const CarWebStories: React.FC = () => {
                                 </div>
 
                                 {/* Bottom Gradient + Text */}
-                                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-3 rounded-[10px] h-[50%] flex flex-col justify-end space-y-1">
+                                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-3 flex flex-col justify-end space-y-1">
                                     <p className="text-sm font-medium text-white line-clamp-3">{story.heading}</p>
                                     <p className="text-sm text-white">{story.date}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
+
                 </div>
             </div>
         </>

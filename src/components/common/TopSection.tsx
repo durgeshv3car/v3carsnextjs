@@ -46,10 +46,11 @@ export default function TopSection({ title, description }: TopSectionProps) {
                 path === "/compare-cars" ? description :
                     path === "/car-loan-emi-calculator" ? description :
                         path === "/petrol-price-in-india" ? description :
-                            path === "/diesel-price-in-india" ? description :
-                                path === "/cng-price-in-india" ? description :
-                                    path === "/electric-cars" ? description :
-                                        description
+                            path === "/fuel-price-in-india" ? description :
+                                path === "/diesel-price-in-india" ? description :
+                                    path === "/cng-price-in-india" ? description :
+                                        path === "/electric-cars" ? description :
+                                            description
 
     return (
         <section>
@@ -65,10 +66,11 @@ export default function TopSection({ title, description }: TopSectionProps) {
                                     path === "/compare-cars" ? "Compare Cars" :
                                         path === "/car-loan-emi-calculator" ? "Car Loan EMI Calculator" :
                                             path === "/petrol-price-in-india" ? "Petrol Price In India" :
-                                                path === "/diesel-price-in-india" ? "Diesel Price In India" :
-                                                    path === "/cng-price-in-india" ? "CNG Price In India" :
-                                                        path === "/electric-cars" ? "Electric Cars" :
-                                                            "Upcoming Cars"}
+                                                path === "/fuel-price-in-india" ? "Fuel Price In India" :
+                                                    path === "/diesel-price-in-india" ? "Diesel Price In India" :
+                                                        path === "/cng-price-in-india" ? "CNG Price In India" :
+                                                            path === "/electric-cars" ? "Electric Cars" :
+                                                                "Upcoming Cars"}
                         </span>
                     </div>
                 </div>

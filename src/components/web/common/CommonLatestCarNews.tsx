@@ -108,7 +108,7 @@ const CommonLatestCarNews: React.FC = () => {
                             href="#"
                             className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
                         >
-                            View All
+                            View All Latest Car News
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"

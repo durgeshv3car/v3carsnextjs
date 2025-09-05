@@ -91,8 +91,8 @@ const CarByPrice: React.FC = () => {
                 <div className="w-full lg:max-w-[1600px] mx-auto space-y-3 py-6">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-semibold lg:font-medium">Search Car By Price</h2>
-                        <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
-                            View All
+                        <Link href="#" className="text-[#FFCC00] font-medium text-xs lg:text-sm hover:underline flex gap-2 items-center">
+                            View All Cars {activeTab} 
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                             </svg>

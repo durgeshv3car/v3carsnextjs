@@ -2,7 +2,8 @@
 
 export default function WhatIsCarInsurance() {
   return (
-    <section className="max-w-[1600px] mx-auto px-4 md:px-6 lg:px-0 py-6">
+    <section className="px-4 lg:px-10 py-6">
+      <div className="w-full lg:max-w-[1600px] mx-auto">
       {/* Title + Copy */}
       <h2 className="text-[22px] md:text-[26px] font-semibold text-gray-900 mb-3 dark:text-white">
         What is Car Insurance?
@@ -111,6 +112,7 @@ export default function WhatIsCarInsurance() {
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </section>
   );

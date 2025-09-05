@@ -1,3 +1,4 @@
+import BottomAd from "@/components/common/BottomAd";
 import PopularVideos from "@/components/common/PopularVideos";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
@@ -44,23 +45,11 @@ function CarExpertReviews() {
                         <div className="hidden lg:block w-auto lg:max-w-[74%] space-y-6">
                             <LatestExpertReview />
 
-                            <div className="flex justify-center">
-                                <img
-                                    src={"/ads/ad2.png"}
-                                    alt="ads Image"
-                                    className="w-[970px] h-[90px] object-cover"
-                                />
-                            </div>
+                            <BottomAd />
 
                             <TrendingComparisonReviews />
 
-                            <div className="flex justify-center">
-                                <img
-                                    src={"/ads/ad2.png"}
-                                    alt="ads Image"
-                                    className="w-[970px] h-[90px] object-cover"
-                                />
-                            </div>
+                            <BottomAd />
 
                             <TopComparisonReviews />
                         </div>

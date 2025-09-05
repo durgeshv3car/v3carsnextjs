@@ -1,10 +1,14 @@
+import Image from "next/image";
+
 function SideBarAdSmall() {
     return (
-        <div className="h-[300px] bg-[#D9D9D9] dark:bg-[#262626] flex justify-center items-center">
-            <img
-                src={"/upcoming/ad.png"}
-                alt="ad image"
-                className="rounded-xl"
+        <div className="w-[300px] relative aspect-[386/280]">
+            <Image
+                src="/upcoming/ad.png"
+                alt="ad mobile"
+                fill
+                className="object-contain"
+                priority
             />
         </div>
     );

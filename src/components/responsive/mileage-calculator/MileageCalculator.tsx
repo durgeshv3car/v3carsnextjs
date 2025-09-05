@@ -54,130 +54,132 @@ export default function MileageCalculator() {
   };
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-4 py-6">
-      <div className="grid lg:grid-cols-2 gap-5">
-        {/* LEFT: Form Card */}
-        <div className="rounded-xl border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] shadow-sm overflow-hidden">
-          {/* Top Banner */}
-          <div className="bg-black text-yellow-400 px-5 py-4 text-lg md:text-xl font-semibold tracking-wide">
-            Mileage: {mileageValue ? mileageValue.toFixed(2) : '0.00'} {mileageLabel}
+    <div className="px-4 lg:px-10 py-6">
+      <div className="w-full lg:max-w-[1600px] mx-auto">
+        <div className="grid lg:grid-cols-2 gap-5">
+          {/* LEFT: Form Card */}
+          <div className="rounded-xl border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] shadow-sm overflow-hidden">
+            {/* Top Banner */}
+            <div className="bg-black text-yellow-400 px-5 py-4 text-lg md:text-xl font-semibold tracking-wide">
+              Mileage: {mileageValue ? mileageValue.toFixed(2) : '0.00'} {mileageLabel}
+            </div>
+
+            <div className="p-5 space-y-6 ">
+              {/* Distance */}
+              <div className="space-y-2 ">
+                <div className="text-sm font-medium text-neutral-700 dark:text-white">Distance</div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    placeholder={`Enter Distance ${distanceUnit === 'km' ? 'Km' : 'Miles'}`}
+                    value={distance}
+                    onChange={(e) => setDistance(e.target.value)}
+                    className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
+                  />
+                  <UnitToggle<DistanceUnit>
+                    options={[
+                      { key: 'km', label: 'Km' },
+                      { key: 'mi', label: 'Miles' },
+                    ]}
+                    value={distanceUnit}
+                    onChange={setDistanceUnit}
+                  />
+                </div>
+              </div>
+
+              {/* Fuel */}
+              <div className="space-y-2">
+                <div className="text-sm font-medium text-neutral-700 dark:text-white">Fuel</div>
+                <div className="flex items-center gap-3">
+
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    placeholder={`Enter Fuel ${fuelUnit === 'ltr' ? 'Ltr' : 'Gal'}`}
+                    value={fuel}
+                    onChange={(e) => setFuel(e.target.value)}
+                    className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
+                  />
+
+                  <UnitToggle<FuelUnit>
+                    options={[
+                      { key: 'ltr', label: 'Ltr' },
+                      { key: 'gal', label: 'Gal' },
+                    ]}
+                    value={fuelUnit}
+                    onChange={setFuelUnit}
+                  />
+
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="space-y-2">
+                <div className="text-sm font-medium text-neutral-700 dark:text-white">Price</div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    placeholder="Today Price (Total Amount)"
+                    value={totalAmount}
+                    onChange={(e) => setTotalAmount(e.target.value)}
+                    className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
+                  />
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value as Currency)}
+                    className="h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
+                  >
+                    <option>INR</option>
+                    <option>USD</option>
+                    <option>EUR</option>
+                    <option>AED</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Reset */}
+              <button
+                onClick={resetAll}
+                className="w-full h-11 rounded-lg bg-yellow-400 text-black font-semibold flex items-center justify-center gap-2 hover:brightness-95 active:translate-y-[1px]"
+              >
+                <IoReload className="text-lg" />
+                RESET
+              </button>
+            </div>
           </div>
 
-          <div className="p-5 space-y-6 ">
-            {/* Distance */}
-            <div className="space-y-2 ">
-              <div className="text-sm font-medium text-neutral-700 dark:text-white">Distance</div>
-              <div className="flex items-center gap-3">
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  placeholder={`Enter Distance ${distanceUnit === 'km' ? 'Km' : 'Miles'}`}
-                  value={distance}
-                  onChange={(e) => setDistance(e.target.value)}
-                  className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-                <UnitToggle<DistanceUnit>
-                  options={[
-                    { key: 'km', label: 'Km' },
-                    { key: 'mi', label: 'Miles' },
-                  ]}
-                  value={distanceUnit}
-                  onChange={setDistanceUnit}
-                />
-              </div>
-            </div>
+          {/* RIGHT: Result Table */}
+          <div className="space-y-10">
+            <div className="rounded-xl border dark:border-[#2E2E2E] dark:bg-[#171717] overflow-hidden">
 
-            {/* Fuel */}
-            <div className="space-y-2">
-              <div className="text-sm font-medium text-neutral-700 dark:text-white">Fuel</div>
-              <div className="flex items-center gap-3">
+              <div className="grid grid-cols-2 bg-neutral-200 dark:bg-black text-neutral-800 text-sm font-semibold  dark:text-white">
 
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  placeholder={`Enter Fuel ${fuelUnit === 'ltr' ? 'Ltr' : 'Gal'}`}
-                  value={fuel}
-                  onChange={(e) => setFuel(e.target.value)}
-                  className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-
-                <UnitToggle<FuelUnit>
-                  options={[
-                    { key: 'ltr', label: 'Ltr' },
-                    { key: 'gal', label: 'Gal' },
-                  ]}
-                  value={fuelUnit}
-                  onChange={setFuelUnit}
-                />
+                <div className="px-4 py-3 text-2xl ">Units</div>
+                <div className="px-4 py-3 text-2xl">Output</div>
 
               </div>
+
+              <Row label="Distance" value={`${parsedDistance || 0} ${distanceUnit}`} />
+              <Row label="Fuel" value={`${parsedFuel || 0} ${fuelUnit === 'ltr' ? 'Ltr' : 'Gal'}`} />
+              <Row label="Total Amount" value={`${(parsedAmount || 0).toFixed(2)} ${currency}`} />
+              <Row
+                label="Fuel Cost Per Kilometer"
+                value={
+                  distanceKm > 0
+                    ? `${currencySymbol(currency)} ${costPerKm.toFixed(2)}/km`
+                    : `—`
+                }
+              />
             </div>
-                  
-            {/* Price */}
-            <div className="space-y-2">
-              <div className="text-sm font-medium text-neutral-700 dark:text-white">Price</div>
-              <div className="flex items-center gap-3">
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  placeholder="Today Price (Total Amount)"
-                  value={totalAmount}
-                  onChange={(e) => setTotalAmount(e.target.value)}
-                  className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-                <select
-                  value={currency}
-                  onChange={(e) => setCurrency(e.target.value as Currency)}
-                  className="h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
-                >
-                  <option>INR</option>
-                  <option>USD</option>
-                  <option>EUR</option>
-                  <option>AED</option>
-                </select>
+
+            {/* Bottom Black Highlight */}
+            <div className="rounded-xl bg-black text-white border dark:border-[#2E2E2E] px-6 py-5">
+              <div className="text-lg font-semibold">Mileage</div>
+              <div className="text-3xl md:text-5xl font-extrabold tracking-wide mt-1">
+                {mileageValue ? mileageValue.toFixed(2) : '0.00'} {mileageLabel}
               </div>
-            </div>
-
-            {/* Reset */}
-            <button
-              onClick={resetAll}
-              className="w-full h-11 rounded-lg bg-yellow-400 text-black font-semibold flex items-center justify-center gap-2 hover:brightness-95 active:translate-y-[1px]"
-            >
-              <IoReload className="text-lg" />
-              RESET
-            </button>
-          </div>
-        </div>
-
-        {/* RIGHT: Result Table */}
-        <div className="space-y-10">
-          <div className="rounded-xl border dark:border-[#2E2E2E] dark:bg-[#171717] overflow-hidden">
-
-            <div className="grid grid-cols-2 bg-neutral-200 dark:bg-black text-neutral-800 text-sm font-semibold  dark:text-white">
-
-              <div className="px-4 py-3 text-2xl ">Units</div>
-              <div className="px-4 py-3 text-2xl">Output</div>
-
-            </div>
-
-            <Row label="Distance" value={`${parsedDistance || 0} ${distanceUnit}`} />
-            <Row label="Fuel" value={`${parsedFuel || 0} ${fuelUnit === 'ltr' ? 'Ltr' : 'Gal'}`} />
-            <Row label="Total Amount" value={`${(parsedAmount || 0).toFixed(2)} ${currency}`} />
-            <Row
-              label="Fuel Cost Per Kilometer"
-              value={
-                distanceKm > 0
-                  ? `${currencySymbol(currency)} ${costPerKm.toFixed(2)}/km`
-                  : `—`
-              }
-            />
-          </div>
-
-          {/* Bottom Black Highlight */}
-          <div className="rounded-xl bg-black text-white border dark:border-[#2E2E2E] px-6 py-5">
-            <div className="text-lg font-semibold">Mileage</div>
-            <div className="text-3xl md:text-5xl font-extrabold tracking-wide mt-1">
-              {mileageValue ? mileageValue.toFixed(2) : '0.00'} {mileageLabel}
             </div>
           </div>
         </div>
@@ -229,9 +231,8 @@ function UnitToggle<T extends string>({
           <button
             key={opt.key}
             onClick={() => onChange(opt.key)}
-            className={`px-3 h-8 rounded-full text-sm font-medium transition ${
-              active ? 'bg-yellow-400 text-black' : 'text-neutral-600 dark:hover:bg-black'
-            }`}
+            className={`px-3 h-8 rounded-full text-sm font-medium transition ${active ? 'bg-yellow-400 text-black' : 'text-neutral-600 dark:hover:bg-black'
+              }`}
             type="button"
           >
             {opt.label}

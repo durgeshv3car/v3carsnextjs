@@ -91,11 +91,11 @@ const Footer: React.FC = () => {
                         <React.Fragment key={index}>
                           <li className="flex gap-2 items-center py-3">
                             <Image
-                              src="/common/v3icon.svg"
+                              src="/common/v3.png"
                               alt="v3-icon"
                               width={16}
                               height={16}
-                              className="dark:invert"
+                              className="dark:invert brightness-0"
                             />
                             <Link href={item.href} className="hover:underline">
                               {item.label}
@@ -118,11 +118,11 @@ const Footer: React.FC = () => {
                         <React.Fragment key={index}>
                           <li className="flex gap-2 items-center py-3">
                             <Image
-                              src="/common/v3icon.svg"
+                              src="/common/v3.png"
                               alt="v3-icon"
                               width={16}
                               height={16}
-                              className="dark:invert"
+                              className="dark:invert brightness-0"
                             />
                             <Link href={tool.href} className="hover:underline">
                               {tool.label}
@@ -147,7 +147,7 @@ const Footer: React.FC = () => {
                     <input
                       type="email"
                       placeholder="Enter your email address"
-                      className="w-full border border-[#262629] bg-transparent focus:border-yellow-400 focus:outline-none rounded-xl p-4"
+                      className="w-full border border-[#262629] bg-white dark:bg-black focus:border-yellow-400 focus:outline-none rounded-xl p-4"
                     />
                     <button className="w-full bg-black text-white py-4 rounded-xl">
                       Subscribe
@@ -155,13 +155,13 @@ const Footer: React.FC = () => {
 
                     <h4 className="font-semibold mb-4">Connect With Us</h4>
                     <div className="flex flex-wrap justify-center items-center space-x-1 xl:space-x-2">
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaYoutube size={24} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaFacebookF size={24} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaInstagram size={24} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><FaLinkedinIn size={24} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><RiTwitterXFill size={24} /></Link>
-                      <Link href="#"><PiWhatsappLogoThin size={50} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-3"><SiGooglenews size={24} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaYoutube size={20} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaFacebookF size={20} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaInstagram size={20} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaLinkedinIn size={20} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><RiTwitterXFill size={20} /></Link>
+                      <Link href="#"><PiWhatsappLogoThin size={45} /></Link>
+                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><SiGooglenews size={20} /></Link>
                     </div>
                   </div>
 

@@ -33,12 +33,17 @@ export default function Home() {
       {isMobile ? <MobileLatestCarNews /> : <CommonLatestCarNews />}
       <QuickLook />
       <CarByType />
-      <BottomAd />
+      <div className="block lg:hidden">
+        <BottomAd />
+      </div>
       <CarByPrice />
       <BottomAd />
       <CarWebStories />
       <LatestVideos />
       {isMobile ? <MobileVariantsExplained /> : <VariantsExplained />}
+      <div className="block lg:hidden">
+        <BottomAd />
+      </div>
       {isMobile ? <MobileExpertCarReviews /> : <ExpertCarReviews />}
       <BottomAd />
       <TopCarBrands />
