@@ -1,6 +1,6 @@
 export default function FuelCostInfoBlock() {
     return (
-        <div className="bg-[#F6F6F6] dark:bg-black dark:text-white text-sm text-gray-800 mx-auto mt-10 px-4 lg:px-0">
+        <div className="text-sm mt-10 px-4 lg:px-10">
 
             <div className="max-w-[1600px] mx-auto">
                 <h2 className="text-lg font-semibold text-black mb-3 dark:text-white">

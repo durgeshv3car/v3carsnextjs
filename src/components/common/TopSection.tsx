@@ -27,18 +27,9 @@ interface TopSectionProps {
 export default function TopSection({ title, description }: TopSectionProps) {
     const [selected, setSelected] = useState('August 2024')
     const [isExpanded, setIsExpanded] = useState(false)
-    const [maxHeight, setMaxHeight] = useState("3rem") // 2 line approx
+    const [maxHeight, setMaxHeight] = useState<'3rem' | 'none' | string>('3rem') // 'none' -> no clamp
     const contentRef = useRef<HTMLDivElement>(null)
     const path = usePathname()
-
-    // ✅ Smooth expand/collapse
-    useEffect(() => {
-        if (isExpanded && contentRef.current) {
-            setMaxHeight(contentRef.current.scrollHeight + "px")
-        } else {
-            setMaxHeight("3rem") // collapsed height
-        }
-    }, [isExpanded, description])
 
     const descriptionText =
         path === "/latest-launched-cars" ? description :
@@ -46,11 +37,27 @@ export default function TopSection({ title, description }: TopSectionProps) {
                 path === "/compare-cars" ? description :
                     path === "/car-loan-emi-calculator" ? description :
                         path === "/petrol-price-in-india" ? description :
-                            path === "/fuel-price-in-india" ? description :
-                                path === "/diesel-price-in-india" ? description :
-                                    path === "/cng-price-in-india" ? description :
-                                        path === "/electric-cars" ? description :
-                                            description
+                            path === "/diesel-price-in-india" ? description :
+                                path === "/cng-price-in-india" ? description :
+                                    path === "/electric-cars" ? description :
+                                        description
+
+    // ✅ Word count & flag for showing Read more/less
+    const wordCount = descriptionText.trim().split(/\s+/).filter(Boolean).length
+    const hasReadMore = wordCount > 65
+
+    // ✅ Smooth expand/collapse only when long enough; otherwise show full text
+    useEffect(() => {
+        if (!hasReadMore) {
+            setMaxHeight('none') // no clamp for short descriptions
+            return
+        }
+        if (isExpanded && contentRef.current) {
+            setMaxHeight(contentRef.current.scrollHeight + "px")
+        } else {
+            setMaxHeight("3rem") // collapsed height (~2 lines)
+        }
+    }, [isExpanded, descriptionText, hasReadMore])
 
     return (
         <section>
@@ -66,11 +73,10 @@ export default function TopSection({ title, description }: TopSectionProps) {
                                     path === "/compare-cars" ? "Compare Cars" :
                                         path === "/car-loan-emi-calculator" ? "Car Loan EMI Calculator" :
                                             path === "/petrol-price-in-india" ? "Petrol Price In India" :
-                                                path === "/fuel-price-in-india" ? "Fuel Price In India" :
-                                                    path === "/diesel-price-in-india" ? "Diesel Price In India" :
-                                                        path === "/cng-price-in-india" ? "CNG Price In India" :
-                                                            path === "/electric-cars" ? "Electric Cars" :
-                                                                "Upcoming Cars"}
+                                                path === "/diesel-price-in-india" ? "Diesel Price In India" :
+                                                    path === "/cng-price-in-india" ? "CNG Price In India" :
+                                                        path === "/electric-cars" ? "Electric Cars" :
+                                                            "Upcoming Cars"}
                         </span>
                     </div>
                 </div>
@@ -81,42 +87,45 @@ export default function TopSection({ title, description }: TopSectionProps) {
                     <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
 
                         {/* Title */}
-                        <h1 className="text-2xl font-semibold">{title}</h1>
+                        <h1 className="text-4xl font-semibold">{title}</h1>
 
                         {/* Description with smooth expand */}
                         <div
                             ref={contentRef}
                             style={{ maxHeight }}
-                            className="overflow-hidden transition-all duration-500 ease-in-out"
+                            className={`${hasReadMore ? 'overflow-hidden transition-all duration-500 ease-in-out' : 'overflow-visible'}`}
+                            aria-expanded={hasReadMore ? isExpanded : true}
                         >
                             <p className="text-wrap">{descriptionText}</p>
                         </div>
 
-                        {/* Read More / Read Less */}
-                        <button
-                            onClick={() => setIsExpanded(!isExpanded)}
-                            className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-1"
-                        >
-                            {isExpanded ? "Read Less" : "Read More"}
-                            <span
-                                className={`transform transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}
+                        {/* Read More / Read Less — only if > 40 words */}
+                        {hasReadMore && (
+                            <button
+                                onClick={() => setIsExpanded(!isExpanded)}
+                                className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-1"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="size-4"
+                                {isExpanded ? "Read Less" : "Read More"}
+                                <span
+                                    className={`transform transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                                    />
-                                </svg>
-                            </span>
-                        </button>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="size-4"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                        />
+                                    </svg>
+                                </span>
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

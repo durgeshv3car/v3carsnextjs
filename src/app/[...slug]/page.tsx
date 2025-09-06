@@ -1,13 +1,11 @@
-import React from "react";
-
 import CommonFaqAccordion from "@/components/common/CommonFaqAccordion";
 import PopularBrands from "@/components/common/PopularBrands";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
-import TopSection from "@/components/common/TopSection";
 import FuelPrices from "@/components/responsive/pages/FuelPrices";
 import SearchSection from "@/components/responsive/pages/SearchSection";
 import StateWiseFuelChart from "@/components/responsive/pages/StateWiseFuelChart";
 import StateWiseFuelList from "@/components/responsive/pages/StateWiseFuelList";
+import TopSection from "@/components/responsive/pages/TopSection";
 import { redirect } from "next/navigation";
 
 type FAQItem = {
@@ -69,7 +67,7 @@ interface SlugPageProps {
 }
 
 export default async function Slug({ params }: SlugPageProps) {
-    const { slug } = await params; // 👈 yahan await zaroori hai
+    const { slug } = await params;
 
     const allowedSlugs: Record<string, string> = {
         "fuel-price-in-india": "Fuel",
@@ -87,11 +85,7 @@ export default async function Slug({ params }: SlugPageProps) {
 
     return (
         <>
-            <TopSection
-                title={`Today's ${type} Prices in India - September 18, 2024`}
-                description={`Looking for the latest ${type.toLowerCase()} prices in India? Look no further! This page provides you with up-to-date information on ${type.toLowerCase()} prices across major Indian cities (as of September 18, 2024). We understand prices fluctuate, so we offer daily updates to help you find and compare ${type.toLowerCase()} prices in and around your city. Today on September 18, 2024 the price of ${type.toLowerCase()} in your city (Saharanpur) is ₹95.08 per liter.`}
-            />
-
+            <TopSection type={type} />
             <SearchSection />
 
             <div className="px-4 xl:px-10">

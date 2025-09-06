@@ -138,7 +138,7 @@ export default function FuelCostTable({
 
       {/* --------- Desktop/Tablet layout: original table --------- */}
       <div className="hidden md:block">
-        <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white dark:bg-[#171717] dark:border-neutral-700">
+        <div className="">
           {/* header row (first col = empty, no box/border) */}
           <div className="grid [grid-template-columns:2fr_1fr_1fr_1fr]">
             <div className="px-4 py-4 bg-transparent border-0" />
@@ -244,7 +244,7 @@ export default function FuelCostTable({
           </Row>
 
           {/* yearly */}
-          <Row noBorder>
+          <Row>
             <LeftCell>Yearly Fuel Cost</LeftCell>
             <RightCell>{formatMoney(s, petrol.yearly)}</RightCell>
             <RightCell>{formatMoney(s, diesel.yearly)}</RightCell>
@@ -269,7 +269,7 @@ function Row({
     <div
       className={[
         'grid [grid-template-columns:2fr_1fr_1fr_1fr]',
-        noBorder ? '' : 'border-t border-neutral-200 dark:border-neutral-700',
+        noBorder ? '' : '',
       ].join(' ')}
     >
       {children}
@@ -279,7 +279,7 @@ function Row({
 
 function HeaderCell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-4 py-4 text-sm font-semibold bg-neutral-100 text-neutral-800 border-b border-neutral-200 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">
+    <div className="px-4 py-6 text-center text-sm font-semibold bg-neutral-100 text-neutral-800 border border-b-0 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">
       {children}
     </div>
   );
@@ -287,7 +287,7 @@ function HeaderCell({ children }: { children: React.ReactNode }) {
 
 function LeftCell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-4 py-5 text-sm text-neutral-700 dark:text-neutral-200">
+    <div className="px-4 py-5 text-sm border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200">
       {children}
     </div>
   );
@@ -303,7 +303,7 @@ function RightCell({
   return (
     <div
       className={[
-        'px-4 py-5 text-sm font-medium border-l border-neutral-200 dark:border-neutral-700',
+        'px-4 py-5 text-sm flex flex-col items-center font-medium border border-neutral-200 dark:border-neutral-700',
         highlight ? 'bg-[#fff9ea] dark:bg-[#2b2412]' : '',
       ].join(' ')}
     >

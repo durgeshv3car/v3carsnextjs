@@ -38,15 +38,15 @@ export default function InsuranceQuoteSection({
             </div>
 
             {/* Quote card */}
-            <div className="mt-8 rounded-2xl p-6 md:p-8 bg-[#fafafa] dark:bg-neutral-900 ring-1 ring-black/5 dark:ring-white/10">
+            <div className="mt-8 rounded-2xl p-6 md:p-10">
                 <h2 className="text-center text-[22px] md:text-[26px] font-semibold text-neutral-800 dark:text-neutral-100">
                     Enter Your Car Registration Details
                 </h2>
 
                 {/* Input + Button */}
                 <div className="mt-6 flex justify-center">
-                    <div className="w-full max-w-2xl">
-                        <div className="flex overflow-hidden rounded-xl ring-1 ring-neutral-300 dark:ring-neutral-700 bg-white dark:bg-neutral-800">
+                    <div className="w-full flex flex-col items-center">
+                        <div className="w-full max-w-2xl flex overflow-hidden rounded-xl ring-1 ring-neutral-300 dark:ring-neutral-700 bg-white dark:bg-neutral-800">
                             <input
                                 value={reg}
                                 onChange={(e) => setReg(e.target.value.toUpperCase())}
@@ -62,15 +62,15 @@ export default function InsuranceQuoteSection({
                         </div>
 
                         {/* OR divider */}
-                        <div className="flex items-center gap-4 my-6">
+                        <div className="w-full flex items-center gap-2 my-6">
                             <span className="h-px flex-1 bg-[#f0d15a] dark:bg-yellow-600" />
-                            <span className="text-[#f0b400] dark:text-yellow-500 font-semibold">or</span>
+                            <span className="text-[#f0b400] dark:text-yellow-500 text-2xl font-semibold">or</span>
                             <span className="h-px flex-1 bg-[#f0d15a] dark:bg-yellow-600" />
                         </div>
 
                         {/* Yellow CTA card (no icons) */}
                         <button
-                            className="w-full text-left rounded-xl bg-[#ffc627] text-black dark:text-black px-4 py-4 md:py-5 hover:brightness-95"
+                            className="w-full max-w-2xl text-left rounded-xl bg-[#ffc627] text-black dark:text-black px-4 py-4 md:py-5 hover:brightness-95"
                             onClick={() => onGetQuote?.('NEW_CAR')}
                         >
                             <div className="font-semibold">Looking to insure brand new car?</div>
