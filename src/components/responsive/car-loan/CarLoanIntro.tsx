@@ -25,6 +25,7 @@ export default function CarLoanIntro() {
         Read More
         <FaChevronDown size={12} />
       </button>
+      
     </section>
   );
 }
