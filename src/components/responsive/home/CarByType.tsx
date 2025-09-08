@@ -90,7 +90,7 @@ const CarByType: React.FC = () => {
             {/* Upcoming Car Section */}
             <section className="px-6 lg:px-10">
                 <div className="w-full lg:max-w-[1600px] mx-auto space-y-3 mt-4">
-                    <div className="flex items-center justify-between w-full lg:w-auto gap-4">
+                    <div className="flex items-center w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-semibold lg:font-medium">Search Car By Body Type</h2>
                         <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
                             View All SUVs
@@ -121,7 +121,7 @@ const CarByType: React.FC = () => {
                                 <button
                                     onClick={() => scroll('left')}
                                     disabled={isAtStart}
-                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtStart ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtStart ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300'
                                         }`}
                                 >
                                     <svg
@@ -138,7 +138,7 @@ const CarByType: React.FC = () => {
                                 <button
                                     onClick={() => scroll('right')}
                                     disabled={isAtEnd}
-                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtEnd ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtEnd ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300'
                                         }`}
                                 >
                                     <svg

@@ -40,13 +40,13 @@ export default function TopCarBrands() {
     }, []);
 
     return (
-        <section className="bg-[#F8F9FA] dark:bg-[#262629] py-6 px-6 lg:px-10">
+        <section className="bg-[#F8F9FA] dark:bg-[#1f1f22] py-6 px-6 lg:px-10">
             <div className="w-full lg:max-w-[1600px] mx-auto">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-medium">Top Car Brands</h2>
                         <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
-                            View All
+                            View All Car Brands
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                             </svg>
@@ -83,14 +83,14 @@ export default function TopCarBrands() {
                         {list1.map((brand, i) => (
                             <div
                                 key={`list1-${i}`}
-                                className="relative min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded overflow-hidden"
+                                className="relative min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center overflow-hidden"
                             >
                                 <Image
                                     src={brand.logo}
                                     alt={brand.name}
                                     fill
                                     sizes="(max-width: 768px) 143px, 260px"
-                                    className="p-6 object-contain"
+                                    className="p-3 object-contain"
                                     placeholder="blur"
                                     blurDataURL="/images/placeholder.png"
                                 />
@@ -102,14 +102,14 @@ export default function TopCarBrands() {
                         {list2.map((brand, i) => (
                             <div
                                 key={`list1-${i}`}
-                                className="relative min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center shadow rounded overflow-hidden"
+                                className="relative min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center overflow-hidden"
                             >
                                 <Image
                                     src={brand.logo}
                                     alt={brand.name}
                                     fill
                                     sizes="(max-width: 768px) 143px, 260px"
-                                    className="p-6 object-contain"
+                                    className="p-3 object-contain"
                                     placeholder="blur"
                                     blurDataURL="/images/placeholder.png"
                                 />
@@ -156,15 +156,15 @@ export default function TopCarBrands() {
 
 const brands = [
     { name: "Maruti Suzuki Arena", logo: "/car-brands/suzuki.png" },
-    { name: "Mahindra", logo: "/car-brands/mahindra.png" },
-    { name: "Toyota", logo: "/car-brands/toyota.png" },
-    { name: "Hyundai", logo: "/car-brands/hyundai.png" },
-    { name: "Volkswagen", logo: "/car-brands/w.png" },
-    { name: "Renault", logo: "/car-brands/renault.png" },
     { name: "Nexa", logo: "/car-brands/nexa.png" },
+    { name: "Mahindra", logo: "/car-brands/mahindra.png" },
     { name: "Tata", logo: "/car-brands/tata.png" },
+    { name: "Toyota", logo: "/car-brands/toyota.png" },
     { name: "Kia", logo: "/car-brands/kia.png" },
+    { name: "Hyundai", logo: "/car-brands/hyundai.png" },
     { name: "Honda", logo: "/car-brands/honda.png" },
+    { name: "Volkswagen", logo: "/car-brands/w.png" },
     { name: "Skoda", logo: "/car-brands/skoda.png" },
+    { name: "Renault", logo: "/car-brands/renault.png" },
     { name: "Nissan", logo: "/car-brands/nisaan.png" },
 ];

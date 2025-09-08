@@ -2,29 +2,32 @@
 import Image from "next/image";
 
 function BottomAd() {
-    return (
+  return (
+    <div className="bg-[#B3B3B3] dark:bg-[#262626] py-4 flex justify-center items-center">
+      
+      {/* Desktop / Tablet Ad */}
+      <div className="hidden sm:block w-full lg:max-w-[1600px] mx-auto relative aspect-[1600/346] ">
+        <Image
+          src="/ads/ad1.png"
+          alt="ad1"
+          fill
+          className="object-contain" 
+          priority
+        />
+      </div>
 
-        <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] px-6 lg:px-10 flex justify-center items-center'>
-
-            <div className="hidden sm:block w-full lg:max-w-[1600px] lg:h-[346px] sm:h-[200px] mx-auto relative">
-                <Image
-                    src={'/ads/ad1.png'}
-                    alt='ad1'
-                    fill
-                    className='object-cover'
-                />
-            </div>
-
-            <div className='block sm:hidden w-[293px] aspect-[800/500] relative'>
-                <Image
-                    src={'/ads/ad1.png'}
-                    alt='ad'
-                    fill
-                    className="object-cover"
-                />
-            </div>
-        </div>
-    );
+      {/* Mobile Ad */}
+      <div className="block sm:hidden w-[300px] relative aspect-[386/280]">
+        <Image
+          src="/upcoming/ad.png"
+          alt="ad mobile"
+          fill
+          className="object-contain"
+          priority
+        />
+      </div>
+    </div>
+  );
 }
 
 export default BottomAd;

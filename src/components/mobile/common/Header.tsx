@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiMenu, FiMapPin, FiSearch } from "react-icons/fi";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { IoChevronDownOutline } from "react-icons/io5";
 import MobileLoginModal from "./MobileLoginModal";
 import { usePathname, useRouter } from "next/navigation";
+import LocationDropdown from "@/components/web/header/LocationDropdown";
 
 const MobileHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,20 @@ const MobileHeader = () => {
   const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
   const path = usePathname();
+  const [dropdownTop, setDropdownTop] = useState<number>(45);
+  const fixedWrapStyle = { top: dropdownTop };
+  const [hoverTab, setHoverTab] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!headerRef.current) return;
+    const el = headerRef.current;
+    const setTop = () => setDropdownTop(el.getBoundingClientRect().height);
+    setTop();
+    const ro = new ResizeObserver(setTop);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const toggleTab = (tab: string) => {
     setOpenTab(openTab === tab ? null : tab);
@@ -100,7 +115,11 @@ const MobileHeader = () => {
               </div>
 
               {/* Right: Location + Login Icon */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4"
+                onClick={() =>
+                  setHoverTab(!hoverTab)
+                }
+              >
                 <div className="flex items-center gap-1 text-md">
                   <FiMapPin size={16} />
                   Visakhapatnam
@@ -209,6 +228,28 @@ const MobileHeader = () => {
               </div>
             </div>
           </header>
+
+          {hoverTab && (
+            <>
+              {/* backdrop */}
+              <div
+                className="fixed inset-0 z-[140]"
+                onClick={() => setHoverTab(false)}
+              />
+              {/* panel */}
+              <div
+                className="fixed inset-x-0 z-[150] px-0 lg:px-10 pointer-events-none"
+                style={fixedWrapStyle}
+              >
+                <div
+                  className="max-w-[1600px] mx-auto pointer-events-auto"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <LocationDropdown />
+                </div>
+              </div>
+            </>
+          )}
 
           {showLogin && <MobileLoginModal onClose={() => setShowLogin(false)} />}
         </>

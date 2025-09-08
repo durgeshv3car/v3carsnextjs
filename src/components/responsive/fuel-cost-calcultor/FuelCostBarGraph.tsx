@@ -21,7 +21,7 @@ export default function FuelCostBarGraph() {
   return (
     <div
       className="
-        p-4 mt-10
+        px-4 mt-10 lg:px-10
         bg-[var(--panel)]
         [--panel:#F6F6F6] dark:[--panel:#0f0f0f]
         [--axis:#1f2937] dark:[--axis:#e5e7eb]

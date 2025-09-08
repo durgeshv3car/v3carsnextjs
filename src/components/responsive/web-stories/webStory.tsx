@@ -109,7 +109,7 @@ const WebStoryCard: FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#495463] to-[#6b775b]">
-      <div className="relative w-full lg:w-[500px] h-screen rounded-none lg:rounded-2xl overflow-hidden shadow-xl">
+      <div className="relative w-full lg:w-[500px] aspect-[9/16] h-screen rounded-none lg:rounded-2xl overflow-hidden shadow-xl">
         {/* Progress Bars */}
         <div className="absolute top-2 left-2 right-2 flex gap-1 z-20">
           {stories.map((_, i) => (
@@ -206,12 +206,12 @@ const WebStoryCard: FC = () => {
         </div>
 
         {/* Image */}
-        <div className="relative w-full aspect-[9/16]">
+        <div className="relative h-screen bg-black">
           <Image
             src={story.image}
             alt="Web Story"
             fill
-            className="object-cover rounded-lg"
+            className="object-contain"
           />
         </div>
 

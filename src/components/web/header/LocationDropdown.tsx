@@ -17,7 +17,7 @@ const otherCities = [
 
 const LocationDropdown = () => {
   return (
-    <div className="max-w-[1600px] bg-white dark:bg-[#171717] my-1 mx-auto shadow-md z-50 rounded-xl">
+    <div className="w-full lg:max-w-[1600px] bg-white dark:bg-[#171717] my-1 mx-auto shadow-md z-50 rounded-xl">
       {/* Top Banner */}
       <div className="bg-[#ffe380] h-[80px] w-full flex items-center justify-between relative rounded-t-xl">
         <img
@@ -28,9 +28,9 @@ const LocationDropdown = () => {
       </div>
 
       {/* Content */}
-      <div className="flex p-6 gap-6">
+      <div className="flex flex-col lg:flex-row p-6 gap-6">
         {/* Left */}
-        <div className="w-[50%]">
+        <div className="w-full lg:w-[50%]">
           {/* City Dropdown + Detect Location */}
           <div className="flex gap-4 mb-6 items-center">
             <div className="flex items-center border dark:border-[#2E2E2E] rounded-lg px-4 py-2 gap-2 w-1/2 text-sm cursor-pointer">
@@ -48,7 +48,7 @@ const LocationDropdown = () => {
             <h3 className="text-xs font-semibold mb-3 border-l-4 border-yellow-400 pl-2">
               POPULAR CITIES
             </h3>
-            <div className="grid grid-cols-4 gap-4 max-h-[300px] overflow-y-auto pr-2 scrollbar-thin-yellow">
+            <div className="grid grid-cols-4 gap-4 max-h-[200px] lg:max-h-[300px] overflow-y-auto pr-2 scrollbar-thin-yellow">
               {popularCities.map((city, idx) => (
                 <div
                   key={idx}
@@ -69,16 +69,16 @@ const LocationDropdown = () => {
         </div>
 
         {/* Right */}
-        <div className="w-[50%]">
+        <div className="w-full lg:w-[50%]">
           <h3 className="text-xs font-semibold mb-3 border-l-4 border-yellow-400 pl-2">
             CONTINUE OTHER CITIES
           </h3>
 
-          <div className="grid grid-cols-4 gap-3 max-h-[350px] overflow-y-auto pr-2 scrollbar-thin-yellow">
+          <div className="grid grid-cols-4 gap-3 max-h-[200px] lg:max-h-[350px] overflow-y-auto pr-2 scrollbar-thin-yellow">
             {otherCities.map((city, idx) => (
               <button
                 key={idx}
-                className="bg-gray-100 dark:bg-[#171717] hover:bg-yellow-100 px-2 py-2 text-sm rounded border border-[#2E2E2E] flex items-center justify-center gap-2 transition duration-200 cursor-pointer"
+                className="bg-gray-100 dark:bg-[#171717] hover:bg-yellow-100 p-2 text-xs lg:text-sm rounded border border-[#2E2E2E] flex items-center justify-center gap-2 transition duration-200 cursor-pointer"
               >
                 {city}
               </button>

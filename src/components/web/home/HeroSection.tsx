@@ -98,12 +98,12 @@ const HeroSection: React.FC = () => {
                       key={tab}
                       onClick={() => setActiveTab(tab)}
                       className={`flex items-center justify-center gap-2 py-3 text-sm font-medium ${activeTab === tab
-                        ? 'bg-gray-200 dark:bg-[#2E2E2E] border-b-2 border-yellow-400'
-                        : 'bg-gray-100 dark:bg-[#171717]'
+                        ? 'bg-gray-200 dark:bg-black border-b-2 border-yellow-400'
+                        : 'bg-gray-100 dark:bg-[#2E2E2E]'
                         }`}
                     >
                       <span
-                        className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-[#2E2E2E]'
+                        className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-[#171717]'
                           }`}
                       >
                         <span

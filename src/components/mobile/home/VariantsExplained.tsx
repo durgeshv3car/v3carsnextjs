@@ -121,12 +121,6 @@ const MobileVariantsExplained = () => {
                     </div>
                 </div>
             </section>
-
-            <div className='h-[331px] md:h-[407px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center'>
-                <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'>
-
-                </div>
-            </div>
         </>
     )
 }

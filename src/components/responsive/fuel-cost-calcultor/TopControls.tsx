@@ -21,7 +21,7 @@ export default function TopControls({
   distanceValue: number; setDistanceValue: (v: number) => void;
 }) {
   return (
-    <div className="relative z-0 bg-white dark:bg-black">{/* ensure this stack is below header */}
+    <div className="relative z-0 bg-gray-100 dark:bg-black">{/* ensure this stack is below header */}
       {/* skyline */}
       <Image
         src="/fuel-cost-calculator/topbar.png"
@@ -45,7 +45,7 @@ export default function TopControls({
       {/* dark control strip */}
       <div className="absolute inset-x-0 bottom-0 z-10">
         <div className="w-full  text-white">
-          <div className="max-w-[1600px] mx-auto px-4 lg:px-0">
+          <div className="w-full lg:max-w-[1600px] mx-auto px-4 lg:px-10">
             {/* LEFT: Select Country block */}
             <div className="shrink-0 rounded-t-xl px-4 py-3 min-w-[240px] mr-4 bg-black dark:bg-[#171717] border dark:border-[#262626] w-[10%]">
               <div className="text-[13px] font-semibold">Select Country</div>
@@ -60,7 +60,7 @@ export default function TopControls({
             </div>
           </div>
 
-          <div className="w-full bg-[#0b0d10]">
+          <div className="w-full bg-[#171717] px-4 lg:px-10">
             <div className="max-w-[1600px] mx-auto px-4 flex items-stretch gap-0 lg:px-0 py-3 overflow-x-auto space-x-28">
               <div className="w-[10%]">
                 <div className="mt-3 text-[12px] text-[#ffd84d] font-semibold">Currency</div>
@@ -120,6 +120,7 @@ export default function TopControls({
               </div>
             </div>
           </div>
+          
         </div>
       </div>
     </div>
