@@ -121,7 +121,7 @@ const CarByType: React.FC = () => {
                                 <button
                                     onClick={() => scroll('left')}
                                     disabled={isAtStart}
-                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtStart ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtStart ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300'
                                         }`}
                                 >
                                     <svg
@@ -138,7 +138,7 @@ const CarByType: React.FC = () => {
                                 <button
                                     onClick={() => scroll('right')}
                                     disabled={isAtEnd}
-                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtEnd ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full hover:bg-gray-100 transition ${isAtEnd ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300'
                                         }`}
                                 >
                                     <svg

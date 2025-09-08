@@ -121,7 +121,7 @@ const QuickLook: React.FC = () => {
                                 <button
                                     onClick={() => scroll('left')}
                                     disabled={isAtStart}
-                                    className={`p-1 rounded-full transition ${isAtStart ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full transition ${isAtStart ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300'
                                         }`}
                                 >
                                     <svg
@@ -138,7 +138,7 @@ const QuickLook: React.FC = () => {
                                 <button
                                     onClick={() => scroll('right')}
                                     disabled={isAtEnd}
-                                    className={`p-1 rounded-full transition ${isAtEnd ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600'
+                                    className={`p-1 rounded-full transition ${isAtEnd ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300'
                                         }`}
                                 >
                                     <svg
