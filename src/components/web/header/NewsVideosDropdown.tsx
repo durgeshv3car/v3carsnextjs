@@ -10,7 +10,7 @@ const NewsVideosDropdown = () => {
             desc: "Stay updated with the latest automotive news.",
             links: [
                 { text: "Latest News", url: "/news" },
-                { text: "Auto Expo", url: "/news/auto-expo" },
+                { text: "Auto Expo", url: "/auto-expo" },
                 { text: "Press Release", url: "/latest-press-release" }
             ],
         },
@@ -61,7 +61,7 @@ const NewsVideosDropdown = () => {
                                 {section.links.map((text, i) => (
                                     <li
                                         key={i}
-                                        className="group flex items-center gap-2 hover:underline cursor-pointer py-2 border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0 hover:text-yellow-400 w-fit"
+                                        className="group flex items-center gap-2 cursor-pointer py-2 border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0 w-fit hover:text-yellow-400"
                                     >
                                         <Image
                                             src="/common/v3icon.svg"

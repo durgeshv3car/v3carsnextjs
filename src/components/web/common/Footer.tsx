@@ -89,10 +89,10 @@ const Footer: React.FC = () => {
                     <ul className="text-sm">
                       {items.map((item, index) => (
                         <React.Fragment key={index}>
-                          <li className="group flex gap-2 items-center py-3 hover:underline hover:text-yellow-400 w-fit">
+                          <li className="group flex gap-2 items-center py-3 hover:text-yellow-400 w-fit">
                             {/* normal image */}
                             <Image
-                              src="/common/v3.png"
+                              src="/common/v3icon.svg"
                               alt="v3-icon"
                               width={16}
                               height={16}
@@ -124,10 +124,10 @@ const Footer: React.FC = () => {
                     <ul className="text-sm">
                       {tools.map((tool, index) => (
                         <React.Fragment key={index}>
-                          <li className="group flex gap-2 items-center py-3 hover:underline hover:text-yellow-400 w-fit">
+                          <li className="group flex gap-2 items-center py-3 w-fit hover:text-yellow-400">
                             {/* normal image */}
                             <Image
-                              src="/common/v3.png"
+                              src="/common/v3icon.svg"
                               alt="v3-icon"
                               width={16}
                               height={16}
