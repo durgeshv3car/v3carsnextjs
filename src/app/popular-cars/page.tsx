@@ -183,11 +183,20 @@ function PopularCars() {
                         <div className="w-auto lg:max-w-[74%]">
                             <PopularCar />
 
-                            <div className='mb-4'>
-                                <h2 className="text-lg font-medium my-6">Hottest Cars In India 2024</h2>
+                            <div className="mb-4">
+                                <h2 className="text-lg font-medium my-6">
+                                    Hottest Cars In India 2024
+                                </h2>
 
-                                <div className='p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl'>
-                                    <p className='mb-2'>Discover India&apos;s Most-Loved Cars! This section dives into user interest on the V3Cars platform, showcasing the top 30 cars capturing hearts and minds. Go beyond just sales figures and explore the vehicles generating the most buzz! We provide detailed information on each car, including price, specifications, and mileage. Find the car that ignites your passion and explore your options with confidence.</p>
+                                <div className="p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
+                                    <p className="mb-2">
+                                        Discover India&apos;s Most-Loved Cars! This section dives into user
+                                        interest on the V3Cars platform, showcasing the top 30 cars capturing
+                                        hearts and minds. Go beyond just sales figures and explore the
+                                        vehicles generating the most buzz! We provide detailed information on
+                                        each car, including price, specifications, and mileage. Find the car
+                                        that ignites your passion and explore your options with confidence.
+                                    </p>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                         <CurrentOffersCard carsData={carsData} />
@@ -212,9 +221,10 @@ function PopularCars() {
                                 view="Car Videos"
                                 videoList={videoList}
                             />
-
                         </div>
-                        <div className="w-auto lg:max-w-[24%] space-y-10">
+
+                        {/* sidebar */}
+                        <div className="w-auto lg:max-w-[24%] space-y-10 sticky top-20 self-start">
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
                             <SideBarAdSmall />
@@ -222,6 +232,7 @@ function PopularCars() {
                             <SideBarAdLong />
                         </div>
                     </div>
+
                 </div>
             </div>
 

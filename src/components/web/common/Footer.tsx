@@ -89,17 +89,25 @@ const Footer: React.FC = () => {
                     <ul className="text-sm">
                       {items.map((item, index) => (
                         <React.Fragment key={index}>
-                          <li className="flex gap-2 items-center py-3 hover:underline hover:text-yellow-400 w-fit">
+                          <li className="group flex gap-2 items-center py-3 hover:underline hover:text-yellow-400 w-fit">
+                            {/* normal image */}
                             <Image
                               src="/common/v3.png"
                               alt="v3-icon"
                               width={16}
                               height={16}
-                              className="dark:invert brightness-0"
+                              className="dark:invert brightness-0 group-hover:hidden"
                             />
-                            <Link href={item.href}>
-                              {item.label}
-                            </Link>
+
+                            {/* hover image */}
+                            <Image
+                              src="/common/v3.png"
+                              alt="v3-icon-yellow"
+                              width={16}
+                              height={16}
+                              className="hidden group-hover:block"
+                            />
+                            <Link href={item.href}>{item.label}</Link>
                           </li>
                           <div className="h-0.5 w-full rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:from-transparent dark:via-[#262629] dark:to-transparent" />
                         </React.Fragment>
@@ -116,17 +124,25 @@ const Footer: React.FC = () => {
                     <ul className="text-sm">
                       {tools.map((tool, index) => (
                         <React.Fragment key={index}>
-                          <li className="flex gap-2 items-center py-3 hover:underline hover:text-yellow-400 w-fit">
+                          <li className="group flex gap-2 items-center py-3 hover:underline hover:text-yellow-400 w-fit">
+                            {/* normal image */}
                             <Image
                               src="/common/v3.png"
                               alt="v3-icon"
                               width={16}
                               height={16}
-                              className="dark:invert brightness-0"
+                              className="dark:invert brightness-0 group-hover:hidden"
                             />
-                            <Link href={tool.href} className="hover:underline">
-                              {tool.label}
-                            </Link>
+
+                            {/* hover image */}
+                            <Image
+                              src="/common/v3.png"
+                              alt="v3-icon-yellow"
+                              width={16}
+                              height={16}
+                              className="hidden group-hover:block"
+                            />
+                            <Link href={tool.href}>{tool.label}</Link>
                           </li>
                           <div className="h-0.5 w-full rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:from-transparent dark:via-[#262629] dark:to-transparent" />
                         </React.Fragment>
