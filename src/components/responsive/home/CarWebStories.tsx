@@ -3,6 +3,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import WebStoryCard from '../web-stories/webStory'
 
 type Story = {
     id: number
@@ -68,6 +70,8 @@ const stories: Story[] = [
 
 const CarWebStories: React.FC = () => {
     const router = useRouter()
+    const [openStory, setOpenStory] = useState(false);
+
     return (
         <>
             <div className="py-6 px-6 lg:px-10">
@@ -103,7 +107,7 @@ const CarWebStories: React.FC = () => {
                                 {/* Top-right mute icon */}
                                 <div
                                     className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-10 h-10 cursor-pointer"
-                                    onClick={() => router.push("/web-stories")}
+                                    onClick={() => setOpenStory(true)}
                                 >
                                     <Image
                                         src="/web-stories/mobile.png"
@@ -125,6 +129,12 @@ const CarWebStories: React.FC = () => {
 
                 </div>
             </div>
+
+            {openStory && (
+                <div className="fixed inset-0 z-[999] bg-gradient-to-br from-[#495463] to-[#6b775b] flex items-center justify-center" onClick={() => setOpenStory(false)}>
+                    <WebStoryCard onClose={() => setOpenStory(false)} openStory={openStory} />
+                </div>
+            )}
         </>
     )
 }

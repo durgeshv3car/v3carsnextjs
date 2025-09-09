@@ -108,22 +108,39 @@ const UpcomingCarInIndia: React.FC = () => {
                                 </svg>
                             </Link>
                         </div>
-                        <div className="hidden lg:block space-x-3">
+
+                        <div className="hidden lg:flex items-center space-x-1">
                             <button
                                 onClick={() => scroll('left')}
                                 disabled={isAtStart}
-                                className={`${isAtStart ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtStart ? 'cursor-not-allowed' : ''
+                                    }`}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="size-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className=" size-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                >
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                                 </svg>
                             </button>
                             <button
                                 onClick={() => scroll('right')}
                                 disabled={isAtEnd}
-                                className={`${isAtEnd ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtEnd ? 'cursor-not-allowed' : ''
+                                    }`}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="size-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="size-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                >
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                 </svg>
                             </button>

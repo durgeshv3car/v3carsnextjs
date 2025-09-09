@@ -84,6 +84,20 @@ const MobileHeader = () => {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (hoverTab) {
+      // Disable scroll
+      document.body.style.overflow = "hidden";
+    } else {
+      // Enable scroll
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [hoverTab]);
+
   return (
     <>
       {path !== "/web-stories" && (
@@ -235,6 +249,7 @@ const MobileHeader = () => {
               <div
                 className="fixed inset-0 z-[140]"
                 onClick={() => setHoverTab(false)}
+                onWheel={() => setHoverTab(false)}
               />
               {/* panel */}
               <div
@@ -244,6 +259,7 @@ const MobileHeader = () => {
                 <div
                   className="max-w-[1600px] mx-auto pointer-events-auto"
                   onClick={(e) => e.stopPropagation()}
+                  onWheel={(e) => e.stopPropagation()}
                 >
                   <LocationDropdown />
                 </div>

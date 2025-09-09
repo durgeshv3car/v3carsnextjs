@@ -90,7 +90,7 @@ export default function TopCarBrands() {
                                     alt={brand.name}
                                     fill
                                     sizes="(max-width: 768px) 143px, 260px"
-                                    className="p-3 object-contain"
+                                    className="px-2 object-contain"
                                     placeholder="blur"
                                     blurDataURL="/images/placeholder.png"
                                 />
@@ -109,7 +109,7 @@ export default function TopCarBrands() {
                                     alt={brand.name}
                                     fill
                                     sizes="(max-width: 768px) 143px, 260px"
-                                    className="p-3 object-contain"
+                                    className="px-2 object-contain"
                                     placeholder="blur"
                                     blurDataURL="/images/placeholder.png"
                                 />

@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
                     <ul className="text-sm">
                       {items.map((item, index) => (
                         <React.Fragment key={index}>
-                          <li className="flex gap-2 items-center py-3">
+                          <li className="flex gap-2 items-center py-3 hover:underline hover:text-yellow-400 w-fit">
                             <Image
                               src="/common/v3.png"
                               alt="v3-icon"
@@ -97,7 +97,7 @@ const Footer: React.FC = () => {
                               height={16}
                               className="dark:invert brightness-0"
                             />
-                            <Link href={item.href} className="hover:underline">
+                            <Link href={item.href}>
                               {item.label}
                             </Link>
                           </li>
@@ -116,7 +116,7 @@ const Footer: React.FC = () => {
                     <ul className="text-sm">
                       {tools.map((tool, index) => (
                         <React.Fragment key={index}>
-                          <li className="flex gap-2 items-center py-3">
+                          <li className="flex gap-2 items-center py-3 hover:underline hover:text-yellow-400 w-fit">
                             <Image
                               src="/common/v3.png"
                               alt="v3-icon"
