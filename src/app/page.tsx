@@ -28,7 +28,9 @@ export default function Home() {
       <CategorySection />
       <BottomAd />
       <div className="bg-gradient-to-l from-[#495057] to-[#343A40] dark:from-[#27272a] dark:to-[#18181b] ">
-        <UpcomingCarInIndia />
+        <UpcomingCarInIndia
+          title={"158+ Upcoming Cars In India"}
+        />
       </div>
       {isMobile ? <MobileLatestCarNews /> : <CommonLatestCarNews />}
       <QuickLook />

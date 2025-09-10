@@ -99,7 +99,9 @@ function CarOnRoadPrice() {
 
             {isMobile ? <MobileLatestCarNews /> : <CommonLatestCarNews />}
 
-            <UpcomingCarInIndia />
+            <UpcomingCarInIndia
+                title={"Upcoming Car News"}
+            />
 
             <div className="px-4 lg:px-10 py-6">
                 <div className="w-full lg:max-w-[1600px] mx-auto">

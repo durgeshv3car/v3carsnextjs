@@ -89,17 +89,19 @@ export default function Page() {
                 setDistanceValue={setDistanceValue}
             />
 
-            <div className="max-w-[1600px] mx-auto px-4 lg:px-10">
-                <FuelCostTable
-                    currency={currency}
-                    distanceUnit={distanceUnit}
-                    period={period}
-                    distanceValue={distanceValue}
-                    prices={prices}
-                    setPrices={setPrices}
-                    efficiencies={eff}
-                    setEfficiencies={setEff}
-                />
+            <div className='px-4 lg:px-10'>
+                <div className='max-w-[1600px] mx-auto'>
+                    <FuelCostTable
+                        currency={currency}
+                        distanceUnit={distanceUnit}
+                        period={period}
+                        distanceValue={distanceValue}
+                        prices={prices}
+                        setPrices={setPrices}
+                        efficiencies={eff}
+                        setEfficiencies={setEff}
+                    />
+                </div>
             </div>
 
             <FuelCostInfoBlock />

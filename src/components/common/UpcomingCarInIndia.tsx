@@ -51,7 +51,11 @@ const confidenceColor = (confidence: number): string => {
     return "bg-red-500"
 }
 
-const UpcomingCarInIndia: React.FC = () => {
+interface UpcomingCarInIndiaProps {
+    title: string
+}
+
+const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
@@ -91,18 +95,11 @@ const UpcomingCarInIndia: React.FC = () => {
                 <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
                     <div className="flex items-center justify-between border-b pb-4 border-[#495057] dark:border-[#2E2E2E]">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
-                            {
-                                path === '/car-on-road-price' ?
-                                    <h2 className="text-xl font-semibold">
-                                        Upcoming Cars In India
-                                    </h2>
-                                    :
-                                    <h2 className="text-lg font-medium text-white">
-                                        158+ Upcoming Cars In India
-                                    </h2>
-                            }
+                            <h2 className="text-lg font-medium">
+                                {title}
+                            </h2>
                             <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
-                                View All Upcoming Cars
+                                View All {title}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                 </svg>

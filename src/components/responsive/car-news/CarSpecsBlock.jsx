@@ -90,7 +90,7 @@ export default function CarSpecsBlock() {
                 <div className="rounded-xl border border-gray-200 dark:border-[#2E2E2E] overflow-hidden mb-5">
 
                     {/* Table Header */}
-                    <div className="bg-[#F5F5F5] dark:bg-[#171717] text-center py-3 px-2 border-b border-gray-200 dark:border-[#2E2E2E]">
+                    <div className="bg-[#F5F5F5] dark:bg-[#363131] text-center py-3 px-2 border-b border-gray-200 dark:border-[#2E2E2E]">
                         <h3 className="text-[16px] font-bold ">2024 MAHINDRA THAR</h3>
                         <p className="text-xs  uppercase tracking-wide">Powertrain-Wise Mileage (ARAI)</p>
                     </div>
@@ -145,7 +145,7 @@ export default function CarSpecsBlock() {
                     </p>
 
                     {/* Scrollable Table Wrapper */}
-                    <div className="bg-[#F8F8F8] dark:bg-[#171717] rounded-xl overflow-hidden border border-gray-200 dark:border-[#2E2E2E]">
+                    <div className="bg-[#F8F8F8] dark:bg-[#363131] rounded-xl overflow-hidden border border-gray-200 dark:border-[#2E2E2E]">
                         {/* Table Header */}
                         <div className="border-b border-gray-300 dark:border-[#2E2E2E] text-center py-3 px-2">
                             <h3 className="text-[16px] font-bold ">2024 MAHINDRA THAR</h3>
