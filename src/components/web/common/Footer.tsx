@@ -14,6 +14,7 @@ import { PiWhatsappLogoThin } from "react-icons/pi";
 import { RiTwitterXFill } from "react-icons/ri";
 import { SiGooglenews } from "react-icons/si";
 import { usePathname } from "next/navigation";
+import Tooltip from "@/components/common/ToolTip";
 
 const tools = [
   { label: "Compare Cars", href: "/compare-cars" },
@@ -171,13 +172,76 @@ const Footer: React.FC = () => {
 
                     <h4 className="font-semibold mb-4">Connect With Us</h4>
                     <div className="flex flex-wrap justify-center items-center space-x-1 xl:space-x-2">
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaYoutube size={20} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaFacebookF size={20} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaInstagram size={20} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaLinkedinIn size={20} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><RiTwitterXFill size={20} /></Link>
-                      <Link href="#"><PiWhatsappLogoThin size={45} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><SiGooglenews size={20} /></Link>
+                      <Tooltip label="Youtube" side="top">
+                        <Link
+                          href="https://www.youtube.com/c/V3cars-Official"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-[#FF0000] hover:text-white transition-colors duration-300"
+                        >
+                          <FaYoutube size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="Facebook" side="top">
+                        <Link
+                          href="https://www.facebook.com/V3cars/"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-[#1877F2] hover:text-white transition-colors duration-300"
+                        >
+                          <FaFacebookF size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="Instagram" side="top">
+                        <Link
+                          href="https://www.instagram.com/v3cars/"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                          hover:bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 hover:text-white transition-colors duration-300"
+                        >
+                          <FaInstagram size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="LinkedIn" side="top">
+                        <Link
+                          href="https://www.linkedin.com/company/v3cars/"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-[#0A66C2] hover:text-white transition-colors duration-300"
+                        >
+                          <FaLinkedinIn size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="TwitterX" side="top">
+                        <Link
+                          href="https://x.com/v3cars"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-black hover:text-white transition-colors duration-300"
+                        >
+                          <RiTwitterXFill size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="Whatsapp" side="top">
+                        <Link
+                          href="#"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-[#25D366] hover:text-white transition-colors duration-300"
+                        >
+                          <PiWhatsappLogoThin size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="Google News" side="top">
+                        <Link
+                          href="#"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                          hover:bg-[#34A853] hover:text-white transition-colors duration-300"
+                        >
+                          <SiGooglenews size={20} />
+                        </Link>
+                      </Tooltip>
+
                     </div>
                   </div>
 

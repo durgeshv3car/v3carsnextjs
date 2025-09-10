@@ -120,9 +120,8 @@ const Header = () => {
                         className="w-full z-[200] lg:px-4 xl:px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]"
                     >
                         <div className="max-w-[1600px] mx-auto py-3 flex items-center justify-between">
-                            {/* Logo */}
                             <div
-                                className="flex items-center cursor-pointer gap-2"
+                                className="flex items-center cursor-pointer gap-2 transform transition-transform duration-300 hover:scale-105"
                                 onClick={() => router.push("/")}
                             >
                                 <Image
@@ -133,6 +132,7 @@ const Header = () => {
                                     priority
                                     className="block dark:hidden"
                                 />
+                                
                                 <Image
                                     src="/logo/header/v3-white2.png"
                                     alt="V3 Cars Logo Dark"
