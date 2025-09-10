@@ -101,7 +101,8 @@ const CarWebStories: React.FC = () => {
                                     fill
                                     priority={false}
                                     sizes="(max-width: 768px) 100vw, 270px"
-                                    className="object-contain"
+                                    className="object-contain cursor-pointer"
+                                    onClick={() => setOpenStory(true)}
                                 />
 
                                 {/* Top-right mute icon */}
