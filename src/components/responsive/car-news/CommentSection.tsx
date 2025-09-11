@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa6";
 import { HiOutlineDotsVertical, HiChevronDown } from "react-icons/hi";
 import { FaUserCheck } from "react-icons/fa";
+import { IoShareSocialOutline } from "react-icons/io5";
 
 interface Reply {
   id: number;
@@ -107,7 +108,7 @@ export default function CommentSection() {
         ))}
         </div>
         <span className="w-12 h-12 rounded-full bg-white dark:bg-[#171717] flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80">
-          <HiOutlineDotsVertical className="" />
+          <IoShareSocialOutline className="" />
         </span>
       </div>
 

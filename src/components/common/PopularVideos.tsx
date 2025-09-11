@@ -22,7 +22,7 @@ const videos: Video[] = [
 
 const PopularVideos = () => {
     return (
-        <div className="border border-gray-300 dark:border-[#262626] rounded-xl shadow-sm overflow-hidden">
+        <div className="border border-gray-300 dark:border-[#262626] rounded-xl shadow-sm w-full">
             {/* Header */}
             <div className="bg-[#DEE2E6] dark:bg-[#27272a] text-lg font-semibold p-4 rounded-t-xl">
                 Popular Videos

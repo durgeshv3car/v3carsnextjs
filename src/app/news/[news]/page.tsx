@@ -10,6 +10,8 @@ import CommonVideos from '@/components/common/CommonVideos';
 import BottomAd from '@/components/common/BottomAd';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
 import UpcomingCarInIndia from '@/components/common/UpcomingCarInIndia';
+import RecentVideos from '@/components/common/RecentVideo';
+import LeaderboardAd from '@/components/common/LeaderboardAd';
 
 const newsList = [
   {
@@ -135,9 +137,7 @@ export default function Page() {
           <div className="w-auto lg:max-w-[74%]">
             <CarSpecsBlock />
 
-            <div className="hidden lg:block my-6">
-              <BottomAd />
-            </div>
+            <LeaderboardAd />
 
             <CommentSection />
 
@@ -165,13 +165,17 @@ export default function Page() {
               <UpcomingCarInIndia
                 title={"Upcoming Cars In India"}
               />
+
             </div>
           </div>
 
           {/* sidebar */}
-          <div className="w-auto lg:max-w-[24%] space-y-6 sticky top-20 self-start h-fit flex flex-col items-center">
+          <div className="w-auto lg:max-w-[24%] space-y-6 flex flex-col items-center">
             <SideBarAdSmall />
             <UpcomingCarByTopBrands />
+            <SideBarAdSmall />
+            <RecentVideos />
+            <SideBarAdSmall />
             <PopularNews />
             <SideBarAdSmall />
           </div>

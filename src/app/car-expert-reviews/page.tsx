@@ -1,4 +1,5 @@
 import BottomAd from "@/components/common/BottomAd";
+import LeaderboardAd from "@/components/common/LeaderboardAd";
 import PopularVideos from "@/components/common/PopularVideos";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
@@ -26,8 +27,9 @@ export const metadata: Metadata = {
 function CarExpertReviews() {
     return (
         <>
-            <div className='bg-[#18181b] text-white'>
-                <div className='px-4 xl:px-10'>
+            {/* Breadcrumb */}
+            <div className="bg-[#18181b] text-white">
+                <div className="px-4 xl:px-10">
                     <div className="w-full lg:max-w-[1600px] mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
                         <span className="text-yellow-500">›</span>
@@ -38,27 +40,33 @@ function CarExpertReviews() {
                 </div>
             </div>
 
-            <div className="px-4 xl:px-10">
+            {/* Content */}
+            <div className="lg:px-10 px-4">
                 <div className="w-full lg:max-w-[1600px] mx-auto pb-6">
-                    <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
+                    <div className="flex flex-col lg:flex-row justify-between w-full">
 
-                        <div className="hidden lg:block w-auto lg:max-w-[74%] space-y-6">
-                            <LatestExpertReview />
+                        {/* Left Content */}
+                        <div className="w-auto lg:max-w-[75%]">
+                            <div className="hidden lg:block space-y-6">
+                                <LatestExpertReview />
 
-                            <BottomAd />
+                                <LeaderboardAd />
 
-                            <TrendingComparisonReviews />
+                                <TrendingComparisonReviews />
 
-                            <BottomAd />
+                                <LeaderboardAd />
 
-                            <TopComparisonReviews />
+                                <TopComparisonReviews />
+                            </div>
+
+                            {/* Mobile View */}
+                            <div className="lg:hidden">
+                                <CarExpertReview />
+                            </div>
                         </div>
 
-                        <div className="lg:hidden">
-                            <CarExpertReview />
-                        </div>
-
-                        <div className="w-auto lg:max-w-[24%] lg:mt-12 space-y-10">
+                        {/* Sidebar */}
+                        <div className="w-auto lg:max-w-[22%] space-y-6 mt-6 flex flex-col items-center">
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
                             <PopularVideos />

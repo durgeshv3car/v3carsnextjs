@@ -28,11 +28,21 @@ export default function Home() {
       <CategorySection />
       <BottomAd />
       <div className="bg-gradient-to-l from-[#495057] to-[#343A40] dark:from-[#27272a] dark:to-[#18181b] ">
-        <UpcomingCarInIndia
-          title={"158+ Upcoming Cars In India"}
-        />
+        <div className="py-6 px-4 lg:px-10">
+          <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
+            <UpcomingCarInIndia
+              title={"158+ Upcoming Cars In India"}
+            />
+          </div>
+        </div>
       </div>
-      {isMobile ? <MobileLatestCarNews /> : <CommonLatestCarNews />}
+      {isMobile ? <MobileLatestCarNews /> :
+        <div className="py-6 px-4 lg:px-10">
+          <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
+            <CommonLatestCarNews />
+          </div>
+        </div>
+      }
       <QuickLook />
       <CarByType />
       <div className="block lg:hidden">

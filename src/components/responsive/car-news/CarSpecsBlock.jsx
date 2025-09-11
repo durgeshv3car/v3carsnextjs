@@ -1,3 +1,5 @@
+import BottomAd from "@/components/common/BottomAd";
+import LeaderboardAd from "@/components/common/LeaderboardAd";
 import Image from "next/image";
 import {
     FaFacebookF,
@@ -5,6 +7,7 @@ import {
     FaLinkedinIn,
     FaWhatsapp,
 } from "react-icons/fa6";
+import { IoShareSocialOutline } from "react-icons/io5";
 
 export default function CarSpecsBlock() {
     return (
@@ -53,8 +56,11 @@ export default function CarSpecsBlock() {
                 <div className="md:block hidden space-y-3">
 
                     {/* Title */}
-                    <h1 className="text-[22px] md:text-[24px] font-bold  leading-snug mb-2">
+                    <h1 className="text-[22px] md:text-[24px] font-bold  leading-snug mb-2 w-full flex items-center justify-between">
                         MG Hector Plus Price Increased By Up To Rs. 30,000 - Latest
+                        <span>
+                            <IoShareSocialOutline className="cursor-pointer" />
+                        </span>
                     </h1>
 
                     {/* Meta Info */}
@@ -70,6 +76,8 @@ export default function CarSpecsBlock() {
                 </div>
 
             </div>
+
+            <LeaderboardAd />
 
             <div className="p-4 lg:p-0">
 
@@ -111,7 +119,7 @@ export default function CarSpecsBlock() {
                                 <td className="p-4 ">NA</td>
                             </tr>
                         </tbody>
-                    </table>    
+                    </table>
 
                     {/* Mobile Card View */}
                     <div className="md:hidden divide-y divide-gray-200 bg-white dark:bg-[#27272a]">
@@ -218,7 +226,7 @@ export default function CarSpecsBlock() {
                 </div>
 
             </div>
-            
+
         </div>
     );
 }

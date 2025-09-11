@@ -99,106 +99,104 @@ const CommonLatestCarNews: React.FC = () => {
     }, [])
 
     return (
-        <section className="py-6 px-4 lg:px-10">
-            <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center justify-between w-full lg:w-auto gap-4">
-                        <h2 className="text-lg font-medium">Latest Car News</h2>
-                        <Link
-                            href="#"
-                            className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+        <section>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between w-full lg:w-auto gap-4">
+                    <h2 className="text-lg font-medium">Latest Car News</h2>
+                    <Link
+                        href="#"
+                        className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                    >
+                        View All Latest Car News
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="size-4"
                         >
-                            View All Latest Car News
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                                stroke="currentColor"
-                                className="size-4"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                            </svg>
-                        </Link>
-                    </div>
-                    <div className="hidden lg:flex items-center space-x-1">
-                        <button
-                            onClick={() => scroll('left')}
-                            disabled={isAtStart}
-                            className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtStart ? 'cursor-not-allowed' : ''
-                                }`}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className=" size-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                                stroke="currentColor"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                            </svg>
-                        </button>
-                        <button
-                            onClick={() => scroll('right')}
-                            disabled={isAtEnd}
-                            className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtEnd ? 'cursor-not-allowed' : ''
-                                }`}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="size-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                                stroke="currentColor"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                            </svg>
-                        </button>
-                    </div>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </Link>
                 </div>
-
-                <div className="flex space-x-4 overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
-                    {newsList.map((item) => (
-                        <div
-                            key={item.id}
-                            className="bg-slate-50 dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg min-w-[520px] min-h-[495px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
+                <div className="hidden lg:flex items-center space-x-1">
+                    <button
+                        onClick={() => scroll('left')}
+                        disabled={isAtStart}
+                        className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtStart ? 'cursor-not-allowed' : ''
+                            }`}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className=" size-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
                         >
-                            {/* Fixed height image */}
-                            <div className="relative h-[310px] w-full">
-                                <Image
-                                    src={item.image}
-                                    alt={item.heading || "news"}
-                                    width={600}         // estimated width
-                                    height={310}        // estimated height
-                                    className="rounded-xl object-cover"
-                                />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                    <button
+                        onClick={() => scroll('right')}
+                        disabled={isAtEnd}
+                        className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtEnd ? 'cursor-not-allowed' : ''
+                            }`}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="size-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-                                {/* Gradient Overlay + Text */}
-                                <div className="absolute bottom-0 w-full px-4 pt-16 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/90 to-transparent">
-                                    <h3 className="text-lg line-clamp-2">{item.heading}</h3>
-                                </div>
+            <div className="flex space-x-4 overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
+                {newsList.map((item) => (
+                    <div
+                        key={item.id}
+                        className="bg-slate-50 dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg min-w-[520px] min-h-[495px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
+                    >
+                        {/* Fixed height image */}
+                        <div className="relative h-[310px] w-full">
+                            <Image
+                                src={item.image}
+                                alt={item.heading || "news"}
+                                width={600}         // estimated width
+                                height={310}        // estimated height
+                                className="rounded-xl object-cover"
+                            />
+
+                            {/* Gradient Overlay + Text */}
+                            <div className="absolute bottom-0 w-full px-4 pt-16 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/90 to-transparent">
+                                <h3 className="text-lg line-clamp-2">{item.heading}</h3>
                             </div>
+                        </div>
 
 
-                            {/* Fills the remaining space */}
-                            <div className="flex flex-col flex-grow space-y-4">
-                                <p className="line-clamp-3 text-sm/8">{item.description}</p>
-                                <div className="flex justify-between items-center text-xs text-gray-500">
-                                    <div className="flex items-center gap-1">
-                                        <FaUserEdit size={16} />
-                                        <span>{item.author}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <CiCalendarDate size={16} />
-                                        <span>{item.date}</span>
-                                    </div>
+                        {/* Fills the remaining space */}
+                        <div className="flex flex-col flex-grow space-y-4">
+                            <p className="line-clamp-3 text-sm/8">{item.description}</p>
+                            <div className="flex justify-between items-center text-xs text-gray-500">
+                                <div className="flex items-center gap-1">
+                                    <FaUserEdit size={16} />
+                                    <span>{item.author}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <CiCalendarDate size={16} />
+                                    <span>{item.date}</span>
                                 </div>
                             </div>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
         </section>
     )
