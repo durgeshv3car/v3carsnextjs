@@ -77,9 +77,9 @@ export default function TopCarBrands() {
                 {/* 2-row horizontal scroll */}
                 <div
                     ref={scrollRef}
-                    className="mt-4 overflow-x-auto scroll-smooth scrollbar-hide flex flex-col gap-2"
+                    className="mt-4 overflow-x-auto overflow-y-hidden scroll-smooth scrollbar-hide flex flex-col gap-4"
                 >
-                    <div className="flex gap-2">
+                    <div className="flex gap-4">
                         {list1.map((brand, i) => (
                             <div
                                 key={`list1-${i}`}
@@ -90,7 +90,7 @@ export default function TopCarBrands() {
                                     alt={brand.name}
                                     fill
                                     sizes="(max-width: 768px) 143px, 260px"
-                                    className="p-3 object-contain"
+                                    className="p-4 object-contain transition-transform duration-300 ease-in-out transform hover:scale-110 cursor-pointer"
                                     placeholder="blur"
                                     blurDataURL="/images/placeholder.png"
                                 />
@@ -98,10 +98,10 @@ export default function TopCarBrands() {
                         ))}
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-4">
                         {list2.map((brand, i) => (
                             <div
-                                key={`list1-${i}`}
+                                key={`list2-${i}`}
                                 className="relative min-w-[143px] h-[88px] lg:w-[260px] lg:h-[160px] bg-white flex items-center justify-center overflow-hidden"
                             >
                                 <Image
@@ -109,13 +109,14 @@ export default function TopCarBrands() {
                                     alt={brand.name}
                                     fill
                                     sizes="(max-width: 768px) 143px, 260px"
-                                    className="p-3 object-contain"
+                                    className="p-4 object-contain transition-transform duration-300 ease-in-out transform hover:scale-110 cursor-pointer"
                                     placeholder="blur"
                                     blurDataURL="/images/placeholder.png"
                                 />
                             </div>
                         ))}
                     </div>
+
                 </div>
 
                 <div className="mt-10 flex flex-col-reverse md:flex-row items-center justify-between gap-10">

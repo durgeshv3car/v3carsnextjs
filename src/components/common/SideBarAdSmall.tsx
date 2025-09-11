@@ -2,10 +2,10 @@ import Image from "next/image";
 
 function SideBarAdSmall() {
     return (
-        <div className="w-[300px] relative aspect-[386/280]">
+        <div className="w-[300px] h-[250px] relative">
             <Image
                 src="/upcoming/ad.png"
-                alt="ad mobile"
+                alt="Ad"
                 fill
                 className="object-contain"
                 priority

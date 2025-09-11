@@ -10,7 +10,7 @@ const NewsVideosDropdown = () => {
             desc: "Stay updated with the latest automotive news.",
             links: [
                 { text: "Latest News", url: "/news" },
-                { text: "Auto Expo", url: "/news/auto-expo" },
+                { text: "Auto Expo", url: "/auto-expo" },
                 { text: "Press Release", url: "/latest-press-release" }
             ],
         },
@@ -61,14 +61,22 @@ const NewsVideosDropdown = () => {
                                 {section.links.map((text, i) => (
                                     <li
                                         key={i}
-                                        className="flex items-center gap-2 hover:underline cursor-pointer py-2 border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0"
+                                        className="group flex items-center gap-2 cursor-pointer py-2 border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0 w-fit hover:text-yellow-400"
                                     >
                                         <Image
                                             src="/common/v3icon.svg"
                                             alt="icon"
                                             width={16}
                                             height={16}
-                                            className="mt-[2px] dark:invert"
+                                            className=" dark:invert group-hover:hidden"
+                                        />
+
+                                        <Image
+                                            src="/common/v3.png"
+                                            alt="v3-icon-yellow"
+                                            width={16}
+                                            height={16}
+                                            className="hidden group-hover:block"
                                         />
                                         <Link href={text.url}>{text.text}</Link>
                                     </li>

@@ -92,7 +92,7 @@ const CarByPrice: React.FC = () => {
                     <div className="flex items-center w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-semibold lg:font-medium">Search Car By Price</h2>
                         <Link href="#" className="text-[#FFCC00] font-medium text-xs lg:text-sm hover:underline flex gap-2 items-center">
-                            View All Cars {activeTab} 
+                            View All Cars {activeTab}
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                             </svg>
@@ -116,16 +116,16 @@ const CarByPrice: React.FC = () => {
                             </div>
 
                             {/* Scroll buttons */}
-                            <div className="hidden lg:flex items-center gap-2">
+                            <div className="hidden lg:flex items-center space-x-1">
                                 <button
                                     onClick={() => scroll('left')}
                                     disabled={isAtStart}
-                                    className={`p-1 rounded-full transition ${isAtStart ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300'
+                                    className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtStart ? 'cursor-not-allowed' : ''
                                         }`}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="w-5 h-5"
+                                        className=" size-4"
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         strokeWidth={2}
@@ -137,12 +137,12 @@ const CarByPrice: React.FC = () => {
                                 <button
                                     onClick={() => scroll('right')}
                                     disabled={isAtEnd}
-                                    className={`p-1 rounded-full transition ${isAtEnd ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300'
+                                    className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtEnd ? 'cursor-not-allowed' : ''
                                         }`}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="w-5 h-5"
+                                        className="size-4"
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         strokeWidth={2}

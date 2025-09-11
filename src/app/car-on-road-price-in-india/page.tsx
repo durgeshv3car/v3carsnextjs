@@ -97,9 +97,21 @@ function CarOnRoadPrice() {
                 </div>
             </div>
 
-            {isMobile ? <MobileLatestCarNews /> : <CommonLatestCarNews />}
+            {isMobile ? <MobileLatestCarNews /> :
+                <div className="py-6 px-4 lg:px-10">
+                    <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
+                        <CommonLatestCarNews />
+                    </div>
+                </div>
+            }
 
-            <UpcomingCarInIndia />
+            <div className="py-6 px-4 lg:px-10">
+                <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
+                    <UpcomingCarInIndia
+                        title={"Upcoming Car News"}
+                    />
+                </div>
+            </div>
 
             <div className="px-4 lg:px-10 py-6">
                 <div className="w-full lg:max-w-[1600px] mx-auto">

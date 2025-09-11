@@ -14,6 +14,7 @@ import { PiWhatsappLogoThin } from "react-icons/pi";
 import { RiTwitterXFill } from "react-icons/ri";
 import { SiGooglenews } from "react-icons/si";
 import { usePathname } from "next/navigation";
+import Tooltip from "@/components/common/ToolTip";
 
 const tools = [
   { label: "Compare Cars", href: "/compare-cars" },
@@ -89,17 +90,25 @@ const Footer: React.FC = () => {
                     <ul className="text-sm">
                       {items.map((item, index) => (
                         <React.Fragment key={index}>
-                          <li className="flex gap-2 items-center py-3">
+                          <li className="group flex gap-2 items-center py-3 hover:text-yellow-400 w-fit">
+                            {/* normal image */}
                             <Image
-                              src="/common/v3.png"
+                              src="/common/v3icon.svg"
                               alt="v3-icon"
                               width={16}
                               height={16}
-                              className="dark:invert brightness-0"
+                              className="dark:invert brightness-0 group-hover:hidden"
                             />
-                            <Link href={item.href} className="hover:underline">
-                              {item.label}
-                            </Link>
+
+                            {/* hover image */}
+                            <Image
+                              src="/common/v3.png"
+                              alt="v3-icon-yellow"
+                              width={16}
+                              height={16}
+                              className="hidden group-hover:block"
+                            />
+                            <Link href={item.href}>{item.label}</Link>
                           </li>
                           <div className="h-0.5 w-full rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:from-transparent dark:via-[#262629] dark:to-transparent" />
                         </React.Fragment>
@@ -116,17 +125,25 @@ const Footer: React.FC = () => {
                     <ul className="text-sm">
                       {tools.map((tool, index) => (
                         <React.Fragment key={index}>
-                          <li className="flex gap-2 items-center py-3">
+                          <li className="group flex gap-2 items-center py-3 w-fit hover:text-yellow-400">
+                            {/* normal image */}
                             <Image
-                              src="/common/v3.png"
+                              src="/common/v3icon.svg"
                               alt="v3-icon"
                               width={16}
                               height={16}
-                              className="dark:invert brightness-0"
+                              className="dark:invert brightness-0 group-hover:hidden"
                             />
-                            <Link href={tool.href} className="hover:underline">
-                              {tool.label}
-                            </Link>
+
+                            {/* hover image */}
+                            <Image
+                              src="/common/v3.png"
+                              alt="v3-icon-yellow"
+                              width={16}
+                              height={16}
+                              className="hidden group-hover:block"
+                            />
+                            <Link href={tool.href}>{tool.label}</Link>
                           </li>
                           <div className="h-0.5 w-full rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:from-transparent dark:via-[#262629] dark:to-transparent" />
                         </React.Fragment>
@@ -155,13 +172,76 @@ const Footer: React.FC = () => {
 
                     <h4 className="font-semibold mb-4">Connect With Us</h4>
                     <div className="flex flex-wrap justify-center items-center space-x-1 xl:space-x-2">
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaYoutube size={20} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaFacebookF size={20} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaInstagram size={20} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><FaLinkedinIn size={20} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><RiTwitterXFill size={20} /></Link>
-                      <Link href="#"><PiWhatsappLogoThin size={45} /></Link>
-                      <Link href="#" className="border-2 border-[#262629] rounded-full p-2"><SiGooglenews size={20} /></Link>
+                      <Tooltip label="Youtube" side="top">
+                        <Link
+                          href="https://www.youtube.com/c/V3cars-Official"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-[#FF0000] hover:text-white transition-colors duration-300"
+                        >
+                          <FaYoutube size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="Facebook" side="top">
+                        <Link
+                          href="https://www.facebook.com/V3cars/"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-[#1877F2] hover:text-white transition-colors duration-300"
+                        >
+                          <FaFacebookF size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="Instagram" side="top">
+                        <Link
+                          href="https://www.instagram.com/v3cars/"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                          hover:bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 hover:text-white transition-colors duration-300"
+                        >
+                          <FaInstagram size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="LinkedIn" side="top">
+                        <Link
+                          href="https://www.linkedin.com/company/v3cars/"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-[#0A66C2] hover:text-white transition-colors duration-300"
+                        >
+                          <FaLinkedinIn size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="TwitterX" side="top">
+                        <Link
+                          href="https://x.com/v3cars"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-black hover:text-white transition-colors duration-300"
+                        >
+                          <RiTwitterXFill size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="Whatsapp" side="top">
+                        <Link
+                          href="#"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                        hover:bg-[#25D366] hover:text-white transition-colors duration-300"
+                        >
+                          <PiWhatsappLogoThin size={20} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip label="Google News" side="top">
+                        <Link
+                          href="#"
+                          className="border-2 border-[#262629] rounded-full p-2 flex items-center justify-center 
+                          hover:bg-[#34A853] hover:text-white transition-colors duration-300"
+                        >
+                          <SiGooglenews size={20} />
+                        </Link>
+                      </Tooltip>
+
                     </div>
                   </div>
 

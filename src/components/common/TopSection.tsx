@@ -100,32 +100,30 @@ export default function TopSection({ title, description }: TopSectionProps) {
                         </div>
 
                         {/* Read More / Read Less — only if > 40 words */}
-                        {hasReadMore && (
-                            <button
-                                onClick={() => setIsExpanded(!isExpanded)}
-                                className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-1"
+                        <button
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-1"
+                        >
+                            {isExpanded ? "Read Less" : "Read More"}
+                            <span
+                                className={`transform transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}
                             >
-                                {isExpanded ? "Read Less" : "Read More"}
-                                <span
-                                    className={`transform transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="size-4"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="size-4"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                                        />
-                                    </svg>
-                                </span>
-                            </button>
-                        )}
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                    />
+                                </svg>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
