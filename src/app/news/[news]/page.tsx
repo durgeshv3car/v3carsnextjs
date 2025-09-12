@@ -133,7 +133,7 @@ export default function page() {
   return (
 
     <div className="lg:p-8 ">
-      <div className=" flex gap-5 flex-col md:flex-row  overflow-hidden shadow-sm w-full lg:max-w-[1600px] mx-auto">
+      <div className=" flex gap-5 flex-col md:flex-row  overflow-hidden shadow-sm w-full lg:app-container mx-auto">
 
         <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
 

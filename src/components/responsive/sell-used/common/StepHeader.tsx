@@ -67,7 +67,7 @@ export default function StepHeader({
           <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(0,0,0,.88),rgba(0,0,0,.80)_40%,rgba(0,0,0,.68))]" />
           <div className="pointer-events-none absolute -left-32 -top-40 h-[220%] w-[55%] rotate-[18deg] bg-[radial-gradient(75%_65%_at_20%_50%,rgba(255,255,255,.08),transparent_60%)]" />
 
-          <div className="relative mx-auto max-w-[1600px] px-4 xl:px-10 h-full flex flex-col justify-center">
+          <div className="relative mx-auto app-container px-4 xl:px-10 h-full flex flex-col justify-center">
             <div className="flex items-center gap-4">
               <button
                 onClick={onBack}

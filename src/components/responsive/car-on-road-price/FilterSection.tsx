@@ -17,7 +17,7 @@ const FilterSection: React.FC = () => {
 
     return (
         <div className="px-4 xl:px-10 bg-[#E2E2E2] dark:bg-[#2E2E2E]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 w-full lg:max-w-[1600px] py-10 mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 w-full lg:app-container py-10 mx-auto">
 
                 {/* Left Section */}
                 <div className="flex flex-col justify-end items-center gap-4">

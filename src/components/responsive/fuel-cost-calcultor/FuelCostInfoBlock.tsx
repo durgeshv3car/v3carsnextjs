@@ -2,7 +2,7 @@ export default function FuelCostInfoBlock() {
     return (
         <div className="text-sm mt-10 px-4 lg:px-10">
 
-            <div className="max-w-[1600px] mx-auto">
+            <div className="app-container mx-auto">
                 <h2 className="text-lg font-semibold text-black mb-3 dark:text-white">
                     Fuel Cost Calculator India
                 </h2>

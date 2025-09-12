@@ -111,7 +111,7 @@ export default function BrandPage() {
     return (
 
         <div className="lg:p-8 p-4">
-            <div className="flex gap-5 flex-col lg:flex-row  overflow-hidden shadow-sm w-full lg:max-w-[1600px] mx-auto">
+            <div className="flex gap-5 flex-col lg:flex-row  overflow-hidden shadow-sm w-full lg:app-container mx-auto">
 
 
                 <div className="flex flex-col lg:flex-row gap-5 w-full">

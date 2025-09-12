@@ -5,7 +5,7 @@ import { FaChevronDown } from "react-icons/fa";
 export default function MileageCalculatorIntro() {
   return (
     <section className="px-4 sm:px-10 py-6">
-      <div className="w-full lg:max-w-[1600px] mx-auto">
+      <div className="w-full lg:app-container mx-auto">
         {/* Heading */}
         <h1 className="text-4xl font-light text-gray-800 dark:text-white">
           Mileage <span className="font-semibold">Calculator</span>

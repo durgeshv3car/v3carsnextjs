@@ -2,9 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
+
+
+:root{
+   --background: #ffffff;
   --foreground: #111111;
+  --page-width: 2400px;              /* default content width */
+  --page-gutter: 0px;               /* SSR fallback before JS runs */
+  --page-max: min(var(--page-width), calc(100vw - 2*var(--page-gutter)));
+}
+
+/* Utilities to reuse everywhere */
+@layer utilities {
+  .app-container{
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+  }
+  .app-gx{                         /* only horizontal padding by gutter */
+    padding-inline: var(--page-gutter);
+  }
+  .app-mx{                         /* rarely needed, horizontal margin */
+    margin-inline: var(--page-gutter);
+  }
 }
 
 .dark {

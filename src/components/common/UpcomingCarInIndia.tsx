@@ -88,7 +88,7 @@ const UpcomingCarInIndia: React.FC = () => {
         <>
             {/* Upcoming Car Section */}
             <div className="py-6 px-4 lg:px-10">
-                <div className="w-full lg:max-w-[1600px] mx-auto space-y-6">
+                <div className="w-full lg:app-container mx-auto space-y-6">
                     <div className="flex items-center justify-between border-b pb-4 border-[#495057] dark:border-[#2E2E2E]">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             {

@@ -39,7 +39,7 @@ export default function AllBrandsGrid() {
         <>
             <div className="px-4 lg:px-0">
 
-                <div className="max-w-[1600px] mx-auto py-5">
+                <div className="app-container mx-auto py-5">
                     {/* Heading */}
                     <div className="mb-6">
                         <h2 className="text-[20px] md:text-[24px] font-semibold">All Brands</h2>
@@ -56,7 +56,7 @@ export default function AllBrandsGrid() {
 
             <div className="p-4">
 
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 max-w-[1600px] mx-auto ">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 app-container mx-auto ">
                     {brands.map((src, index) => (
                         <div
                             key={index}

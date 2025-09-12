@@ -6,7 +6,7 @@ function BottomAd() {
     <div className="bg-[#B3B3B3] dark:bg-[#262626] py-4 flex justify-center items-center">
       
       {/* Desktop / Tablet Ad */}
-      <div className="hidden sm:block w-full lg:max-w-[1600px] mx-auto relative aspect-[1600/346] ">
+      <div className="hidden sm:block w-full lg:app-container mx-auto relative aspect-[1600/346] ">
         <Image
           src="/ads/ad1.png"
           alt="ad1"

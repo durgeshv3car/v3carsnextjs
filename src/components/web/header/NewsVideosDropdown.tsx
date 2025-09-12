@@ -42,7 +42,7 @@ const NewsVideosDropdown = () => {
 
     return (
         <div className="w-full bg-white dark:bg-[#171717] shadow-md border-b-[5px] rounded-b-[10px] border-gray-500 dark:border-[#2E2E2E] h-full px-10">
-            <div className="max-w-[1600px] mx-auto py-6 flex gap-6 items-start">
+            <div className="app-container mx-auto py-6 flex gap-6 items-start">
                 {/* Section Columns */}
                 <div className="flex-1 flex gap-6 h-full">
                     {sections.map((section, index) => (
