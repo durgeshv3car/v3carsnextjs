@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import WebStoryCard from '../web-stories/webStory'
 
@@ -69,12 +68,11 @@ const stories: Story[] = [
 ]
 
 const CarWebStories: React.FC = () => {
-    const router = useRouter()
     const [openStory, setOpenStory] = useState(false);
 
     return (
         <>
-            <div className="py-6 px-6 lg:px-10">
+            <div className="py-10 px-6 lg:px-10">
                 <div className="w-full lg:max-w-[1600px] mx-auto space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">

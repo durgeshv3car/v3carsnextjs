@@ -103,7 +103,7 @@ const QuickLook: React.FC = () => {
                     <div className="border dark:border-[#2E2E2E] border-[#DEE2E6] rounded-lg">
                         <div className="flex justify-between items-center px-4 pt-4 border-b border-[#DEE2E6] dark:border-[#2E2E2E]">
                             {/* Tabs */}
-                            <div className="flex space-x-8">
+                            <div className="flex">
                                 {['popular', 'latest'].map((tab) => (
                                     <button
                                         key={tab}
@@ -117,7 +117,7 @@ const QuickLook: React.FC = () => {
                             </div>
 
                             {/* Scroll buttons */}
-                            <div className="hidden lg:flex items-center space-x-1">
+                            <div className="hidden lg:flex items-center space-x-1 pb-3">
                                 <button
                                     onClick={() => scroll('left')}
                                     disabled={isAtStart}

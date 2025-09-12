@@ -6,7 +6,7 @@ import { FiMenu, FiMapPin, FiSearch } from "react-icons/fi";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { IoChevronDownOutline } from "react-icons/io5";
 import MobileLoginModal from "./MobileLoginModal";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import LocationDropdown from "@/components/web/header/LocationDropdown";
 
 const MobileHeader = () => {
@@ -14,7 +14,6 @@ const MobileHeader = () => {
   const [openTab, setOpenTab] = useState<string | null>(null);
   const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
-  const path = usePathname();
   const [dropdownTop, setDropdownTop] = useState<number>(45);
   const fixedWrapStyle = { top: dropdownTop };
   const [hoverTab, setHoverTab] = useState(false);
@@ -100,176 +99,172 @@ const MobileHeader = () => {
 
   return (
     <>
-      {path !== "/web-stories" && (
-        <>
-          <header className="w-full bg-white dark:bg-[#171717] z-40 relative">
-            {/* Top bar */}
-            <div className="flex items-center justify-between px-4 py-3">
-              {/* Left: Hamburger + Logo */}
-              <div className="flex items-center gap-3">
-                <button onClick={() => setIsOpen(true)}>
-                  <FiMenu size={22} />
-                </button>
-                <Image
-                  src="/logo/header/v3logo.png"
-                  alt="Logo"
-                  width={100}
-                  height={40}
-                  onClick={() => router.push("/")}
-                  className="block dark:hidden cursor-pointer"
-                />
-                <Image
-                  src="/logo/header/v3-white2.png"
-                  alt="V3 Cars Logo Dark"
-                  width={100}
-                  height={40}
-                  onClick={() => router.push("/")}
-                  className="hidden dark:block cursor-pointer"
-                />
-              </div>
-
-              {/* Right: Location + Login Icon */}
-              <div className="flex items-center gap-4"
-                onClick={() =>
-                  setHoverTab(!hoverTab)
-                }
-              >
-                <div className="flex items-center gap-1 text-md">
-                  <FiMapPin size={16} />
-                  Visakhapatnam
-                </div>
-                <HiOutlineUserCircle size={24} />
-              </div>
-            </div>
-
-            {/* Search bar */}
-            <div className="flex items-center mx-4 border dark:border-[#2E2E2E] rounded-full overflow-hidden mb-5">
-              <input
-                type="text"
-                placeholder="Search Car"
-                className="px-4 py-1 w-full outline-none text-sm bg-transparent"
-              />
-              <button className="bg-gray-700 p-2 px-6 text-white rounded-full">
-                <FiSearch size={16} />
-              </button>
-            </div>
-
-            {/* Drawer Overlay */}
-            <div
-              className={`fixed inset-0 z-[100] bg-black/40 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-                }`}
-              onClick={() => setIsOpen(false)}
+      <header className="w-full bg-white dark:bg-[#171717] z-40 relative">
+        {/* Top bar */}
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Left: Hamburger + Logo */}
+          <div className="flex items-center gap-3">
+            <button onClick={() => setIsOpen(true)}>
+              <FiMenu size={22} />
+            </button>
+            <Image
+              src="/logo/header/v3logo.png"
+              alt="Logo"
+              width={100}
+              height={40}
+              onClick={() => router.push("/")}
+              className="block dark:hidden cursor-pointer"
             />
+            <Image
+              src="/logo/header/v3-white2.png"
+              alt="V3 Cars Logo Dark"
+              width={100}
+              height={40}
+              onClick={() => router.push("/")}
+              className="hidden dark:block cursor-pointer"
+            />
+          </div>
 
-            {/* Sidebar Drawer */}
-            <div
-              className={`fixed top-0 left-0 h-full w-[85%] bg-white dark:bg-[#171717] z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
-                }`}
-            >
-              {/* Top: Logo + Login */}
-              <div className="flex justify-between items-center mb-4">
-                <Image
-                  src="/logo/header/v3logo.png"
-                  alt="Logo"
-                  width={90}
-                  height={40}
-                  className="block dark:hidden"
-                />
-                <Image
-                  src="/logo/header/v3-white2.png"
-                  alt="Logo"
-                  width={90}
-                  height={40}
-                  className="hidden dark:block"
-                />
-                <div className="flex gap-2 items-center">
-                  <button
-                    onClick={() => setShowLogin(true)}
-                    className="bg-yellow-400 text-black text-sm px-4 py-1 rounded-full font-medium"
-                  >
-                    Login
-                  </button>
-
-                </div>
-              </div>
-
-              {/* Menu Items */}
-              <div className="flex flex-col gap-2">
-                {["New Cars", "News, Reviews & Videos", "Variant Explained", "Tools"].map(
-                  (item) => {
-                    const hasSubmenu = !!subMenus[item];
-
-                    return (
-                      <div key={item}>
-                        <button
-                          className="flex justify-between items-center w-full text-left font-medium py-2"
-                          onClick={() => hasSubmenu && toggleTab(item)}
-                        >
-                          {item}
-                          {hasSubmenu && (
-                            <IoChevronDownOutline
-                              size={16}
-                              className={`transition-transform duration-300 ${openTab === item ? "rotate-180" : ""
-                                }`}
-                            />
-                          )}
-                        </button>
-
-                        {/* Accordion submenu */}
-                        <div
-                          className={`overflow-hidden transition-all duration-300 ease-in-out ${openTab === item ? "max-h-[1000px]" : "max-h-0"
-                            }`}
-                        >
-                          {hasSubmenu && (
-                            <ul className="pl-4 text-sm space-y-2 py-2">
-                              {subMenus[item].map((link, idx) => (
-                                <li
-                                  key={idx}
-                                  className="border-b border-gray-100 dark:border-[#2E2E2E] pb-2"
-                                >
-                                  <Link href={link.href} className="hover:underline">
-                                    {link.label}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  }
-                )}
-              </div>
+          {/* Right: Location + Login Icon */}
+          <div className="flex items-center gap-4"
+            onClick={() =>
+              setHoverTab(!hoverTab)
+            }
+          >
+            <div className="flex items-center gap-1 text-md">
+              <FiMapPin size={16} />
+              Visakhapatnam
             </div>
-          </header>
+            <HiOutlineUserCircle size={24} />
+          </div>
+        </div>
 
-          {hoverTab && (
-            <>
-              {/* backdrop */}
-              <div
-                className="fixed inset-0 z-[140]"
-                onClick={() => setHoverTab(false)}
-                onWheel={() => setHoverTab(false)}
-              />
-              {/* panel */}
-              <div
-                className="fixed inset-x-0 z-[150] px-0 lg:px-10 pointer-events-none"
-                style={fixedWrapStyle}
+        {/* Search bar */}
+        <div className="flex items-center mx-4 border dark:border-[#2E2E2E] rounded-full overflow-hidden mb-5">
+          <input
+            type="text"
+            placeholder="Search Car"
+            className="px-4 py-1 w-full outline-none text-sm bg-transparent"
+          />
+          <button className="bg-gray-700 p-2 px-6 text-white rounded-full">
+            <FiSearch size={16} />
+          </button>
+        </div>
+
+        {/* Drawer Overlay */}
+        <div
+          className={`fixed inset-0 z-[100] bg-black/40 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+            }`}
+          onClick={() => setIsOpen(false)}
+        />
+
+        {/* Sidebar Drawer */}
+        <div
+          className={`fixed top-0 left-0 h-full w-[85%] bg-white dark:bg-[#171717] z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+        >
+          {/* Top: Logo + Login */}
+          <div className="flex justify-between items-center mb-4">
+            <Image
+              src="/logo/header/v3logo.png"
+              alt="Logo"
+              width={90}
+              height={40}
+              className="block dark:hidden"
+            />
+            <Image
+              src="/logo/header/v3-white2.png"
+              alt="Logo"
+              width={90}
+              height={40}
+              className="hidden dark:block"
+            />
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={() => setShowLogin(true)}
+                className="bg-yellow-400 text-black text-sm px-4 py-1 rounded-full font-medium"
               >
-                <div
-                  className="max-w-[1600px] mx-auto pointer-events-auto"
-                  onClick={(e) => e.stopPropagation()}
-                  onWheel={(e) => e.stopPropagation()}
-                >
-                  <LocationDropdown />
-                </div>
-              </div>
-            </>
-          )}
+                Login
+              </button>
 
-          {showLogin && <MobileLoginModal onClose={() => setShowLogin(false)} />}
+            </div>
+          </div>
+
+          {/* Menu Items */}
+          <div className="flex flex-col gap-2">
+            {["New Cars", "News, Reviews & Videos", "Variant Explained", "Tools"].map(
+              (item) => {
+                const hasSubmenu = !!subMenus[item];
+
+                return (
+                  <div key={item}>
+                    <button
+                      className="flex justify-between items-center w-full text-left font-medium py-2"
+                      onClick={() => hasSubmenu && toggleTab(item)}
+                    >
+                      {item}
+                      {hasSubmenu && (
+                        <IoChevronDownOutline
+                          size={16}
+                          className={`transition-transform duration-300 ${openTab === item ? "rotate-180" : ""
+                            }`}
+                        />
+                      )}
+                    </button>
+
+                    {/* Accordion submenu */}
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${openTab === item ? "max-h-[1000px]" : "max-h-0"
+                        }`}
+                    >
+                      {hasSubmenu && (
+                        <ul className="pl-4 text-sm space-y-2 py-2">
+                          {subMenus[item].map((link, idx) => (
+                            <li
+                              key={idx}
+                              className="border-b border-gray-100 dark:border-[#2E2E2E] pb-2"
+                            >
+                              <Link href={link.href} className="hover:underline">
+                                {link.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </header>
+
+      {hoverTab && (
+        <>
+          {/* backdrop */}
+          <div
+            className="fixed inset-0 z-[140]"
+            onClick={() => setHoverTab(false)}
+            onWheel={() => setHoverTab(false)}
+          />
+          {/* panel */}
+          <div
+            className="fixed inset-x-0 z-[150] px-0 lg:px-10 pointer-events-none"
+            style={fixedWrapStyle}
+          >
+            <div
+              className="max-w-[1600px] mx-auto pointer-events-auto"
+              onClick={(e) => e.stopPropagation()}
+              onWheel={(e) => e.stopPropagation()}
+            >
+              <LocationDropdown />
+            </div>
+          </div>
         </>
       )}
+
+      {showLogin && <MobileLoginModal onClose={() => setShowLogin(false)} />}
     </>
   );
 };

@@ -7,7 +7,6 @@ import UpcomingCarByTopBrands from '@/components/common/UpcomingCarByTopBrands';
 import CommonNewsUpdate from '@/components/common/CommonNewsUpdate';
 import CommonExpertReviews from '@/components/common/CommonExpertReviews';
 import CommonVideos from '@/components/common/CommonVideos';
-import BottomAd from '@/components/common/BottomAd';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
 import UpcomingCarInIndia from '@/components/common/UpcomingCarInIndia';
 import RecentVideos from '@/components/common/RecentVideo';

@@ -56,7 +56,7 @@ function TopSection({ type }: TopSectionProps) {
 
             {/* Title */}
             <h1 className="text-4xl font-semibold ">
-              Today's {type} Prices in India - {" "}
+              Today&apos;s {type} Prices in India - {" "}
               <span className="font-thin text-gray-400">September 18, 2024</span>
             </h1>
 

@@ -92,9 +92,9 @@ const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title }) => {
         <>
             {/* Upcoming Car Section */}
             <div className='py-4'>
-                <div className="flex items-center justify-between border-b pb-4 border-[#495057] dark:border-[#2E2E2E]">
+                <div className="flex items-center justify-between pb-4 ">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
-                        <h2 className="text-lg font-medium">
+                        <h2 className={`${path === '/' ? "text-white" : ""} text-xl font-medium`}>
                             {title}
                         </h2>
                         <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
@@ -109,7 +109,7 @@ const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title }) => {
                         <button
                             onClick={() => scroll('left')}
                             disabled={isAtStart}
-                            className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtStart ? 'cursor-not-allowed' : ''
+                            className={`p-2 rounded-full ${path === '/' ? "text-white hover:text-black" : ""} hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtStart ? 'cursor-not-allowed' : ''
                                 }`}
                         >
                             <svg
@@ -126,7 +126,7 @@ const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title }) => {
                         <button
                             onClick={() => scroll('right')}
                             disabled={isAtEnd}
-                            className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtEnd ? 'cursor-not-allowed' : ''
+                            className={`p-2 rounded-full ${path === '/' ? "text-white hover:text-black" : ""} hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtEnd ? 'cursor-not-allowed' : ''
                                 }`}
                         >
                             <svg

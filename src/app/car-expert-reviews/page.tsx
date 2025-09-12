@@ -1,4 +1,3 @@
-import BottomAd from "@/components/common/BottomAd";
 import LeaderboardAd from "@/components/common/LeaderboardAd";
 import PopularVideos from "@/components/common/PopularVideos";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";

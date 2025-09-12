@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { FiChevronDown, FiEdit2 } from 'react-icons/fi';
+import { FiChevronDown } from 'react-icons/fi';
 
 export type DistanceUnit = 'km' | 'mi';
 export type Period = 'daily' | 'monthly' | 'yearly';
