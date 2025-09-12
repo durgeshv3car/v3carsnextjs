@@ -41,7 +41,7 @@ export default function PeriodStep() {
         onClose={() => dispatch(setStep("landing"))}
       />
 
-      <div className="mx-auto max-w-[1600px] px-4 py-6 grid grid-cols-12 gap-6">
+      <div className="mx-auto app-container px-4 py-6 grid grid-cols-12 gap-6">
         {/* Left */}
         <div className="col-span-12 lg:col-span-8 space-y-4">
           {/* Top bar */}

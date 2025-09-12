@@ -55,7 +55,7 @@ export default function MileageCalculator() {
 
   return (
     <div className="px-4 lg:px-10 py-6">
-      <div className="w-full lg:max-w-[1600px] mx-auto">
+      <div className="w-full lg:app-container mx-auto">
         <div className="grid lg:grid-cols-2 gap-5">
           {/* LEFT: Form Card */}
           <div className="rounded-xl border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] shadow-sm overflow-hidden">

@@ -90,7 +90,7 @@ export default function Page() {
             />
 
             <div className='px-4 lg:px-10'>
-                <div className='max-w-[1600px] mx-auto'>
+                <div className='app-container mx-auto'>
                     <FuelCostTable
                         currency={currency}
                         distanceUnit={distanceUnit}
@@ -108,7 +108,7 @@ export default function Page() {
             <FuelCostBarGraph />
             <QuickLinks />
 
-            <div className='max-w-[1600px] mx-auto px-4 lg:px-10'>
+            <div className='app-container mx-auto px-4 lg:px-10'>
                 <CommonFaqAccordion faqData={faqData} />
             </div>
 

@@ -26,7 +26,7 @@ function CarReviewVideos() {
         <>
             <div className='bg-[#18181b] text-white'>
                 <div className='px-4 xl:px-10'>
-                    <div className="w-full lg:max-w-[1600px] mx-auto text-sm h-[42px] flex items-center gap-2">
+                    <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
                         <span className="text-yellow-500">›</span>
                         <span className="font-medium text-yellow-500">
@@ -37,7 +37,7 @@ function CarReviewVideos() {
             </div>
 
             <div className="px-4 xl:px-10">
-                <div className="w-full lg:max-w-[1600px] mx-auto pb-6">
+                <div className="w-full lg:app-container mx-auto pb-6">
                     <TopBanner />
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%]">

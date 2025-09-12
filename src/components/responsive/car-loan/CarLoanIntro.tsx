@@ -1,10 +1,11 @@
-
 'use client';
-
 import { FaChevronDown } from "react-icons/fa";
+
 export default function CarLoanIntro() {
   return (
+
     <section className="max-w-[1650px] mx-auto px-4 sm:px-8 py-6">
+
       {/* Heading */}
       <h1 className="text-4xl font-light text-gray-800 dark:text-white">
         Car Loan in <span className="font-semibold">India</span>
@@ -25,6 +26,8 @@ export default function CarLoanIntro() {
         Read More
         <FaChevronDown size={12} />
       </button>
+
     </section>
+
   );
 }

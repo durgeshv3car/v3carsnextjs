@@ -5,7 +5,7 @@ function TopBanner() {
         <>
             <div className='bg-[#E2E2E2] dark:bg-black mb-5'>
                 <div className='px-4 xl:px-10'>
-                    <div className="w-full lg:max-w-[1600px] mx-auto flex justify-between gap-2">
+                    <div className="w-full lg:app-container mx-auto flex justify-between gap-2">
                         <div className="flex flex-col justify-between gap-4">
                             <div className="pt-10 space-y-4">
                                 <h1 className="text-xl lg:text-4xl text-gray-500">

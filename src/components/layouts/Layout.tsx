@@ -9,6 +9,7 @@ import Header from "../common/Header";
 import Footer from "../web/common/Footer";
 import useIsMobile from "@/hooks/useIsMobile";
 import MobileFooter from "../mobile/common/Footer";
+import GutterBoot from "./GutterBoot";
 
 interface LayoutProps {
   children: ReactNode;
@@ -28,6 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
+         <GutterBoot />
         <Header />
         {children}
         {isMobile ? <MobileFooter /> : <Footer />}

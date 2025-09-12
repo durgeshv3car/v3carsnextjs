@@ -89,7 +89,7 @@ const CarByType: React.FC = () => {
         <>
             {/* Upcoming Car Section */}
             <section className="px-6 lg:px-10">
-                <div className="w-full lg:max-w-[1600px] mx-auto space-y-3 mt-4">
+                <div className="w-full lg:app-container mx-auto space-y-3 mt-4">
                     <div className="flex items-center w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-semibold lg:font-medium">Search Car By Body Type</h2>
                         <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">

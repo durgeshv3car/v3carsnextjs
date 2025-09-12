@@ -167,7 +167,7 @@ function LatestCars() {
             />
 
             <div className="px-4 xl:px-10">
-                <div className="w-full lg:max-w-[1600px] py-6 mx-auto space-y-7">
+                <div className="w-full lg:app-container py-6 mx-auto space-y-7">
 
                     {/* Latest Cars */}
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">

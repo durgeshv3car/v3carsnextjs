@@ -64,7 +64,7 @@ export default function TopSection({ title, description }: TopSectionProps) {
             {/* Breadcrumb */}
             <div className='bg-[#18181b] text-white'>
                 <div className='px-4 xl:px-10'>
-                    <div className="w-full lg:max-w-[1600px] mx-auto text-sm h-[42px] flex items-center gap-2">
+                    <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
                         <span className="text-yellow-500">›</span>
                         <span className="font-medium text-yellow-500">
@@ -84,7 +84,7 @@ export default function TopSection({ title, description }: TopSectionProps) {
 
             <div className='w-full min-h-[186px] py-[30px] '>
                 <div className='px-4 xl:px-10'>
-                    <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
+                    <div className="w-full lg:app-container mx-auto space-y-5">
 
                         {/* Title */}
                         <h1 className="text-4xl font-semibold">{title}</h1>
@@ -132,7 +132,7 @@ export default function TopSection({ title, description }: TopSectionProps) {
             {path === "/upcoming-cars" && (
                 <div className='w-full bg-gradient-to-l bg-[#F1EFF4] to-[#E7E4DF] dark:from-[#27272a] dark:to-[#18181b] min-h-[246px] py-[30px]'>
                     <div className='px-4 xl:px-10'>
-                        <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
+                        <div className="w-full lg:app-container mx-auto space-y-5">
                             <h2 className="text-xl font-semibold border-b border-[#CED4DA] dark:border-[#2E2E2E] pb-2">
                                 Upcoming Cars By Month
                             </h2>

@@ -36,7 +36,7 @@ function TopSection({ type }: TopSectionProps) {
       {/* Breadcrumb */}
       <div className="bg-[#18181b] text-white">
         <div className="px-4 xl:px-10">
-          <div className="w-full lg:max-w-[1600px] mx-auto text-sm h-[42px] flex items-center gap-2">
+          <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
             <Link href="/" className="hover:underline">Home</Link>
             <span className="text-yellow-500">›</span>
             <span className="font-medium text-yellow-500">
@@ -52,7 +52,7 @@ function TopSection({ type }: TopSectionProps) {
       {/* Main Section */}
       <div className="w-full min-h-[186px] py-[30px]">
         <div className="px-4 xl:px-10">
-          <div className="w-full lg:max-w-[1600px] mx-auto space-y-5">
+          <div className="w-full lg:app-container mx-auto space-y-5">
 
             {/* Title */}
             <h1 className="text-4xl font-semibold ">

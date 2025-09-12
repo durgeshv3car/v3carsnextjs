@@ -48,7 +48,7 @@ export default function Page() {
       <CarNewsCard />
 
       <div className="lg:px-10 px-4">
-        <div className="flex gap-5 flex-col lg:flex-row rounded-lg overflow-hidden shadow-sm w-full lg:max-w-[1600px] mx-auto">
+        <div className="flex gap-5 flex-col lg:flex-row rounded-lg overflow-hidden shadow-sm w-full lg:app-container mx-auto">
           <div className="flex flex-col lg:flex-row justify-between w-full">
 
             <div className="w-auto lg:max-w-[75%]">

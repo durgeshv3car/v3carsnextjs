@@ -254,7 +254,7 @@ const MobileHeader = () => {
             style={fixedWrapStyle}
           >
             <div
-              className="max-w-[1600px] mx-auto pointer-events-auto"
+              className="app-container mx-auto pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
               onWheel={(e) => e.stopPropagation()}
             >

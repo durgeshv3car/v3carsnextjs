@@ -32,7 +32,7 @@ export default function FuelCostBarGraph() {
         [--tooltip-text:#111827] dark:[--tooltip-text:#e5e7eb]
       "
     >
-      <div className="max-w-[1600px] mx-auto">
+      <div className="app-container mx-auto">
         <h3 className="text-[24px] font-semibold text-gray-800 dark:text-gray-100 mb-2">
           Fuel Cost Graph
         </h3>

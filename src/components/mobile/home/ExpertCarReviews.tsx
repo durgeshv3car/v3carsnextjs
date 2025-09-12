@@ -87,7 +87,7 @@ const MobileExpertCarReviews: React.FC = () => {
     return (
         <>
             <section className="py-6">
-                <div className="w-full lg:max-w-[1600px] px-6 lg:px-0 mx-auto space-y-6">
+                <div className="w-full lg:app-container px-6 lg:px-0 mx-auto space-y-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-semibold lg:font-medium">Expert Car Reviews</h2>

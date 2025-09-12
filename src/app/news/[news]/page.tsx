@@ -8,9 +8,9 @@ import CommonNewsUpdate from '@/components/common/CommonNewsUpdate';
 import CommonExpertReviews from '@/components/common/CommonExpertReviews';
 import CommonVideos from '@/components/common/CommonVideos';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
-import UpcomingCarInIndia from '@/components/common/UpcomingCarInIndia';
 import RecentVideos from '@/components/common/RecentVideo';
 import LeaderboardAd from '@/components/common/LeaderboardAd';
+import UpcomingCarInIndia from '@/components/common/UpcomingCarInIndia';
 
 const newsList = [
   {
@@ -131,7 +131,8 @@ const videoList = new Array(8).fill({
 export default function Page() {
   return (
     <div className="lg:p-8 ">
-      <div className="flex gap-5 flex-col md:flex-row w-full lg:max-w-[1600px] mx-auto">
+      <div className=" flex gap-5 flex-col md:flex-row  overflow-hidden shadow-sm w-full lg:app-container mx-auto">
+
         <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
           <div className="w-auto lg:max-w-[74%]">
             <CarSpecsBlock />

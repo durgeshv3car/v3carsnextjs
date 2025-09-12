@@ -60,7 +60,7 @@ export default function page() {
             <WhatIsCarInsurance />
 
             <div className="px-4 lg:px-10 py-6">
-                <div className="w-full lg:max-w-[1600px] mx-auto">
+                <div className="w-full lg:app-container mx-auto">
                     <CommonFaqAccordion faqData={faqData} />
                 </div>
             </div>

@@ -38,7 +38,7 @@ export default function BrandSection() {
 
   return (
     <section className="px-4 xl:px-10 mb-5">
-      <div className="w-full lg:max-w-[1600px] mx-auto">
+      <div className="w-full lg:app-container mx-auto">
         {/* Search */}
         <div className="mb-3">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#EEF2FF] dark:bg-[#171717] px-3 py-2 ring-1 ring-black/5">

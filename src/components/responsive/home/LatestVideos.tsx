@@ -17,7 +17,7 @@ const LatestVideos: React.FC = () => {
     return (
         <>
             <div className="bg-[#E2E2E2] dark:bg-[#262629] py-10 px-6 lg:px-10">
-                <div className="w-full lg:max-w-[1600px] mx-auto space-y-4">
+                <div className="w-full lg:app-container mx-auto space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-medium">Latest Videos</h2>

@@ -11,10 +11,11 @@ import LoginModal from "./LoginModal";
 import { usePathname, useRouter } from "next/navigation";
 import ToolsDropdown from "../header/ToolsDropdown.";
 import ThemeToggle from "@/components/common/ThemeToggle";
+// import ThemeToggle from "@/components/common/ThemeToggle";
 
 type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
 
-const HOVER_CLOSE_DELAY = 160; // ms grace period
+const HOVER_CLOSE_DELAY = 160; // ms grace period   
 
 const Header = () => {
 
@@ -50,7 +51,7 @@ const Header = () => {
     useEffect(() => {
         setHoverTab(null);
     }, [path]);
-
+ 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => e.key === "Escape" && setHoverTab(null);
         window.addEventListener("keydown", onKey);
@@ -116,7 +117,7 @@ const Header = () => {
                 ref={headerRef}
                 className="w-full z-[200] lg:px-4 xl:px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]"
             >
-                <div className="max-w-[1600px] mx-auto py-3 flex items-center justify-between">
+                <div className="app-container mx-auto py-3 flex items-center justify-between">
                     {/* Logo */}
                     <div
                         className="flex items-center cursor-pointer gap-2"
@@ -209,7 +210,7 @@ const Header = () => {
                                     onMouseEnter={cancelClose}
                                     onMouseLeave={scheduleClose}
                                 >
-                                    <div className="max-w-[1600px] mx-auto">
+                                    <div className="app-container mx-auto">
                                         <NewsVideosDropdown />
                                     </div>
                                 </div>
@@ -242,7 +243,7 @@ const Header = () => {
                                     onMouseEnter={cancelClose}
                                     onMouseLeave={scheduleClose}
                                 >
-                                    <div className="max-w-[1600px] mx-auto">
+                                    <div className="app-container mx-auto">
                                         <ToolsDropdown />
                                     </div>
                                 </div>
@@ -293,7 +294,7 @@ const Header = () => {
                         style={fixedWrapStyle}
                     >
                         <div
-                            className="max-w-[1600px] mx-auto pointer-events-auto"
+                            className="app-container mx-auto pointer-events-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <LocationDropdown />
@@ -310,6 +311,5 @@ const Header = () => {
 };
 
 export default Header;
-
 
 

@@ -7,7 +7,7 @@ export default function CarNewsCard() {
 
         <div className="lg:p-8 p-4">
 
-            <div className=" flex gap-5 flex-col lg:flex-row rounded-lg overflow-hidden shadow-sm w-full lg:max-w-[1600px] mx-auto border dark:border-[#2E2E2E] p-2">
+            <div className=" flex gap-5 flex-col lg:flex-row rounded-lg overflow-hidden shadow-sm w-full lg:app-container mx-auto border dark:border-[#2E2E2E] p-2">
 
                 {/* Left: Thumbnail */}
                 <div className="mx-auto w-full lg:w-[600px]">
