@@ -6,6 +6,13 @@ import { videoTypeFromParam } from './videos.constants.js';
 const svc = new VideosService();
 
 export class VideosController {
+  /** ✅ Global latest (no type) */
+  async latestGlobal(req: Request, res: Response) {
+    const q = latestDto.parse(req.query);
+    const rows = await svc.latestGlobal({ limit: q.limit, excludeToday: q.excludeToday });
+    res.json({ success: true, rows });
+  }
+
   async today(req: Request, res: Response) {
     const type = videoTypeFromParam(req.params.type);
     const data = await svc.today(type);

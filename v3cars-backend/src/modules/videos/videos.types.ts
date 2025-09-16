@@ -2,7 +2,7 @@ export type VideoCard = {
   id: number;                       // videoId
   title: string;                    // video_title
   pageUrl: string;
-  publishDateandTime: string;       // ISO from dateTimePublishing
+  publishDateandTime: string;       // ISO (dateTimePublishing)
   thumbnail: { url: string | null; alt: string | null };
   videoYId: string;
   author: { id: number; name: string; slug: string | null } | null;
@@ -13,5 +13,5 @@ export interface VideosListQuery {
 }
 
 export interface LatestVideosQuery extends VideosListQuery {
-  excludeToday?: boolean; // default true in controller/service for parity with news
+  excludeToday?: boolean; // default true (global/typed latest me flag allow)
 }

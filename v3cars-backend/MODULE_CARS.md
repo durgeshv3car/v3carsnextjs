@@ -124,3 +124,7 @@ GET /v1/cars/variants
 - **Price fallback:** If model expected prices are 0/null, `priceMin/Max` come from parsed variant prices.
 - **Images:** Hero image picked by priority: `isMainImage DESC`, `position_no ASC`, `imageId ASC` (model or variant image).  
 - **MEDIA_BASE_URL:** set to build absolute image URLs.
+
+
+
+

@@ -9,13 +9,14 @@ import { videosRouter } from '../modules/videos/videos.route.js';
 
 const v1 = Router();
 
-// health etc…
-
 v1.use('/cars', carsRouter);
 v1.use('/home', homeRouter);
-v1.use('/news', newsRouter); 
+v1.use('/news', newsRouter);
 v1.use('/content', contentRouter);
 v1.use('/reviews', reviewsRouter);
 v1.use('/comparisons', comparisonsRouter);
-v1.use('/videos', videosRouter);
+v1.use('/videos', videosRouter); 
+
+
 export default v1;
+

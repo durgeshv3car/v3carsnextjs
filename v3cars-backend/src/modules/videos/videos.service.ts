@@ -22,7 +22,6 @@ async function hydrate(rows: Array<{
   dateTimePublishing: Date;
 }>): Promise<VideoCard[]> {
   const authorIds = Array.from(new Set(rows.map(r => r.authorId).filter(x => typeof x === 'number')));
-
   const authors = await repo.findAuthorsByIds(authorIds);
   const authorMap = new Map(authors.map(a => [a.id, a]));
 
@@ -40,6 +39,7 @@ async function hydrate(rows: Array<{
 }
 
 export class VideosService {
+  
   async today(videoType: number) {
     const row = await repo.getToday(videoType);
     if (!row) return null;
@@ -49,13 +49,19 @@ export class VideosService {
 
   async latest(videoType: number, q: LatestVideosQuery) {
     const limit = q.limit ?? 9;
-
     let excludeId: number | undefined = undefined;
     if (q.excludeToday !== false) {
       const today = await repo.getToday(videoType);
       excludeId = today?.videoId;
     }
-    const rows = await repo.listLatest(videoType, limit, excludeId);
+    const rows = await repo.listLatest(videoType, limit);
+    return hydrate(rows);
+  }
+
+  /** ✅ Global latest list (no videoType) */
+  async latestGlobal(q: LatestVideosQuery) {
+    const limit = q.limit ?? 9;
+    const rows = await repo.listLatestGlobal(limit);
     return hydrate(rows);
   }
 
@@ -70,4 +76,6 @@ export class VideosService {
     const rows = await repo.listTop(videoType, limit);
     return hydrate(rows);
   }
+
+
 }
