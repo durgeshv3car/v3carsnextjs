@@ -1,71 +1,36 @@
 'use client'
 
+import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { CiCalendarDate } from 'react-icons/ci'
 import { FaUserEdit } from 'react-icons/fa'
+import DOMPurify from "dompurify";
 
-type NewsItem = {
-    id: number
-    image: string
-    tag: string
-    heading: string
-    description: string
-    author: string
-    date: string
+interface NewsItem {
+    id: number;
+    title: string;
+    pageUrl: string;
+    publishDateandTime: string; // ISO date string
+    shortDescription: string;   // HTML content
+    thumbnail: {
+        url: string;
+        alt: string;
+    };
+    author: {
+        id: number;
+        name: string;
+        slug: string;
+    };
+    commentsCount: number;
 }
 
-const newsList: NewsItem[] = [
-    {
-        id: 1,
-        image: '/latest-news/image1.png',
-        tag: 'June 2024',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 2,
-        image: '/latest-news/image2.png',
-        tag: 'Mahindra Thar Roxx',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 3,
-        image: '/latest-news/image3.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 4,
-        image: '/latest-news/image3.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 5,
-        image: '/latest-news/image3.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-]
+interface CommonLatestCarNewsProps {
+    data: NewsItem[];
+}
 
-
-const CommonLatestCarNews: React.FC = () => {
+const CommonLatestCarNews: React.FC<CommonLatestCarNewsProps> = ({ data }) => {
     const scrollRef = useRef<HTMLDivElement>(null)
     const [isAtStart, setIsAtStart] = useState<boolean>(true)
     const [isAtEnd, setIsAtEnd] = useState<boolean>(false)
@@ -159,47 +124,56 @@ const CommonLatestCarNews: React.FC = () => {
             </div>
 
             <div className="flex space-x-4 overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
-                {newsList.map((item) => (
-                    <div
-                        key={item.id}
-                        className="bg-slate-50 dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg min-w-[520px] min-h-[495px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
-                    >
-                        {/* Fixed height image */}
-                        <div className="relative h-[310px] w-full">
-                            <Image
-                                src={item.image}
-                                alt={item.heading || "news"}
-                                width={600}         // estimated width
-                                height={310}        // estimated height
-                                className="rounded-xl object-cover"
-                            />
+                {data.map((item) => {
+                    // Clean shortDescription → remove inline styles
+                    const cleanDescription = DOMPurify.sanitize(item.shortDescription, {
+                        FORBID_ATTR: ["style"], 
+                    })
 
-                            {/* Gradient Overlay + Text */}
-                            <div className="absolute bottom-0 w-full px-4 pt-16 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/90 to-transparent">
-                                <h3 className="text-lg line-clamp-2">{item.heading}</h3>
-                            </div>
-                        </div>
+                    return (
+                        <div
+                            key={item.id}
+                            className="bg-slate-50 dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg min-w-[520px] min-h-[495px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
+                        >
+                            {/* Fixed height image */}
+                            <div className="relative h-[310px] w-full">
+                                <Image
+                                    src={`${IMAGE_URL}${item.thumbnail.url}`}
+                                    alt={item.thumbnail.alt}
+                                    width={600}
+                                    height={310}
+                                    className="rounded-xl object-cover"
+                                />
 
-
-                        {/* Fills the remaining space */}
-                        <div className="flex flex-col flex-grow space-y-4">
-                            <p className="line-clamp-3 text-sm/8">{item.description}</p>
-                            <div className="flex justify-between items-center text-xs text-gray-500">
-                                <div className="flex items-center gap-1">
-                                    <FaUserEdit size={16} />
-                                    <span>{item.author}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <CiCalendarDate size={16} />
-                                    <span>{item.date}</span>
+                                {/* Gradient Overlay + Title */}
+                                <div className="absolute bottom-0 w-full px-4 pt-16 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/90 to-transparent">
+                                    <h3 className="text-lg line-clamp-2">{item.title}</h3>
                                 </div>
                             </div>
+
+                            {/* Description + Meta */}
+                            <div className="flex flex-col flex-grow space-y-4">
+                                <p
+                                    className="line-clamp-3 text-sm/8 text-black dark:text-white"
+                                    dangerouslySetInnerHTML={{ __html: cleanDescription }}
+                                />
+                                <div className="flex justify-between items-center text-xs text-gray-500">
+                                    <div className="flex items-center gap-1">
+                                        <FaUserEdit size={16} />
+                                        <span>{item.author.name}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <CiCalendarDate size={16} />
+                                        <span>{new Date(item.publishDateandTime).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
         </section>
     )
 }
 
-export default CommonLatestCarNews;
+export default CommonLatestCarNews

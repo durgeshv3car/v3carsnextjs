@@ -19,6 +19,19 @@ interface SendOtpResponse {
   data?: Record<string, unknown>; // ✅ avoids "any"
 }
 
+interface BrandsResponse {
+  success: boolean;
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  rows: any[];
+}
+
+interface GetModelsArgs {
+  brandId: number
+}
+
 // API definition
 export const commonApi = createApi({
   reducerPath: "commonApi",
@@ -31,8 +44,14 @@ export const commonApi = createApi({
         body: { mobileNumber, otp, otp_options },
       }),
     }),
+    getBrands: builder.query<BrandsResponse, void>({
+      query: () => "/cars/brands?sortBy=popular&limit=12&page=1",
+    }),
+    getModels: builder.query<BrandsResponse, GetModelsArgs>({
+      query: ({ brandId }) => `/cars/models?brandId=${brandId}`,
+    }),
   }),
 });
 
 // Export hook
-export const { useSendOtpMutation } = commonApi;
+export const { useSendOtpMutation, useGetBrandsQuery, useGetModelsQuery } = commonApi;

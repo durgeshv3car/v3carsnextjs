@@ -33,17 +33,66 @@ const slides = [
 
 ];
 
-const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  data: CarBrand[];
+  models: CarModel[]
+}
+
+interface CarBrand {
+  brandId: number
+  brandName: string
+  brandSlug: string
+  logoPath: string
+  popularity: string
+  unquieViews: number | null
+  brandStatus: number
+  serviceNetwork: boolean
+  brandType: number
+}
+interface CarImage {
+  name: string
+  alt: string
+  url: string
+}
+
+interface CarModel {
+  modelId: number
+  modelName: string
+  modelSlug: string
+  brandId: number
+  modelBodyTypeId: number
+  isUpcoming: boolean
+  launchDate: string // ISO date string
+  totalViews: number
+  expectedBasePrice: number
+  expectedTopPrice: number
+  brand: {
+    id: number
+    name: string
+    slug: string
+    logo: string
+  }
+  priceMin: number
+  priceMax: number
+  powerPS: number
+  torqueNM: number
+  mileageKMPL: number
+  image: CarImage
+  imageUrl: string
+}
+
+
+const HeroSection: React.FC<HeroSectionProps> = ({ data, models }) => {
   const [activeTab, setActiveTab] = useState('budget');
   const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
   const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
   const router = useRouter()
 
-  const handleSelection = (value: string) => {
+  const handleSelection = (value: any) => {
     console.log('Selected:', value);
   };
 
-  const handle = (value: string) => {
+  const handle = (value: any) => {
     console.log('Selected:', value);
   };
 
@@ -120,19 +169,19 @@ const HeroSection: React.FC = () => {
                 {activeTab === 'budget' ? (
                   <>
                     <div className='border-b dark:border-[#2E2E2E]'>
-                      <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
+                      <CustomSelect options={data} placeholder={"Select Budget"} onSelect={handleSelection} />
                     </div>
                     <div className='border-b dark:border-[#2E2E2E]'>
-                      <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
+                      <CustomSelect options={data} placeholder={"All Vehicle Types"} onSelect={handle} />
                     </div>
                   </>
                 ) : (
                   <>
                     <div className='border-b dark:border-[#2E2E2E]'>
-                      <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
+                      <CustomSelect options={data} placeholder={"Select Brand"} onSelect={handleSelection} />
                     </div>
                     <div className='border-b dark:border-[#2E2E2E]'>
-                      <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
+                      <CustomSelect options={data} placeholder={"Select Model"} onSelect={handle} />
                     </div>
                   </>
                 )}

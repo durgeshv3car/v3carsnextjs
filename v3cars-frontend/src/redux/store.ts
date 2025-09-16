@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 
 import { authApi } from "./api/authApi";
 import { commonApi } from "./api/commonApi";
+import { homeApi } from "./api/homeApi";
 import authReducer from "./slices/authSlice";
 import commonReducer from "./slices/commonSlice";
 import sellUsedReducer from "./slices/sellUsedSlice"; // 👈 add
@@ -18,6 +19,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [commonApi.reducerPath]: commonApi.reducer,
+  [homeApi.reducerPath]: homeApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer, // 👈 add
@@ -32,7 +34,11 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
-    }).concat(authApi.middleware, commonApi.middleware),
+    }).concat(
+      authApi.middleware, 
+      commonApi.middleware,
+      homeApi.middleware,
+    ),
 });
 
 export const persistor = persistStore(store);
