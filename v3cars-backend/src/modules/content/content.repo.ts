@@ -30,21 +30,8 @@ export class ContentRepo {
   }
 
   /** Latest (date desc); optionally exclude a specific id */
-  async listLatest(contentType: number, limit = 9, excludeId?: number) {
-    if (typeof excludeId === 'number') {
-      return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
-        SELECT id, title, pageUrl, publishDateandTime, shortDescription,
-               thumbnailAltText, thumbnailUrl, authorId
-        FROM tblcontents
-        WHERE contentType = ${contentType}
-          AND publishDateandTime <= NOW()
-          AND contentPublishType IN (1,2)
-          AND contentPublishStatus = 2
-          AND id <> ${excludeId}
-        ORDER BY publishDateandTime DESC, id DESC
-        LIMIT ${limit}
-      `);
-    }
+  async listLatest(contentType: number, limit = 9) {
+   
     return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
       SELECT id, title, pageUrl, publishDateandTime, shortDescription,
              thumbnailAltText, thumbnailUrl, authorId

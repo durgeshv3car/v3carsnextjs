@@ -32,7 +32,3 @@ process.on('uncaughtException', (err) => {
   console.error('uncaughtException', err);
   void shutdown('uncaughtException');
 });
-
-
-
-

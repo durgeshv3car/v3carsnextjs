@@ -1,6 +1,6 @@
 import { prisma } from '../../../lib/prisma.js';
 import type { Prisma } from '@prisma/client';
-import { extractPriceBand } from './price.util.js';
+import { extractPriceBand, snapApproxINR } from './price.util.js';
 
 export interface VariantsWhere {
   q?: string;
@@ -39,7 +39,11 @@ export class VariantsRepo {
     });
   }
 
-  // ✅ Added: compute price bands per model (for Models enrichment)
+  /** Compute price bands per model from ALL variants' string prices.
+   *  - Uses price parsing (₹ .. lakh/cr) → rupees
+   *  - Aggregates min/max across variants
+   *  - Applies 'snapApproxINR' (e.g., 4.99L → 5.00L)
+   */
   async getPriceBandsByModelIds(modelIds: number[]) {
     const map = new Map<number, { min: number | null; max: number | null }>();
     if (!modelIds?.length) return map;
@@ -53,11 +57,21 @@ export class VariantsRepo {
       if (!r.modelId) continue;
       const band = extractPriceBand(r.variantPrice ?? '');
       if (!band) continue;
+
       const current = map.get(r.modelId) ?? { min: null, max: null };
       current.min = current.min == null ? band.min : Math.min(current.min, band.min);
       current.max = current.max == null ? band.max : Math.max(current.max, band.max);
       map.set(r.modelId, current);
     }
+
+    // Snap to clean values once per model
+    for (const [modelId, band] of map.entries()) {
+      map.set(modelId, {
+        min: snapApproxINR(band.min),
+        max: snapApproxINR(band.max),
+      });
+    }
+
     return map;
   }
 }
