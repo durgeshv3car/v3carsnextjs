@@ -1,12 +1,5 @@
 import { ModelsService } from '../cars/models/models.service.js';
-import type {
-  UpcomingQuery,
-  QuickLookQuery,
-  BodyTypeQuery,
-  PriceQuery,
-  HomeLatestNewsQuery,
-  HomeLatestReviewsQuery,
-} from './home.types.js';
+import type { UpcomingQuery, QuickLookQuery, BodyTypeQuery, PriceQuery, HomeLatestNewsQuery } from './home.types.js';
 import { NewsService } from '../news/news.service.js';
 import { ReviewsService } from '../reviews/reviews.service.js';
 
@@ -50,22 +43,22 @@ export class HomeService {
       page: q.page ?? 1,
       limit: q.limit ?? 8,
       priceBucket: q.bucket,
-      isUpcoming: typeof q.isUpcoming === 'boolean' ? q.isUpcoming : undefined,
+      // 🔹 Default to on-sale list for “Search By Price”
+      isUpcoming: typeof q.isUpcoming === 'boolean' ? q.isUpcoming : false,
       sortBy: q.sortBy ?? 'price_asc',
     } as any);
   }
 
-  /** Latest car news (excludes 'today' by default) */
   async latestNews(q: HomeLatestNewsQuery) {
     const limit = q.limit ?? 9;
     const excludeToday = q.excludeToday !== false; // default true
-    return news.latest({ limit, excludeToday });
+    const rows = await news.latest({ limit, excludeToday });
+    return rows;
   }
 
-  /** ✅ Latest expert reviews (include 'today' by default) */
-  async latestReviews(q: HomeLatestReviewsQuery) {
+  async latestReviews(q: { limit?: number; excludeToday?: boolean }) {
     const limit = q.limit ?? 6;
-    const excludeToday = q.excludeToday ?? false; // default false
+    const excludeToday = q.excludeToday ?? false;
     return reviews.latest({ limit, excludeToday });
   }
 }

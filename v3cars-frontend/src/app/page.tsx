@@ -17,14 +17,33 @@ import LatestVideos from "@/components/responsive/home/LatestVideos";
 import CarWebStories from "@/components/responsive/home/CarWebStories";
 import BottomAd from "@/components/common/BottomAd";
 import CommonLatestCarNews from "@/components/web/common/CommonLatestCarNews";
+import { useGetLatestCarNewsQuery, useUpcomingCarsQuery } from "@/redux/api/homeApi";
+import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/commonApi";
+
+export type CarPriceTab =
+  | 'UNDER_5L'
+  | 'BETWEEN_5_10L'
+  | 'BETWEEN_10_20L'
+  | 'BETWEEN_20_40L'
+  | 'ABOVE_40L';
 
 export default function Home() {
+  const { data: upcomingData, error, isLoading } = useUpcomingCarsQuery();
+  const { data: latestCarNewsData, error: latestCarNewsError, isLoading: latestCarNewsLoading } = useGetLatestCarNewsQuery();
+  const { data: brandsData, error: brandsError, isLoading: brandsLoading } = useGetBrandsQuery();
+  const { data: modelsData, error: modelsError, isLoading: modelsLoading } = useGetModelsQuery({ brandId: 3 });
+
+  const upcomingCars = upcomingData?.rows ?? [];
+  const latestCarNews = latestCarNewsData?.rows ?? [];
+  const brands = brandsData?.rows ?? [];
+  const models = modelsData?.rows ?? [];
+
 
   const isMobile = useIsMobile()
 
   return (
     <>
-      {isMobile ? <MobileHeroSection /> : <HeroSection />}
+      {isMobile ? <MobileHeroSection /> : <HeroSection data={brands} models={models} />}
       <CategorySection />
       <BottomAd />
       <div className="bg-gradient-to-l from-[#495057] to-[#343A40] dark:from-[#27272a] dark:to-[#18181b] ">
@@ -32,6 +51,7 @@ export default function Home() {
           <div className="w-full lg:app-container mx-auto space-y-6">
             <UpcomingCarInIndia
               title={"158+ Upcoming Cars In India"}
+              data={upcomingCars ?? []}
             />
           </div>
         </div>
@@ -39,7 +59,7 @@ export default function Home() {
       {isMobile ? <MobileLatestCarNews /> :
         <div className="py-6 px-4 lg:px-10">
           <div className="w-full lg:app-container mx-auto space-y-6">
-            <CommonLatestCarNews />
+            <CommonLatestCarNews data={latestCarNews} />
           </div>
         </div>
       }

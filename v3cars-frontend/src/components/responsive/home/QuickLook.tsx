@@ -1,5 +1,7 @@
 'use client'
 
+import { useGetQuickLookQuery } from '@/redux/api/homeApi'
+import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
@@ -8,55 +10,47 @@ import { FaArrowRight } from 'react-icons/fa'
 import { IoMdStarOutline } from 'react-icons/io'
 import { PiEngine } from 'react-icons/pi'
 
-type CarProps = {
-    image: string
-    name: string
-    engine: string,
-    nitro: string,
-    mileage: string,
-    price: string,
+interface CarBrand {
+    id: number;
+    name: string;
+    slug: string;
+    logo: string;
 }
 
-const upcomingCars: CarProps[] = [
-    {
-        image: "/popular-cars/grand-vitara.png",
-        name: "Grand Vitara",
-        engine: "103PS",
-        nitro: "137Nm",
-        mileage: "21.11kmpl",
-        price: "₹10.99 - 19.93 lakh*",
-    },
-    {
-        image: "/popular-cars/fronx.png",
-        name: "Fronx",
-        engine: "103PS",
-        nitro: "137Nm",
-        mileage: "21.11kmpl",
-        price: "₹10.99 - 19.93 lakh*",
-    },
-    {
-        image: "/popular-cars/brezza.png",
-        name: "Brezza",
-        engine: "103PS",
-        nitro: "137Nm",
-        mileage: "21.11kmpl",
-        price: "₹10.99 - 19.93 lakh*"
-    },
-    {
-        image: "/popular-cars/nexon.png",
-        name: "Nexon",
-        engine: "103PS",
-        nitro: "137Nm",
-        mileage: "21.11kmpl",
-        price: "₹10.99 - 19.93 lakh*"
-    },
-]
+interface CarImage {
+    name: string;
+    alt: string;
+    url: string;
+}
+
+interface CarProps {
+    modelId: number;
+    modelName: string;
+    modelSlug: string;
+    brandId: number;
+    modelBodyTypeId: number;
+    isUpcoming: boolean;
+    launchDate: string; // ISO date string
+    totalViews: number;
+    expectedBasePrice: number;
+    expectedTopPrice: number;
+    brand: CarBrand;
+    priceMin: number;
+    priceMax: number;
+    powerPS: number;
+    torqueNM: number;
+    mileageKMPL: number;
+    image: CarImage;
+    imageUrl: string;
+}
 
 const QuickLook: React.FC = () => {
+    const [activeTab, setActiveTab] = useState<'popular' | 'latest'>('popular')
+    const { data: quickData, error: quickError, isLoading: quickLoading } = useGetQuickLookQuery({ type: activeTab, limit: 8, page: 1 });
+     const quickLook: CarProps[] = quickData?.rows ?? []
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
-    const [activeTab, setActiveTab] = useState<'popular' | 'latest'>('popular')
 
     const handleScroll = () => {
         const container = scrollRef.current;
@@ -157,51 +151,47 @@ const QuickLook: React.FC = () => {
 
 
                         <div ref={scrollRef} className='flex space-x-4 overflow-x-auto scroll-smooth scrollbar-hide p-2'>
-                            {upcomingCars.map((car, idx) => (
+                            {quickLook.map((car) => (
                                 <div
-                                    key={idx}
-                                    className={`rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden w-[265px] xl:w-[384px] h-[400px] xl:h-[454px] flex-shrink-0 flex flex-col`}
+                                    key={car.modelId}
+                                    className="rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden w-[265px] xl:w-[384px] h-[400px] xl:h-[454px] flex-shrink-0 flex flex-col"
                                 >
                                     {/* Image Section */}
                                     <div className="relative h-[166px] xl:h-[241px] w-full rounded-md overflow-hidden">
                                         <Image
-                                            src={car.image}
-                                            alt={car.name}
+                                            src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
+                                            alt={car?.image?.alt || car.modelName}
                                             fill
                                             sizes="(max-width: 1280px) 100vw, 400px"
                                             priority={false}
                                             className="object-cover shadow-md rounded-md"
                                         />
-
-                                        {/* Gradient Overlay */}
                                         <div className="absolute bottom-0 p-3 w-full bg-gradient-to-t from-black/90 to-transparent">
-                                            <p className="text-white font-semibold">Maruti Suzuki</p>
+                                            <p className="text-white font-semibold">{car.brand.name}</p>
                                         </div>
 
-                                        {/* Favorite Button */}
                                         <button className="absolute top-2 right-2 bg-white dark:bg-[#171717] rounded-full p-2 shadow">
                                             <IoMdStarOutline />
                                         </button>
                                     </div>
 
-                                    {/* Remaining Space for Content */}
-                                    <div className={`px-2 py-4 flex-grow text-center flex flex-col justify-between`}>
-                                        <p className="font-semibold text-xl">{car.name}</p>
+                                    {/* Content */}
+                                    <div className="px-2 py-4 flex-grow text-center flex flex-col justify-between">
+                                        <p className="font-semibold text-xl">{car.modelName}</p>
                                         <div className='flex gap-2 items-center justify-around border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2'>
                                             <p className='flex items-center gap-1 text-sm'>
-                                                <PiEngine size={18} />
-                                                {car.engine}
+                                                <PiEngine size={18} /> {car.powerPS} PS
                                             </p>
                                             <p className='flex items-center gap-1 text-sm'>
-                                                <PiEngine size={18} />
-                                                {car.nitro}
+                                                <PiEngine size={18} /> {car.torqueNM} Nm
                                             </p>
-                                            <p className='flex items-center gap-1 text-sm '>
-                                                <BiTachometer size={18} />
-                                                {car.mileage}
+                                            <p className='flex items-center gap-1 text-sm'>
+                                                <BiTachometer size={18} /> {car.mileageKMPL} km/l
                                             </p>
                                         </div>
-                                        <p className="font-semibold">{car.price}</p>
+                                        <p className="font-semibold">
+                                            ₹{(car.priceMin / 100000).toFixed(2)} - {(car.priceMax / 100000).toFixed(2)} Lakh*
+                                        </p>
                                         <button className='p-3 font-semibold text-sm w-full text-black flex justify-between items-center cursor-pointer rounded-lg bg-yellow-400'>
                                             View Current Offers
                                             <FaArrowRight />
@@ -209,6 +199,7 @@ const QuickLook: React.FC = () => {
                                     </div>
                                 </div>
                             ))}
+
                         </div>
                     </div>
                 </div>

@@ -25,6 +25,8 @@ function buildWhere(q: ModelsListQuery): Prisma.tblmodelsWhereInput {
   if (q.brandId) where.brandId = q.brandId;
   if (q.bodyTypeId) where.modelBodyTypeId = q.bodyTypeId;
 
+  // 🔸 keep DB-side price filter only for expected* columns (legacy path)
+  //    (Service now overrides price-bucket behavior to use variants)
   if (q.priceBucket) {
     const { min, max } = priceRanges[q.priceBucket];
     const baseFilter: Prisma.IntFilter = {};
@@ -71,7 +73,15 @@ function buildOrderBy(sortBy: ModelsListQuery['sortBy']): Prisma.tblmodelsOrderB
   }
 }
 
+const baseSelect = {
+  modelId: true, modelName: true, modelSlug: true,
+  brandId: true, modelBodyTypeId: true, isUpcoming: true,
+  launchDate: true, totalViews: true,
+  expectedBasePrice: true, expectedTopPrice: true,
+} satisfies Prisma.tblmodelsSelect;
+
 export class ModelsRepo {
+  /** Original list (DB-side filters incl. expected* price bucket) */
   async list(q: ModelsListQuery) {
     const take = Math.max(1, Math.min(q.limit || 12, 100));
     const skip = Math.max(0, ((q.page || 1) - 1) * take);
@@ -80,15 +90,7 @@ export class ModelsRepo {
     const orderBy = buildOrderBy(q.sortBy);
 
     const [rows, total] = await Promise.all([
-      prisma.tblmodels.findMany({
-        where, orderBy, skip, take,
-        select: {
-          modelId: true, modelName: true, modelSlug: true,
-          brandId: true, modelBodyTypeId: true, isUpcoming: true,
-          launchDate: true, totalViews: true,
-          expectedBasePrice: true, expectedTopPrice: true,
-        },
-      }),
+      prisma.tblmodels.findMany({ where, orderBy, skip, take, select: baseSelect }),
       prisma.tblmodels.count({ where }),
     ]);
 
@@ -96,6 +98,15 @@ export class ModelsRepo {
       rows, total, page: q.page || 1, pageSize: take,
       totalPages: Math.max(1, Math.ceil(total / take)),
     };
+  }
+
+  /** ✅ New: fetch ALL rows for non-price filters (ignore priceBucket) — used for variant-based price filtering */
+  async listIgnoringPriceBucket(q: ModelsListQuery) {
+    const q2 = { ...q, priceBucket: undefined } as ModelsListQuery;
+    const where = buildWhere(q2);
+    // no skip/take — service will filter/sort/paginate after computing variant prices
+    const rows = await prisma.tblmodels.findMany({ where, select: baseSelect });
+    return rows;
   }
 
   async getById(id: number) {

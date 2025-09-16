@@ -205,14 +205,14 @@ const Header = () => {
 
                             {hoverTab === "news" && (
                                 <div
-                                    className="fixed left-0 w-full z-[150] px-10"
+                                    className="fixed left-0 w-full z-[150]"
                                     style={fixedWrapStyle}
                                     onMouseEnter={cancelClose}
                                     onMouseLeave={scheduleClose}
                                 >
-                                    <div className="app-container mx-auto">
+                                    
                                         <NewsVideosDropdown />
-                                    </div>
+                                    
                                 </div>
                             )}
                         </div>
@@ -238,14 +238,12 @@ const Header = () => {
 
                             {hoverTab === "tools" && (
                                 <div
-                                    className="fixed left-0 w-full z-[150] px-10"
+                                    className="fixed left-0 w-full z-[150]"
                                     style={fixedWrapStyle}
                                     onMouseEnter={cancelClose}
                                     onMouseLeave={scheduleClose}
                                 >
-                                    <div className="app-container mx-auto">
                                         <ToolsDropdown />
-                                    </div>
                                 </div>
                             )}
                         </div>

@@ -15,6 +15,7 @@ export function extractNumbers(raw: string): number[] {
   return matches.map((t) => parseFloat(t.replace(/,/g, ''))).filter((n) => !Number.isNaN(n));
 }
 
+/** Parse a single variant price string to INR band (rupees) */
 export function extractPriceBand(raw: string): { min: number; max: number } | null {
   if (!raw) return null;
   const mult = detectMultiplier(raw);
@@ -24,4 +25,17 @@ export function extractPriceBand(raw: string): { min: number; max: number } | nu
   const min = Math.min(...values);
   const max = Math.max(...values);
   return { min, max };
+}
+
+/** Snap INR to a 'clean' auto-price:
+ *  - Work in lakhs (₹1,00,000) → round to 2 decimals.
+ *  - If fractional part >= 0.95, bump to next whole lakh (e.g. 4.99L → 5.00L)
+ */
+export function snapApproxINR(n: number | null | undefined): number | null {
+  if (n == null || !isFinite(n)) return null;
+  const inLakhs = n / 100_000;
+  const frac = inLakhs - Math.floor(inLakhs);
+  let snappedLakhs = Math.round(inLakhs * 100) / 100; // 2 decimals in Lakh
+  if (frac >= 0.95) snappedLakhs = Math.ceil(inLakhs); // e.g. 4.96..4.99 → 5.00
+  return Math.round(snappedLakhs * 100_000);
 }

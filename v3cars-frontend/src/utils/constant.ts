@@ -1,8 +1,11 @@
 export let BASE_URL: string;
 
+
+export let IMAGE_URL = "https://www.v3cars.com"
+
 if (typeof window !== "undefined") {
   if (window.location.origin.includes("localhost")) {
-    BASE_URL = "http://localhost:5006/api/v2";
+    BASE_URL = "http://localhost:3121/v1";
   } else {
     BASE_URL = "https://dev2.v3cars.com/api/v2";
   }

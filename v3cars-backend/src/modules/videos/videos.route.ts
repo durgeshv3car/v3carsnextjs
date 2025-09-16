@@ -4,7 +4,10 @@ import { VideosController } from './videos.controller.js';
 const r = Router();
 const c = new VideosController();
 
-// e.g. /v1/videos/reviews/latest
+/** ⚠️ Fixed routes FIRST (so they don't get captured by :type) */
+r.get('/latest', (req, res) => c.latestGlobal(req, res));   // /v1/videos/latest  (global)
+
+/** Type-scoped routes: /v1/videos/:type/...  */
 r.get('/:type/today', (req, res) => c.today(req, res));
 r.get('/:type/latest', (req, res) => c.latest(req, res));
 r.get('/:type/trending', (req, res) => c.trending(req, res));

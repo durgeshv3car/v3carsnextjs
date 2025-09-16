@@ -61,7 +61,7 @@ export class ContentService {
       const today = await repo.getToday(contentType);
       excludeId = today?.id;
     }
-    const rows = await repo.listLatest(contentType, limit, excludeId);
+    const rows = await repo.listLatest(contentType, limit);
     return hydrate(rows as any);
   }
 
