@@ -1,0 +1,30 @@
+/* [project]/src/components/ui/custom-inputs/CustomSelect.module.css [app-client] (css) */
+.CustomSelect-module__OCgOha__dropdown {
+  scrollbar-color: transparent;
+}
+
+.CustomSelect-module__OCgOha__no-option {
+  color: #888;
+  padding: 10px;
+  font-style: italic;
+}
+
+.CustomSelect-module__OCgOha__arrow {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.CustomSelect-module__OCgOha__dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.CustomSelect-module__OCgOha__dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.CustomSelect-module__OCgOha__dropdown::-webkit-scrollbar-thumb {
+  background-color: #facc15;
+}
+
+
+/*# sourceMappingURL=src_components_ui_custom-inputs_CustomSelect_module_15335b0a.css.map*/

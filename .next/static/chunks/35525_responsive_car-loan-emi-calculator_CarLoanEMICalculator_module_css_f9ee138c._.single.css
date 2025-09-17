@@ -1,0 +1,31 @@
+/* [project]/src/components/responsive/car-loan-emi-calculator/CarLoanEMICalculator.module.css [app-client] (css) */
+input[type="range"].CarLoanEMICalculator-module__tTbi1q__custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  background-color: #000;
+  border: 3px solid #facc15;
+  border-radius: 9999px;
+  width: 24px;
+  height: 24px;
+}
+
+input[type="range"].CarLoanEMICalculator-module__tTbi1q__custom-slider::-moz-range-thumb {
+  cursor: pointer;
+  background-color: #000;
+  border: 3px solid #facc15;
+  border-radius: 9999px;
+  width: 24px;
+  height: 24px;
+}
+
+input[type="range"].CarLoanEMICalculator-module__tTbi1q__custom-slider::-ms-thumb {
+  cursor: pointer;
+  background-color: #000;
+  border: 3px solid #facc15;
+  border-radius: 9999px;
+  width: 24px;
+  height: 24px;
+}
+
+/*# sourceMappingURL=35525_responsive_car-loan-emi-calculator_CarLoanEMICalculator_module_css_f9ee138c._.single.css.map*/

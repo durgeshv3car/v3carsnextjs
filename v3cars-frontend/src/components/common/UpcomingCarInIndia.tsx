@@ -78,13 +78,13 @@ const mapToUIData = (cars: CarProps[]): CarUIProps[] => {
     let confidence = 15000; // default
     if (car.totalViews >= 50000) confidence = 95;
     else if (car.totalViews >= 10000) confidence = 80;
-    else confidence = 4000;
+    else confidence = 100;
 
     return {
       id: car.modelId,
       name: car.modelName,
       brand: car.brand.name,
-      image: car.imageUrl || car.image?.url || "/placeholder.png",
+      image: car.imageUrl || car.image?.url,
       expectedLaunch: new Date(car.launchDate).toLocaleString("en-US", {
         month: "long",
         year: "numeric",
@@ -169,20 +169,24 @@ const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title, data }) 
         </div>
       </div>
 
-      <div ref={scrollRef} className="flex space-x-4 overflow-x-auto scroll-smooth scrollbar-hide">
+      <div ref={scrollRef} className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[24%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide">
         {uiData.map((car) => (
           <div
             key={car.id}
-            className={`rounded-xl shadow-lg overflow-hidden w-[293px] xl:w-[384px] h-[275px] xl:h-[336px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 90 ? "border-[#3D923A]" : car.confidence >= 70 ? "border-[#F08200]" : "border-[#D40808]"}`}
+            className={`rounded-xl shadow-lg overflow-hidden snap-start h-auto lg:h-[290px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 90 ? "border-[#3D923A]" : car.confidence >= 70 ? "border-[#F08200]" : "border-[#D40808]"}`}
           >
             {/* Image Section */}
-            <div className="relative h-[184px] xl:h-[240px] w-full">
+            <div className="relative w-full">
               <Image
-                src={`${IMAGE_URL}/media/model-imgs/${car.image}`}
+                src={
+                  car.image
+                    ? `${IMAGE_URL}/media/model-imgs/${car.image}`
+                    : "/coming-soon-car.jpg"
+                }
                 alt={car.name}
                 width={400}
-                height={240}
-                className="h-full w-full object-cover shadow-md rounded-md"
+                height={184}
+                className="h-full w-full shadow-md rounded-md"
               />
               {/* Confidence Badge */}
               <div className="absolute top-2 left-2 flex items-center bg-[#E7E7E7] dark:bg-[#171717] px-2 py-1 rounded-full space-x-2">
@@ -196,12 +200,12 @@ const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title, data }) 
             </div>
 
             {/* Content Section */}
-            <div className="grid grid-cols-2 text-sm xl:text-base items-center flex-grow bg-white dark:bg-[#171717]">
-              <div className="border-r border-[#0000004D] text-center mx-4">
+            <div className="grid grid-cols-2 items-center flex-grow bg-white dark:bg-[#171717] py-6 lg:py-0">
+              <div className="border-r dark:border-[#2E2E2E]  text-center mx-4 text-sm">
                 <p className="text-gray-500 font-medium truncate">{car.brand}</p>
                 <p className="font-semibold truncate">{car.name}</p>
               </div>
-              <div className="text-center mx-4">
+              <div className="text-center mx-4 text-sm">
                 <p className="text-gray-500">Expected Launch</p>
                 <p className="font-semibold">{car.expectedLaunch}</p>
               </div>

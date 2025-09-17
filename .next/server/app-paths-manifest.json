@@ -1,0 +1,13 @@
+{
+  "/[...slug]/page": "app/[...slug]/page.js",
+  "/apply-car-loan-india/page": "app/apply-car-loan-india/page.js",
+  "/brands/[brand]/page": "app/brands/[brand]/page.js",
+  "/car-expert-reviews/page": "app/car-expert-reviews/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/fuel-cost-calculator/page": "app/fuel-cost-calculator/page.js",
+  "/mileage-calculator/page": "app/mileage-calculator/page.js",
+  "/news/[news]/page": "app/news/[news]/page.js",
+  "/news/page": "app/news/page.js",
+  "/page": "app/page.js",
+  "/upcoming-cars/page": "app/upcoming-cars/page.js"
+}
