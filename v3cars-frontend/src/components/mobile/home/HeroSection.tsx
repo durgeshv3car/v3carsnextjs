@@ -17,18 +17,85 @@ const slides = [
     },
 ];
 
-const MobileHeroSection: React.FC = () => {
+interface MobileHeroSectionProps {
+    selectBrand: number | null;
+    setSelectBrand: React.Dispatch<React.SetStateAction<number | null>>;
+    data: CarBrand[];
+    models: CarModel[]
+}
+
+interface CarBrand {
+    brandId: number
+    brandName: string
+    brandSlug: string
+    logoPath: string
+    popularity: string
+    unquieViews: number | null
+    brandStatus: number
+    serviceNetwork: boolean
+    brandType: number
+}
+interface CarImage {
+    name: string
+    alt: string
+    url: string
+}
+
+interface CarModel {
+    modelId: number
+    modelName: string
+    modelSlug: string
+    brandId: number
+    modelBodyTypeId: number
+    isUpcoming: boolean
+    launchDate: string // ISO date string
+    totalViews: number
+    expectedBasePrice: number
+    expectedTopPrice: number
+    brand: {
+        id: number
+        name: string
+        slug: string
+        logo: string
+    }
+    priceMin: number
+    priceMax: number
+    powerPS: number
+    torqueNM: number
+    mileageKMPL: number
+    image: CarImage
+    imageUrl: string
+}
+
+const budgetOptions = [
+    { id: 1, label: 'Below ₹5 Lakh', value: 'UNDER_5L' },
+    { id: 2, label: '₹5 Lakh - ₹10 Lakh', value: 'BETWEEN_5_10L' },
+    { id: 3, label: '₹10 Lakh - ₹20 Lakh', value: 'BETWEEN_10_20L' },
+    { id: 4, label: '₹20 Lakh - ₹40 Lakh', value: 'BETWEEN_20_40L' },
+    { id: 5, label: 'Above ₹40 Lakh', value: 'ABOVE_40L' },
+]
+
+const allVehicleTypes = [
+    { id: 1, name: 'Hatchback' },
+    { id: 3, name: 'SUV' },
+    { id: 4, name: 'Sedan' },
+    { id: 5, name: 'Crossover' },
+    { id: 6, name: 'Pickup Truck' },
+    { id: 7, name: 'MUV' },
+    { id: 8, name: 'Coupe' },
+    { id: 9, name: 'Convertible' },
+]
+
+interface AllVehicleTypes {
+    id: number
+    name: string
+}
+
+const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setSelectBrand, data, models }) => {
+    const [modelId, setModelId] = useState<number | null>(null)
+    const [budget, setBudget] = useState<string>("")
+    const [vehicleType, setVehicleType] = useState<number | null>(null)
     const [activeTab, setActiveTab] = useState('budget');
-    const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
-    const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
-
-    const handleSelection = (value: string) => {
-        console.log('Selected:', value);
-    };
-
-    const handle = (value: string) => {
-        console.log('Selected:', value);
-    };
 
     return (
         <div className='space-y-4 px-4 py-2'>
@@ -132,7 +199,7 @@ const MobileHeroSection: React.FC = () => {
             </div>
 
             {/* Filter Card */}
-            <div className="bg-[#EEEEEE] dark:bg-[#171717] rounded-xl shadow-md border border-gray-300 dark:border-[#262629] overflow-hidden">
+            <div className="bg-[#EEEEEE] dark:bg-[#171717] rounded-xl shadow-md border border-gray-300 dark:border-[#262629]">
 
                 <div className="grid grid-cols-2 mt-2">
                     {['budget', 'model'].map((tab) => (
@@ -160,21 +227,53 @@ const MobileHeroSection: React.FC = () => {
                         <div className='flex items-center gap-2 text-xs'>
 
                             <div className='w-full border-b dark:border-[#2E2E2E]'>
-                                <CustomSelect options={items} placeholder={"Select Budget"} onSelect={handleSelection} />
+                                <CustomSelect
+                                    options={budgetOptions}
+                                    placeholder="Select Budget"
+                                    labelKey="label"
+                                    valueKey="value"
+                                    value={budget}
+                                    onSelect={(budget) => {
+                                        setBudget(budget.value)
+                                    }}
+                                />
                             </div>
 
                             <div className='w-full border-b dark:border-[#2E2E2E]'>
-                                <CustomSelect options={items2} placeholder={"All Vehicle Types"} onSelect={handle} />
+                                <CustomSelect
+                                    options={allVehicleTypes}
+                                    placeholder="All Vehicle Types"
+                                    labelKey="name"
+                                    valueKey="id"
+                                    value={vehicleType}
+                                    onSelect={(bodyType: AllVehicleTypes) => {
+                                        setVehicleType(bodyType.id)
+                                    }}
+                                />
                             </div>
 
                         </div>
                     ) : (
                         <div className='flex items-center gap-2 text-xs'>
                             <div className='w-full border-b dark:border-[#2E2E2E]'>
-                                <CustomSelect options={items} placeholder={"Select Brand"} onSelect={handleSelection} />
+                                <CustomSelect
+                                    options={data}
+                                    placeholder="Select Brand"
+                                    labelKey="brandName"
+                                    valueKey="brandId"
+                                    value={selectBrand}
+                                    onSelect={(value: CarBrand) => { setSelectBrand(value.brandId) }}
+                                />
                             </div>
                             <div className='w-full border-b dark:border-[#2E2E2E]'>
-                                <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handle} />
+                                <CustomSelect
+                                    options={models}
+                                    placeholder="Select Model"
+                                    labelKey="modelName"
+                                    valueKey="modelId"
+                                    value={modelId}
+                                    onSelect={(value: CarModel) => { setModelId(value.modelId) }}
+                                />
                             </div>
                         </div>
                     )}

@@ -171,15 +171,15 @@ const CarByPrice: React.FC = () => {
                     {/* Cars Grid */}
                     <div
                         ref={scrollRef}
-                        className="flex space-x-4 overflow-x-auto scroll-smooth scrollbar-hide p-2"
+                        className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[24.10%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide m-3"
                     >
                         {carByPrice.map((car) => (
                             <div
                                 key={car.modelId}
-                                className="rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden w-[265px] xl:w-[384px] h-[400px] xl:h-[454px] flex-shrink-0 flex flex-col"
+                                className="rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-auto flex-shrink-0 flex flex-col"
                             >
                                 {/* Image Section */}
-                                <div className="relative h-[166px] xl:h-[241px] w-full rounded-md overflow-hidden">
+                                <div className="relative h-[225px] w-full rounded-md overflow-hidden">
                                     <Image
                                         src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
                                         alt={car.image.alt ?? car.modelName}
@@ -201,7 +201,7 @@ const CarByPrice: React.FC = () => {
                                 </div>
 
                                 {/* Content */}
-                                <div className="px-2 py-4 flex-grow text-center flex flex-col justify-between">
+                                <div className="px-2 py-4 flex-grow text-center flex flex-col justify-between gap-4">
                                     <p className="font-semibold text-xl">{car.modelName}</p>
                                     <div className="flex gap-2 items-center justify-around border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2">
                                         <p className="flex items-center gap-1 text-sm">

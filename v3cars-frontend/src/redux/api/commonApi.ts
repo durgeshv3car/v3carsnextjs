@@ -48,7 +48,7 @@ export const commonApi = createApi({
       query: () => "/cars/brands?sortBy=popular&limit=12&page=1",
     }),
     getModels: builder.query<BrandsResponse, GetModelsArgs>({
-      query: ({ brandId }) => `/cars/models?brandId=${brandId}`,
+      query: ({ brandId }) => `/cars/models?brandId=${brandId}&isUpcoming=0`,
     }),
   }),
 });

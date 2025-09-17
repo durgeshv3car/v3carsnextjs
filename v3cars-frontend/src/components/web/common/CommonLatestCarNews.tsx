@@ -66,7 +66,7 @@ const CommonLatestCarNews: React.FC<CommonLatestCarNewsProps> = ({ data }) => {
     return (
         <section>
             <div className="flex items-center justify-between">
-                <div className="flex items-center justify-between w-full lg:w-auto gap-4">
+                <div className="flex items-center justify-between w-full lg:w-auto gap-4 mb-4">
                     <h2 className="text-lg font-medium">Latest Car News</h2>
                     <Link
                         href="#"
@@ -123,7 +123,7 @@ const CommonLatestCarNews: React.FC<CommonLatestCarNewsProps> = ({ data }) => {
                 </div>
             </div>
 
-            <div className="flex space-x-4 overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
+            <div className=" grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32.50%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
                 {data.map((item) => {
                     // Clean shortDescription → remove inline styles
                     const cleanDescription = DOMPurify.sanitize(item.shortDescription, {
@@ -133,10 +133,10 @@ const CommonLatestCarNews: React.FC<CommonLatestCarNewsProps> = ({ data }) => {
                     return (
                         <div
                             key={item.id}
-                            className="bg-slate-50 dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg min-w-[520px] min-h-[495px] shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
+                            className="bg-slate-50 dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg snap-start h-auto shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
                         >
                             {/* Fixed height image */}
-                            <div className="relative h-[310px] w-full">
+                            <div className="relative w-full">
                                 <Image
                                     src={`${IMAGE_URL}${item.thumbnail.url}`}
                                     alt={item.thumbnail.alt}

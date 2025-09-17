@@ -21,12 +21,12 @@ const CategorySection: React.FC = () => {
                 <h2 className="text-sm xl:text-lg font-semibold xl:font-medium mb-4">
                     Search By Category
                 </h2>
-                <div className="flex lg:grid grid-cols-8 gap-4 overflow-auto lg:overscroll-none scrollbar-thin-yellow">
+                <div
+                    className="grid grid-flow-col auto-cols-[47.90%] gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-thin-yellow lg:grid-flow-row lg:grid-cols-8 lg:overflow-visible lg:snap-none">
                     {categories.map((category, index) => (
                         <div
                             key={index}
-                            className="group bg-gray-100 dark:bg-[#171717] border dark:border-[#2E2E2E] min-w-[152px] h-[104px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition-transform duration-300 cursor-pointer"
-                        >
+                            className="group bg-gray-100 dark:bg-[#171717] border dark:border-[#2E2E2E] h-[104px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition-transform duration-300 cursor-pointer snap-start lg:snap-none">
                             <Image
                                 src={category.icon}
                                 alt={category.label}
