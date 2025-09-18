@@ -53,13 +53,14 @@ export class ContentService {
   private async modelIdsForFuel(fuelType?: string): Promise<number[] | undefined> {
     const ft = fuelType?.trim();
     if (!ft) return undefined;
+    // NOTE: yahan empty aayen to undefined return kar rahe hain (fallback title LIKE ko allow karne ke liye)
     const ids = await powertrains.findModelIdsByFuel({ fuelType: ft });
-    return ids.length ? ids : [-1]; // -1 ensures empty match if none
+    return ids.length ? ids : undefined;
   }
 
   async today(contentType: number, q?: { fuelType?: string }): Promise<ContentCard | null> {
     const modelIds = await this.modelIdsForFuel(q?.fuelType);
-    const row = await repo.getToday(contentType, modelIds);
+    const row = await repo.getToday(contentType, modelIds, q?.fuelType);
     if (!row) return null;
     const [card] = await hydrate([row as any]);
     return card ?? null;
@@ -71,25 +72,25 @@ export class ContentService {
 
     let excludeId: number | undefined = undefined;
     if (q.excludeToday !== false) {
-      const today = await repo.getToday(contentType, modelIds);
+      const today = await repo.getToday(contentType, modelIds, q.fuelType);
       excludeId = today?.id;
     }
 
-    const rows = await repo.listLatest(contentType, limit, excludeId, modelIds);
+    const rows = await repo.listLatest(contentType, limit, excludeId, modelIds, q.fuelType);
     return hydrate(rows as any);
   }
 
   async trending(contentType: number, q: ContentListQuery & { fuelType?: string }) {
     const limit = q.limit ?? 9;
     const modelIds = await this.modelIdsForFuel(q.fuelType);
-    const rows = await repo.listTrending(contentType, limit, modelIds);
+    const rows = await repo.listTrending(contentType, limit, modelIds, q.fuelType);
     return hydrate(rows as any);
   }
 
   async top(contentType: number, q: ContentListQuery & { fuelType?: string }) {
     const limit = q.limit ?? 9;
     const modelIds = await this.modelIdsForFuel(q.fuelType);
-    const rows = await repo.listTop(contentType, limit, modelIds);
+    const rows = await repo.listTop(contentType, limit, modelIds, q.fuelType);
     return hydrate(rows as any);
   }
 }

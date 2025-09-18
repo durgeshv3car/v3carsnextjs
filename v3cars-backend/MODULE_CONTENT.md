@@ -61,7 +61,7 @@ Expert Review today: /v1/content/reviews/today
 
 2) Latest
 
-GET /v1/content/:type/latest?limit=9&excludeToday=1
+GET /v1/content/news/latest?fuelType=Electric&limit=9&excludeToday=0
 # Ordered by publishDateandTime DESC, id DESC
 # Optional: &fuelType=Electric
 Examples
@@ -122,7 +122,7 @@ fuelType (e.g., Electric) works when content is tagged with model IDs in modelTa
 
 If you need other scoping (e.g., by brand/model explicitly), we can extend the API with brandId/modelId params later.
 
+ev reviews  - /v1/content/reviews/latest?fuelType=Electric&limit=9&excludeToday=0
 
-
-
+ev videos - /v1/videos/latest?limit=10&fuelType=Electric
 

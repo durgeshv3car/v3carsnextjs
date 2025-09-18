@@ -33,7 +33,7 @@ GET /v1/cars/brands
 **List**
 ```
 GET /v1/cars/models
-```
+```x`
 
 **Query params**
 - `q` — search in `modelName`/`modelSlug`
