@@ -46,7 +46,7 @@ interface CarProps {
 
 const QuickLook: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'popular' | 'latest'>('popular')
-    const { data: quickData, error: quickError, isLoading: quickLoading } = useGetQuickLookQuery({ type: activeTab, limit: 8, page: 1 });
+    const { data: quickData, error: quickError, isLoading: quickLoading } = useGetQuickLookQuery({ type: activeTab, limit: 15, page: 1 });
     const quickLook: CarProps[] = quickData?.rows ?? []
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);

@@ -51,7 +51,7 @@ const tabNames: Record<CarBodyTab, string> = {
 
 const CarByType: React.FC = () => {
     const [carBodyTab, setCarBodyTab] = useState<CarBodyTab>(3);
-    const { data: carByBodyTypeData, error: carByBodyTypeError, isLoading: carByBodyTypeLoading } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 8, page: 1 });
+    const { data: carByBodyTypeData, error: carByBodyTypeError, isLoading: carByBodyTypeLoading } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 15, page: 1 });
     const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
