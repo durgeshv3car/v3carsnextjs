@@ -4,20 +4,20 @@ import Image from "next/image";
 function BottomAd() {
   return (
     <div className="bg-[#B3B3B3] dark:bg-[#262626] py-4 flex justify-center items-center">
-      
+
       {/* Desktop / Tablet Ad */}
-      <div className="hidden sm:block w-full lg:app-container mx-auto relative aspect-[1600/346] ">
+      <div className="hidden sm:block w-full h-[280px] mx-auto relative ">
         <Image
           src="/ads/ad1.png"
           alt="ad1"
           fill
-          className="object-contain" 
+          className="object-contain"
           priority
         />
       </div>
 
       {/* Mobile Ad */}
-      <div className="block sm:hidden w-[300px] relative aspect-[386/280]">
+      <div className="block sm:hidden w-[300px] h-[250px] relative">
         <Image
           src="/upcoming/ad.png"
           alt="ad mobile"

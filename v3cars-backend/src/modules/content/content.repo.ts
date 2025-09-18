@@ -12,9 +12,16 @@ type ContentRow = {
   authorId: number;
 };
 
+function buildModelTaggingSql(modelIds?: number[]) {
+  if (!modelIds || modelIds.length === 0) return Prisma.empty;
+  const pattern = `(^|,)(${modelIds.join('|')})(,|$)`;
+  // normalize spaces in modelTagging
+  return Prisma.sql` AND REPLACE(modelTagging, ' ', '') REGEXP ${pattern} `;
+}
+
 export class ContentRepo {
-  /** Today (per contentType): most recent row up to DB NOW() */
-  async getToday(contentType: number) {
+  /** Today (per contentType) — optional EV scope by modelIds */
+  async getToday(contentType: number, modelIds?: number[]) {
     const rows = await prisma.$queryRaw<ContentRow[]>(Prisma.sql`
       SELECT id, title, pageUrl, publishDateandTime, shortDescription,
              thumbnailAltText, thumbnailUrl, authorId
@@ -23,15 +30,15 @@ export class ContentRepo {
         AND publishDateandTime <= NOW()
         AND contentPublishType IN (1,2)
         AND contentPublishStatus = 2
+        ${buildModelTaggingSql(modelIds)}
       ORDER BY publishDateandTime DESC, id DESC
       LIMIT 1
     `);
     return rows[0] ?? null;
   }
 
-  /** Latest (date desc); optionally exclude a specific id */
-  async listLatest(contentType: number, limit = 9) {
-   
+  /** Latest (date desc) — optional excludeId + EV scope */
+  async listLatest(contentType: number, limit = 9, excludeId?: number, modelIds?: number[]) {
     return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
       SELECT id, title, pageUrl, publishDateandTime, shortDescription,
              thumbnailAltText, thumbnailUrl, authorId
@@ -40,43 +47,41 @@ export class ContentRepo {
         AND publishDateandTime <= NOW()
         AND contentPublishType IN (1,2)
         AND contentPublishStatus = 2
+        ${excludeId ? Prisma.sql` AND id <> ${excludeId} ` : Prisma.empty}
+        ${buildModelTaggingSql(modelIds)}
       ORDER BY publishDateandTime DESC, id DESC
       LIMIT ${limit}
     `);
   }
 
-  /** Trending (no NOW() in your PHP): last_15days_view desc */
-  async listTrending(contentType: number, limit = 9) {
-    return prisma.tblcontents.findMany({
-      where: {
-        contentType,
-        contentPublishType: { in: [1, 2] as number[] },
-        contentPublishStatus: 2,
-      },
-      orderBy: [{ last_15days_view: 'desc' }, { id: 'desc' }],
-      take: limit,
-      select: {
-        id: true, title: true, pageUrl: true, publishDateandTime: true,
-        shortDescription: true, thumbnailAltText: true, thumbnailUrl: true, authorId: true,
-      },
-    });
+  /** Trending: last_15days_view desc — optional EV scope */
+  async listTrending(contentType: number, limit = 9, modelIds?: number[]) {
+    return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
+      SELECT id, title, pageUrl, publishDateandTime, shortDescription,
+             thumbnailAltText, thumbnailUrl, authorId
+      FROM tblcontents
+      WHERE contentType = ${contentType}
+        AND contentPublishType IN (1,2)
+        AND contentPublishStatus = 2
+        ${buildModelTaggingSql(modelIds)}
+      ORDER BY last_15days_view DESC, id DESC
+      LIMIT ${limit}
+    `);
   }
 
-  /** Top (no NOW() in your PHP): last_30days_view desc */
-  async listTop(contentType: number, limit = 9) {
-    return prisma.tblcontents.findMany({
-      where: {
-        contentType,
-        contentPublishType: { in: [1, 2] as number[] },
-        contentPublishStatus: 2,
-      },
-      orderBy: [{ last_30days_view: 'desc' }, { id: 'desc' }],
-      take: limit,
-      select: {
-        id: true, title: true, pageUrl: true, publishDateandTime: true,
-        shortDescription: true, thumbnailAltText: true, thumbnailUrl: true, authorId: true,
-      },
-    });
+  /** Top: last_30days_view desc — optional EV scope */
+  async listTop(contentType: number, limit = 9, modelIds?: number[]) {
+    return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
+      SELECT id, title, pageUrl, publishDateandTime, shortDescription,
+             thumbnailAltText, thumbnailUrl, authorId
+      FROM tblcontents
+      WHERE contentType = ${contentType}
+        AND contentPublishType IN (1,2)
+        AND contentPublishStatus = 2
+        ${buildModelTaggingSql(modelIds)}
+      ORDER BY last_30days_view DESC, id DESC
+      LIMIT ${limit}
+    `);
   }
 
   async findAuthorsByIds(ids: number[]) {

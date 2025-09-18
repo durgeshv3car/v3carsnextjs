@@ -17,7 +17,7 @@ const otherCities = [
 
 const LocationDropdown = () => {
   return (
-    <div className="w-full lg:app-container bg-white dark:bg-[#171717] my-1 mx-auto shadow-md z-50 rounded-xl">
+    <div className="w-full lg:max-w-[1600px] bg-white dark:bg-[#171717] my-1 mx-auto shadow-md z-50 rounded-xl">
       {/* Top Banner */}
       <div className="bg-[#ffe380] h-[80px] w-full flex items-center justify-between relative rounded-t-xl">
         <img

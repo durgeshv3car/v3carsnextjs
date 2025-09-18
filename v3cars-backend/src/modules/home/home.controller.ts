@@ -7,6 +7,8 @@ import {
   priceQueryDto,
   homeLatestNewsDto,
   homeLatestReviewsDto,
+  homeLatestVideosDto,
+  homeLatestVariantExplainedDto,
 } from './home.dto.js';
 
 const svc = new HomeService();
@@ -42,10 +44,24 @@ export class HomeController {
     res.json({ success: true, rows });
   }
 
-  /** ✅ Latest expert reviews */
+  /** Latest expert reviews */
   async latestReviews(req: Request, res: Response) {
     const q = homeLatestReviewsDto.parse(req.query);
     const rows = await svc.latestReviews(q);
+    res.json({ success: true, rows });
+  }
+
+  /** 🆕 Latest videos (global) */
+  async latestVideos(req: Request, res: Response) {
+    const q = homeLatestVideosDto.parse(req.query);
+    const rows = await svc.latestVideos(q);
+    res.json({ success: true, rows });
+  }
+
+  /** 🆕 Variants Explained (articles) */
+  async latestVariantExplained(req: Request, res: Response) {
+    const q = homeLatestVariantExplainedDto.parse(req.query);
+    const rows = await svc.latestVariantExplained(q);
     res.json({ success: true, rows });
   }
 }

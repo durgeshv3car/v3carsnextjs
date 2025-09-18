@@ -58,9 +58,8 @@ const CommonExpertReviews: React.FC<CommonExpertReviewProps> = ({ title, view, r
 
     return (
         <>
-            <section className="py-6">
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between">
+            <section>
+                    <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-semibold lg:font-medium">{title}</h2>
                             <Link
@@ -156,10 +155,10 @@ const CommonExpertReviews: React.FC<CommonExpertReviewProps> = ({ title, view, r
                             </div>
                         ))}
                     </div>
-                </div>
             </section>
         </>
     )
+    
 }
 
 export default CommonExpertReviews;

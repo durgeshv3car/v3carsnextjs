@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { FiChevronDown, FiEdit2 } from 'react-icons/fi';
+import { FiChevronDown } from 'react-icons/fi';
 
 export type DistanceUnit = 'km' | 'mi';
 export type Period = 'daily' | 'monthly' | 'yearly';
@@ -52,7 +52,7 @@ export default function TopControls({
               <button
                 type="button"
                 className="mt-1 flex w-full items-center justify-between text-sm"
-                onClick={()=>{setCountry("India")}}
+                onClick={() => { setCountry("India") }}
               >
                 <span className="truncate">{country}</span>
                 <FiChevronDown className="opacity-80" />
@@ -104,9 +104,17 @@ export default function TopControls({
               <div className="shrink-0 ml-4 bg-[#0b0d10] rounded-xl pl-4 pr-2 py-3 min-w-[160px] flex items-center justify-between">
                 <div>
                   <div className="text-[10px] uppercase opacity-70 tracking-wide">{period.toUpperCase()}</div>
-                  <div className="text-2xl font-semibold leading-none">{distanceValue}</div>
+                  {/* <div className="text-2xl font-semibold leading-none">{distanceValue}</div> */}
+                  <input
+                    type="number"
+                     className="text-2xl bg-transparent focus:outline-none focus:ring-0"
+                    value={distanceValue}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setDistanceValue(Number(e.target.value));
+                    }}
+                  />
                 </div>
-                <button
+                {/* <button
                   onClick={() => {
                     const v = prompt(`Enter ${period} distance (${distanceUnit})`, String(distanceValue));
                     if (!v) return;
@@ -116,11 +124,11 @@ export default function TopControls({
                   className="inline-flex items-center gap-1 text-sm border border-white/20 rounded-md px-3 py-1 hover:bg-white/10"
                 >
                   <FiEdit2 className="text-[14px]" /> Edit
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
     </div>

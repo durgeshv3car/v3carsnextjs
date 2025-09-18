@@ -49,10 +49,10 @@ export default function FuelCostTable({
     unit: 'L' | 'kg';
     data: ReturnType<typeof calc>;
   }> = [
-    { key: 'petrol', title: 'PETROL', suffix: 'km/L', unit: 'L', data: petrol },
-    { key: 'diesel', title: 'DIESEL', suffix: 'km/L', unit: 'L', data: diesel },
-    { key: 'cng', title: 'CNG*', suffix: 'km/kg', unit: 'kg', data: cng },
-  ];
+      { key: 'petrol', title: 'PETROL', suffix: 'km/L', unit: 'L', data: petrol },
+      { key: 'diesel', title: 'DIESEL', suffix: 'km/L', unit: 'L', data: diesel },
+      { key: 'cng', title: 'CNG*', suffix: 'km/kg', unit: 'kg', data: cng },
+    ];
 
   return (
     <div className="mt-8">
@@ -279,7 +279,7 @@ function Row({
 
 function HeaderCell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-4 py-6 text-center text-sm font-semibold bg-neutral-100 text-neutral-800 border border-b-0 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">
+    <div className="px-4 py-6 text-center text-sm font-semibold bg-[#F1F1F1] text-neutral-800 border border-b-0 border-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700">
       {children}
     </div>
   );

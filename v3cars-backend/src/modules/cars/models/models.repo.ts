@@ -1,6 +1,7 @@
 import { prisma } from '../../../lib/prisma.js';
 import type { ModelsListQuery } from './models.types.js';
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client'; // ⬅️ value import for Prisma.sql
+import type { Prisma as PrismaTypes } from '@prisma/client';
 
 const priceRanges: Record<string, { min?: number; max?: number }> = {
   UNDER_5L: { max: 5_00_000 },
@@ -10,12 +11,12 @@ const priceRanges: Record<string, { min?: number; max?: number }> = {
   ABOVE_40L: { min: 40_00_000 },
 };
 
-function normalizeAnd(andInput: Prisma.tblmodelsWhereInput | Prisma.tblmodelsWhereInput[] | undefined) {
+function normalizeAnd(andInput: PrismaTypes.tblmodelsWhereInput | PrismaTypes.tblmodelsWhereInput[] | undefined) {
   return Array.isArray(andInput) ? andInput : andInput ? [andInput] : [];
 }
 
-function buildWhere(q: ModelsListQuery): Prisma.tblmodelsWhereInput {
-  const where: Prisma.tblmodelsWhereInput = {};
+function buildWhere(q: ModelsListQuery): PrismaTypes.tblmodelsWhereInput {
+  const where: PrismaTypes.tblmodelsWhereInput = {};
 
   if (q.q) {
     const term = q.q;
@@ -25,17 +26,16 @@ function buildWhere(q: ModelsListQuery): Prisma.tblmodelsWhereInput {
   if (q.brandId) where.brandId = q.brandId;
   if (q.bodyTypeId) where.modelBodyTypeId = q.bodyTypeId;
 
-  // 🔸 keep DB-side price filter only for expected* columns (legacy path)
-  //    (Service now overrides price-bucket behavior to use variants)
+  // (legacy expected* price filter; service overrides for variant-based)
   if (q.priceBucket) {
     const { min, max } = priceRanges[q.priceBucket];
-    const baseFilter: Prisma.IntFilter = {};
-    const topFilter: Prisma.IntFilter = {};
+    const baseFilter: PrismaTypes.IntFilter = {};
+    const topFilter: PrismaTypes.IntFilter = {};
     if (typeof min === 'number') { baseFilter.gte = min; topFilter.gte = min; }
     if (typeof max === 'number') { baseFilter.lte = max; topFilter.lte = max; }
 
     const existingAND = normalizeAnd(where.AND);
-    const overlapAND: Prisma.tblmodelsWhereInput[] = [];
+    const overlapAND: PrismaTypes.tblmodelsWhereInput[] = [];
     if (typeof min === 'number') overlapAND.push({ expectedTopPrice: { gte: min } });
     if (typeof max === 'number') overlapAND.push({ expectedBasePrice: { lte: max } });
 
@@ -46,30 +46,53 @@ function buildWhere(q: ModelsListQuery): Prisma.tblmodelsWhereInput {
           Object.keys(baseFilter).length ? { expectedBasePrice: baseFilter } : undefined,
           Object.keys(topFilter).length ? { expectedTopPrice: topFilter } : undefined,
           overlapAND.length ? { AND: overlapAND } : undefined,
-        ].filter(Boolean) as Prisma.tblmodelsWhereInput[],
+        ].filter(Boolean) as PrismaTypes.tblmodelsWhereInput[],
       },
     ];
   }
 
+  const existingAND = normalizeAnd(where.AND);
+
+  const launchMonth = (q as any).launchMonth as string | undefined;
+  if (launchMonth) {
+    const [yy, mm] = launchMonth.split('-').map(Number);
+    if (yy && mm) {
+      const from = new Date(yy, mm - 1, 1, 0, 0, 0, 0);
+      const to = new Date(yy, mm, 1, 0, 0, 0, 0);
+      existingAND.push({ launchDate: { gte: from } });
+      existingAND.push({ launchDate: { lt: to } });
+    }
+  }
+
+  const lf = (q as any).launchFrom as Date | string | undefined;
+  const lt = (q as any).launchTo as Date | string | undefined;
+  const launchFrom = lf ? new Date(lf) : undefined;
+  const launchTo = lt ? new Date(lt) : undefined;
+
+  if (launchFrom) existingAND.push({ launchDate: { gte: launchFrom } });
+  if (launchTo)   existingAND.push({ launchDate: { lte: launchTo } });
+
   if ((q as any).futureOnly) {
     const now = new Date();
-    const existingAND = normalizeAnd(where.AND);
-    where.AND = [...existingAND, { launchDate: { not: null } }, { launchDate: { gte: now } }];
+    existingAND.push({ launchDate: { not: null } });
+    existingAND.push({ launchDate: { gte: now } });
   }
+
+  if (existingAND.length) where.AND = existingAND;
 
   return where;
 }
 
-function buildOrderBy(sortBy: ModelsListQuery['sortBy']): Prisma.tblmodelsOrderByWithRelationInput[] {
+function buildOrderBy(sortBy: ModelsListQuery['sortBy']): PrismaTypes.tblmodelsOrderByWithRelationInput[] {
   switch (sortBy) {
     case 'launch_asc': return [{ launchDate: 'asc' }, { modelId: 'asc' }];
-    case 'latest': return [{ launchDate: 'desc' }, { modelId: 'desc' }];
-    case 'popular': return [{ totalViews: 'desc' }, { modelId: 'desc' }];
-    case 'price_asc': return [{ expectedBasePrice: 'asc' }, { expectedTopPrice: 'asc' }];
+    case 'latest':     return [{ launchDate: 'desc' }, { modelId: 'desc' }];
+    case 'popular':    return [{ totalViews: 'desc' }, { modelId: 'desc' }];
+    case 'price_asc':  return [{ expectedBasePrice: 'asc' }, { expectedTopPrice: 'asc' }];
     case 'price_desc': return [{ expectedTopPrice: 'desc' }, { expectedBasePrice: 'desc' }];
-    case 'name_desc': return [{ modelName: 'desc' }];
-    case 'name_asc': return [{ modelName: 'asc' }];
-    default: return [{ modelId: 'asc' }];
+    case 'name_desc':  return [{ modelName: 'desc' }];
+    case 'name_asc':   return [{ modelName: 'asc' }];
+    default:           return [{ modelId: 'asc' }];
   }
 }
 
@@ -78,10 +101,9 @@ const baseSelect = {
   brandId: true, modelBodyTypeId: true, isUpcoming: true,
   launchDate: true, totalViews: true,
   expectedBasePrice: true, expectedTopPrice: true,
-} satisfies Prisma.tblmodelsSelect;
+} satisfies PrismaTypes.tblmodelsSelect;
 
 export class ModelsRepo {
-  /** Original list (DB-side filters incl. expected* price bucket) */
   async list(q: ModelsListQuery) {
     const take = Math.max(1, Math.min(q.limit || 12, 100));
     const skip = Math.max(0, ((q.page || 1) - 1) * take);
@@ -95,18 +117,42 @@ export class ModelsRepo {
     ]);
 
     return {
-      rows, total, page: q.page || 1, pageSize: take,
+      rows,
+      total,
+      page: q.page || 1,
+      pageSize: take,
       totalPages: Math.max(1, Math.ceil(total / take)),
     };
   }
 
-  /** ✅ New: fetch ALL rows for non-price filters (ignore priceBucket) — used for variant-based price filtering */
   async listIgnoringPriceBucket(q: ModelsListQuery) {
     const q2 = { ...q, priceBucket: undefined } as ModelsListQuery;
     const where = buildWhere(q2);
-    // no skip/take — service will filter/sort/paginate after computing variant prices
     const rows = await prisma.tblmodels.findMany({ where, select: baseSelect });
     return rows;
+  }
+
+  /** 🆕 DB aggregation for current month + next N months (N=months), grouped by month */
+  async upcomingMonthlyCount(opts: { months?: number; brandId?: number; bodyTypeId?: number }) {
+    const horizon = Math.max(1, Math.min(opts.months ?? 12, 24)); // next N months
+    const buckets = horizon + 1; // include current month
+
+    const brandSql = opts.brandId ? Prisma.sql` AND brandId = ${opts.brandId} ` : Prisma.sql``;
+    const bodySql  = opts.bodyTypeId ? Prisma.sql` AND modelBodyTypeId = ${opts.bodyTypeId} ` : Prisma.sql``;
+
+    const rows = await prisma.$queryRaw<Array<{ bucket: string; cnt: number }>>(Prisma.sql`
+      SELECT DATE_FORMAT(launchDate, '%Y-%m-01') AS bucket, COUNT(*) AS cnt
+      FROM tblmodels
+      WHERE isUpcoming = 1
+        AND launchDate >= DATE_SUB(DATE(NOW()), INTERVAL DAYOFMONTH(NOW())-1 DAY)  -- first day of current month
+        AND launchDate <  DATE_ADD(DATE_SUB(DATE(NOW()), INTERVAL DAYOFMONTH(NOW())-1 DAY), INTERVAL ${buckets} MONTH)
+        ${brandSql}
+        ${bodySql}
+      GROUP BY bucket
+      ORDER BY bucket ASC
+    `);
+
+    return rows; // service will fill missing months with 0
   }
 
   async getById(id: number) {

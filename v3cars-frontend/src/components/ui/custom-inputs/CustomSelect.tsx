@@ -1,88 +1,126 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './CustomSelect.module.css'
 
-interface CustomSelectProps {
-  options: string[];
-  placeholder?: string;
-  onSelect?: (value: string) => void;
+// ✅ Generic Props (T means any type of object you pass)
+interface CustomSelectProps<T> {
+  options: T[]
+  placeholder?: string
+  onSelect?: (value: T) => void
+  value?: any
+  labelKey: keyof T
+  valueKey: keyof T
 }
 
-const CustomSelect: React.FC<CustomSelectProps> = ({ options, placeholder, onSelect }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+const CustomSelect = <T,>({
+  options,
+  placeholder = 'Select an option',
+  onSelect,
+  value,
+  labelKey,
+  valueKey,
+}: CustomSelectProps<T>) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedItem, setSelectedItem] = useState<T | null>(null)
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // default value handle
+  useEffect(() => {
+    if (value !== undefined) {
+      const preSelected = options.find(
+        (item) => String(item[valueKey]) === String(value)
+      )
+      setSelectedItem(preSelected || null)
+    }
+  }, [value, options, valueKey])
 
   const filteredOptions = options.filter((item) =>
-    item.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    String(item[labelKey]).toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
-  const handleSelect = (item: string) => {
-    setSelectedItem(item);
-    setSearchTerm('');
-    setIsOpen(false);
-    if (onSelect) onSelect(item);
-  };
+  const handleSelect = (item: T) => {
+    setSelectedItem(item)
+    setSearchTerm('')
+    setIsOpen(false)
+    onSelect?.(item)
+  }
 
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsOpen(false);
+      setIsOpen(false)
     }
-  };
+  }
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   return (
-    <div className={"w-full relative"} ref={dropdownRef}>
-      <div className={"p-2 flex justify-between items-center cursor-pointer "} onClick={() => setIsOpen((prev) => !prev)}>
-
-        <p className='dark:text-white text-black'>
-        {selectedItem || placeholder}
+    <div className="w-full relative" ref={dropdownRef}>
+      {/* Selected item */}
+      <div
+        className="p-2 flex justify-between items-center cursor-pointer"
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
+        <p className="dark:text-white text-black">
+          {selectedItem ? String(selectedItem[labelKey]) : placeholder}
         </p>
-
-        <span className={styles['arrow']}>
-          {isOpen ?
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-            </svg>
-            :
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-            </svg>
-          }
+        <span className={styles.arrow}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className={`${isOpen ? "rotate-180" : "rotate-0"} size-4 transition-transform duration-300`}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m19.5 8.25-7.5 7.5-7.5-7.5"
+            />
+          </svg>
         </span>
       </div>
 
+      {/* Dropdown */}
       {isOpen && (
-        <div className={`absolute top-full border border-gray-300 rounded-b-lg dark:border-[#2E2E2E] border-t-0 w-full z-30 max-h-[200px] overflow-y-auto ${styles["dropdown"]}`}>
+        <div
+          className={`absolute top-full left-0 right-0 border border-gray-300 rounded-b-lg dark:border-[#2E2E2E] w-full z-30 max-h-[200px] overflow-y-auto bg-white dark:bg-[#171717] ${styles.dropdown}`}
+        >
+          {/* Search input */}
           <input
             type="text"
-            className={"bg-gray-50 dark:bg-[#171717] w-full p-3 border-b  border-gray-300 dark:border-[#2E2E2E] outline-none"}
-            placeholder="Search"
+            className="bg-gray-50 dark:bg-[#171717] w-full p-3 border-b border-gray-300 dark:border-[#2E2E2E] outline-none"
+            placeholder="Search..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <ul className={"bg-gray-50 dark:bg-[#171717] p-0 m-0"}>
+
+          {/* Options */}
+          <ul className="p-0 m-0">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((item, index) => (
-                <li key={index} className={"p-3 cursor-pointer hover:bg-[#f0f0f0] dark:hover:bg-[#27272a]"} onClick={() => handleSelect(item)}>
-                  {item}
+                <li
+                  key={String(item[valueKey]) || index}
+                  className="p-3 cursor-pointer hover:bg-[#f0f0f0] dark:hover:bg-[#27272a]"
+                  onClick={() => handleSelect(item)}
+                >
+                  {String(item[labelKey])}
                 </li>
               ))
             ) : (
-              <li className={styles['no-option']}>No match found</li>
+              <li className="p-3 text-gray-400">No match found</li>
             )}
           </ul>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CustomSelect;
+export default CustomSelect

@@ -28,34 +28,192 @@ function inBucket(min: number | null, max: number | null, bucket?: keyof typeof 
   const lo = min ?? max ?? 0;
   const hi = max ?? min ?? 0;
 
-  if (typeof bmin === 'number' && hi < bmin) return false; // model entirely below bucket
-  if (typeof bmax === 'number' && lo > bmax) return false; // model entirely above bucket
-  return true; // overlap
+  if (typeof bmin === 'number' && hi < bmin) return false;
+  if (typeof bmax === 'number' && lo > bmax) return false;
+  return true;
 }
 
 export class ModelsService {
   async list(q: ModelsListQuery) {
-    // 🔸 If priceBucket not present → old path (expected* columns + variant fallback for display)
-    if (!q.priceBucket) {
-      const base = await repo.list(q);
-      const rows = base.rows;
+    const fuelType = q.fuelType?.trim();
 
-      const modelIds = rows.map((r) => r.modelId).filter((x): x is number => typeof x === 'number');
-      const brandIds = Array.from(new Set(rows.map((r) => r.brandId).filter((x): x is number => typeof x === 'number')));
+    /** ------------------------------
+     * PRICE BUCKET FLOW (variant-based) — now with fuel filter support
+     * ------------------------------ */
+    if (q.priceBucket) {
+      // 1) Pull all base rows for non-price filters
+      let baseRows = await repo.listIgnoringPriceBucket(q);
+
+      // 1b) Apply fuelType filter (if any) BEFORE band computation
+      if (fuelType) {
+        const allowedModelIds = new Set(await powertrainsSvc.findModelIdsByFuel({ fuelType }));
+        baseRows = baseRows.filter(m => allowedModelIds.has(m.modelId));
+      }
+
+      const allIds = baseRows.map(r => r.modelId);
+      if (!allIds.length) {
+        return { rows: [], total: 0, page: q.page || 1, pageSize: q.limit || 12, totalPages: 0 };
+      }
+
+      // 2) Compute variant price bands
+      const bands = await variantsSvc.getPriceBandsByModelIds(allIds);
+
+      // 3) Attach computed min/max strictly from variants; exclude models without bands
+      const withComputed = baseRows
+        .map((m) => {
+          const b = bands.get(m.modelId) ?? { min: null, max: null };
+          return { ...m, computedMin: b.min, computedMax: b.max };
+        })
+        .filter((m) => m.computedMin != null || m.computedMax != null);
+
+      // 4) Apply bucket filter
+      const filtered = withComputed.filter((m) =>
+        inBucket(m.computedMin ?? null, m.computedMax ?? null, q.priceBucket as any)
+      );
+
+      // 5) Sort
+      const sortBy = q.sortBy;
+      const sorted = filtered.sort((a, b) => {
+        const nameCmp = (x?: string | null, y?: string | null) =>
+          (x ?? '').localeCompare(y ?? '', undefined, { sensitivity: 'base' });
+        switch (sortBy) {
+          case 'price_asc': {
+            const ax = a.computedMin ?? Number.POSITIVE_INFINITY;
+            const bx = b.computedMin ?? Number.POSITIVE_INFINITY;
+            return ax - bx || a.modelId - b.modelId;
+          }
+          case 'price_desc': {
+            const ax = a.computedMax ?? Number.NEGATIVE_INFINITY;
+            const bx = b.computedMax ?? Number.NEGATIVE_INFINITY;
+            return bx - ax || b.modelId - a.modelId;
+          }
+          case 'latest':
+            return (b.launchDate?.getTime() ?? 0) - (a.launchDate?.getTime() ?? 0) || b.modelId - a.modelId;
+          case 'popular':
+            return (b.totalViews ?? 0) - (a.totalViews ?? 0) || b.modelId - a.modelId;
+          case 'name_desc':
+            return nameCmp(b.modelName, a.modelName) || b.modelId - a.modelId;
+          case 'name_asc':
+            return nameCmp(a.modelName, b.modelName) || a.modelId - b.modelId;
+          default:
+            return a.modelId - b.modelId;
+        }
+      });
+
+      // 6) Paginate
+      const pageSize = Math.max(1, Math.min(q.limit || 12, 100));
+      const page = Math.max(1, q.page || 1);
+      const total = sorted.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      const pageRows = sorted.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
+
+      // 7) Enrich (brands, specs, images)
+      const pageIds = pageRows.map((r) => r.modelId);
+      const brandIds = Array.from(new Set(pageRows.map((r) => r.brandId).filter((x): x is number => typeof x === 'number')));
+
+      const [brandRows, specsMap, imageMap] = await Promise.all([
+        brandsSvc.findByIds(brandIds),
+        powertrainsSvc.getSpecsByModelIds(pageIds),
+        imagesSvc.getPrimaryByModelIds(pageIds),
+      ]);
+      const brandMap = new Map(brandRows.map((b) => [b.brandId, b]));
+
+      const enriched = pageRows.map((m) => {
+        const b = m.brandId ? brandMap.get(m.brandId) : undefined;
+        const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null, powerTrain: null };
+        const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
+        const priceMin = m.computedMin ?? null;
+        const priceMax = m.computedMax ?? null;
+
+        return {
+          ...m,
+          brand: b ? { id: b.brandId, name: b.brandName, slug: b.brandSlug, logo: b.logoPath } : null,
+          priceMin,
+          priceMax,
+          powerPS: specs.powerPS,
+          torqueNM: specs.torqueNM,
+          mileageKMPL: specs.mileageKMPL,
+          powerTrain: specs.powerTrain,
+          image: img,
+          imageUrl: img.url,
+        };
+      });
+
+      return { rows: enriched, total, page, pageSize, totalPages };
+    }
+
+    /** ------------------------------
+     * FUEL-ONLY FLOW (no priceBucket) — manual filter + standard enrich
+     * ------------------------------ */
+    if (fuelType) {
+      // 1) Pull all base rows (ignore pagination) so we can filter by fuel first
+      let baseRows = await repo.listIgnoringPriceBucket(q);
+
+      // 2) Apply fuelType filter via powertrains
+      const allowedModelIds = new Set(await powertrainsSvc.findModelIdsByFuel({ fuelType }));
+      baseRows = baseRows.filter(m => allowedModelIds.has(m.modelId));
+
+      // 3) If sorting by price, compute bands for sorting
+      const sortBy = q.sortBy;
+      let sorted = baseRows;
+      if (sortBy === 'price_asc' || sortBy === 'price_desc') {
+        const bands = await variantsSvc.getPriceBandsByModelIds(baseRows.map(m => m.modelId));
+        const withBands = baseRows.map(m => ({ ...m, computedMin: bands.get(m.modelId)?.min ?? null, computedMax: bands.get(m.modelId)?.max ?? null }));
+        sorted = withBands.sort((a, b) => {
+          if (sortBy === 'price_asc') {
+            const ax = a.computedMin ?? Number.POSITIVE_INFINITY;
+            const bx = b.computedMin ?? Number.POSITIVE_INFINITY;
+            return ax - bx || a.modelId - b.modelId;
+          } else {
+            const ax = a.computedMax ?? Number.NEGATIVE_INFINITY;
+            const bx = b.computedMax ?? Number.NEGATIVE_INFINITY;
+            return bx - ax || b.modelId - a.modelId;
+          }
+        });
+      } else {
+        sorted = baseRows.sort((a, b) => {
+          const nameCmp = (x?: string | null, y?: string | null) =>
+            (x ?? '').localeCompare(y ?? '', undefined, { sensitivity: 'base' });
+          switch (sortBy) {
+            case 'latest':
+              return (b.launchDate?.getTime() ?? 0) - (a.launchDate?.getTime() ?? 0) || b.modelId - a.modelId;
+            case 'popular':
+              return (b.totalViews ?? 0) - (a.totalViews ?? 0) || b.modelId - a.modelId;
+            case 'name_desc':
+              return nameCmp(b.modelName, a.modelName) || b.modelId - a.modelId;
+            case 'name_asc':
+              return nameCmp(a.modelName, b.modelName) || a.modelId - b.modelId;
+            case 'launch_asc':
+              return (a.launchDate?.getTime() ?? 0) - (b.launchDate?.getTime() ?? 0) || a.modelId - b.modelId;
+            default:
+              return a.modelId - b.modelId;
+          }
+        });
+      }
+
+      // 4) Paginate
+      const pageSize = Math.max(1, Math.min(q.limit || 12, 100));
+      const page = Math.max(1, q.page || 1);
+      const total = sorted.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      const pageRows = sorted.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
+
+      // 5) Enrich (brands, price band fallback, specs, images)
+      const pageIds = pageRows.map((r) => r.modelId);
+      const brandIds = Array.from(new Set(pageRows.map((r) => r.brandId).filter((x): x is number => typeof x === 'number')));
 
       const [brandRows, priceBands, specsMap, imageMap] = await Promise.all([
         brandsSvc.findByIds(brandIds),
-        variantsSvc.getPriceBandsByModelIds(modelIds),
-        powertrainsSvc.getSpecsByModelIds(modelIds),
-        imagesSvc.getPrimaryByModelIds(modelIds),
+        variantsSvc.getPriceBandsByModelIds(pageIds),
+        powertrainsSvc.getSpecsByModelIds(pageIds),
+        imagesSvc.getPrimaryByModelIds(pageIds),
       ]);
-
       const brandMap = new Map(brandRows.map((b) => [b.brandId, b]));
 
-      const enriched = rows.map((m) => {
+      const enriched = pageRows.map((m) => {
         const b = m.brandId ? brandMap.get(m.brandId) : undefined;
         const band = priceBands.get(m.modelId) ?? { min: null, max: null };
-        const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+        const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null, powerTrain: null };
         const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
 
         // Fallback policy: use expected* if > 0 else use variant band
@@ -72,95 +230,44 @@ export class ModelsService {
           powerPS: specs.powerPS,
           torqueNM: specs.torqueNM,
           mileageKMPL: specs.mileageKMPL,
+          powerTrain: specs.powerTrain,
           image: img,
           imageUrl: img.url,
         };
       });
 
-      return { ...base, rows: enriched };
+      return { rows: enriched, total, page, pageSize, totalPages };
     }
 
-    // ✅ Variant-based price filtering path (for priceBucket)
-    // 1) Pull all base rows for non-price filters
-    const baseRows = await repo.listIgnoringPriceBucket(q);
-    const allIds = baseRows.map((r) => r.modelId);
-    if (!allIds.length) {
-      return { rows: [], total: 0, page: q.page || 1, pageSize: q.limit || 12, totalPages: 0 };
-    }
+    /** ------------------------------
+     * ORIGINAL (no priceBucket, no fuelType) — DB paginated + enrich
+     * ------------------------------ */
+    const base = await repo.list(q);
+    const rows = base.rows;
 
-    // 2) Compute variant price bands (already 'snapped' by repo util)
-    const bands = await variantsSvc.getPriceBandsByModelIds(allIds);
+    const modelIds = rows.map((r) => r.modelId).filter((x): x is number => typeof x === 'number');
+    const brandIds = Array.from(new Set(rows.map((r) => r.brandId).filter((x): x is number => typeof x === 'number')));
 
-    // 3) Attach computed min/max strictly from variants; exclude models without bands
-    const withComputed = baseRows
-      .map((m) => {
-        const b = bands.get(m.modelId) ?? { min: null, max: null };
-        return {
-          ...m,
-          computedMin: b.min,
-          computedMax: b.max,
-        };
-      })
-      .filter((m) => m.computedMin != null || m.computedMax != null);
-
-    // 4) Apply bucket filter (overlap)
-    const filtered = withComputed.filter((m) => inBucket(m.computedMin ?? null, m.computedMax ?? null, q.priceBucket as any));
-
-    // 5) Sort (price sorting uses computed bands; others use base fields)
-    const sortBy = q.sortBy;
-    const sorted = filtered.sort((a, b) => {
-      const nameCmp = (x?: string | null, y?: string | null) =>
-        (x ?? '').localeCompare(y ?? '', undefined, { sensitivity: 'base' });
-      switch (sortBy) {
-        case 'price_asc': {
-          const ax = a.computedMin ?? Number.POSITIVE_INFINITY;
-          const bx = b.computedMin ?? Number.POSITIVE_INFINITY;
-          return ax - bx || a.modelId - b.modelId;
-        }
-        case 'price_desc': {
-          const ax = a.computedMax ?? Number.NEGATIVE_INFINITY;
-          const bx = b.computedMax ?? Number.NEGATIVE_INFINITY;
-          return bx - ax || b.modelId - a.modelId;
-        }
-        case 'latest':
-          return (b.launchDate?.getTime() ?? 0) - (a.launchDate?.getTime() ?? 0) || b.modelId - a.modelId;
-        case 'popular':
-          return (b.totalViews ?? 0) - (a.totalViews ?? 0) || b.modelId - a.modelId;
-        case 'name_desc':
-          return nameCmp(b.modelName, a.modelName) || b.modelId - a.modelId;
-        case 'name_asc':
-          return nameCmp(a.modelName, b.modelName) || a.modelId - b.modelId;
-        default:
-          return a.modelId - b.modelId;
-      }
-    });
-
-    // 6) Paginate
-    const pageSize = Math.max(1, Math.min(q.limit || 12, 100));
-    const page = Math.max(1, q.page || 1);
-    const total = sorted.length;
-    const totalPages = Math.max(1, Math.ceil(total / pageSize));
-    const pageRows = sorted.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
-
-    // 7) Enrich (brands, specs, images) for page rows only
-    const pageIds = pageRows.map((r) => r.modelId);
-    const brandIds = Array.from(new Set(pageRows.map((r) => r.brandId).filter((x): x is number => typeof x === 'number')));
-
-    const [brandRows, specsMap, imageMap] = await Promise.all([
+    const [brandRows, priceBands, specsMap, imageMap] = await Promise.all([
       brandsSvc.findByIds(brandIds),
-      powertrainsSvc.getSpecsByModelIds(pageIds),
-      imagesSvc.getPrimaryByModelIds(pageIds),
+      variantsSvc.getPriceBandsByModelIds(modelIds),
+      powertrainsSvc.getSpecsByModelIds(modelIds),
+      imagesSvc.getPrimaryByModelIds(modelIds),
     ]);
+
     const brandMap = new Map(brandRows.map((b) => [b.brandId, b]));
 
-    const enriched = pageRows.map((m) => {
+    const enriched = rows.map((m) => {
       const b = m.brandId ? brandMap.get(m.brandId) : undefined;
-      const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+      const band = priceBands.get(m.modelId) ?? { min: null, max: null };
+      const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null, powerTrain: null };
       const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
 
-      // For price-bucket flow, ALWAYS use computed (variant-based) prices for display
-      const priceMin = m.computedMin ?? null;
-      const priceMax = m.computedMax ?? null;
+      // Fallback policy: use expected* if > 0 else use variant band
+      const priceMin =
+        (typeof m.expectedBasePrice === 'number' && m.expectedBasePrice > 0 ? m.expectedBasePrice : band.min) ?? null;
+      const priceMax =
+        (typeof m.expectedTopPrice === 'number' && m.expectedTopPrice > 0 ? m.expectedTopPrice : band.max) ?? null;
 
       return {
         ...m,
@@ -170,16 +277,42 @@ export class ModelsService {
         powerPS: specs.powerPS,
         torqueNM: specs.torqueNM,
         mileageKMPL: specs.mileageKMPL,
+        powerTrain: specs.powerTrain,
         image: img,
-        imageUrl: img.url,
+        imageUrl: img.url,  
       };
     });
 
-    return { rows: enriched, total, page, pageSize, totalPages };
+    return { ...base, rows: enriched };
   }
 
   async getById(id: number) {
-    // (Optionally enrich detail similarly)
     return repo.getById(id);
+  }
+
+  async upcomingMonthlyCount(opts: { months?: number; brandId?: number; bodyTypeId?: number }) {
+    const horizon = Math.max(1, Math.min(opts.months ?? 12, 24)); // next N months
+    const rows = await repo.upcomingMonthlyCount(opts);
+
+    const start = new Date();
+    start.setDate(1); start.setHours(0,0,0,0);
+
+    const fmt = new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric' });
+
+    const countsByKey = new Map<string, number>(
+      rows.map((r) => [r.bucket.slice(0, 7), Number((r as any).cnt) || 0])
+    );
+
+    const out: Array<{ key: string; month: string; count: number }> = [];
+    for (let i = 0; i <= horizon; i++) {
+      const d = new Date(start);
+      d.setMonth(d.getMonth() + i);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const month = fmt.format(d);
+      const count = countsByKey.get(key) ?? 0;
+      out.push({ key, month, count });
+    }
+
+    return out;
   }
 }

@@ -17,6 +17,5 @@ v1.use('/reviews', reviewsRouter);
 v1.use('/comparisons', comparisonsRouter);
 v1.use('/videos', videosRouter); 
 
-
 export default v1;
 

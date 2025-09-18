@@ -21,7 +21,7 @@ const brandOptions: BrandOption[] = [
 const customStyles: StylesConfig<BrandOption, false> = {
   container: (base) => ({
     ...base,
-    width: '350px',
+    width: 'auto',
     margin: 'auto',
   }),
   control: (base, state) => ({

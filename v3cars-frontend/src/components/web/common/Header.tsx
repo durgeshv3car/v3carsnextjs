@@ -10,6 +10,7 @@ import NewsVideosDropdown from "../header/NewsVideosDropdown";
 import LoginModal from "./LoginModal";
 import { usePathname, useRouter } from "next/navigation";
 import ToolsDropdown from "../header/ToolsDropdown.";
+import ThemeToggle from "@/components/common/ThemeToggle";
 // import ThemeToggle from "@/components/common/ThemeToggle";
 
 type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
@@ -79,7 +80,7 @@ const Header = () => {
         window.addEventListener("scroll", update, true);
         return () => {
             window.removeEventListener("resize", update);
-            window.removeEventListener("scroll", update, true as any);
+            window.removeEventListener("scroll", update, true);
         };
 
     }, []);
@@ -111,220 +112,196 @@ const Header = () => {
     };
 
     return (
-
         <>
-        
-            {path !== "/web-stories" && (
-                
-                <>
-                    <header
-                        ref={headerRef as any}
-                        className="w-full z-[200] lg:px-4 xl:px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]"
+            <header
+                ref={headerRef}
+                className="w-full z-[200] lg:px-4 xl:px-10 sticky top-0 bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]"
+            >
+                <div className="app-container mx-auto py-3 flex items-center justify-between">
+                    {/* Logo */}
+                    <div
+                        className="flex items-center cursor-pointer gap-2"
+                        onClick={() => router.push("/")}
                     >
+                        <Image
+                            src="/logo/header/v3logo.png"
+                            alt="V3 Cars Logo"
+                            width={150}
+                            height={40}
+                            priority
+                            className="block dark:hidden transition-transform duration-300 hover:scale-110"
+                        />
+                        <Image
+                            src="/logo/header/v3-white2.png"
+                            alt="V3 Cars Logo Dark"
+                            width={150}
+                            height={40}
+                            priority
+                            className="hidden dark:block transition-transform duration-300 hover:scale-110"
+                        />
+                    </div>
 
-                        <div className="lg:app-container mx-auto py-3 flex items-center justify-between">
-
-                            {/* Logo */}
+                    {/* Nav */}
+                    <nav className="flex items-center gap-6 text-sm font-medium">
+                        {/* Location (click-to-toggle + overlay handles outside click) */}
+                        <div
+                            className="relative py-4"
+                            onClick={() =>
+                                setHoverTab(hoverTab === "location" ? null : "location")
+                            }
+                        >
                             <div
-                                className="flex items-center cursor-pointer gap-2"
-                                onClick={() => router.push("/")}
+                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "location" ? "text-yellow-500" : ""
+                                    }`}
                             >
+                                <FiMapPin size={16} />
+                                Visakhapatnam
+                                <IoChevronDownOutline size={14} />
+                            </div>
+                        </div>
 
-                                <Image
-                                    src="/logo/header/v3logo.png"
-                                    alt="V3 Cars Logo"
-                                    width={150}
-                                    height={40}
-                                    priority
-                                    className="block dark:hidden"
-                                />
-
-                                <Image
-                                    src="/logo/header/v3-white2.png"
-                                    alt="V3 Cars Logo Dark"
-                                    width={150}
-                                    height={40}
-                                    priority
-                                    className="hidden dark:block"
-                                />
-
+                        {/* New Cars (hover with intent) */}
+                        <div
+                            ref={newCarsTriggerRef}
+                            className="relative py-4"
+                            onMouseEnter={() => openTab("newCars")}
+                            onMouseLeave={scheduleClose}
+                        >
+                            <div
+                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "newCars" ? "text-yellow-500" : ""
+                                    }`}
+                            >
+                                New Cars
+                                <IoChevronDownOutline size={14} />
                             </div>
 
-                            {/* Nav */}
-                            <nav className="flex items-center gap-6 text-sm font-medium">
-                                
-                                {/* Location (click-to-toggle + overlay handles outside click) */}
+                            {hoverTab === "newCars" && (
                                 <div
-                                    className="relative py-4"
-                                    onClick={() =>
-                                        setHoverTab(hoverTab === "location" ? null : "location")
-                                    }
+                                    className="fixed z-[150]"
+                                    style={{ top: dropdownTop, left: newCarsLeft }}
+                                    onMouseEnter={cancelClose}
+                                    onMouseLeave={scheduleClose}
                                 >
-                                    <div
-                                        className={`cursor-pointer flex items-center gap-1 ${hoverTab === "location" ? "text-yellow-500" : ""
-                                            }`}
-                                    >
-                                        <FiMapPin size={16} />
-                                        Visakhapatnam
-                                        <IoChevronDownOutline size={14} />
+                                    <div style={{ width: DROPDOWN_W }}>
+                                        <NewCarsDropdown />
                                     </div>
                                 </div>
+                            )}
+                        </div>
 
-                                {/* New Cars (hover with intent) */}
+                        {/* News, Reviews & Videos (hover with intent; full-width panel) */}
+                        <div
+                            className="relative py-4"
+                            onMouseEnter={() => openTab("news")}
+                            onMouseLeave={scheduleClose}
+                        >
+                            <span
+                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "news" ? "text-yellow-500" : ""
+                                    }`}
+                            >
+                                News, Reviews & Videos
+                                <IoChevronDownOutline size={14} />
+                            </span>
+
+                            {hoverTab === "news" && (
                                 <div
-                                    ref={newCarsTriggerRef}
-                                    className="relative py-4"
-                                    onMouseEnter={() => openTab("newCars")}
+                                    className="fixed left-0 w-full z-[150]"
+                                    style={fixedWrapStyle}
+                                    onMouseEnter={cancelClose}
                                     onMouseLeave={scheduleClose}
                                 >
                                     
-                                    <div
-                                        className={`cursor-pointer flex items-center gap-1 ${hoverTab === "newCars" ? "text-yellow-500" : ""
-                                            }`}
-                                    >
-                                        New Cars
-                                        <IoChevronDownOutline size={14} />
-                                    </div>
-
-                                    {hoverTab === "newCars" && (
-                                        <div
-                                            className="fixed z-[150]"
-                                            style={{ top: dropdownTop, left: newCarsLeft }}
-                                            onMouseEnter={cancelClose}
-                                            onMouseLeave={scheduleClose}
-                                        >
-                                            <div style={{ width: DROPDOWN_W }}>
-                                                <NewCarsDropdown />
-                                            </div>
-                                        </div>
-                                    )}
-
+                                        <NewsVideosDropdown />
+                                    
                                 </div>
-
-                                {/* News, Reviews & Videos (hover with intent; full-width panel) */}
-                                <div
-                                    className="relative py-4"
-                                    onMouseEnter={() => openTab("news")}
-                                    onMouseLeave={scheduleClose}
-                                >
-
-                                    <span
-                                        className={`cursor-pointer flex items-center gap-1 ${hoverTab === "news" ? "text-yellow-500" : ""
-                                            }`}
-                                    >
-                                        News, Reviews & Videos
-                                        <IoChevronDownOutline size={14} />
-                                    </span>
-
-                                    {hoverTab === "news" && (
-                                        <div
-                                            className="fixed left-0 w-full z-[150] px-10"
-                                            style={fixedWrapStyle}
-                                            onMouseEnter={cancelClose}
-                                            onMouseLeave={scheduleClose}
-                                        >
-                                            <div className="app-container mx-auto">
-                                                <NewsVideosDropdown />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                </div>
-
-                                {/* Variant Explained (no dropdown; no timers needed) */}
-                                <div className="relative py-4">
-                                    <span className="cursor-pointer">Variant Explained</span>
-                                </div>
-
-                                {/* Tools (hover with intent; full-width panel) */}
-                                <div
-                                    className="relative py-4"
-                                    onMouseEnter={() => openTab("tools")}
-                                    onMouseLeave={scheduleClose}
-                                >
-
-                                    <span
-                                        className={`cursor-pointer flex items-center gap-1 ${hoverTab === "tools" ? "text-yellow-500" : ""
-                                            }`}
-                                    >
-                                        Tools
-                                        <IoChevronDownOutline size={14} />
-                                    </span>
-
-                                    {hoverTab === "tools" && (
-                                        <div
-                                            className="fixed left-0 w-full z-[150] px-10"
-                                            style={fixedWrapStyle}
-                                            onMouseEnter={cancelClose}
-                                            onMouseLeave={scheduleClose}
-                                        >
-                                            <div className="app-container mx-auto">
-                                                <ToolsDropdown />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                </div>
-                            </nav>
-
-                            {/* Right */}
-                            <div className="flex items-center gap-4">
-
-                                <div className="2xl:flex items-center hidden border border-[#e5e5e5] dark:border-[#3a3a3a] rounded-full overflow-hidden">
-                                    <input
-                                        type="text"
-                                        placeholder="Search Car"
-                                        className="px-4 py-1 w-48 outline-none bg-transparent text-sm rounded-l-full"
-                                    />
-                                    <button className="bg-gray-700 p-2 flex items-center justify-center h-full w-20 rounded-r-full rounded-l-full">
-                                        <FiSearch size={18} color="#fff" />
-                                    </button>
-                                </div>
-
-                                <button
-                                    onClick={() => setShowLogin(true)}
-                                    className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-full flex items-center gap-2 text-sm"
-                                >
-                                    <HiOutlineUserCircle size={20} />
-                                    Login / Signup
-                                </button>
-
-                            </div>
-
-                            {/* <ThemeToggle/> */}
-
+                            )}
                         </div>
-                    </header>
 
-                    {/* LOCATION overlay/backdrop (click-to-open; outside click closes) */}
-                    {hoverTab === "location" && (
-                        <>
-                            {/* backdrop */}
-                            <div
-                                className="fixed inset-0 z-[140]"
-                                onClick={() => setHoverTab(null)}
-                            />
+                        {/* Variant Explained (no dropdown; no timers needed) */}
+                        <div className="relative py-4">
+                            <span className="cursor-pointer">Variant Explained</span>
+                        </div>
 
-                            {/* panel */}
-                            <div
-                                className="fixed inset-x-0 z-[150] px-10 pointer-events-none"
-                                style={fixedWrapStyle}
+                        {/* Tools (hover with intent; full-width panel) */}
+                        <div
+                            className="relative py-4"
+                            onMouseEnter={() => openTab("tools")}
+                            onMouseLeave={scheduleClose}
+                        >
+                            <span
+                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "tools" ? "text-yellow-500" : ""
+                                    }`}
                             >
+                                Tools
+                                <IoChevronDownOutline size={14} />
+                            </span>
+
+                            {hoverTab === "tools" && (
                                 <div
-                                    className="app-container mx-auto pointer-events-auto"
-                                    onClick={(e) => e.stopPropagation()}
+                                    className="fixed left-0 w-full z-[150]"
+                                    style={fixedWrapStyle}
+                                    onMouseEnter={cancelClose}
+                                    onMouseLeave={scheduleClose}
                                 >
-                                    <LocationDropdown />
+                                        <ToolsDropdown />
                                 </div>
-                            </div>
+                            )}
+                        </div>
+                    </nav>
 
-                        </>
-                    )}
+                    {/* Right */}
+                    <div className="flex items-center gap-4">
+                        <div className="2xl:flex items-center hidden border border-[#e5e5e5] dark:border-[#3a3a3a] rounded-full overflow-hidden">
+                            <input
+                                type="text"
+                                placeholder="Search Car"
+                                className="px-4 py-1 w-48 outline-none bg-transparent text-sm rounded-l-full"
+                            />
+                            <button className="bg-gray-700 p-2 flex items-center justify-center h-full w-20 rounded-r-full rounded-l-full">
+                                <FiSearch size={18} color="#fff" />
+                            </button>
+                        </div>
 
-                    {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+                        <button
+                            onClick={() => setShowLogin(true)}
+                            className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-full flex items-center gap-2 text-sm"
+                        >
+                            <HiOutlineUserCircle size={20} />
+                            Login / Signup
+                        </button>
+
+                        <ThemeToggle />
+                    </div>
+
+
+
+                </div>
+            </header>
+
+            {/* LOCATION overlay/backdrop (click-to-open; outside click closes) */}
+            {hoverTab === "location" && (
+                <>
+                    {/* backdrop */}
+                    <div
+                        className="fixed inset-0 z-[140]"
+                        onClick={() => setHoverTab(null)}
+                    />
+                    {/* panel */}
+                    <div
+                        className="fixed inset-x-0 z-[150] px-10 pointer-events-none"
+                        style={fixedWrapStyle}
+                    >
+                        <div
+                            className="app-container mx-auto pointer-events-auto"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <LocationDropdown />
+                        </div>
+                    </div>
                 </>
             )}
 
+            {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
         </>
 
     );

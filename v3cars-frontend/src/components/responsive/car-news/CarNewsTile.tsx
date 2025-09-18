@@ -1,4 +1,8 @@
+'use client'
+
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FiUser, FiCalendar } from "react-icons/fi";
 
 interface CarNewsTileProps {
@@ -16,6 +20,7 @@ export default function CarNewsTile({
   author,
   date,
 }: CarNewsTileProps) {
+  const router = useRouter()
 
   return (
 
@@ -26,12 +31,13 @@ export default function CarNewsTile({
         alt={title}
         width={400}
         height={200}
-        className="w-full lg:h-[280px] object-cover"
+        className="w-full lg:h-[280px] object-cover cursor-pointer"
+        onClick={()=>{router.push(`/news/${title}`)}}
       />
 
       <div className="md:p-4 p-2">
 
-        <h3 className="lg:text-[18px] text-[12px] font-semibold text-gray-800 dark:text-white leading-tight mb-2 lg:mb-5 line-clamp-2">
+        <h3 className="lg:text-[18px] text-[12px] font-semibold text-gray-800 dark:text-white leading-tight mb-2 lg:mb-5 line-clamp-2 cursor-pointer" onClick={()=>{router.push(`/news/${title}`)}}>
           {title}
         </h3>
 

@@ -5,6 +5,9 @@ import BrandSelector from '@/components/responsive/brand/BrandSelector';
 import DiscontinuedCarList from "@/components/responsive/brand/DiscontinuedCarList";
 import SimilarBrands from "@/components/responsive/brand/SimilarBrands";
 import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
+import LatestVideos from "@/components/responsive/car-review-video/LatestVideo";
+import CommonLatestCarNews from "@/components/web/common/CommonLatestCarNews";
+import UpcomingCarInIndia from "@/components/common/UpcomingCarInIndia";
 
 
 const mahindraCars = [
@@ -138,7 +141,6 @@ export default function BrandPage() {
                         <BrandPriceTable title="Mahindra Cars price list" cars={mahindraCars} />
 
                         <div>
-
                             <p className="text-3xl font-bold mb-5">Mahindra Cars In India</p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
@@ -146,9 +148,20 @@ export default function BrandPage() {
                             </div>
                         </div>
 
+                        <LatestVideos />
+
+                        <div className="hidden lg:block">
+                            <CommonLatestCarNews />
+                        </div>
+
+
+                        <UpcomingCarInIndia
+                            title={"Upcoming Cars In India"}
+                        />
+
                     </div>
 
-                </div>  
+                </div>
             </div>
         </div>
 

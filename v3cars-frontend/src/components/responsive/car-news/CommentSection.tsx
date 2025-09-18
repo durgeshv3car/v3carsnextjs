@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa6";
 import { HiOutlineDotsVertical, HiChevronDown } from "react-icons/hi";
 import { FaUserCheck } from "react-icons/fa";
+import { IoShareSocialOutline } from "react-icons/io5";
 
 interface Reply {
   id: number;
@@ -92,20 +93,22 @@ export default function CommentSection() {
   };
 
   return (
-    <div className="py-6 px-4 rounded-lg space-y-6 mt-5">
+    <div className="py-6 rounded-lg space-y-6 mt-5">
       {/* Share icons */}
 
-      <div className="flex justify-end items-center gap-4 pr-2">
+      <div className="flex items-center justify-between gap-4 bg-[#D9D9D9] dark:bg-[#2E2E2E] p-3 rounded-full">
+        <div className="flex items-center gap-4">
         {[FaFacebookF, FaXTwitter, FaLinkedinIn, FaWhatsapp].map((Icon, i) => (
           <span
             key={i}
-            className="w-10 h-10 rounded-full bg-white dark:bg-[#171717] flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80"
+            className="w-12 h-12 rounded-full bg-white dark:bg-[#171717] flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80"
           >
             <Icon className="" />
           </span>
         ))}
-        <span className="w-10 h-10 rounded-full bg-white dark:bg-[#171717] flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80">
-          <HiOutlineDotsVertical className="" />
+        </div>
+        <span className="w-12 h-12 rounded-full bg-white dark:bg-[#171717] flex items-center justify-center text-[18px] shadow cursor-pointer hover:opacity-80">
+          <IoShareSocialOutline className="" />
         </span>
       </div>
 
