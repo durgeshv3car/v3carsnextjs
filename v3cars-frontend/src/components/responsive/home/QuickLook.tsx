@@ -2,6 +2,8 @@
 
 import { useGetQuickLookQuery } from '@/redux/api/homeApi'
 import { IMAGE_URL } from '@/utils/constant'
+import { useGetQuickLookQuery } from '@/redux/api/homeApi'
+import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
@@ -10,6 +12,39 @@ import { FaArrowRight } from 'react-icons/fa'
 import { IoMdStarOutline } from 'react-icons/io'
 import { PiEngine } from 'react-icons/pi'
 
+interface CarBrand {
+    id: number;
+    name: string;
+    slug: string;
+    logo: string;
+}
+
+interface CarImage {
+    name: string;
+    alt: string;
+    url: string;
+}
+
+interface CarProps {
+    modelId: number;
+    modelName: string;
+    modelSlug: string;
+    brandId: number;
+    modelBodyTypeId: number;
+    isUpcoming: boolean;
+    launchDate: string; // ISO date string
+    totalViews: number;
+    expectedBasePrice: number;
+    expectedTopPrice: number;
+    brand: CarBrand;
+    priceMin: number;
+    priceMax: number;
+    powerPS: number;
+    torqueNM: number;
+    mileageKMPL: number;
+    image: CarImage;
+    imageUrl: string;
+}
 interface CarBrand {
     id: number;
     name: string;
@@ -98,6 +133,7 @@ const QuickLook: React.FC = () => {
                         <div className="flex justify-between items-center px-4 pt-4 border-b border-[#DEE2E6] dark:border-[#2E2E2E]">
                             {/* Tabs */}
                             <div className="flex">
+                            <div className="flex">
                                 {['popular', 'latest'].map((tab) => (
                                     <button
                                         key={tab}
@@ -112,14 +148,17 @@ const QuickLook: React.FC = () => {
 
                             {/* Scroll buttons */}
                             <div className="hidden lg:flex items-center space-x-1 pb-3">
+                            <div className="hidden lg:flex items-center space-x-1 pb-3">
                                 <button
                                     onClick={() => scroll('left')}
                                     disabled={isAtStart}
+                                    className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtStart ? 'cursor-not-allowed' : ''
                                     className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtStart ? 'cursor-not-allowed' : ''
                                         }`}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
+                                        className=" size-4"
                                         className=" size-4"
                                         fill="none"
                                         viewBox="0 0 24 24"
@@ -133,10 +172,12 @@ const QuickLook: React.FC = () => {
                                     onClick={() => scroll('right')}
                                     disabled={isAtEnd}
                                     className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtEnd ? 'cursor-not-allowed' : ''
+                                    className={`p-2 rounded-full hover:bg-gray-100 hover:dark:bg-[#2E2E2E] transition ${isAtEnd ? 'cursor-not-allowed' : ''
                                         }`}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
+                                        className="size-4"
                                         className="size-4"
                                         fill="none"
                                         viewBox="0 0 24 24"
@@ -154,13 +195,22 @@ const QuickLook: React.FC = () => {
                             ref={scrollRef}
                             className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[24.10%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide m-3">
                             {quickLook.map((car) => (
+                        <div
+                            ref={scrollRef}
+                            className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[24.10%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide m-3">
+                            {quickLook.map((car) => (
                                 <div
+                                    key={car.modelId}
+                                    className="rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-auto flex-shrink-0 flex flex-col"
                                     key={car.modelId}
                                     className="rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-auto flex-shrink-0 flex flex-col"
                                 >
                                     {/* Image Section */}
                                     <div className="relative h-[225px] w-full rounded-md overflow-hidden">
+                                    <div className="relative h-[225px] w-full rounded-md overflow-hidden">
                                         <Image
+                                            src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
+                                            alt={car?.image?.alt || car.modelName}
                                             src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
                                             alt={car?.image?.alt || car.modelName}
                                             fill
@@ -169,6 +219,7 @@ const QuickLook: React.FC = () => {
                                             className="object-cover shadow-md rounded-md"
                                         />
                                         <div className="absolute bottom-0 p-3 w-full bg-gradient-to-t from-black/90 to-transparent">
+                                            <p className="text-white font-semibold">{car.brand.name}</p>
                                             <p className="text-white font-semibold">{car.brand.name}</p>
                                         </div>
 
@@ -180,17 +231,27 @@ const QuickLook: React.FC = () => {
                                     {/* Content */}
                                     <div className="px-2 py-4 flex-grow text-center flex flex-col justify-between gap-4">
                                         <p className="font-semibold text-xl">{car.modelName}</p>
+                                    {/* Content */}
+                                    <div className="px-2 py-4 flex-grow text-center flex flex-col justify-between gap-4">
+                                        <p className="font-semibold text-xl">{car.modelName}</p>
                                         <div className='flex gap-2 items-center justify-around border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2'>
                                             <p className='flex items-center gap-1 text-sm'>
+                                                <PiEngine size={18} /> {car.powerPS} PS
                                                 <PiEngine size={18} /> {car.powerPS} PS
                                             </p>
                                             <p className='flex items-center gap-1 text-sm'>
                                                 <PiEngine size={18} /> {car.torqueNM} Nm
+                                                <PiEngine size={18} /> {car.torqueNM} Nm
                                             </p>
+                                            <p className='flex items-center gap-1 text-sm'>
+                                                <BiTachometer size={18} /> {car.mileageKMPL} km/l
                                             <p className='flex items-center gap-1 text-sm'>
                                                 <BiTachometer size={18} /> {car.mileageKMPL} km/l
                                             </p>
                                         </div>
+                                        <p className="font-semibold">
+                                            ₹{(car.priceMin / 100000).toFixed(2)} - {(car.priceMax / 100000).toFixed(2)} Lakh*
+                                        </p>
                                         <p className="font-semibold">
                                             ₹{(car.priceMin / 100000).toFixed(2)} - {(car.priceMax / 100000).toFixed(2)} Lakh*
                                         </p>
@@ -202,6 +263,7 @@ const QuickLook: React.FC = () => {
                                 </div>
                             ))}
                         </div>
+
 
                     </div>
                 </div>

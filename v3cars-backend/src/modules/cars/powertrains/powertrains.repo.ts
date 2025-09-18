@@ -15,11 +15,11 @@ export class PowertrainsRepo {
     });
   }
 
-  /** Return ids matching optional fuel/transmission (optionally scoped by modelId) */
+  /** Return powertrain ids matching optional fuel/transmission (optionally scoped by modelId) */
   async findIdsByFilters(opts: { fuelType?: string; transmissionType?: string; modelId?: number }) {
     const where: any = {};
-    if (opts.fuelType) where.fuelType = opts.fuelType;
-    if (opts.transmissionType) where.transmissionType = opts.transmissionType;
+    if (opts.fuelType) where.fuelType = { contains: opts.fuelType };          // case-insensitive in most MySQL collations
+    if (opts.transmissionType) where.transmissionType = { contains: opts.transmissionType };
     if (opts.modelId) where.modelId = opts.modelId;
 
     if (!Object.keys(where).length) return [];
@@ -31,9 +31,24 @@ export class PowertrainsRepo {
     return rows.map((r) => r.modelPowertrainId);
   }
 
-    /** Per-model specs from the FIRST powertrain row by ASC(modelPowertrainId) */
+  /** 🆕 Distinct modelIds that have the given fuelType (e.g., 'Electric') */
+  async findModelIdsByFuel(opts: { fuelType: string }) {
+    const ft = opts.fuelType?.trim();
+    if (!ft) return [];
+    const rows = await prisma.tblmodelpowertrains.findMany({
+      where: { fuelType: { contains: ft } },   // avoids 'mode' to keep prisma happy
+      select: { modelId: true },
+    });
+    const set = new Set<number>();
+    for (const r of rows) {
+      if (typeof r.modelId === 'number') set.add(r.modelId);
+    }
+    return Array.from(set);
+  }
+
+  /** Per-model specs from the FIRST powertrain row by ASC(modelPowertrainId) */
   async getSpecsByModelIds(modelIds: number[]) {
-    const map = new Map<number, { powerPS: number | null; torqueNM: number | null; mileageKMPL: number | null }>();
+    const map = new Map<number, { powerPS: number | null; torqueNM: number | null; mileageKMPL: number | null; powerTrain: string | null }>();
     if (!modelIds?.length) return map;
 
     // Step 1: get the MIN(modelPowertrainId) per modelId
@@ -66,6 +81,7 @@ export class PowertrainsRepo {
         torqueNM: true,
         claimedFE: true,
         realWorldMileage: true,
+        powerTrain: true
       },
     });
 
@@ -78,10 +94,10 @@ export class PowertrainsRepo {
         powerPS: (r.powerPS ?? null) as number | null,
         torqueNM: (r.torqueNM ?? null) as number | null,
         mileageKMPL: fe,
+        powerTrain: r.powerTrain ?? null,
       });
     }
 
     return map;
   }
-
 }

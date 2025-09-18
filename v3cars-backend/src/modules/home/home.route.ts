@@ -11,4 +11,8 @@ r.get('/search-by-price', (req, res) => c.byPrice(req, res));
 r.get('/latest-news', (req, res) => c.latestNews(req, res));
 r.get('/latest-reviews', (req, res) => c.latestReviews(req, res));
 
+/** 🆕 Home widgets */
+r.get('/latest-videos', (req, res) => c.latestVideos(req, res));
+r.get('/latest-variant-explained', (req, res) => c.latestVariantExplained(req, res));
+
 export const homeRouter = r;

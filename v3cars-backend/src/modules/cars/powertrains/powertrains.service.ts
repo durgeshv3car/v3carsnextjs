@@ -10,7 +10,12 @@ export class PowertrainsService {
     return repo.findIdsByFilters(opts);
   }
 
-  /** ✅ NEW: expose specs aggregation for models */
+  /** 🆕 Distinct modelIds for a given fuelType (e.g., 'Electric') */
+  findModelIdsByFuel(opts: { fuelType: string }) {
+    return repo.findModelIdsByFuel(opts);
+  }
+
+  /** Specs aggregation for models */
   getSpecsByModelIds(modelIds: number[]) {
     return repo.getSpecsByModelIds(modelIds);
   }
