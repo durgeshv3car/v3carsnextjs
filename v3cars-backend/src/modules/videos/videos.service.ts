@@ -48,10 +48,9 @@ async function modelIdsForFuel(fuelType?: string): Promise<number[] | undefined>
 }
 
 export class VideosService {
-
   async today(videoType: number, q?: { fuelType?: string }) {
     const modelIds = await modelIdsForFuel(q?.fuelType);
-    const row = await repo.getToday(videoType, modelIds);
+    const row = await repo.getToday(videoType, modelIds, q?.fuelType);
     if (!row) return null;
     const [card] = await hydrate([row]);
     return card ?? null;
@@ -63,32 +62,32 @@ export class VideosService {
 
     let excludeId: number | undefined = undefined;
     if (q.excludeToday !== false) {
-      const today = await repo.getToday(videoType, modelIds);
+      const today = await repo.getToday(videoType, modelIds, q.fuelType);
       excludeId = today?.videoId;
     }
-    const rows = await repo.listLatest(videoType, limit, excludeId, modelIds);
+    const rows = await repo.listLatest(videoType, limit, excludeId, modelIds, q.fuelType);
     return hydrate(rows);
   }
 
-  /** Global latest list (no videoType) — optional EV scope */
+  /** Global latest (no videoType) — optional EV scope */
   async latestGlobal(q: LatestVideosQuery & { fuelType?: string }) {
     const limit = q.limit ?? 9;
     const modelIds = await modelIdsForFuel(q.fuelType);
-    const rows = await repo.listLatestGlobal(limit, modelIds);
+    const rows = await repo.listLatestGlobal(limit, modelIds, q.fuelType);
     return hydrate(rows);
   }
 
   async trending(videoType: number, q: VideosListQuery & { fuelType?: string }) {
     const limit = q.limit ?? 9;
     const modelIds = await modelIdsForFuel(q.fuelType);
-    const rows = await repo.listTrending(videoType, limit, modelIds);
+    const rows = await repo.listTrending(videoType, limit, modelIds, q.fuelType);
     return hydrate(rows);
   }
 
   async top(videoType: number, q: VideosListQuery & { fuelType?: string }) {
     const limit = q.limit ?? 9;
     const modelIds = await modelIdsForFuel(q.fuelType);
-    const rows = await repo.listTop(videoType, limit, modelIds);
+    const rows = await repo.listTop(videoType, limit, modelIds, q.fuelType);
     return hydrate(rows);
   }
 }
