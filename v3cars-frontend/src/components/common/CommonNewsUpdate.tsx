@@ -140,8 +140,8 @@ const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsLi
               {/* Fixed height image */}
               <div className="relative w-full">
                 <Image
-                  src={`${IMAGE_URL}${item.thumbnail.url}`}
-                  alt={item.thumbnail.alt}
+                  src={`${IMAGE_URL}${item?.thumbnail?.url}`}
+                  alt={item?.thumbnail?.alt}
                   width={600}
                   height={310}
                   className="rounded-xl object-cover"

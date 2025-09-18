@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import BottomAd from "@/components/common/BottomAd";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
-import Upcoming from "@/components/common/UpcomingCars";
+import Upcoming from "@/components/common/TopBrands";
 
 export const metadata: Metadata = {
     title: "Upcoming Cars in India 2024-2025 | Latest Launches, Prices, Images",

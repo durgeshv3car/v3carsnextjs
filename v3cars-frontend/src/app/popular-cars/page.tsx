@@ -11,7 +11,7 @@ import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import TopSection from "@/components/common/TopSection";
 import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import PopularCar from "@/components/responsive/popular-cars/PopularCar";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeApi";
+import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useGetLatestVideosQuery } from "@/redux/api/homeApi";
 import { useGetPopularCarQuery } from "@/redux/api/popularApi";
 import { Metadata } from "next";
 
@@ -104,8 +104,13 @@ const videoList = new Array(8).fill({
 function PopularCars() {
     const { data: latestCarNewsData, error: latestCarNewsError, isLoading: latestCarNewsLoading } = useGetLatestCarNewsQuery();
     const { data: popularCarData, error: popularCarError, isLoading: popularCarLoading } = useGetPopularCarQuery();
+    const { data: expertCarReviewsData, error: expertCarReviewsError, isLoading: expertCarReviewsLoading } = useGetExpertCarReviewsQuery();
+    const { data: latestVideosData, error, isLoading } = useGetLatestVideosQuery()
+
+    const latestVideos = latestVideosData?.rows ?? []
     const latestCarNews = latestCarNewsData?.rows ?? [];
     const popularCar = popularCarData?.rows ?? []
+    const expertCarReviews = expertCarReviewsData?.rows ?? [];
 
     return (
         <>
@@ -119,7 +124,7 @@ function PopularCars() {
 
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
-                        <div className="w-auto lg:max-w-[74%]">
+                        <div className="w-auto lg:max-w-[74%] space-y-6">
                             <PopularCar />
 
                             <div className="mb-4">
@@ -149,16 +154,16 @@ function PopularCars() {
                                 newsList={latestCarNews}
                             />
 
-                            <CommonExpertReviews
+                            <CommonNewsUpdate
                                 title="Car Expert Reviews"
                                 view="Reviews"
-                                reviewList={reviewList}
+                                newsList={expertCarReviews}
                             />
 
                             <CommonVideos
                                 title="Car Videos"
                                 view="Car Videos"
-                                videoList={videoList}
+                                videoList={latestVideos}
                             />
                         </div>
 

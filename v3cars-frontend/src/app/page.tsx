@@ -37,7 +37,7 @@ export default function Home() {
   const { data: modelsData, error: modelsError, isLoading: modelsLoading } = useGetModelsQuery({ brandId: selectBrand ?? 0 });
   const { data: expertCarReviewsData, error: expertCarReviewsError, isLoading: expertCarReviewsLoading } = useGetExpertCarReviewsQuery();
   const { data: variantsExplainedData, error: variantsExplainedError, isLoading: variantsExplainedLoading } = useGetVariantsExplainedQuery();
-
+  
   const upcomingCars = upcomingData?.rows ?? [];
   const latestCarNews = latestCarNewsData?.rows ?? [];
   const brands = brandsData?.rows ?? [];

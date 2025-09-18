@@ -1,5 +1,6 @@
 'use client'
 
+import { IMAGE_URL } from '@/utils/constant';
 import Image from 'next/image';
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
@@ -10,12 +11,21 @@ interface CommonVideosProps {
     videoList: VideoItem[];
 }
 
-type VideoItem = {
-    thumbnail: string
-    playIcon: string
-    date: string
-    title: string
-    description: string
+interface VideoItem {
+  id: number;
+  title: string;
+  pageUrl: string;
+  publishDateandTime: string; // ISO date string
+  thumbnail: {
+    url: string;
+    alt: string;
+  };
+  videoYId: string;
+  author: {
+    id: number;
+    name: string;
+    slug: string;
+  };
 }
 
 const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) => {
@@ -102,17 +112,17 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                         </div>
                     </div>
 
-                    <div className='flex space-x-2 overflow-x-auto scroll-smooth scrollbar-hide' ref={scrollRef}>
+                    <div className='grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32.25%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide' ref={scrollRef}>
                         {videoList.map((video, index) => (
                             <div
                                 key={index}
-                                className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-w-[390px] min-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
+                                className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg h-auto snap-start shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
                             >
                                 {/* Thumbnail with Play Icon */}
-                                <div className="relative h-[228px] w-full rounded overflow-hidden">
+                                <div className="relative h-[225px] w-full rounded overflow-hidden group cursor-pointer">
                                     <Image
-                                        src={video.thumbnail}
-                                        alt="Video thumbnail"
+                                        src={`${IMAGE_URL}${video.thumbnail.url}`}
+                                        alt={video.thumbnail.alt || video.title}
                                         fill
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                                         className="object-cover rounded"
@@ -120,12 +130,12 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                                     />
 
                                     {/* Overlay */}
-                                    <div className="absolute inset-0 bg-black/10 rounded" />
+                                    <div className="absolute inset-0 group-hover:bg-black/30 rounded" />
 
                                     {/* Play Icon */}
                                     <div className="absolute inset-0 flex items-center justify-center">
                                         <Image
-                                            src={video.playIcon}
+                                            src={'/latest-video/youtube.png'}
                                             alt="Play"
                                             width={50}
                                             height={50}
@@ -136,7 +146,7 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
 
                                 {/* Content */}
                                 <div className="p-2">
-                                    <h3 className="font-semibold line-clamp-2">X-Trail Driven | Nissan’s Plan For India | Upcoming Creta-Alcazar Rival, Mini EV, Magnite FL</h3>
+                                    <h3 className="font-semibold line-clamp-2">{video.title}</h3>
                                 </div>
                             </div>
                         ))}
