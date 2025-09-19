@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { ModelsService } from './models.service.js';
-import { modelIdParamDto, modelsListQueryDto, upcomingMonthlyCountDto } from './models.dto.js';
+import { modelIdParamDto, modelsListQueryDto, upcomingMonthlyCountDto, topSellingMonthlyDto } from './models.dto.js';
 
 const svc = new ModelsService();
 
@@ -35,4 +35,14 @@ export class ModelsController {
     });
     res.json({ success: true, rows });
   }
+
+;
+
+// inside class
+async topSellingMonthly(req: Request, res: Response) {
+  const q = topSellingMonthlyDto.parse(req.query);
+  const data = await svc.topSellingModelsByMonth({ year: q.year, month: q.month, limit: q.limit });
+  res.json({ success: true, ...data });
+}
+
 }

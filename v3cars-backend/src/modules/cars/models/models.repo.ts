@@ -70,7 +70,7 @@ function buildWhere(q: ModelsListQuery): PrismaTypes.tblmodelsWhereInput {
   const launchTo = lt ? new Date(lt) : undefined;
 
   if (launchFrom) existingAND.push({ launchDate: { gte: launchFrom } });
-  if (launchTo)   existingAND.push({ launchDate: { lte: launchTo } });
+  if (launchTo) existingAND.push({ launchDate: { lte: launchTo } });
 
   if ((q as any).futureOnly) {
     const now = new Date();
@@ -86,13 +86,13 @@ function buildWhere(q: ModelsListQuery): PrismaTypes.tblmodelsWhereInput {
 function buildOrderBy(sortBy: ModelsListQuery['sortBy']): PrismaTypes.tblmodelsOrderByWithRelationInput[] {
   switch (sortBy) {
     case 'launch_asc': return [{ launchDate: 'asc' }, { modelId: 'asc' }];
-    case 'latest':     return [{ launchDate: 'desc' }, { modelId: 'desc' }];
-    case 'popular':    return [{ totalViews: 'desc' }, { modelId: 'desc' }];
-    case 'price_asc':  return [{ expectedBasePrice: 'asc' }, { expectedTopPrice: 'asc' }];
+    case 'latest': return [{ launchDate: 'desc' }, { modelId: 'desc' }];
+    case 'popular': return [{ totalViews: 'desc' }, { modelId: 'desc' }];
+    case 'price_asc': return [{ expectedBasePrice: 'asc' }, { expectedTopPrice: 'asc' }];
     case 'price_desc': return [{ expectedTopPrice: 'desc' }, { expectedBasePrice: 'desc' }];
-    case 'name_desc':  return [{ modelName: 'desc' }];
-    case 'name_asc':   return [{ modelName: 'asc' }];
-    default:           return [{ modelId: 'asc' }];
+    case 'name_desc': return [{ modelName: 'desc' }];
+    case 'name_asc': return [{ modelName: 'asc' }];
+    default: return [{ modelId: 'asc' }];
   }
 }
 
@@ -138,7 +138,7 @@ export class ModelsRepo {
     const buckets = horizon + 1; // include current month
 
     const brandSql = opts.brandId ? Prisma.sql` AND brandId = ${opts.brandId} ` : Prisma.sql``;
-    const bodySql  = opts.bodyTypeId ? Prisma.sql` AND modelBodyTypeId = ${opts.bodyTypeId} ` : Prisma.sql``;
+    const bodySql = opts.bodyTypeId ? Prisma.sql` AND modelBodyTypeId = ${opts.bodyTypeId} ` : Prisma.sql``;
 
     const rows = await prisma.$queryRaw<Array<{ bucket: string; cnt: number }>>(Prisma.sql`
       SELECT DATE_FORMAT(launchDate, '%Y-%m-01') AS bucket, COUNT(*) AS cnt
@@ -158,4 +158,42 @@ export class ModelsRepo {
   async getById(id: number) {
     return prisma.tblmodels.findFirst({ where: { modelId: id } });
   }
+
+  // add inside export class ModelsRepo { ... }
+
+  /** 🆕 Top selling by a specific month (ordered by that month’s sales) */
+  async topSellingByMonth(opts: { year: number; month: number; limit?: number }) {
+    const { year, month } = opts;
+    const limit = Math.max(1, Math.min(opts.limit ?? 25, 100));
+
+    // compute previous month in JS to keep SQL simple
+    const prev = new Date(year, month - 1, 1);
+    prev.setMonth(prev.getMonth() - 1);
+    const prevYear = prev.getFullYear();
+    const prevMonth = prev.getMonth() + 1;
+
+    // One row per model for current month; join previous month for delta
+    const rows = await prisma.$queryRaw<Array<{
+      modelId: number;
+      monthSales: number | null;
+      prevSales: number | null;
+    }>>(Prisma.sql`
+    SELECT
+      a.modelId,
+      a.numSales AS monthSales,
+      b.numSales AS prevSales
+    FROM tblmonthlysales AS a
+    LEFT JOIN tblmonthlysales AS b
+      ON b.modelId = a.modelId
+     AND b.year    = ${prevYear}
+     AND b.month   = ${prevMonth}
+    WHERE a.year  = ${year}
+      AND a.month = ${month}
+    ORDER BY a.numSales DESC, a.modelId ASC
+    LIMIT ${limit}
+  `);
+
+    return rows;
+  }
+
 }

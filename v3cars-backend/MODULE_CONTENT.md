@@ -8,15 +8,15 @@ Generic content APIs for **all content types**. These power both `/v1/content/:t
 
 | `:type`               | contentType |
 |-----------------------|-------------|
-| `news`                | 1 |
-| `reviews`             | 2 |
-| `variant-explained`   | 3 |
-| `comparison`          | 4 |
-| `user-reviews`        | 5 |
-| `features-explained`  | 6 |
-| `car-guide`           | 7 |
-| `auto-expo`           | 8 |
-| `press-release`       | 9 |
+| `news`                | 1 | 
+| `reviews`             | 2 | 
+| `variant-explained`   | 3 | 
+| `comparison`          | 4 | 
+| `user-reviews`        | 5 | 
+| `features-explained`  | 6 | 
+| `car-guide`           | 7 | 
+| `auto-expo`           | 8 | 
+| `press-release`       | 9 | 
 
 ---
 
@@ -33,6 +33,7 @@ Generic content APIs for **all content types**. These power both `/v1/content/:t
   "author": { "id": 4, "name": "Author", "slug": "author-slug" },
   "commentsCount": 12
 }
+
 MEDIA_BASE_URL (env) is used to convert relative thumbnailUrl to absolute.
 
 Common Query Params
