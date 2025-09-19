@@ -20,10 +20,13 @@ interface CarBrand {
 
 export default function TopCarBrands() {
     const { data: brandData, error, isLoading } = useGetAllBrandsQuery();
-    const brands: CarBrand[] = brandData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
+
+    const brands: CarBrand[] = (brandData?.rows ?? []).filter(
+        (b: CarBrand) => b.popularity && b.popularity.trim() !== ""
+    );
 
     const list1 = brands.filter((_, i) => i % 2 === 0);
     const list2 = brands.filter((_, i) => i % 2 !== 0);
