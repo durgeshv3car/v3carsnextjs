@@ -97,6 +97,53 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
     const [vehicleType, setVehicleType] = useState<number | null>(null)
     const [activeTab, setActiveTab] = useState('budget');
 
+    function normalizeBrandName(name: string) {
+        const lower = name.toLowerCase();
+        if (lower === "maruti arena" || lower === "maruti nexa") {
+            return "Maruti Suzuki";
+        }
+        return name;
+    }
+
+    function splitBrands(brands: CarBrand[]) {
+        const normalizedBrands = brands.map((b) => ({
+            ...b,
+            displayName: normalizeBrandName(b.brandName),
+        }));
+
+        // Sort by popularity
+        const sorted = [...normalizedBrands].sort((a, b) => {
+            const pa = a.popularity && a.popularity.trim() !== "" ? Number(a.popularity) : Infinity;
+            const pb = b.popularity && b.popularity.trim() !== "" ? Number(b.popularity) : Infinity;
+            return pa - pb;
+        });
+
+        // Deduplicate by displayName
+        const seen = new Set<string>();
+        const uniqueSorted = sorted.filter((b) => {
+            if (seen.has(b.displayName)) return false;
+            seen.add(b.displayName);
+            return true;
+        });
+
+        const popularBrands = uniqueSorted
+            .filter((b) => b.popularity && b.popularity.trim() !== "")
+            .slice(0, 10);
+
+        const allBrands = uniqueSorted
+            .filter((b) => !popularBrands.includes(b))
+            .sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+        return {
+            groupedOptions: [
+                { label: "Popular Brands", options: popularBrands },
+                { label: "All Brands", options: allBrands },
+            ],
+        };
+    }
+
+    const { groupedOptions } = splitBrands(data)
+
     return (
         <div className='space-y-4 px-4 py-2'>
             {/* Top Slider */}
@@ -257,9 +304,9 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                         <div className='flex items-center gap-2 text-xs'>
                             <div className='w-full border-b dark:border-[#2E2E2E]'>
                                 <CustomSelect
-                                    options={data}
+                                    groupedOptions={groupedOptions}
                                     placeholder="Select Brand"
-                                    labelKey="brandName"
+                                    labelKey="displayName"
                                     valueKey="brandId"
                                     value={selectBrand}
                                     onSelect={(value: CarBrand) => { setSelectBrand(value.brandId) }}

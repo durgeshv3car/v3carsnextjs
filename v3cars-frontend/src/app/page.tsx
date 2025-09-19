@@ -9,14 +9,10 @@ import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import QuickLook from "@/components/responsive/home/QuickLook";
 import CarByType from "@/components/responsive/home/CarByType";
 import CarByPrice from "@/components/responsive/home/CarByPrice";
-import VariantsExplained from "@/components/web/home/VariantsExplained";
-import MobileVariantsExplained from "@/components/mobile/home/VariantsExplained";
-import ExpertCarReviews from "@/components/web/home/ExpertCarReviews";
 import MobileExpertCarReviews from "@/components/mobile/home/ExpertCarReviews";
 import LatestVideos from "@/components/responsive/home/LatestVideos";
 import CarWebStories from "@/components/responsive/home/CarWebStories";
 import BottomAd from "@/components/common/BottomAd";
-import CommonLatestCarNews from "@/components/web/common/CommonLatestCarNews";
 import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useGetVariantsExplainedQuery, useUpcomingCarsQuery } from "@/redux/api/homeApi";
 import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/commonApi";
 import { useState } from "react";
@@ -44,7 +40,6 @@ export default function Home() {
   const models = modelsData?.rows ?? [];
   const expertCarReviews = expertCarReviewsData?.rows ?? [];
   const variantsExplained = variantsExplainedData?.rows ?? [];
-
 
   const isMobile = useIsMobile()
 

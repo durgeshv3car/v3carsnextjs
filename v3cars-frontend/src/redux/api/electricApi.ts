@@ -40,13 +40,13 @@ export const electricApi = createApi({
             query: () => "/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=14&page=1&fuelType=Electric",
         }),
         getElectricCarNews: builder.query<ElectricCarNewsResponse, void>({
-            query: () => "/news/latest?limit=20&fuelType=Electric",
+            query: () => "/content/news/latest?excludeToday=0&limit=20&fuelType=Electric",
         }),
         getElectricCarReviews: builder.query<ElectricCarReviewsResponse, void>({
-            query: () => "/reviews/latest?limit=20&fuelType=Electric",
+            query: () => "/content/reviews/latest?excludeToday=0&limit=20&fuelType=Electric",
         }),
         getElectricCarVideos: builder.query<ElectricCarVideosResponse, void>({
-            query: () => "/videos/latest?limit=20&fuelType=Electric",
+            query: () => "/videos/latest?excludeToday=0&limit=20&fuelType=Electric",
         }),
     }),
 });

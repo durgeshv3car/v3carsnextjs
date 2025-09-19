@@ -127,7 +127,7 @@ export const homeApi = createApi({
         `/home/latest-reviews?limit=20`,
     }),
     getAllBrands: builder.query<BrandsResponse, void>({
-      query: () => "/cars/brands?limit=69&page=1",
+      query: () => "/cars/brands?sortBy=popular&limit=69&page=1",
     }),
   }),
 });

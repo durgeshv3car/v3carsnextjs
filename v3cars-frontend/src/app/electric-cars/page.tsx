@@ -81,7 +81,7 @@ function ElectricCars() {
                         </div>
 
                         {/* Sidebar */}
-                        <div className="w-auto lg:max-w-[24%] space-y-10">
+                        <div className="w-auto lg:min-w-[24%] space-y-10">
                             <SideBarAdSmall />
                             <TopBrands />
                             <UpcomingTopBrands />

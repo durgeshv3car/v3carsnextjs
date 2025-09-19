@@ -6,7 +6,7 @@ import ScrollFlipIcon from "@/components/common/ScrollFlipIcon";
 
 const roboto = Roboto({
   subsets: ['latin'],
-  weight: ['400', '700'], // include weights as needed
+  weight: ['400'], // include weights as needed
   display: 'swap', // optional but recommended for better UX
 })
 

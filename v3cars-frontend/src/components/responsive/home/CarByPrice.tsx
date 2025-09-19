@@ -121,7 +121,7 @@ const CarByPrice: React.FC = () => {
                                 <button
                                     key={tab.key}
                                     onClick={() => setCarPriceTab(tab.key)}
-                                    className={`pb-3 px-6 font-semibold cursor-pointer text-nowrap capitalize transition-colors ${carPriceTab === tab.key ? 'border-b-2 border-yellow-400' : 'text-gray-400'
+                                    className={`pb-4 px-6 font-semibold cursor-pointer text-nowrap capitalize transition-colors ${carPriceTab === tab.key ? 'border-b-4 border-yellow-400' : 'text-gray-400'
                                         }`}
                                 >
                                     {tab.value}

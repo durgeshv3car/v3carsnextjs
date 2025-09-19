@@ -49,7 +49,7 @@ function UpcomingCars() {
                             <NewUpcomingCars />
                             <NewCarsLaunched />
                         </div>
-                        <div className="w-auto lg:max-w-[24%] mt-6 lg:mt-12 space-y-10">
+                        <div className="w-auto lg:min-w-[24%] mt-6 lg:mt-12 space-y-10">
                             <SideBarAdSmall />
                             <UpcomingTopBrands />
                             <SideBarAdSmall />

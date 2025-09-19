@@ -11,7 +11,7 @@ import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonExpertReviews from "@/components/common/CommonExpertReviews";
 import CommonVideos from "@/components/common/CommonVideos";
 import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeApi";
+import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useGetLatestVideosQuery } from "@/redux/api/homeApi";
 import { useGetLatestLaunchedCarsQuery } from "@/redux/api/latestcarApi";
 
 // export const metadata: Metadata = {
@@ -155,8 +155,13 @@ const videoList = new Array(8).fill({
 function LatestCars() {
     const { data: latestCarNewsData, error: latestCarNewsError, isLoading: latestCarNewsLoading } = useGetLatestCarNewsQuery();
     const { data: latestCarData, error, isLoading } = useGetLatestLaunchedCarsQuery();
+    const { data: latestVideosData, error: latestVideosError, isLoading: latestVideosLoading } = useGetLatestVideosQuery()
+    const { data: expertCarReviewsData, error: expertCarReviewsError, isLoading: expertCarReviewsLoading } = useGetExpertCarReviewsQuery();
+
     const latestCarNews = latestCarNewsData?.rows ?? [];
     const latestCars = latestCarData?.rows ?? [];
+    const latestVideos = latestVideosData?.rows ?? []
+    const expertCarReviews = expertCarReviewsData?.rows ?? [];
 
     return (
         <>
@@ -181,20 +186,20 @@ function LatestCars() {
                                 newsList={latestCarNews}
                             />
 
-                            <CommonExpertReviews
+                            <CommonNewsUpdate
                                 title="Car Expert Reviews"
-                                view="Car Expert Reviews"
-                                reviewList={reviewList}
+                                view="Cars Expert Reviews"
+                                newsList={expertCarReviews}
                             />
 
                             <CommonVideos
                                 title="Car Videos"
                                 view="Car Videos"
-                                videoList={videoList}
+                                videoList={latestVideos}
                             />
 
                         </div>
-                        <div className="w-auto lg:max-w-[24%] space-y-10">
+                        <div className="w-auto lg:min-w-[24%] space-y-10">
                             <SideBarAdSmall />
                             <UpcomingCars />
                             <UpcomingTopBrands />

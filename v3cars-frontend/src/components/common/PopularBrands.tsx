@@ -1,6 +1,7 @@
 'use client'
 
 import { useGetBrandsQuery } from "@/redux/api/commonApi";
+import { useGetAllBrandsQuery } from "@/redux/api/homeApi";
 import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,8 +19,8 @@ interface CarBrand {
 }
 
 function PopularBrands() {
-    const { data: brandsData, error: brandsError, isLoading: brandsLoading } = useGetBrandsQuery();
-    const brands: CarBrand[] = brandsData?.rows ?? [];
+    const { data: brandData, error, isLoading } = useGetAllBrandsQuery();
+    const brands: CarBrand[] = brandData?.rows ?? [];
 
     return (
         <div className="rounded-xl bg-white dark:bg-[#171717] border border-gray-300 dark:border-[#262626] overflow-hidden h-[720px] p-3 space-y-4 flex flex-col ">

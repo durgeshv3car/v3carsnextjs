@@ -168,7 +168,7 @@ function PopularCars() {
                         </div>
 
                         {/* sidebar */}
-                        <div className="w-auto lg:max-w-[24%] space-y-10 sticky top-20 self-start">
+                        <div className="w-auto lg:min-w-[24%] space-y-10 sticky top-20 self-start">
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
                             <SideBarAdSmall />
