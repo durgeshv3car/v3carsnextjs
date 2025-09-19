@@ -83,7 +83,7 @@ export class VideosRepo {
   /** Global latest (no videoType) — optional EV scope */
   async listLatestGlobal(limit = 9, modelIds?: number[], fuelType?: string) {
     return prisma.$queryRaw<VideoRow[]>(Prisma.sql`
-      SELECT videoId, video_title, pageUrl, video_thumbnail, videoYId, authorId, dateTimePublishing
+      SELECT videoId, video_title, metaDescription, pageUrl, video_thumbnail, videoYId, authorId, dateTimePublishing
       FROM tblwebvideos
       WHERE status = 1
         AND publishStatus = 2

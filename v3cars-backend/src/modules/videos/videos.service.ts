@@ -17,6 +17,7 @@ function makeUrl(u?: string | null): string | null {
 async function hydrate(rows: Array<{
   videoId: number;
   video_title: string;
+  metaDescription?: string | null;
   pageUrl: string;
   video_thumbnail: string | null;
   videoYId: string;
@@ -30,6 +31,7 @@ async function hydrate(rows: Array<{
   return rows.map(r => ({
     id: r.videoId,
     title: r.video_title,
+    metaDescription: r.metaDescription,
     pageUrl: r.pageUrl,
     publishDateandTime: r.dateTimePublishing.toISOString(),
     thumbnail: { url: makeUrl(r.video_thumbnail), alt: r.video_title },

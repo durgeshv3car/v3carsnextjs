@@ -317,7 +317,6 @@ export class ModelsService {
     return out;
   }
 
-// add inside export class ModelsService { ... }
 
 /** 🆕 Top selling list for a given month (with brand slug, primary image, % change) */
 async topSellingModelsByMonth(opts: { year: number; month: number; limit?: number }) {
@@ -326,50 +325,116 @@ async topSellingModelsByMonth(opts: { year: number; month: number; limit?: numbe
 
   const modelIds = agg.map(r => r.modelId);
 
-  // get model meta
+  // 1) Model meta we’ll need to hydrate everything
   const modelRows = await prisma.tblmodels.findMany({
     where: { modelId: { in: modelIds } },
-    select: { modelId: true, modelName: true, modelSlug: true, brandId: true },
+    select: {
+      modelId: true,
+      modelName: true,
+      modelSlug: true,
+      brandId: true,
+      modelBodyTypeId: true,
+      // NOTE: assuming there is a foreign key to segments on tblmodels (commonly: segmentId)
+      // If your column name differs, change it here:
+      segmentId: true,
+    },
   });
   const modelMap = new Map(modelRows.map(m => [m.modelId, m]));
 
-  // brand slugs
-  const brandIds = Array.from(new Set(modelRows.map(m => m.brandId).filter((x): x is number => typeof x === 'number')));
-  const brandRows = await new BrandsService().findByIds(brandIds);
-  const brandMap  = new Map(brandRows.map(b => [b.brandId, b.brandSlug]));
+  // 2) Brand names
+  const brandIds = Array.from(
+    new Set(modelRows.map(m => m.brandId).filter((x): x is number => typeof x === 'number'))
+  );
+  const brandRows = await brandsSvc.findByIds(brandIds);
+  const brandNameById = new Map(brandRows.map(b => [b.brandId, b.brandName]));
+  const brandSlugById = new Map(brandRows.map(b => [b.brandId, b.brandSlug]));
 
-  // images
+  // 3) Body style (body type)
+  const bodyTypeIds = Array.from(
+    new Set(modelRows.map(m => m.modelBodyTypeId).filter((x): x is number => typeof x === 'number'))
+  );
+  const bodyTypeRows = bodyTypeIds.length
+    ? await prisma.tblmodelbodytype.findMany({
+        where: { modelBodyTypeId: { in: bodyTypeIds } },
+        select: { modelBodyTypeId: true, modelBodyTypeName: true },
+      })
+    : [];
+  const bodyTypeNameById = new Map(
+    bodyTypeRows.map(bt => [bt.modelBodyTypeId, bt.modelBodyTypeName ?? null])
+  );
+
+  // 4) Segment name
+  const segmentIds = Array.from(
+    new Set(modelRows.map(m => (m as any).segmentId).filter((x: any) => typeof x === 'number'))
+  );
+  const segmentRows = segmentIds.length
+    ? await prisma.tblsegments.findMany({
+        where: { segmentId: { in: segmentIds } },
+        select: { segmentId: true, segmentName: true },
+      })
+    : [];
+  const segmentNameById = new Map(segmentRows.map(s => [s.segmentId, s.segmentName ?? null]));
+
+  // 5) Primary images
   const imageMap = await imagesSvc.getPrimaryByModelIds(modelIds);
 
-  // month labels
+  // 6) Price range (variants)
+  const priceBands = await variantsSvc.getPriceBandsByModelIds(modelIds);
+
+  // 7) Month labels + % change
   const curDate  = new Date(opts.year, opts.month - 1, 1);
-  const prevDate = new Date(curDate); prevDate.setMonth(curDate.getMonth() - 1);
+  const prevDate = new Date(curDate);
+  prevDate.setMonth(curDate.getMonth() - 1);
   const monthFmt = new Intl.DateTimeFormat('en-IN', { month: 'long' });
   const curLabel  = `${monthFmt.format(curDate)}`;
   const prevLabel = `${monthFmt.format(prevDate)}`;
 
+  // 8) Build output in the same order as SQL (ranked by that month’s sales)
   const rows = agg.map((r, idx) => {
     const m = modelMap.get(r.modelId);
     if (!m) return null;
 
-    const cur = Number(r.monthSales ?? 0);
+    const cur  = Number(r.monthSales ?? 0);
     const prev = Number(r.prevSales ?? 0);
-    const pctChange = prev > 0 ? ((cur - prev) / prev) * 100 : null;
+    const percentChange = prev > 0 ? ((cur - prev) / prev) * 100 : null;
 
     const img = imageMap.get(r.modelId) ?? { name: null, alt: null, url: null };
-    const brandSlug = m.brandId ? (brandMap.get(m.brandId) ?? null) : null;
+    const brandName = m.brandId ? (brandNameById.get(m.brandId) ?? null) : null;
+    const brandSlug = m.brandId ? (brandSlugById.get(m.brandId) ?? null) : null;
+
+    const bodyStyle =
+      (m.modelBodyTypeId ? bodyTypeNameById.get(m.modelBodyTypeId) : null) ?? null;
+
+    const segmentName =
+      ((m as any).segmentId ? segmentNameById.get((m as any).segmentId) : null) ?? null;
+
+    const band = priceBands.get(m.modelId) ?? { min: null, max: null };
+    const priceMin = band.min ?? null;
+    const priceMax = band.max ?? null;
 
     return {
       rank: idx + 1,
       modelId: m.modelId,
       modelName: m.modelName,
       modelSlug: m.modelSlug,
+
+      // 🆕 brand + taxonomy
+      brandName,
       brandSlug,
+      bodyStyle,      // e.g., "MUV"
+      segment: segmentName, // e.g., "C1-Segment"
+
+      // 🆕 price range (ex-showroom)
+      priceRange: { min: priceMin, max: priceMax },
+
+      // sales meta (for the month widget)
       month: curLabel,
       monthSales: cur,
       prevMonth: prevLabel,
       prevSales: prev,
-      percentChange: pctChange, // e.g. 11.09 for +11.09%
+      percentChange,  // 11.09 => +11.09%
+
+      // image
       image: img,
       imageUrl: img.url,
     };
@@ -377,5 +442,4 @@ async topSellingModelsByMonth(opts: { year: number; month: number; limit?: numbe
 
   return { rows, total: rows.length };
 }
-
 }

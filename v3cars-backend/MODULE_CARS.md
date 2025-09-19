@@ -129,5 +129,3 @@ GET /v1/cars/variants
 - **MEDIA_BASE_URL:** set to build absolute image URLs.
 
 
-
-
