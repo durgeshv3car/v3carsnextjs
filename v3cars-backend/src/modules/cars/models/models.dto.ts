@@ -24,3 +24,10 @@ export const upcomingMonthlyCountDto = z.object({
   brandId: z.coerce.number().int().positive().optional(),
   bodyTypeId: z.coerce.number().int().positive().optional(),
 });
+
+
+export const topSellingMonthlyDto = z.object({
+  year:  z.coerce.number().int().min(2000).max(2100),
+  month: z.coerce.number().int().min(1).max(12),
+  limit: z.coerce.number().int().min(1).max(100).default(25).optional(),
+});

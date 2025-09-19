@@ -8,15 +8,15 @@ Generic content APIs for **all content types**. These power both `/v1/content/:t
 
 | `:type`               | contentType |
 |-----------------------|-------------|
-| `news`                | 1 |
-| `reviews`             | 2 |
-| `variant-explained`   | 3 |
-| `comparison`          | 4 |
-| `user-reviews`        | 5 |
-| `features-explained`  | 6 |
-| `car-guide`           | 7 |
-| `auto-expo`           | 8 |
-| `press-release`       | 9 |
+| `news`                | 1 | 
+| `reviews`             | 2 | 
+| `variant-explained`   | 3 | 
+| `comparison`          | 4 | 
+| `user-reviews`        | 5 | 
+| `features-explained`  | 6 | 
+| `car-guide`           | 7 | 
+| `auto-expo`           | 8 | 
+| `press-release`       | 9 | 
 
 ---
 
@@ -66,7 +66,6 @@ GET /v1/content/news/latest?fuelType=Electric&limit=9&excludeToday=0
 # Ordered by publishDateandTime DESC, id DESC
 # Optional: &fuelType=Electric
 Examples
-
 
 Latest News (default): /v1/content/news/latest?limit=9
 
@@ -128,6 +127,3 @@ ev reviews  - /v1/content/reviews/latest?fuelType=Electric&limit=9&excludeToday=
 
 ev videos - /v1/videos/latest?limit=10&fuelType=Electric
 
-
-
-   

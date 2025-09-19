@@ -4,6 +4,7 @@ import { BrandsService } from '../brands/brands.service.js';
 import { VariantsService } from '../variants/variants.service.js';
 import { PowertrainsService } from '../powertrains/powertrains.service.js';
 import { ImagesService } from '../images/images.service.js';
+import { prisma } from '../../../lib/prisma.js';
 
 const repo = new ModelsRepo();
 const brandsSvc = new BrandsService();
@@ -315,4 +316,66 @@ export class ModelsService {
 
     return out;
   }
+
+// add inside export class ModelsService { ... }
+
+/** 🆕 Top selling list for a given month (with brand slug, primary image, % change) */
+async topSellingModelsByMonth(opts: { year: number; month: number; limit?: number }) {
+  const agg = await repo.topSellingByMonth(opts);
+  if (!agg.length) return { rows: [], total: 0 };
+
+  const modelIds = agg.map(r => r.modelId);
+
+  // get model meta
+  const modelRows = await prisma.tblmodels.findMany({
+    where: { modelId: { in: modelIds } },
+    select: { modelId: true, modelName: true, modelSlug: true, brandId: true },
+  });
+  const modelMap = new Map(modelRows.map(m => [m.modelId, m]));
+
+  // brand slugs
+  const brandIds = Array.from(new Set(modelRows.map(m => m.brandId).filter((x): x is number => typeof x === 'number')));
+  const brandRows = await new BrandsService().findByIds(brandIds);
+  const brandMap  = new Map(brandRows.map(b => [b.brandId, b.brandSlug]));
+
+  // images
+  const imageMap = await imagesSvc.getPrimaryByModelIds(modelIds);
+
+  // month labels
+  const curDate  = new Date(opts.year, opts.month - 1, 1);
+  const prevDate = new Date(curDate); prevDate.setMonth(curDate.getMonth() - 1);
+  const monthFmt = new Intl.DateTimeFormat('en-IN', { month: 'long' });
+  const curLabel  = `${monthFmt.format(curDate)}`;
+  const prevLabel = `${monthFmt.format(prevDate)}`;
+
+  const rows = agg.map((r, idx) => {
+    const m = modelMap.get(r.modelId);
+    if (!m) return null;
+
+    const cur = Number(r.monthSales ?? 0);
+    const prev = Number(r.prevSales ?? 0);
+    const pctChange = prev > 0 ? ((cur - prev) / prev) * 100 : null;
+
+    const img = imageMap.get(r.modelId) ?? { name: null, alt: null, url: null };
+    const brandSlug = m.brandId ? (brandMap.get(m.brandId) ?? null) : null;
+
+    return {
+      rank: idx + 1,
+      modelId: m.modelId,
+      modelName: m.modelName,
+      modelSlug: m.modelSlug,
+      brandSlug,
+      month: curLabel,
+      monthSales: cur,
+      prevMonth: prevLabel,
+      prevSales: prev,
+      percentChange: pctChange, // e.g. 11.09 for +11.09%
+      image: img,
+      imageUrl: img.url,
+    };
+  }).filter(Boolean) as any[];
+
+  return { rows, total: rows.length };
+}
+
 }

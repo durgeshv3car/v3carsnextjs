@@ -4,6 +4,8 @@ import { ModelsController } from './models.controller.js';
 const r = Router();
 const c = new ModelsController();
 
+r.get('/top-selling-month', (req, res) => c.topSellingMonthly(req, res));
+
 // 1) Fixed paths FIRST
 r.get('/upcoming-monthly-count', (req, res) => c.upcomingMonthlyCount(req, res));
 
