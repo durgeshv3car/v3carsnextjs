@@ -4,28 +4,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 
-const months = [
-    { month: 'Aug', year: 2024 },
-    { month: 'Sep', year: 2024 },
-    { month: 'Oct', year: 2024 },
-    { month: 'Nov', year: 2024 },
-    { month: 'Dec', year: 2024 },
-    { month: 'Jan', year: 2025 },
-    { month: 'Feb', year: 2025 },
-    { month: 'Mar', year: 2024 },
-    { month: 'Apr', year: 2025 },
-    { month: 'May', year: 2025 },
-    { month: 'Jun', year: 2025 },
-    { month: 'Jul', year: 2025 },
-]
-
 interface TopSectionProps {
     title: string;
     description: string;
 }
 
 export default function TopSection({ title, description }: TopSectionProps) {
-    const [selected, setSelected] = useState('August 2024')
     const [isExpanded, setIsExpanded] = useState(false)
     const [maxHeight, setMaxHeight] = useState<'3rem' | 'none' | string>('3rem') // 'none' -> no clamp
     const contentRef = useRef<HTMLDivElement>(null)
@@ -127,46 +111,6 @@ export default function TopSection({ title, description }: TopSectionProps) {
                     </div>
                 </div>
             </div>
-
-            {/* Upcoming cars by month */}
-            {path === "/upcoming-cars" && (
-                <div className='w-full bg-gradient-to-l bg-[#F1EFF4] to-[#E7E4DF] dark:from-[#27272a] dark:to-[#18181b] min-h-[246px] py-[30px]'>
-                    <div className='px-4 xl:px-10'>
-                        <div className="w-full lg:app-container mx-auto space-y-5">
-                            <h2 className="text-xl font-semibold border-b border-[#CED4DA] dark:border-[#2E2E2E] pb-2">
-                                Upcoming Cars By Month
-                            </h2>
-                            <div className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
-                                {months.map(({ month, year }) => {
-                                    const key = `${month} ${year}`
-                                    const isSelected = key === selected
-
-                                    return (
-                                        <button
-                                            key={key}
-                                            onClick={() => setSelected(key)}
-                                            className={`grid grid-cols-2 justify-between py-2 items-center rounded-md shadow-sm text-left text-sm transition-all duration-200
-                        ${isSelected ? 'bg-black text-white border border-orange-400' : 'bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] hover:border-orange-300'}
-                      `}
-                                        >
-                                            <div className='border-r border-[#CED4DA] dark:border-[#2E2E2E] text-center'>
-                                                <div className="font-semibold text-sm lg:text-lg truncate">
-                                                    {month}
-                                                </div>
-                                                <div className="text-[10px] lg:text-xs text-orange-500 truncate">{year}</div>
-                                            </div>
-                                            <div className="text-center font-semibold text-sm lg:text-lg truncate">
-                                                50 Cars{" "}
-                                                <p className='text-[10px] lg:text-xs font-normal text-orange-500 truncate'>Upcoming</p>
-                                            </div>
-                                        </button>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </section>
     )
 }

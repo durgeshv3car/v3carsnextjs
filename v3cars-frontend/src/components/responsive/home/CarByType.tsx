@@ -51,7 +51,7 @@ const tabNames: Record<CarBodyTab, string> = {
 
 const CarByType: React.FC = () => {
     const [carBodyTab, setCarBodyTab] = useState<CarBodyTab>(3);
-    const { data: carByBodyTypeData, error: carByBodyTypeError, isLoading: carByBodyTypeLoading } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 8, page: 1 });
+    const { data: carByBodyTypeData, error: carByBodyTypeError, isLoading: carByBodyTypeLoading } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 15, page: 1 });
     const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
@@ -113,7 +113,7 @@ const CarByType: React.FC = () => {
                                 <button
                                     key={tab.id}
                                     onClick={() => setCarBodyTab(tab.id as CarBodyTab)}
-                                    className={`pb-3 px-6 font-semibold cursor-pointer capitalize transition-colors ${carBodyTab === tab.id ? 'border-b-2 border-yellow-400' : 'text-gray-400'
+                                    className={`pb-4 px-6 font-semibold cursor-pointer capitalize transition-colors ${carBodyTab === tab.id ? 'border-b-4 border-yellow-400' : 'text-gray-400'
                                         }`}
                                 >
                                     {tab.tab}
@@ -157,7 +157,7 @@ const CarByType: React.FC = () => {
                                 <div className="relative h-[225px] w-full rounded-md overflow-hidden">
                                     <Image
                                         src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
-                                        alt={car.image.alt}
+                                        alt={car.image.alt || car.brand.name}
                                         fill
                                         sizes="(max-width: 1280px) 100vw, 400px"
                                         priority={false}

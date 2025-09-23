@@ -51,8 +51,14 @@ interface CarModel {
     expectedLaunch: string;
 }
 
-export default function NewCarsLaunched() {
-    const { data: latestCarData, error, isLoading } = useGetLatestCarsQuery();
+interface NewCarsLaunchedProps {
+    selected: string
+}
+
+const currentYear = new Date().getFullYear();
+
+export default function NewCarsLaunched({ selected }: NewCarsLaunchedProps) {
+    const { data: latestCarData, error, isLoading } = useGetLatestCarsQuery({ launchMonth: selected });
 
     // Calculate maxViews for confidence
     const maxViews = Math.max(...(latestCarData?.rows.map((c: any) => c.totalViews) ?? [1]));
@@ -82,7 +88,7 @@ export default function NewCarsLaunched() {
 
     return (
         <>
-            <h2 className="text-xl font-semibold my-5">New Cars Launched in 2024</h2>
+            <h2 className="text-xl font-semibold mb-5">New Cars Launched in {currentYear}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-2 bg-[#FFFFFF] dark:bg-[#27262B] border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
                 {latestCars.map((car, idx) => (
                     <div
@@ -147,7 +153,7 @@ export default function NewCarsLaunched() {
 
                 <Link
                     href={"#"}
-                    className="text-lg text-blue-500 hover:underline font-semibold p-3 flex items-center gap-2 w-fit"
+                    className="col-span-3 text-lg text-blue-500 hover:underline font-semibold p-3 flex items-center gap-2 w-fit"
                 >
                     View All Newly Launched Cars
                     <svg

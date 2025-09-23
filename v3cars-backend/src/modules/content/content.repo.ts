@@ -12,9 +12,34 @@ type ContentRow = {
   authorId: number;
 };
 
+/** modelTagging -> comma-separated IDs; match as full tokens */
+function modelTaggingExpr(modelIds?: number[]) {
+  if (!modelIds || modelIds.length === 0) return null;
+  const pattern = `(^|,)(${modelIds.join('|')})(,|$)`;
+  return Prisma.sql`REPLACE(modelTagging, ' ', '') REGEXP ${pattern}`;
+}
+
+/** PHP-style EV keyword fallback on title */
+function evTitleExpr(fuelType?: string) {
+  if (!fuelType) return null;
+  if (fuelType.trim().toLowerCase() !== 'electric') return null;
+  return Prisma.sql`(LOWER(title) LIKE CONCAT('%',' ev ','%') OR LOWER(title) LIKE CONCAT('%',' electric ','%'))`;
+}
+
+/** Combine modelTagging OR EV-title conditions into a single AND (...) clause */
+function buildEvScope(modelIds?: number[], fuelType?: string) {
+  const conds: Prisma.Sql[] = [];
+  const a = modelTaggingExpr(modelIds);
+  const b = evTitleExpr(fuelType);
+  if (a) conds.push(a);
+  if (b) conds.push(b);
+  if (!conds.length) return Prisma.empty;
+  // 🔧 IMPORTANT: use string separator for Prisma.join to avoid TS error
+  return Prisma.sql` AND ( ${Prisma.join(conds, ' OR ')} ) `;
+}
+
 export class ContentRepo {
-  /** Today (per contentType): most recent row up to DB NOW() */
-  async getToday(contentType: number) {
+  async getToday(contentType: number, modelIds?: number[], fuelType?: string) {
     const rows = await prisma.$queryRaw<ContentRow[]>(Prisma.sql`
       SELECT id, title, pageUrl, publishDateandTime, shortDescription,
              thumbnailAltText, thumbnailUrl, authorId
@@ -23,15 +48,14 @@ export class ContentRepo {
         AND publishDateandTime <= NOW()
         AND contentPublishType IN (1,2)
         AND contentPublishStatus = 2
+        ${buildEvScope(modelIds, fuelType)}
       ORDER BY publishDateandTime DESC, id DESC
       LIMIT 1
     `);
     return rows[0] ?? null;
   }
 
-  /** Latest (date desc); optionally exclude a specific id */
-  async listLatest(contentType: number, limit = 9) {
-   
+  async listLatest(contentType: number, limit = 9, excludeId?: number, modelIds?: number[], fuelType?: string) {
     return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
       SELECT id, title, pageUrl, publishDateandTime, shortDescription,
              thumbnailAltText, thumbnailUrl, authorId
@@ -40,43 +64,39 @@ export class ContentRepo {
         AND publishDateandTime <= NOW()
         AND contentPublishType IN (1,2)
         AND contentPublishStatus = 2
+        ${excludeId ? Prisma.sql` AND id <> ${excludeId} ` : Prisma.empty}
+        ${buildEvScope(modelIds, fuelType)}
       ORDER BY publishDateandTime DESC, id DESC
       LIMIT ${limit}
     `);
   }
 
-  /** Trending (no NOW() in your PHP): last_15days_view desc */
-  async listTrending(contentType: number, limit = 9) {
-    return prisma.tblcontents.findMany({
-      where: {
-        contentType,
-        contentPublishType: { in: [1, 2] as number[] },
-        contentPublishStatus: 2,
-      },
-      orderBy: [{ last_15days_view: 'desc' }, { id: 'desc' }],
-      take: limit,
-      select: {
-        id: true, title: true, pageUrl: true, publishDateandTime: true,
-        shortDescription: true, thumbnailAltText: true, thumbnailUrl: true, authorId: true,
-      },
-    });
+  async listTrending(contentType: number, limit = 9, modelIds?: number[], fuelType?: string) {
+    return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
+      SELECT id, title, pageUrl, publishDateandTime, shortDescription,
+             thumbnailAltText, thumbnailUrl, authorId
+      FROM tblcontents
+      WHERE contentType = ${contentType}
+        AND contentPublishType IN (1,2)
+        AND contentPublishStatus = 2
+        ${buildEvScope(modelIds, fuelType)}
+      ORDER BY last_15days_view DESC, id DESC
+      LIMIT ${limit}
+    `);
   }
 
-  /** Top (no NOW() in your PHP): last_30days_view desc */
-  async listTop(contentType: number, limit = 9) {
-    return prisma.tblcontents.findMany({
-      where: {
-        contentType,
-        contentPublishType: { in: [1, 2] as number[] },
-        contentPublishStatus: 2,
-      },
-      orderBy: [{ last_30days_view: 'desc' }, { id: 'desc' }],
-      take: limit,
-      select: {
-        id: true, title: true, pageUrl: true, publishDateandTime: true,
-        shortDescription: true, thumbnailAltText: true, thumbnailUrl: true, authorId: true,
-      },
-    });
+  async listTop(contentType: number, limit = 9, modelIds?: number[], fuelType?: string) {
+    return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
+      SELECT id, title, pageUrl, publishDateandTime, shortDescription,
+             thumbnailAltText, thumbnailUrl, authorId
+      FROM tblcontents
+      WHERE contentType = ${contentType}
+        AND contentPublishType IN (1,2)
+        AND contentPublishStatus = 2
+        ${buildEvScope(modelIds, fuelType)}
+      ORDER BY last_30days_view DESC, id DESC
+      LIMIT ${limit}
+    `);
   }
 
   async findAuthorsByIds(ids: number[]) {
@@ -90,7 +110,7 @@ export class ContentRepo {
   async countCommentsByContentIds(ids: number[]) {
     if (!ids.length) return new Map<number, number>();
     const grouped = await prisma.tblcomments.groupBy({
-      by: ['contentId'],
+      by: ['contentId'],  
       where: { contentId: { in: ids } },
       _count: { contentId: true },
     });

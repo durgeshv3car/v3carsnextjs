@@ -87,11 +87,11 @@ const CarWebStories: React.FC = () => {
                     </div>
 
 
-                    <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth">
+                    <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[15.70%] gap-4 snap-x snap-mandatory overflow-x-auto scrollbar-hide scroll-smooth">
                         {stories.map((story) => (
                             <div
                                 key={story.id}
-                                className="relative min-w-[270px] aspect-[9/16] rounded-[10px] overflow-hidden bg-black"
+                                className="relative snap-start aspect-[9/16] rounded-[10px] overflow-hidden bg-black"
                             >
                                 <Image
                                     src={story.image}
@@ -105,7 +105,7 @@ const CarWebStories: React.FC = () => {
 
                                 {/* Top-right mute icon */}
                                 <div
-                                    className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-10 h-10 cursor-pointer"
+                                    className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-8 h-8 cursor-pointer"
                                     onClick={() => setOpenStory(true)}
                                 >
                                     <Image
@@ -118,7 +118,7 @@ const CarWebStories: React.FC = () => {
                                 </div>
 
                                 {/* Bottom Gradient + Text */}
-                                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-3 flex flex-col justify-end space-y-1">
+                                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/90 to-transparent p-2 flex flex-col justify-end space-y-1">
                                     <p className="text-sm font-medium text-white line-clamp-3">{story.heading}</p>
                                     <p className="text-sm text-white">{story.date}</p>
                                 </div>

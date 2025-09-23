@@ -3,6 +3,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import type { FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
+interface TopSellingCarsResponse {
+  success: boolean;
+  total: number;
+  rows: any[];
+}
+
 interface PopularCarApiResponse {
   success: boolean;
   page: number;
@@ -24,14 +30,14 @@ export const popularCarApi = createApi({
     getPopularCar: builder.query<PopularCarApiResponse, void>({
       query: () => "/cars/models?isUpcoming=0&sortBy=popular&limit=30&page=1",
     }),
-    // getLatestCars: builder.query<UpcomingCarsResponse, void>({
-    //   query: () => "/cars/models?isUpcoming=0&sortBy=latest&limit=9&page=1",
-    // }),
+    getTopSellingCar: builder.query<TopSellingCarsResponse, void>({
+      query: () => "/cars/models/top-selling-month?year=2025&month=8&limit=25",
+    }),
   }),
 });
 
 // Export hooks
 export const {
   useGetPopularCarQuery,
-//   useGetLatestCarsQuery,
+  useGetTopSellingCarQuery,
 } = popularCarApi;

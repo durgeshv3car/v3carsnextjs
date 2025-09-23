@@ -46,7 +46,7 @@ interface CarProps {
 
 const QuickLook: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'popular' | 'latest'>('popular')
-    const { data: quickData, error: quickError, isLoading: quickLoading } = useGetQuickLookQuery({ type: activeTab, limit: 8, page: 1 });
+    const { data: quickData, error: quickError, isLoading: quickLoading } = useGetQuickLookQuery({ type: activeTab, limit: 15, page: 1 });
     const quickLook: CarProps[] = quickData?.rows ?? []
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
@@ -86,8 +86,8 @@ const QuickLook: React.FC = () => {
                 <div className="w-full lg:app-container mx-auto space-y-3">
                     <div className="flex items-center w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-semibold lg:font-medium">For Your Quick Look</h2>
-                        <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
-                            View All Popular Cars
+                        <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center capitalize">
+                            View All {activeTab} Cars
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                             </svg>
@@ -102,7 +102,7 @@ const QuickLook: React.FC = () => {
                                     <button
                                         key={tab}
                                         onClick={() => setActiveTab(tab as 'popular' | 'latest')}
-                                        className={`pb-3 px-6 font-semibold cursor-pointer capitalize transition-colors ${activeTab === tab ? 'border-b-2 border-yellow-400' : 'text-gray-400'
+                                        className={`pb-4 px-6 font-semibold cursor-pointer capitalize transition-colors ${activeTab === tab ? 'border-b-4 border-yellow-400' : 'text-gray-400'
                                             }`}
                                     >
                                         {tab}

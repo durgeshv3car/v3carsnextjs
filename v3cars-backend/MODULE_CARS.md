@@ -33,7 +33,7 @@ GET /v1/cars/brands
 **List**
 ```
 GET /v1/cars/models
-```
+```x`
 
 **Query params**
 - `q` — search in `modelName`/`modelSlug`
@@ -44,9 +44,12 @@ GET /v1/cars/models
 - `priceBucket` — `UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L`
 - `sortBy` — `launch_asc | latest | popular | price_asc | price_desc | name_asc | name_desc`
 - `page`, `limit`
+- `upcoming-monthly-count?months=12`
+- `launchMonth=2025-0`
+- `top-selling-month?year=2025&month=8`
 
 **Examples**
-- Upcoming (closest first): `/v1/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=10&page=1`
+- Upcoming (closest first): `/v1/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=10&page=1`  , by month count : `/v1/cars/models/upcoming-monthly-count?months=12`  , by month full data `/v1/cars/models?isUpcoming=1&launchMonth=2025-09&sortBy=launch_asc&limit=12&page=1`
 - Recently launched (not upcoming): `/v1/cars/models?isUpcoming=0&sortBy=latest&limit=10&page=1`
 - Popular SUVs 10–20L: `/v1/cars/models?bodyTypeId=<SUV_ID>&priceBucket=BETWEEN_10_20L&sortBy=popular&limit=12`
 

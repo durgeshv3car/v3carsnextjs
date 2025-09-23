@@ -135,13 +135,13 @@ const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsLi
           return (
             <div
               key={item.id}
-              className="bg-slate-50 dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg snap-start h-auto shadow-sm overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
+              className="bg-white dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg snap-start h-auto overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
             >
               {/* Fixed height image */}
               <div className="relative w-full">
                 <Image
-                  src={`${IMAGE_URL}${item.thumbnail.url}`}
-                  alt={item.thumbnail.alt}
+                  src={`${IMAGE_URL}${item?.thumbnail?.url}`}
+                  alt={item?.thumbnail?.alt}
                   width={600}
                   height={310}
                   className="rounded-xl object-cover"

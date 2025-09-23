@@ -83,7 +83,7 @@ export default function NewUpcomingCars() {
 
     return (
         <>
-            <h2 className="text-xl font-semibold mb-5">New Upcoming Cars</h2>
+            <h2 className="text-xl font-semibold my-5">New Upcoming Cars</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-2 bg-[#FFFFFF] dark:bg-[#27262B] border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
                 {upcomingCars.map((car, idx) => (
                     <div
@@ -156,7 +156,7 @@ export default function NewUpcomingCars() {
 
                 <Link
                     href={"#"}
-                    className="text-lg text-blue-500 hover:underline font-semibold p-3 flex items-center gap-2 w-fit"
+                    className="col-span-3 text-lg text-blue-500 hover:underline font-semibold p-3 flex items-center gap-2 w-fit"
                 >
                     View All Upcoming Cars
                     <svg

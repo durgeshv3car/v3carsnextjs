@@ -5,7 +5,7 @@
 
 
 :root{
-   --background: #ffffff;
+   --background: #F8F9FA;
   --foreground: #111111;
   --page-width: 2400px;              /* default content width */
   --page-gutter: 0px;               /* SSR fallback before JS runs */

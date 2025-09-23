@@ -17,7 +17,7 @@ const categories = [
 const CategorySection: React.FC = () => {
     return (
         <section className="px-6 lg:px-10">
-            <div className="w-full xl:app-container xl:mx-auto my-6">
+            <div className="w-full xl:app-container xl:mx-auto mb-6">
                 <h2 className="text-sm xl:text-lg font-semibold xl:font-medium mb-4">
                     Search By Category
                 </h2>
@@ -26,7 +26,7 @@ const CategorySection: React.FC = () => {
                     {categories.map((category, index) => (
                         <div
                             key={index}
-                            className="group bg-gray-100 dark:bg-[#171717] border dark:border-[#2E2E2E] h-[104px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition-transform duration-300 cursor-pointer snap-start lg:snap-none">
+                            className="group bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] h-[104px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition-transform duration-300 cursor-pointer snap-start lg:snap-none">
                             <Image
                                 src={category.icon}
                                 alt={category.label}

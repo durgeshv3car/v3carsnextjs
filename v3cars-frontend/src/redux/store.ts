@@ -7,16 +7,16 @@ import { commonApi } from "./api/commonApi";
 import { homeApi } from "./api/homeApi";
 import authReducer from "./slices/authSlice";
 import commonReducer from "./slices/commonSlice";
-import sellUsedReducer from "./slices/sellUsedSlice"; // 👈 add
+import sellUsedReducer from "./slices/sellUsedSlice"
 import { upcomingApi } from "./api/upcomingApi";
 import { latestcarApi } from "./api/latestcarApi";
 import { popularCarApi } from "./api/popularApi";
+import { electricApi } from "./api/electricApi";
 
 const persistConfig = {
   key: "root",
   storage,
-  // add here only if you want to persist selections across refresh
-  whitelist: ["auth", "common"], // 👈 add sellUsed (optional)
+  whitelist: ["auth", "common"],
 };
 
 const rootReducer = combineReducers({
@@ -26,6 +26,7 @@ const rootReducer = combineReducers({
   [upcomingApi.reducerPath]: upcomingApi.reducer,
   [latestcarApi.reducerPath]: latestcarApi.reducer,
   [popularCarApi.reducerPath]: popularCarApi.reducer,
+  [electricApi.reducerPath]: electricApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
@@ -41,12 +42,13 @@ export const store = configureStore({
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
     }).concat(
-      authApi.middleware, 
+      authApi.middleware,
       commonApi.middleware,
       homeApi.middleware,
       upcomingApi.middleware,
       latestcarApi.middleware,
       popularCarApi.middleware,
+      electricApi.middleware,
     ),
 });
 

@@ -12,6 +12,11 @@ interface UpcomingCarsResponse {
   rows: any[];
 }
 
+interface MonthsResponse {
+  success: boolean;
+  rows: any[];
+}
+
 // Define the API
 export const upcomingApi = createApi({
   reducerPath: "upcomingApi",
@@ -24,8 +29,11 @@ export const upcomingApi = createApi({
     getUpcomingCars: builder.query<UpcomingCarsResponse, void>({
       query: () => "/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=9&page=1",
     }),
-    getLatestCars: builder.query<UpcomingCarsResponse, void>({
-      query: () => "/cars/models?isUpcoming=0&sortBy=latest&limit=9&page=1",
+    getLatestCars: builder.query<UpcomingCarsResponse, { launchMonth: string }>({
+      query: ({ launchMonth }) => `/cars/models?isUpcoming=1&launchMonth=${launchMonth}&sortBy=launch_asc&limit=9&page=1`,
+    }),
+    getMonth: builder.query<MonthsResponse, void>({
+      query: () => `/cars/models/upcoming-monthly-count?months=11`,
     }),
   }),
 });
@@ -34,4 +42,5 @@ export const upcomingApi = createApi({
 export const {
   useGetUpcomingCarsQuery,
   useGetLatestCarsQuery,
+  useGetMonthQuery,
 } = upcomingApi;

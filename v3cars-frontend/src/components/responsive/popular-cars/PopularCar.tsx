@@ -1,104 +1,50 @@
 'use client';
 
+import { useGetTopSellingCarQuery } from '@/redux/api/popularApi';
+import { IMAGE_URL } from '@/utils/constant';
 import Image from 'next/image';
 import React from 'react';
 
-interface CarData {
+interface CarSales {
   rank: number;
-  name: string;
-  brand: string;
-  imageUrl: string;
-  bodyStyle: string;
-  segment: string;
-  priceRange: string;
-  aprilSales: number;
-  maySales: number;
+  modelId: number;
+  modelName: string;
+  modelSlug: string;
+  brandSlug: string;
+  month: string;
+  monthSales: number;
+  prevMonth: string;
+  prevSales: number;
   percentChange: number;
-  ctaLabel: string;
+  image: {
+    name: string;
+    alt: string;
+    url: string;
+  };
+  imageUrl: string;
 }
 
-const popularCarsData: CarData[] = [
-  {
-    rank: 1,
-    name: 'Creta',
-    brand: 'Hyundai',
-    imageUrl: '/popular.png',
-    bodyStyle: 'SUV',
-    segment: 'C-Segment',
-    priceRange: '₹10.80 - ₹19.93 lakh',
-    aprilSales: 12899,
-    maySales: 12485,
-    percentChange: 2.4,
-    ctaLabel: 'Check Grand Vitara On-Road Price',
-  },
-  {
-    rank: 2,
-    name: 'Punch',
-    brand: 'Tata',
-    imageUrl: '/popular.png',
-    bodyStyle: 'SUV',
-    segment: 'B2-Segment',
-    priceRange: '₹6.13 - ₹10.20 lakh',
-    aprilSales: 11894,
-    maySales: 11900,
-    percentChange: 0.1,
-    ctaLabel: 'Check Punch On-Road Price',
-  },
-  {
-    rank: 3,
-    name: 'Swift',
-    brand: 'Maruti',
-    imageUrl: '/popular.png',
-    bodyStyle: 'Hatchback',
-    segment: 'B1-Segment',
-    priceRange: '₹6.49 - ₹9.64 lakh',
-    aprilSales: 12000,
-    maySales: 11500,
-    percentChange: -4.2,
-    ctaLabel: 'Check Swift On-Road Price',
-  },
-  {
-    rank: 4,
-    name: 'Creta',
-    brand: 'Hyundai',
-    imageUrl: '/popular.png',
-    bodyStyle: 'SUV',
-    segment: 'C-Segment',
-    priceRange: '₹10.80 - ₹19.93 lakh',
-    aprilSales: 12899,
-    maySales: 12485,
-    percentChange: 2.4,
-    ctaLabel: 'Check Grand Vitara On-Road Price',
-  },
-  {
-    rank: 5,
-    name: 'Punch',
-    brand: 'Tata',
-    imageUrl: '/popular.png',
-    bodyStyle: 'SUV',
-    segment: 'B2-Segment',
-    priceRange: '₹6.13 - ₹10.20 lakh',
-    aprilSales: 11894,
-    maySales: 11900,
-    percentChange: 0.1,
-    ctaLabel: 'Check Punch On-Road Price',
-  },
-  {
-    rank: 6,
-    name: 'Swift',
-    brand: 'Maruti',
-    imageUrl: '/popular.png',
-    bodyStyle: 'Hatchback',
-    segment: 'B1-Segment',
-    priceRange: '₹6.49 - ₹9.64 lakh',
-    aprilSales: 12000,
-    maySales: 11500,
-    percentChange: -4.2,
-    ctaLabel: 'Check Swift On-Road Price',
-  },
-];
-
 const PopularCar = () => {
+  const { data: topSellingCarData, error, isLoading } = useGetTopSellingCarQuery();
+
+  const topSellingCars: CarSales[] = topSellingCarData?.rows ?? [];
+
+  // map API response -> UI compatible
+  const popularCarsData = topSellingCars.map((car) => ({
+    ...car,
+    brand: car.brandSlug, // UI me brand ke liye
+    name: car.modelName,  // UI me name ke liye
+    bodyStyle: "Hatchback", // Agar API provide nahi karti to dummy / static value
+    segment: "B-Segment",   // same as above
+    priceRange: "₹5.5L - ₹9L", // Example static/dynamic
+    maySales: car.monthSales,
+    aprilSales: car.prevSales,
+    ctaLabel: "Check Details", // Button label
+  }));
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Something went wrong</p>;
+
   return (
     <div className="flex flex-col gap-4">
       {popularCarsData.slice(0, 2).map((car) => (
@@ -126,8 +72,8 @@ const PopularCar = () => {
               {/* Car Image */}
               <div className="relative w-full sm:w-[300px] h-[192px]">
                 <Image
-                  src={car.imageUrl}
-                  alt={`${car.brand} ${car.name}`}
+                  src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
+                  alt={car.image.alt || car.name}
                   layout="fill"
                   objectFit="cover"
                   className="rounded"
@@ -141,31 +87,44 @@ const PopularCar = () => {
                 {/* Column 1 */}
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">Body Style: <span className="text-black dark:text-white font-bold float-end">{car.bodyStyle}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      Body Style: <span className="text-black dark:text-white font-bold float-end">{car.bodyStyle}</span>
+                    </p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">Segment: <span className="text-black dark:text-white font-bold float-end">{car.segment}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      Segment: <span className="text-black dark:text-white font-bold float-end">{car.segment}</span>
+                    </p>
                   </div>
 
                   <div className="gap-2 py-2">
-                    <p className="text-gray-500 font-medium w-full">ESP(Price): <span className="text-black dark:text-white font-bold float-end">{car.priceRange}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      ESP(Price): <span className="text-black dark:text-white font-bold float-end">{car.priceRange}</span>
+                    </p>
                   </div>
                 </div>
 
                 {/* Column 2 */}
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">May Sales: <span className="text-black dark:text-white font-bold float-end">{car.maySales.toLocaleString()}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      {car.month} Sales: <span className="text-black dark:text-white font-bold float-end">{car.maySales.toLocaleString()}</span>
+                    </p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">April Sales: <span className="text-black dark:text-white font-bold float-end">{car.aprilSales.toLocaleString()}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      {car.prevMonth} Sales: <span className="text-black dark:text-white font-bold float-end">{car.aprilSales.toLocaleString()}</span>
+                    </p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">% Change:
-                      <span className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <p className="text-gray-500 font-medium w-full">
+                      % Change:
+                      <span
+                        className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                      >
                         {car.percentChange >= 0 ? '▲' : '▼'} {Math.abs(car.percentChange).toFixed(2)}%
                       </span>
                     </p>
@@ -184,10 +143,8 @@ const PopularCar = () => {
         </div>
       ))}
 
-      {/* ads block */}
-
+      {/* Ads block */}
       <div className='h-[331px] md:h-[240px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center'>
-
         <div className="hidden sm:block w-full lg:w-[970px] lg:h-[180px] sm:h-[200px] mx-auto">
           <img
             src={'/ads/ad1.png'}
@@ -196,9 +153,7 @@ const PopularCar = () => {
           />
         </div>
 
-        <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'>
-
-        </div>
+        <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'></div>
       </div>
 
       {popularCarsData.slice(2).map((car) => (
@@ -226,8 +181,8 @@ const PopularCar = () => {
               {/* Car Image */}
               <div className="relative w-full sm:w-[300px] h-[192px]">
                 <Image
-                  src={car.imageUrl}
-                  alt={`${car.brand} ${car.name}`}
+                  src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
+                  alt={car.image.alt || car.name}
                   layout="fill"
                   objectFit="cover"
                   className="rounded"
@@ -241,31 +196,44 @@ const PopularCar = () => {
                 {/* Column 1 */}
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">Body Style: <span className="text-black dark:text-white font-bold float-end">{car.bodyStyle}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      Body Style: <span className="text-black dark:text-white font-bold float-end">{car.bodyStyle}</span>
+                    </p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">Segment: <span className="text-black dark:text-white font-bold float-end">{car.segment}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      Segment: <span className="text-black dark:text-white font-bold float-end">{car.segment}</span>
+                    </p>
                   </div>
 
                   <div className="gap-2 py-2">
-                    <p className="text-gray-500 font-medium w-full">ESP(Price): <span className="text-black dark:text-white font-bold float-end">{car.priceRange}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      ESP(Price): <span className="text-black dark:text-white font-bold float-end">{car.priceRange}</span>
+                    </p>
                   </div>
                 </div>
 
                 {/* Column 2 */}
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">May Sales: <span className="text-black dark:text-white font-bold float-end">{car.maySales.toLocaleString()}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      {car.month} Sales: <span className="text-black dark:text-white font-bold float-end">{car.maySales.toLocaleString()}</span>
+                    </p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">April Sales: <span className="text-black dark:text-white font-bold float-end">{car.aprilSales.toLocaleString()}</span></p>
+                    <p className="text-gray-500 font-medium w-full">
+                      {car.prevMonth} Sales: <span className="text-black dark:text-white font-bold float-end">{car.aprilSales.toLocaleString()}</span>
+                    </p>
                   </div>
 
                   <div className="py-2">
-                    <p className="text-gray-500 font-medium w-full">% Change:
-                      <span className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <p className="text-gray-500 font-medium w-full">
+                      % Change:
+                      <span
+                        className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                      >
                         {car.percentChange >= 0 ? '▲' : '▼'} {Math.abs(car.percentChange).toFixed(2)}%
                       </span>
                     </p>

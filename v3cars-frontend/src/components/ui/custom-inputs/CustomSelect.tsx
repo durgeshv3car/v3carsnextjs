@@ -3,9 +3,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './CustomSelect.module.css'
 
-// ✅ Generic Props (T means any type of object you pass)
-interface CustomSelectProps<T> {
+interface GroupedOptions<T> {
+  label: string
   options: T[]
+}
+
+interface CustomSelectProps<T> {
+  options?: T[] // normal list
+  groupedOptions?: GroupedOptions<T>[] // ✅ new: grouped list
   placeholder?: string
   onSelect?: (value: T) => void
   value?: any
@@ -14,7 +19,8 @@ interface CustomSelectProps<T> {
 }
 
 const CustomSelect = <T,>({
-  options,
+  options = [],
+  groupedOptions,
   placeholder = 'Select an option',
   onSelect,
   value,
@@ -24,22 +30,20 @@ const CustomSelect = <T,>({
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedItem, setSelectedItem] = useState<T | null>(null)
-
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // default value handle
   useEffect(() => {
+    const allOptions = groupedOptions
+      ? groupedOptions.flatMap((g) => g.options)
+      : options
     if (value !== undefined) {
-      const preSelected = options.find(
+      const preSelected = allOptions.find(
         (item) => String(item[valueKey]) === String(value)
       )
       setSelectedItem(preSelected || null)
     }
-  }, [value, options, valueKey])
-
-  const filteredOptions = options.filter((item) =>
-    String(item[labelKey]).toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  }, [value, options, groupedOptions, valueKey])
 
   const handleSelect = (item: T) => {
     setSelectedItem(item)
@@ -58,6 +62,12 @@ const CustomSelect = <T,>({
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  // filter function
+  const filterList = (list: T[]) =>
+    list.filter((item) =>
+      String(item[labelKey]).toLowerCase().includes(searchTerm.toLowerCase())
+    )
 
   return (
     <div className="w-full relative" ref={dropdownRef}>
@@ -103,18 +113,43 @@ const CustomSelect = <T,>({
 
           {/* Options */}
           <ul className="p-0 m-0">
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((item, index) => (
-                <li
-                  key={String(item[valueKey]) || index}
-                  className="p-3 cursor-pointer hover:bg-[#f0f0f0] dark:hover:bg-[#27272a]"
-                  onClick={() => handleSelect(item)}
-                >
-                  {String(item[labelKey])}
-                </li>
-              ))
+            {groupedOptions ? (
+              groupedOptions.map((group, gIndex) => {
+                const filtered = filterList(group.options)
+                if (filtered.length === 0) return null
+                return (
+                  <li key={gIndex}>
+                    <p className="p-3 text-xs font-semibold text-gray-500 uppercase">
+                      {group.label}
+                    </p>
+                    {filtered.map((item, index) => (
+                      <div
+                        key={String(item[valueKey]) || index}
+                        className="p-3 cursor-pointer hover:bg-[#f0f0f0] dark:hover:bg-[#27272a]"
+                        onClick={() => handleSelect(item)}
+                      >
+                        {String(item[labelKey])}
+                      </div>
+                    ))}
+                  </li>
+                )
+              })
             ) : (
-              <li className="p-3 text-gray-400">No match found</li>
+              <>
+                {filterList(options).length > 0 ? (
+                  filterList(options).map((item, index) => (
+                    <li
+                      key={String(item[valueKey]) || index}
+                      className="p-3 cursor-pointer hover:bg-[#f0f0f0] dark:hover:bg-[#27272a]"
+                      onClick={() => handleSelect(item)}
+                    >
+                      {String(item[labelKey])}
+                    </li>
+                  ))
+                ) : (
+                  <li className="p-3 text-gray-400">No match found</li>
+                )}
+              </>
             )}
           </ul>
         </div>

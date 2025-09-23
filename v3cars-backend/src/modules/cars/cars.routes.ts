@@ -5,8 +5,8 @@ import { variantsRouter } from './variants/variants.route.js';
 
 const cars = Router();
 
-cars.use(modelsRouter);
-cars.use(brandsRouter);
-cars.use(variantsRouter);
+cars.use('/models', modelsRouter);
+cars.use('/brands', brandsRouter);
+cars.use('/variants', variantsRouter);
 
 export const carsRouter = cars;

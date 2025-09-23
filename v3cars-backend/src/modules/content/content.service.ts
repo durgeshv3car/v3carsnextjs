@@ -1,8 +1,10 @@
 import { env } from '../../config/env.js';
 import { ContentRepo } from './content.repo.js';
 import type { ContentCard, ContentLatestQuery, ContentListQuery } from './content.types.js';
+import { PowertrainsService } from '../cars/powertrains/powertrains.service.js';
 
 const repo = new ContentRepo();
+const powertrains = new PowertrainsService();
 
 function makeUrl(u?: string | null): string | null {
   if (!u) return null;
@@ -47,33 +49,48 @@ async function hydrate(rows: Array<{
 }
 
 export class ContentService {
-  async today(contentType: number): Promise<ContentCard | null> {
-    const row = await repo.getToday(contentType);
+  /** 🆕 optional fuelType (e.g., Electric) to scope by EV models */
+  private async modelIdsForFuel(fuelType?: string): Promise<number[] | undefined> {
+    const ft = fuelType?.trim();
+    if (!ft) return undefined;
+    // NOTE: yahan empty aayen to undefined return kar rahe hain (fallback title LIKE ko allow karne ke liye)
+    const ids = await powertrains.findModelIdsByFuel({ fuelType: ft });
+    return ids.length ? ids : undefined;
+  }
+
+  async today(contentType: number, q?: { fuelType?: string }): Promise<ContentCard | null> {
+    const modelIds = await this.modelIdsForFuel(q?.fuelType);
+    const row = await repo.getToday(contentType, modelIds, q?.fuelType);
     if (!row) return null;
     const [card] = await hydrate([row as any]);
     return card ?? null;
-    }
+  }
 
-  async latest(contentType: number, q: ContentLatestQuery) {
+  async latest(contentType: number, q: ContentLatestQuery & { fuelType?: string }) {
     const limit = q.limit ?? 9;
+    const modelIds = await this.modelIdsForFuel(q.fuelType);
+
     let excludeId: number | undefined = undefined;
     if (q.excludeToday !== false) {
-      const today = await repo.getToday(contentType);
+      const today = await repo.getToday(contentType, modelIds, q.fuelType);
       excludeId = today?.id;
     }
-    const rows = await repo.listLatest(contentType, limit);
+
+    const rows = await repo.listLatest(contentType, limit, excludeId, modelIds, q.fuelType);
     return hydrate(rows as any);
   }
 
-  async trending(contentType: number, q: ContentListQuery) {
+  async trending(contentType: number, q: ContentListQuery & { fuelType?: string }) {
     const limit = q.limit ?? 9;
-    const rows = await repo.listTrending(contentType, limit);
+    const modelIds = await this.modelIdsForFuel(q.fuelType);
+    const rows = await repo.listTrending(contentType, limit, modelIds, q.fuelType);
     return hydrate(rows as any);
   }
 
-  async top(contentType: number, q: ContentListQuery) {
+  async top(contentType: number, q: ContentListQuery & { fuelType?: string }) {
     const limit = q.limit ?? 9;
-    const rows = await repo.listTop(contentType, limit);
+    const modelIds = await this.modelIdsForFuel(q.fuelType);
+    const rows = await repo.listTop(contentType, limit, modelIds, q.fuelType);
     return hydrate(rows as any);
   }
 }
