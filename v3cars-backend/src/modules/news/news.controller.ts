@@ -30,4 +30,10 @@ export class NewsController {
     const rows = await (svc as any).top({ limit: q.limit, fuelType: q.fuelType });
     res.json({ success: true, rows });
   }
+  
+   async popular(req: Request, res: Response) {
+    const limit = Math.max(1, Math.min(Number(req.query.limit) || 9, 50));
+    const rows = await svc.popular({ limit });
+    res.json({ success: true, rows });
+  }
 }

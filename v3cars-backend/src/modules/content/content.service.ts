@@ -147,4 +147,25 @@ export class ContentService {
       return hydrate(rows as any);
     }, ttlMs);
   }
+
+ async popular(contentType: number, q: ContentListQuery & { fuelType?: string }) {
+    const limit = q.limit ?? 9;
+    const ft = q.fuelType?.trim() || undefined;
+
+    const key = cacheKey({
+      ns: 'content:popular',
+      v: 1,
+      type: contentType,
+      limit,
+      fuelType: ft,
+    });
+    
+    const ttlMs = 2 * 60 * 1000; // 2m
+
+    return withCache(key, async () => {
+      const modelIds = await this.modelIdsForFuel(ft); // returns undefined or ids (empty → undefined)
+      const rows = await repo.listPopular(contentType, limit, modelIds, ft);
+      return hydrate(rows as any);
+    }, ttlMs);
+  }
 }
