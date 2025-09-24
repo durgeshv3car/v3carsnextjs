@@ -1,76 +1,134 @@
-// Lightweight in-memory cache (TTL-based). Drop-in Redis replacement later.
+// src/lib/cache.ts
+import { ensureRedisConnected, getRedis } from './redis.js';
+import { inMemoryCache, makeRedisCache, type CacheAdapter } from './cache.adapters.js';
 
-// Toggle cache via env (useful in dev). Default = true.
-const ENABLED = process.env.CACHE_ENABLED !== 'false';
+/** Selected adapter + mode (decided at runtime) */
+let adapter: CacheAdapter | null = null;
+let mode: 'redis' | 'memory' | null = null;
 
-type Entry<T> = { value: T; expiresAt: number };
-const store = new Map<string, Entry<unknown>>();
+/** Choose adapter once; prefer Redis if healthy, else memory */
+async function chooseAdapter(): Promise<CacheAdapter> {
+  if (adapter) return adapter;
 
-export function cacheGet<T = unknown>(key: string): T | null {
-  if (!ENABLED) return null;
-  const hit = store.get(key);
-  if (!hit) return null;
-  if (Date.now() > hit.expiresAt) {
-    store.delete(key);
+  const redis = getRedis(); // returns null if REDIS_URL not set
+  if (redis) {
+    const ok = await ensureRedisConnected();
+    if (ok) {
+      adapter = makeRedisCache(redis);
+      mode = 'redis';
+      return adapter;
+    }
+  }
+  adapter = inMemoryCache;
+  mode = 'memory';
+  return adapter;
+}
+
+/** If Redis fails mid-flight, fall back to memory so requests stay fast */
+async function recoverToMemory() {
+  adapter = inMemoryCache;
+  mode = 'memory';
+}
+
+/** Public API — keep these names stable across the codebase */
+export async function cacheGet<T = any>(key: string): Promise<T | null> {
+  try {
+    const a = await chooseAdapter();
+    return a.get<T>(key);
+  } catch {
+    if (mode === 'redis') await recoverToMemory();
     return null;
   }
-  return hit.value as T;
 }
 
-export function cacheSet<T = unknown>(key: string, value: T, ttlMs = 60_000): void {
-  if (!ENABLED) return;
-  store.set(key, { value, expiresAt: Date.now() + ttlMs });
-}
-
-export function cacheDel(key: string): void {
-  store.delete(key);
-}
-
-export function cacheClear(namespace?: string): void {
-  if (!namespace) {
-    store.clear();
-    return;
+export async function cacheSet<T = any>(key: string, value: T, ttlMs: number): Promise<void> {
+  const ttlSec = Math.max(0, Math.floor(ttlMs / 1000));
+  try {
+    const a = await chooseAdapter();
+    await a.set<T>(key, value, ttlSec);
+  } catch {
+    if (mode === 'redis') await recoverToMemory();
+    try {
+      await inMemoryCache.set<T>(key, value, ttlSec);
+    } catch {}
   }
-  const prefix = namespace + '|';
-  for (const k of store.keys()) {
-    if (k.startsWith(prefix)) store.delete(k);
+}
+
+export async function cacheDel(key: string): Promise<void> {
+  try {
+    const a = await chooseAdapter();
+    await a.del(key);
+  } catch {
+    if (mode === 'redis') await recoverToMemory();
+  }
+}
+
+export async function delPrefix(prefix: string): Promise<number> {
+  try {
+    const a = await chooseAdapter();
+    return await a.delPrefix(prefix);
+  } catch {
+    if (mode === 'redis') await recoverToMemory();
+    return 0;
   }
 }
 
 /**
- * Stable key builder. Pass a small plain object (no functions/Date/BigInt).
- * Example: cacheKey({ scope:'cities:list', page:1, q:'gur' })
+ * withCache: (1) read, (2) if miss → single-producer lock, (3) write, (4) return
+ * Uses Redis lock when available; otherwise in-memory lock.
  */
-
-export function cacheKey(parts: Record<string, unknown>): string {
-  const entries = Object.entries(parts).sort(([a], [b]) => a.localeCompare(b));
-  return entries
-    .map(([k, v]) => `${k}=${stableStringify(v)}`)
-    .join('&');
-}
-
-// Helper to stringify values consistently (handles arrays/objects)
-function stableStringify(val: unknown): string {
-  if (val === null || typeof val !== 'object') return JSON.stringify(val);
-  if (Array.isArray(val)) return `[${val.map(stableStringify).join(',')}]`;
-  const obj = val as Record<string, unknown>;
-  const keys = Object.keys(obj).sort();
-  return `{${keys.map(k => `${JSON.stringify(k)}:${stableStringify(obj[k])}`).join(',')}}`;
-}
-
-/**
- * Convenience wrapper:
- * await withCache({key, ttlMs: 60000}, async () => expensiveFetch())
- */
-
-export async function withCache<T>(
+export async function withCache<T = any>(
   key: string,
   producer: () => Promise<T>,
-  ttlMs = 60_000
+  ttlMs: number,
 ): Promise<T> {
-  const cached = cacheGet<T>(key);
-  if (cached !== null) return cached;
-  const value = await producer();
-  cacheSet(key, value, ttlMs);
-  return value;
+  const ttlSec = Math.max(1, Math.floor(ttlMs / 1000));
+  try {
+    // 1) Try read
+    const a = await chooseAdapter();
+    const hit = await a.get<T>(key);
+    if (hit !== null && hit !== undefined) return hit;
+
+    // 2) Use adapter’s lock to avoid stampede
+    return a.withLock<T>(key, ttlSec, async () => {
+      // double-check inside lock
+      const again = await a.get<T>(key);
+      if (again !== null && again !== undefined) return again;
+
+      const data = await producer();
+      await a.set<T>(key, data, ttlSec);
+      return data;
+    });
+  } catch {
+    // If Redis had an issue, flip to memory and proceed
+    if (mode === 'redis') await recoverToMemory();
+
+    const data = await producer();
+    try {
+      await inMemoryCache.set<T>(key, data, ttlSec);
+    } catch {}
+    return data;
+  }
+}
+
+/** Deterministic cache key builder: stable-ordered object → string */
+export function cacheKey(obj: Record<string, any>): string {
+  const stable = (o: any): any => {
+    if (o === null || typeof o !== 'object') return o;
+    if (Array.isArray(o)) return o.map(stable);
+    const out: Record<string, any> = {};
+    for (const k of Object.keys(o).sort()) out[k] = stable(o[k]);
+    return out;
+  };
+  return JSON.stringify(stable(obj));
+}
+
+/** Optional: warm-up/health used by /ready */
+export async function cacheHealth(): Promise<{ backend: 'redis' | 'memory'; ok: boolean }> {
+  const r = getRedis();
+  if (r) {
+    const ok = await ensureRedisConnected();
+    return { backend: 'redis', ok };
+  }
+  return { backend: 'memory', ok: true };
 }

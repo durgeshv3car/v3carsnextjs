@@ -1,34 +1,31 @@
-
-import 'dotenv/config';   
-import app from './app.js';
+// src/server.ts
 import { env } from './config/env.js';
+import app  from './app.js';
 import { prisma } from './lib/prisma.js';
+import { closeRedis } from './lib/redis.js';
 
 const server = app.listen(env.PORT, () => {
-  console.log(`API running on :${env.PORT}`);
+  console.log(`[server] listening on :${env.PORT}`);
 });
 
-async function shutdown(signal: string) {
-  console.log(`\n${signal} received. Shutting down gracefully...`);
-  // stop taking new requests
-  await new Promise<void>((resolve) => server.close(() => resolve()));
+async function shutdown(code = 0) {
   try {
-    await prisma.$disconnect();
-  } finally {
-    process.exit(0);
-  }
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  } catch {}
+  try { await closeRedis(); } catch {}
+  try { await prisma.$disconnect(); } catch {}
+  process.exit(code);
 }
 
-['SIGINT', 'SIGTERM', 'SIGQUIT'].forEach((sig) => {
-  process.on(sig as NodeJS.Signals, () => void shutdown(sig));
+process.on('SIGINT', () => shutdown(0));
+process.on('SIGTERM', () => shutdown(0));
+process.on('SIGQUIT', () => shutdown(0));
+process.on('uncaughtException', (err) => {
+  console.error('[fatal] uncaughtException', err);
+  shutdown(1);
 });
 
-// (optional) catch crashes so we still disconnect
 process.on('unhandledRejection', (err) => {
-  console.error('unhandledRejection', err);
-  void shutdown('unhandledRejection');
-});
-process.on('uncaughtException', (err) => {
-  console.error('uncaughtException', err);
-  void shutdown('uncaughtException');
+  console.error('[fatal] unhandledRejection', err);
+  shutdown(1);
 });

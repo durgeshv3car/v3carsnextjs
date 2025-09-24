@@ -49,7 +49,7 @@ When provided, results are scoped by modelTagging to models that have at least o
 "Endpoints"
 1) Today
 
-GET /v1/content/:type/today
+GET /v1/  /:type/today
 # Picks most recent row with publishDateandTime <= NOW()
 # Optional: ?fuelType=Electric
 Examples
@@ -118,7 +118,7 @@ Notes
 Database time (NOW()) is used to include only published rows up to “now” for Today/Latest.
 
 Author and comments count are hydrated for all lists.
-
+                                                                         
 fuelType (e.g., Electric) works when content is tagged with model IDs in modelTagging. We resolve models with the given fuel type via powertrains and filter content accordingly.
 
 If you need other scoping (e.g., by brand/model explicitly), we can extend the API with brandId/modelId params later.
@@ -126,4 +126,3 @@ If you need other scoping (e.g., by brand/model explicitly), we can extend the A
 ev reviews  - /v1/content/reviews/latest?fuelType=Electric&limit=9&excludeToday=0
 
 ev videos - /v1/videos/latest?limit=10&fuelType=Electric
-
