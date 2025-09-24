@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // Define types
 interface City {
-  city_id: number;
+  cityId?: number | undefined;
   cityName: string;
 }
 
@@ -13,7 +13,7 @@ interface CommonState {
 
 // Initial state
 const initialState: CommonState = {
-  selectedCity: { city_id: 1, cityName: 'Delhi-NCR' },
+  selectedCity: { cityId: 1489, cityName: 'Jaipur' },
   utmSource: 'website',
 };
 

@@ -11,18 +11,28 @@ import LoginModal from "./LoginModal";
 import { usePathname, useRouter } from "next/navigation";
 import ToolsDropdown from "../header/ToolsDropdown.";
 import ThemeToggle from "@/components/common/ThemeToggle";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 // import ThemeToggle from "@/components/common/ThemeToggle";
 
 type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
 
 const HOVER_CLOSE_DELAY = 160; // ms grace period   
 
+interface Location {
+  cityId?: number;
+  cityName?: string;
+}
+
 const Header = () => {
+    // Replace 'any, any, any' with your actual types if available
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
 
     const [hoverTab, setHoverTab] = useState<TabKey>(null);
     const [showLogin, setShowLogin] = useState(false);
     const router = useRouter();
     const path = usePathname();
+    const [location, setLocation] = useState<Location>(selectedCity);
 
     // header height → position dropdowns just below
     const headerRef = useRef<HTMLElement | null>(null);
@@ -51,7 +61,7 @@ const Header = () => {
     useEffect(() => {
         setHoverTab(null);
     }, [path]);
- 
+
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => e.key === "Escape" && setHoverTab(null);
         window.addEventListener("keydown", onKey);
@@ -155,7 +165,7 @@ const Header = () => {
                                     }`}
                             >
                                 <FiMapPin size={16} />
-                                Visakhapatnam
+                                {location.cityName}
                                 <IoChevronDownOutline size={14} />
                             </div>
                         </div>
@@ -210,9 +220,9 @@ const Header = () => {
                                     onMouseEnter={cancelClose}
                                     onMouseLeave={scheduleClose}
                                 >
-                                    
-                                        <NewsVideosDropdown />
-                                    
+
+                                    <NewsVideosDropdown />
+
                                 </div>
                             )}
                         </div>
@@ -243,7 +253,7 @@ const Header = () => {
                                     onMouseEnter={cancelClose}
                                     onMouseLeave={scheduleClose}
                                 >
-                                        <ToolsDropdown />
+                                    <ToolsDropdown />
                                 </div>
                             )}
                         </div>
@@ -295,7 +305,7 @@ const Header = () => {
                             className="app-container mx-auto pointer-events-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <LocationDropdown />
+                            <LocationDropdown location={location} setLocation={setLocation} setHoverTab={setHoverTab} />
                         </div>
                     </div>
                 </>
