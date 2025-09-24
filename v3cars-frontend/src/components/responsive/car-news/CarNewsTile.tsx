@@ -1,67 +1,83 @@
 'use client'
 
-
+import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FiUser, FiCalendar } from "react-icons/fi";
 
-interface CarNewsTileProps {
-  image: string;
-  title: string;
-  desc: string;
-  author: string;
-  date: string;
+interface ArticleThumbnail {
+  url: string;
+  alt: string;
 }
 
-export default function CarNewsTile({
-  image,
-  title,
-  desc,
-  author,
-  date,
-}: CarNewsTileProps) {
-  const router = useRouter()
+interface ArticleAuthor {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface Article {
+  id: number;
+  title: string;
+  pageUrl: string;
+  publishDateandTime: string; // ISO Date string
+  shortDescription: string;   // HTML string
+  thumbnail: ArticleThumbnail;
+  author: ArticleAuthor;
+  commentsCount: number;
+}
+
+export default function CarNewsTile({ article }: { article: Article }) {
+  const router = useRouter();
 
   return (
-
-    <div className=" border dark:border-[#2E2E2E] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
-
+    <div className="border dark:border-[#2E2E2E] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+      {/* Thumbnail */}
       <Image
-        src={image}
-        alt={title}
+        src={`${IMAGE_URL}${article.thumbnail.url}`}
+        alt={article.thumbnail.alt}
         width={400}
         height={200}
-        className="w-full lg:h-[280px] object-cover cursor-pointer"
-        onClick={()=>{router.push(`/news/${title}`)}}
+        className="w-full lg:h-[200px] object-cover cursor-pointer"
+        onClick={() => {
+          router.push(`/news/${article.pageUrl}`);
+        }}
       />
 
+      {/* Content */}
       <div className="md:p-4 p-2">
-
-        <h3 className="lg:text-[18px] text-[12px] font-semibold text-gray-800 dark:text-white leading-tight mb-2 lg:mb-5 line-clamp-2 cursor-pointer" onClick={()=>{router.push(`/news/${title}`)}}>
-          {title}
+        {/* Title */}
+        <h3
+          className="lg:text-[18px] text-[12px] font-semibold text-gray-800 dark:text-white leading-tight mb-2 lg:mb-5 line-clamp-2 cursor-pointer"
+          onClick={() => {
+            router.push(`/news/${article.pageUrl}`);
+          }}
+        >
+          {article.title}
         </h3>
 
-        <p className="lg:text-[15px] text-[12px] text-gray-600 dark:text-white mb-3 line-clamp-2">{desc}</p>
+        {/* Description */}
+        <p
+          className="lg:text-[15px] text-[12px] text-gray-600 dark:text-white mb-3 line-clamp-2"
+          dangerouslySetInnerHTML={{ __html: article.shortDescription }}
+        />
 
+        {/* Author + Date */}
         <div className="flex items-center justify-between text-gray-500 dark:text-white">
-
           <div className="flex items-center md:gap-2 gap-1 lg:text-[13px] text-[10px]">
-            <FiUser className=" " />
-            {author}
+            <FiUser /> {article.author.name}
           </div>
 
           <div className="flex items-center md:gap-2 gap-1 lg:text-[13px] text-[10px]">
-            <FiCalendar className="" />
-            {date}
+            <FiCalendar />
+            {new Date(article.publishDateandTime).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
           </div>
-
         </div>
-
       </div>
     </div>
   );
 }
-
-
-
-

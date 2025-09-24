@@ -12,6 +12,8 @@ import { upcomingApi } from "./api/upcomingApi";
 import { latestcarApi } from "./api/latestcarApi";
 import { popularCarApi } from "./api/popularApi";
 import { electricApi } from "./api/electricApi";
+import { newsApi } from "./api/newsApi";
+import { autoExpoApi } from "./api/autoExpoApi";
 
 const persistConfig = {
   key: "root",
@@ -27,6 +29,8 @@ const rootReducer = combineReducers({
   [latestcarApi.reducerPath]: latestcarApi.reducer,
   [popularCarApi.reducerPath]: popularCarApi.reducer,
   [electricApi.reducerPath]: electricApi.reducer,
+  [newsApi.reducerPath]: newsApi.reducer,
+  [autoExpoApi.reducerPath]: autoExpoApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
@@ -49,6 +53,8 @@ export const store = configureStore({
       latestcarApi.middleware,
       popularCarApi.middleware,
       electricApi.middleware,
+      newsApi.middleware,
+      autoExpoApi.middleware,
     ),
 });
 

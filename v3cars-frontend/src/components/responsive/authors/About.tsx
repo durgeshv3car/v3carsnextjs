@@ -1,7 +1,7 @@
 function AboutComponent() {
     return (
         <>
-            <div className="rounded-xl bg-white p-4">
+            <div className="rounded-xl bg-white dark:bg-[#171717] p-4">
                 <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">About</h2>
                 <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
                     As the head of content at V3Cars, Jagdev oversees everything from in-depth analyses to engaging scripts. His leadership ensures that every piece is researched thoroughly and aligned with the needs of Indian buyers.
