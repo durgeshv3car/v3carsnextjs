@@ -1,5 +1,7 @@
 import { ImagesRepo } from './images.repo.js';
 import { env } from '../../../config/env.js';
+// ⬇️ Cache façade
+import { withCache, cacheKey } from '../../../lib/cache.js';
 
 const repo = new ImagesRepo();
 
@@ -14,19 +16,28 @@ function buildAssetUrl(name?: string | null): string | null {
 }
 
 export class ImagesService {
-  async getPrimaryByModelIds(modelIds: number[]) {
-    const raw = await repo.getPrimaryByModelIds(modelIds);
-    const map = new Map<number, { name: string | null; alt: string | null; url: string | null }>();
+ async getPrimaryByModelIds(modelIds: number[]) {
+  const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
+  if (!ids.length) return new Map<number, { name: string | null; alt: string | null; url: string | null }>();
 
-    for (const [modelId, r] of raw) {
-      const name = r.modelImageName ?? r.variantImageName ?? null;
-      const alt = r.modelImageAltText ?? r.variantImageAltText ?? null;
-      map.set(modelId, {
-        name,
-        alt,
-        url: buildAssetUrl(name),
-      });
-    }
-    return map;
-  }
+  const key = cacheKey({ ns: 'images:primaryByModelIds', v: 1, ids });
+  const ttlMs = 60 * 60 * 1000; // 60 min
+
+  const entries = await withCache<[number, { name: string | null; alt: string | null; url: string | null }][]>(
+    key,
+    async () => {
+      const raw = await repo.getPrimaryByModelIds(ids); // Map<number, row>
+      const arr: [number, { name: string | null; alt: string | null; url: string | null }][] = [];
+      for (const [modelId, r] of raw) {
+        const name = r.modelImageName ?? r.variantImageName ?? null;
+        const alt = r.modelImageAltText ?? r.variantImageAltText ?? null;
+        arr.push([modelId, { name, alt, url: buildAssetUrl(name) }]);
+      }
+      return arr;
+    },
+    ttlMs
+  );
+
+  return new Map(entries);
+}
 }

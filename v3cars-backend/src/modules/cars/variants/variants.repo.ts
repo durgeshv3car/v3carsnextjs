@@ -74,4 +74,39 @@ export class VariantsRepo {
 
     return map;
   }
+
+
+   async listByModelId(modelId: number) {
+    return prisma.tblvariants.findMany({
+      where: { modelId },
+      orderBy: [{ updatedDate: 'desc' }, { variantId: 'asc' }],
+      select: {
+        variantId: true,
+        variantName: true,
+        modelId: true,
+        modelPowertrainId: true,
+        variantPrice: true,
+        updatedDate: true,
+      },
+    });
+  }
+
+  /** Fetch variants by IDs (kept narrow select for consistency) */
+  async findByIds(ids: number[]) {
+    if (!ids?.length) return [];
+    return prisma.tblvariants.findMany({
+      where: { variantId: { in: ids } },
+      orderBy: [{ updatedDate: 'desc' }, { variantId: 'asc' }],
+      select: {
+        variantId: true,
+        variantName: true,
+        modelId: true,
+        modelPowertrainId: true,
+        variantPrice: true,
+        updatedDate: true,
+      },
+    });
+  }
 }
+
+

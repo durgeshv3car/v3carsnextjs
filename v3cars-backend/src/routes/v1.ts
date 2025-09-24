@@ -18,6 +18,6 @@ v1.use('/content', contentRouter);
 v1.use('/reviews', reviewsRouter);
 v1.use('/comparisons', comparisonsRouter);
 v1.use('/videos', videosRouter);
-v1.use('/locations', locationsRouter); // ✅  (/v1/locations/cities)
+v1.use('/locations', locationsRouter); 
 
 export default v1;
