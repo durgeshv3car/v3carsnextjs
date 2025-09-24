@@ -151,7 +151,7 @@ export default function Page() {
                         <div className="w-auto lg:min-w-[24%] space-y-6 flex flex-col items-center">
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
-                            <PopularNews />
+                            {/* <PopularNews /> */}
                             <SideBarAdSmall />
                         </div>
                     </div>

@@ -7,7 +7,7 @@ import CarNewsSection from '@/components/responsive/car-news/CarNewsSection';
 import PopularNews from '@/components/common/PopularNews';
 import LeaderboardAd from '@/components/common/LeaderboardAd';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
-import { useGetLatestNewsQuery, useGetTodayNewsQuery, useGetTopNewsQuery, useGetTrendingNewsQuery } from '@/redux/api/newsApi';
+import { useGetLatestNewsQuery, useGetPopularNewsQuery, useGetTodayNewsQuery, useGetTopNewsQuery, useGetTrendingNewsQuery } from '@/redux/api/newsApi';
 import Link from 'next/link';
 
 const tabs = [
@@ -45,11 +45,13 @@ export default function Page() {
   const { data: trendingNewsData } = useGetTrendingNewsQuery();
   const { data: topNewsData } = useGetTopNewsQuery();
   const { data: todayNewsData } = useGetTodayNewsQuery();
+  const { data: popularNewsData } = useGetPopularNewsQuery();
 
   const todayNews: Article | null = todayNewsData?.data ?? null;
   const latestNews: Article[] = latestNewsData?.rows ?? [];
   const trendingNews: Article[] = trendingNewsData?.rows ?? [];
   const topNews: Article[] = topNewsData?.rows ?? [];
+  const popularNews: Article[] = popularNewsData?.rows ?? [];
 
   return (
     <div>
@@ -109,7 +111,10 @@ export default function Page() {
             <div className="w-auto lg:min-w-[24%] space-y-6 flex flex-col items-center">
               <SideBarAdSmall />
               <UpcomingCarByTopBrands />
-              <PopularNews />
+              <PopularNews
+                title='Popular News'
+                data={popularNews}
+              />
               <SideBarAdSmall />
             </div>
 
