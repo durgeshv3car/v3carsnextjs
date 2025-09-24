@@ -41,4 +41,5 @@ export class VideosController {
     const rows = await svc.top(type, { limit: q.limit, fuelType: q.fuelType });
     res.json({ success: true, rows });
   }
+  
 }

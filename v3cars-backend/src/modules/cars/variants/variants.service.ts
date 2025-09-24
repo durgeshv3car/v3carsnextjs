@@ -3,6 +3,9 @@ import { VariantsRepo } from './variants.repo.js';
 import { PowertrainsService } from '../powertrains/powertrains.service.js';
 import { extractPriceBand } from './price.util.js';
 
+// ⬇️ Cache façade
+import { withCache, cacheKey } from '../../../lib/cache.js';
+
 const repo = new VariantsRepo();
 const powertrains = new PowertrainsService();
 
@@ -143,8 +146,39 @@ export class VariantsService {
     return { ...v, priceMin: band?.min ?? null, priceMax: band?.max ?? null };
   }
 
-  // expose price bands for Models enrichment
-  getPriceBandsByModelIds(modelIds: number[]) {
-    return repo.getPriceBandsByModelIds(modelIds);
+  // 🔥 expose price bands for Models enrichment — now cached
+async getPriceBandsByModelIds(modelIds: number[]) {
+  const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
+  if (!ids.length) return new Map<number, { min: number | null; max: number | null }>();
+
+  const key = cacheKey({ ns: 'variants:priceBandsByModelIds', v: 1, ids });
+  const ttlMs = 30 * 60 * 1000; // 30 min
+
+  // Cache me entries array store karo, wapas Map banao
+  const entries = await withCache<[number, { min: number | null; max: number | null }][]>(
+    key,
+    async () => {
+      const map = await repo.getPriceBandsByModelIds(ids); // already returns Map
+      return Array.from(map.entries());
+    },
+    ttlMs
+  );
+
+  return new Map<number, { min: number | null; max: number | null }>(entries);
+}
+
+  // (optional) frequently used helpers can also be cached similarly:
+  async listByModelId(modelId: number) {
+    const key = cacheKey({ ns: 'variants:listByModel', v: 1, modelId });
+    const ttlMs = 30 * 60 * 1000;
+    return withCache(key, async () => repo.listByModelId(modelId), ttlMs);
+  }
+
+  async findByIds(variantIds: number[]) {
+    const ids = Array.from(new Set((variantIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
+    if (!ids.length) return [];
+    const key = cacheKey({ ns: 'variants:byIds', v: 1, ids });
+    const ttlMs = 30 * 60 * 1000;
+    return withCache(key, async () => repo.findByIds(ids), ttlMs);
   }
 }

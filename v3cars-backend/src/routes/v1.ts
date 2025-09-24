@@ -6,6 +6,8 @@ import { contentRouter } from '../modules/content/content.route.js';
 import { reviewsRouter } from '../modules/reviews/reviews.route.js';
 import { comparisonsRouter } from '../modules/comparisons/comparisons.route.js';
 import { videosRouter } from '../modules/videos/videos.route.js';
+import { locationsRouter } from '../modules/locations/location.routes.js';
+
 
 const v1 = Router();
 
@@ -15,7 +17,7 @@ v1.use('/news', newsRouter);
 v1.use('/content', contentRouter);
 v1.use('/reviews', reviewsRouter);
 v1.use('/comparisons', comparisonsRouter);
-v1.use('/videos', videosRouter); 
+v1.use('/videos', videosRouter);
+v1.use('/locations', locationsRouter); 
 
 export default v1;
-

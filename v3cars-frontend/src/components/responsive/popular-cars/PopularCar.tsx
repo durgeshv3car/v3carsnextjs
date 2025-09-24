@@ -5,12 +5,19 @@ import { IMAGE_URL } from '@/utils/constant';
 import Image from 'next/image';
 import React from 'react';
 
-interface CarSales {
+interface CarModel {
   rank: number;
   modelId: number;
   modelName: string;
   modelSlug: string;
+  brandName: string;
   brandSlug: string;
+  bodyStyle: string;
+  segment: string;
+  priceRange: {
+    min: number;
+    max: number;
+  };
   month: string;
   monthSales: number;
   prevMonth: string;
@@ -27,34 +34,21 @@ interface CarSales {
 const PopularCar = () => {
   const { data: topSellingCarData, error, isLoading } = useGetTopSellingCarQuery();
 
-  const topSellingCars: CarSales[] = topSellingCarData?.rows ?? [];
-
-  // map API response -> UI compatible
-  const popularCarsData = topSellingCars.map((car) => ({
-    ...car,
-    brand: car.brandSlug, // UI me brand ke liye
-    name: car.modelName,  // UI me name ke liye
-    bodyStyle: "Hatchback", // Agar API provide nahi karti to dummy / static value
-    segment: "B-Segment",   // same as above
-    priceRange: "₹5.5L - ₹9L", // Example static/dynamic
-    maySales: car.monthSales,
-    aprilSales: car.prevSales,
-    ctaLabel: "Check Details", // Button label
-  }));
+  const topSellingCars: CarModel[] = topSellingCarData?.rows ?? [];
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong</p>;
 
   return (
     <div className="flex flex-col gap-4">
-      {popularCarsData.slice(0, 2).map((car) => (
+      {topSellingCars.slice(0, 2).map((car) => (
         <div
           key={car.rank}
           className="border border-gray-300 dark:border-[#2E2E2E] rounded-lg overflow-hidden bg-white dark:bg-transparent shadow-sm p-4 space-y-2"
         >
           {/* Title */}
           <h2 className="text-lg font-medium">
-            {car.brand} <span className="font-semibold">{car.name}</span>
+            {car.brandName} <span className="font-semibold">{car.modelName}</span>
           </h2>
 
           {/* Image + Rank + Info Grid */}
@@ -73,7 +67,7 @@ const PopularCar = () => {
               <div className="relative w-full sm:w-[300px] h-[192px]">
                 <Image
                   src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
-                  alt={car.image.alt || car.name}
+                  alt={car.image.alt || car.modelName}
                   layout="fill"
                   objectFit="cover"
                   className="rounded"
@@ -88,19 +82,29 @@ const PopularCar = () => {
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      Body Style: <span className="text-black dark:text-white font-bold float-end">{car.bodyStyle}</span>
+                      Body Style:{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        {car.bodyStyle}
+                      </span>
                     </p>
                   </div>
 
                   <div className="py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      Segment: <span className="text-black dark:text-white font-bold float-end">{car.segment}</span>
+                      Segment:{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        {car.segment}-Segment
+                      </span>
                     </p>
                   </div>
 
                   <div className="gap-2 py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      ESP(Price): <span className="text-black dark:text-white font-bold float-end">{car.priceRange}</span>
+                      ESP(Price):{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        ₹{(car.priceRange.min / 100000).toFixed(1)} -{' '}
+                        ₹{(car.priceRange.max / 100000).toFixed(2)} L
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -109,13 +113,19 @@ const PopularCar = () => {
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      {car.month} Sales: <span className="text-black dark:text-white font-bold float-end">{car.maySales.toLocaleString()}</span>
+                      {car.month} Sales:{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        {car.monthSales.toLocaleString()}
+                      </span>
                     </p>
                   </div>
 
                   <div className="py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      {car.prevMonth} Sales: <span className="text-black dark:text-white font-bold float-end">{car.aprilSales.toLocaleString()}</span>
+                      {car.prevMonth} Sales:{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        {car.prevSales.toLocaleString()}
+                      </span>
                     </p>
                   </div>
 
@@ -123,9 +133,11 @@ const PopularCar = () => {
                     <p className="text-gray-500 font-medium w-full">
                       % Change:
                       <span
-                        className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                        className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'
+                          }`}
                       >
-                        {car.percentChange >= 0 ? '▲' : '▼'} {Math.abs(car.percentChange).toFixed(2)}%
+                        {car.percentChange >= 0 ? '▲' : '▼'}{' '}
+                        {Math.abs(car.percentChange).toFixed(2)}%
                       </span>
                     </p>
                   </div>
@@ -135,7 +147,7 @@ const PopularCar = () => {
               {/* CTA Button */}
               <div className="pt-2">
                 <button className="bg-yellow-400 text-black font-semibold py-2 rounded w-full hover:bg-yellow-500 transition">
-                  {car.ctaLabel}
+                  Check Details
                 </button>
               </div>
             </div>
@@ -144,26 +156,22 @@ const PopularCar = () => {
       ))}
 
       {/* Ads block */}
-      <div className='h-[331px] md:h-[240px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center'>
+      <div className="h-[331px] md:h-[240px] bg-[#B3B3B3] dark:bg-[#262626] p-8 flex justify-center items-center">
         <div className="hidden sm:block w-full lg:w-[970px] lg:h-[180px] sm:h-[200px] mx-auto">
-          <img
-            src={'/ads/ad1.png'}
-            alt='ad1'
-            className='h-full w-full'
-          />
+          <img src={'/ads/ad1.png'} alt="ad1" className="h-full w-full" />
         </div>
 
-        <div className='block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl'></div>
+        <div className="block sm:hidden w-[336px] h-[280px] bg-gray-300 rounded-xl"></div>
       </div>
 
-      {popularCarsData.slice(2).map((car) => (
+      {topSellingCars.slice(2).map((car) => (
         <div
           key={car.rank}
           className="border border-gray-300 dark:border-[#2E2E2E] rounded-lg overflow-hidden bg-white dark:bg-transparent shadow-sm p-4 space-y-2"
         >
           {/* Title */}
           <h2 className="text-lg font-medium">
-            {car.brand} <span className="font-semibold">{car.name}</span>
+            {car.brandName} <span className="font-semibold">{car.modelName}</span>
           </h2>
 
           {/* Image + Rank + Info Grid */}
@@ -182,7 +190,7 @@ const PopularCar = () => {
               <div className="relative w-full sm:w-[300px] h-[192px]">
                 <Image
                   src={`${IMAGE_URL}/media/model-imgs/${car.imageUrl}`}
-                  alt={car.image.alt || car.name}
+                  alt={car.image.alt || car.modelName}
                   layout="fill"
                   objectFit="cover"
                   className="rounded"
@@ -197,19 +205,29 @@ const PopularCar = () => {
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      Body Style: <span className="text-black dark:text-white font-bold float-end">{car.bodyStyle}</span>
+                      Body Style:{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        {car.bodyStyle}
+                      </span>
                     </p>
                   </div>
 
                   <div className="py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      Segment: <span className="text-black dark:text-white font-bold float-end">{car.segment}</span>
+                      Segment:{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        {car.segment}-Segment
+                      </span>
                     </p>
                   </div>
 
                   <div className="gap-2 py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      ESP(Price): <span className="text-black dark:text-white font-bold float-end">{car.priceRange}</span>
+                      ESP(Price):{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        ₹{(car.priceRange.min / 100000).toFixed(1)} -{' '}
+                        ₹{(car.priceRange.max / 100000).toFixed(1)} L
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -218,13 +236,19 @@ const PopularCar = () => {
                 <div className="divide-y divide-gray-200 lg:space-y-3">
                   <div className="py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      {car.month} Sales: <span className="text-black dark:text-white font-bold float-end">{car.maySales.toLocaleString()}</span>
+                      {car.month} Sales:{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        {car.monthSales.toLocaleString()}
+                      </span>
                     </p>
                   </div>
 
                   <div className="py-2">
                     <p className="text-gray-500 font-medium w-full">
-                      {car.prevMonth} Sales: <span className="text-black dark:text-white font-bold float-end">{car.aprilSales.toLocaleString()}</span>
+                      {car.prevMonth} Sales:{' '}
+                      <span className="text-black dark:text-white font-bold float-end">
+                        {car.prevSales.toLocaleString()}
+                      </span>
                     </p>
                   </div>
 
@@ -232,9 +256,11 @@ const PopularCar = () => {
                     <p className="text-gray-500 font-medium w-full">
                       % Change:
                       <span
-                        className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                        className={`text-black font-bold float-end ${car.percentChange >= 0 ? 'text-green-600' : 'text-red-600'
+                          }`}
                       >
-                        {car.percentChange >= 0 ? '▲' : '▼'} {Math.abs(car.percentChange).toFixed(2)}%
+                        {car.percentChange >= 0 ? '▲' : '▼'}{' '}
+                        {Math.abs(car.percentChange).toFixed(2)}%
                       </span>
                     </p>
                   </div>
@@ -244,7 +270,7 @@ const PopularCar = () => {
               {/* CTA Button */}
               <div className="pt-2">
                 <button className="bg-yellow-400 text-black font-semibold py-2 rounded w-full hover:bg-yellow-500 transition">
-                  {car.ctaLabel}
+                  Check Details
                 </button>
               </div>
             </div>

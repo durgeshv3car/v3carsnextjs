@@ -1,15 +1,36 @@
+// src/config/env.ts
 import { z } from 'zod';
+import 'dotenv/config';
 
-const Env = z.object({
-  DATABASE_URL: z.string().url(),
-  NODE_ENV: z.enum(['development','test','production']).default('development'),
-  PORT: z.coerce.number().default(3121),
+const EnvSchema = z.object({
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  PORT: z.coerce.number().int().positive().default(3121),
 
-  // Optional: if set, image URLs become absolute: `${MEDIA_BASE_URL}/${fileName}`
-  // e.g. MEDIA_BASE_URL=https://cdn.v3cars.com/images
-  MEDIA_BASE_URL: z.string().optional().default(''),
+  DATABASE_URL: z.string().min(1),
+
+  // Optional media base URL you already had
+  MEDIA_BASE_URL: z.string().url().optional(),
+
+  // 🆕 Redis (optional)
+  REDIS_URL: z.string().min(1).optional(),
+  REDIS_PREFIX: z.string().default('v3cars:'),
+  REDIS_TLS: z
+    .union([z.string(), z.boolean()])
+    .optional()
+    .transform((v) => {
+      if (typeof v === 'boolean') return v;
+      if (typeof v === 'string') return v === '1' || v.toLowerCase() === 'true';
+      return false;
+    }),
 });
 
-export const env = Env.parse(process.env);
+export const env = EnvSchema.parse({
+  NODE_ENV: process.env.NODE_ENV,
+  PORT: process.env.PORT,
+  DATABASE_URL: process.env.DATABASE_URL,
+  MEDIA_BASE_URL: process.env.MEDIA_BASE_URL,
 
-
+  REDIS_URL: process.env.REDIS_URL,
+  REDIS_PREFIX: process.env.REDIS_PREFIX,
+  REDIS_TLS: process.env.REDIS_TLS,
+});
