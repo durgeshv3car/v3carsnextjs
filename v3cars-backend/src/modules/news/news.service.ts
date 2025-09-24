@@ -18,4 +18,8 @@ export class NewsService {
   top(q: NewsListQuery) {
     return content.top(CONTENT_TYPES.NEWS, { limit: q.limit });
   }
+  
+ popular(q: NewsListQuery & { fuelType?: string }) {
+    return content.popular(CONTENT_TYPES.NEWS, { limit: q.limit, fuelType: (q as any).fuelType });
+  }
 }

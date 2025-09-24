@@ -99,6 +99,40 @@ export class ContentRepo {
     `);
   }
 
+ async listPopular(contentType: number, limit = 9, modelIds?: number[], fuelType?: string) {
+    return prisma.$queryRaw<Array<{
+      id: number;
+      title: string;
+      pageUrl: string;
+      shortDescription: string | null;
+      thumbnailAltText: string | null;
+      thumbnailUrl: string | null;
+      authorId: number;
+      publishDateandTime: Date;
+      NumView: number;
+    }>>(Prisma.sql`
+      SELECT
+        id,
+        title,
+        pageUrl,
+        shortDescription,
+        thumbnailAltText,
+        thumbnailUrl,
+        authorId,
+        publishDateandTime,
+        CAST(uniqueUsers AS UNSIGNED) AS NumView
+      FROM tblcontents
+      WHERE contentType = ${contentType}
+        AND publishDateandTime <= NOW()
+        AND contentPublishType IN (1,2)
+        AND contentPublishStatus = 2
+        ${buildEvScope(modelIds, fuelType)}
+      ORDER BY NumView DESC, publishDateandTime DESC, id DESC
+      LIMIT ${limit}
+    `);
+  }
+
+
   async findAuthorsByIds(ids: number[]) {
     if (!ids.length) return [];
     return prisma.tblauthor.findMany({

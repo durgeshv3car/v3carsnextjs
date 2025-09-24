@@ -47,7 +47,12 @@ GET /v1/news/trending?limit=9
 ```
 GET /v1/news/top?limit=9
 # Ordered by last_30days_view DESC
+
 ```
+
+## Popular
+GET /v1/news/top?limit=9
+# publishDateandTime <= NOW() ORDER BY uniqueUsers DESC 
 
 **Notes**
 - Thumbnail URLs are absolute if `MEDIA_BASE_URL` is set, otherwise raw file/path is returned.
