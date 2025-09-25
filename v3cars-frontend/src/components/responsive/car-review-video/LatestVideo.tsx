@@ -1,78 +1,71 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { IMAGE_URL } from "@/utils/constant"
 
-const videoData = new Array(8).fill({
-    thumbnail: '/latest-video/image2.png',
-    playIcon: '/latest-video/youtube.png',
-    date: 'July 30 2024',
-    title:
-        'Summer Range Impact and Charging Issue in EVs | 4 Months & 4000km Driv EVs | 4 Months & 4000km Dr...',
-    description:
-        'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
-})
+interface LatestVideosProps {
+    data: ReviewVideo[]
+}
 
-const LatestVideos: React.FC = () => {
-    const scrollRef = useRef<HTMLDivElement>(null)
-
-    const handleScroll = () => {
-        const container = scrollRef.current
-        if (!container) return
-
-        // const { scrollLeft, scrollWidth, clientWidth } = container
-        // setIsAtStart(scrollLeft <= 0)
-        // setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 5)
+interface ReviewVideo {
+    id: number
+    title: string
+    pageUrl: string
+    publishDateandTime: string // ISO string (e.g. "2025-06-03T18:00:00.000Z")
+    thumbnail: {
+        url: string
+        alt: string
     }
+    videoYId: string
+    author: {
+        id: number
+        name: string
+        slug: string
+    }
+}
 
-    useEffect(() => {
-        const container = scrollRef.current
-        if (!container) return
-
-        handleScroll()
-        container.addEventListener('scroll', handleScroll)
-        return () => container.removeEventListener('scroll', handleScroll)
-    }, [])
-
+const LatestVideos: React.FC<LatestVideosProps> = ({ data }) => {
     return (
-        <>
-            <section>
-                <h2 className="text-xl font-semibold my-3">Latest Videos</h2>
+        <section>
+            <h2 className="text-xl font-semibold my-3">Latest Videos</h2>
 
-                <div className='grid grid-cols-2 2xl:grid-cols-3 gap-4'>
-                    {videoData.map((video, index) => (
-                        <div
-                            key={index}
-                            className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-h-[142px] lg:min-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
-                        >
-                            {/* Thumbnail with Play Icon */}
-                            <div className="relative min-h-[100px] lg:min-h-[228px]">
+            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-4">
+                {data.map((video) => (
+                    <div
+                        key={video.id}
+                        className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-h-[142px] lg:min-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
+                    >
+                        {/* Thumbnail */}
+                        <div className="relative min-h-[100px] lg:min-h-[200px] group">
+                            <img
+                                src={`${IMAGE_URL}${video.thumbnail.url}`}
+                                alt={video.thumbnail.alt}
+                                className="object-cover w-full h-full rounded"
+                            />
+                            <div className="absolute inset-0 group-hover:bg-black/30 rounded" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                {/* Play Icon */}
                                 <img
-                                    src={video.thumbnail}
-                                    alt="Video thumbnail"
-                                    className="object-cover w-full h-full rounded"
+                                    src={"/latest-video/youtube.png"}
+                                    alt="Play"
+                                    width={50}
+                                    height={50}
+                                    className="drop-shadow-md"
                                 />
-                                <div className="absolute inset-0 bg-black/20 rounded" />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <img
-                                        src={video.playIcon}
-                                        alt="Play"
-                                        width={50}
-                                        height={50}
-                                        className="drop-shadow-md"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-2">
-                                <h3 className="font-semibold line-clamp-2">X-Trail Driven | Nissan’s Plan For India | Upcoming Creta-Alcazar Rival, Mini EV, Magnite FL</h3>
                             </div>
                         </div>
-                    ))}
-                </div>
-            </section>
-        </>
+
+                        {/* Content */}
+                        <div className="p-2">
+                            <h3 className="font-semibold line-clamp-2">{video.title}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                By {video.author.name}
+                            </p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </section>
     )
 }
 
-export default LatestVideos;
+export default LatestVideos

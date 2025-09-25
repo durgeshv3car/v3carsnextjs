@@ -1,7 +1,13 @@
 'use client'
 
-import { IMAGE_URL } from "@/utils/constant";
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
+import { IMAGE_URL } from '@/utils/constant';
+
+interface CommonPopularCardProps {
+    title: string
+    data: Article[];
+}
 
 interface ArticleThumbnail {
     url: string;
@@ -14,7 +20,7 @@ interface ArticleAuthor {
     slug: string;
 }
 
-export interface Article {
+interface Article {
     id: number;
     title: string;
     pageUrl: string;
@@ -25,21 +31,16 @@ export interface Article {
     commentsCount: number;
 }
 
-interface PopularNewsProps {
-    title: string;
-    data: Article[];
-}
-
-export default function PopularNews({ title, data }: PopularNewsProps) {
+const CommonPopularCard: React.FC<CommonPopularCardProps> = ({ title, data }) => {
     return (
-        <div className=" rounded-xl p-4 space-y-4 border my-5 hidden lg:block dark:border-[#2E2E2E]">
-            {/* Heading */}
-            <div className="bg-gray-700 text-white px-4 py-2 rounded-lg">
-                <h3 className="text-[18px] font-semibold">{title}</h3>
+        <div className="border border-gray-300 dark:border-[#262626] rounded-xl shadow-sm w-full">
+            {/* Header */}
+            <div className="bg-[#DEE2E6] dark:bg-[#27272a] text-lg font-semibold p-4 rounded-t-xl">
+                {title}
             </div>
 
-            {/* Image Grid */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Grid */}
+            <div className="grid grid-cols-2 gap-2 p-2">
                 {data.map((item, index) => (
                     <div key={index} className="overflow-hidden rounded-lg">
                         <Image
@@ -47,12 +48,13 @@ export default function PopularNews({ title, data }: PopularNewsProps) {
                             alt={`Popular news ${index + 1}`}
                             width={300}
                             height={200}
-                            className="w-full h-auto object-cover rounded-lg"
+                            className="w-full h-full object-cover rounded-lg"
                         />
                     </div>
                 ))}
             </div>
-
         </div>
     );
-}
+};
+
+export default CommonPopularCard;

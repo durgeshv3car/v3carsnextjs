@@ -37,7 +37,7 @@ export const newsApi = createApi({
             query: () => `/news/top?limit=6`,
         }),
         getPopularNews: builder.query<LatestNewsResponse, void>({
-            query: () => `/news/popular?limit=9`,
+            query: () => `/news/popular?limit=10`,
         }),
     }),
 });

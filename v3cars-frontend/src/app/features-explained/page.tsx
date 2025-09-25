@@ -5,10 +5,10 @@ import CommonPopularCard from "@/components/common/CommonPopularCard";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import CommonMobileReviewCard from "@/components/mobile/common/CommonMobileReviewCard";
-import { useGetLatestReviewsQuery, useGetPopularReviewQuery, useGetTopReviewsQuery, useGetTrendingReviewsQuery } from "@/redux/api/expertReviewApi";
 import Link from "next/link";
 import CommonReviewCard from "@/components/common/CommonReviewCard";
 import { useState } from "react";
+import { useGetLatestFeaturesExplainedQuery, useGetPopularFeaturesExplainedQuery, useGetTopFeaturesExplainedQuery, useGetTrendingFeaturesExplainedQuery } from "@/redux/api/featuresExplainedApi";
 
 // export const metadata: Metadata = {
 //     title: "Compare Cars in India | Specs, Features, Prices - V3Cars",
@@ -24,24 +24,24 @@ import { useState } from "react";
 //     ],
 // };
 
-const buttons = ['Latest Expert Reviews', 'Trending Comparison Reviews', 'Top Comparison Reviews'];
+const buttons = ['Latest Features Explained', 'Trending Features Explained', 'Top Features Explained'];
 
-function CarExpertReviews() {
-    const { data: latestReviewsData } = useGetLatestReviewsQuery();
-    const { data: trendingReviewsData } = useGetTrendingReviewsQuery();
-    const { data: topReviewsData } = useGetTopReviewsQuery();
-    const { data: popularReviewsData } = useGetPopularReviewQuery();
+function FeaturesExplained() {
+    const { data: latestFeaturesExplainedData } = useGetLatestFeaturesExplainedQuery();
+    const { data: trendingFeaturesExplainedData } = useGetTrendingFeaturesExplainedQuery();
+    const { data: topFeaturesExplainedData } = useGetTopFeaturesExplainedQuery();
+    const { data: popularFeaturesExplainedData } = useGetPopularFeaturesExplainedQuery();
 
-    const latestReviews = latestReviewsData?.rows ?? [];
-    const trendingReviews = trendingReviewsData?.rows ?? [];
-    const topReviews = topReviewsData?.rows ?? [];
-    const popularReviews = popularReviewsData?.rows ?? [];
+    const latestFeaturesExplained = latestFeaturesExplainedData?.rows ?? [];
+    const trendingFeaturesExplained = trendingFeaturesExplainedData?.rows ?? [];
+    const topFeaturesExplained = topFeaturesExplainedData?.rows ?? [];
+    const popularFeaturesExplained = popularFeaturesExplainedData?.rows ?? [];
     const [activeIndex, setActiveIndex] = useState(0);
 
     const reviewData = [
-        latestReviews,
-        trendingReviews,
-        topReviews,
+        latestFeaturesExplained,
+        trendingFeaturesExplained,
+        topFeaturesExplained,
     ];
 
     return (
@@ -53,7 +53,7 @@ function CarExpertReviews() {
                         <Link href="/" className="hover:underline">Home</Link>
                         <span className="text-yellow-500">›</span>
                         <span className="font-medium text-yellow-500">
-                            Car Expert Reviews
+                            Features Explained
                         </span>
                     </div>
                 </div>
@@ -68,28 +68,28 @@ function CarExpertReviews() {
                         <div className="w-auto lg:max-w-[74%]">
                             <div className="hidden lg:block space-y-6">
                                 <CommonReviewCard
-                                    title="Latest Expert Reviews"
-                                    data={latestReviews}
-                                    viewAllLink="/latest-car-news"
-                                    viewAllText="View All Latest Reviews"
+                                    title="Latest Features Explained"
+                                    data={latestFeaturesExplained}
+                                    viewAllLink="/latest-features-explained"
+                                    viewAllText="View All Latest Features"
                                 />
 
                                 <LeaderboardAd />
 
                                 <CommonReviewCard
-                                    title="Trending Comparison Reviews"
-                                    data={trendingReviews}
-                                    viewAllLink="/trending-car-news"
-                                    viewAllText="View All Trending Reviews"
+                                    title="Trending Features Explained"
+                                    data={trendingFeaturesExplained}
+                                    viewAllLink="/trending-features-explained"
+                                    viewAllText="View All Trending Features"
                                 />
 
                                 <LeaderboardAd />
 
                                 <CommonReviewCard
-                                    title="Top Comparison Reviews"
-                                    data={topReviews}
-                                    viewAllLink="/top-car-news"
-                                    viewAllText="View All Top Reviews"
+                                    title="Top Features Explained"
+                                    data={topFeaturesExplained}
+                                    viewAllLink="/top-features-explained"
+                                    viewAllText="View All Top Features"
                                 />
 
                             </div>
@@ -120,8 +120,8 @@ function CarExpertReviews() {
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
                             <CommonPopularCard
-                                title="Popular Expert Review"
-                                data={popularReviews}
+                                title="Popular Features Explained"
+                                data={popularFeaturesExplained}
                             />
                             <SideBarAdSmall />
                         </div>
@@ -132,4 +132,4 @@ function CarExpertReviews() {
     );
 }
 
-export default CarExpertReviews;
+export default FeaturesExplained;

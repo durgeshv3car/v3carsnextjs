@@ -36,6 +36,9 @@ export const autoExpoApi = createApi({
         getTopAutoExpo: builder.query<LatestAutoExpoResponse, void>({
             query: () => `/content/auto-expo/top?limit=6`,
         }),
+        getPopularAutoExpo: builder.query<LatestAutoExpoResponse, void>({
+            query: () => `/content/auto-expo/popular?limit=10`,
+        }),
     }),
 });
 
@@ -45,4 +48,5 @@ export const {
     useGetLatestAutoExpoQuery,
     useGetTrendingAutoExpoQuery,
     useGetTopAutoExpoQuery,
+    useGetPopularAutoExpoQuery,
 } = autoExpoApi;

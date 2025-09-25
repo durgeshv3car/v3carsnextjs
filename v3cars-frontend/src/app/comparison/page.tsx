@@ -5,10 +5,10 @@ import CommonPopularCard from "@/components/common/CommonPopularCard";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import CommonMobileReviewCard from "@/components/mobile/common/CommonMobileReviewCard";
-import { useGetLatestReviewsQuery, useGetPopularReviewQuery, useGetTopReviewsQuery, useGetTrendingReviewsQuery } from "@/redux/api/expertReviewApi";
 import Link from "next/link";
 import CommonReviewCard from "@/components/common/CommonReviewCard";
 import { useState } from "react";
+import { useGetLatestComparisonReviewsQuery, useGetPopularReviewsQuery, useGetTopComparisonReviewsQuery, useGetTrendingComparisonReviewsQuery } from "@/redux/api/comparisonApi";
 
 // export const metadata: Metadata = {
 //     title: "Compare Cars in India | Specs, Features, Prices - V3Cars",
@@ -24,24 +24,24 @@ import { useState } from "react";
 //     ],
 // };
 
-const buttons = ['Latest Expert Reviews', 'Trending Comparison Reviews', 'Top Comparison Reviews'];
+const buttons = ['Latest Comparison Reviews', 'Trending Comparison Reviews', 'Top Comparison Reviews'];
 
-function CarExpertReviews() {
-    const { data: latestReviewsData } = useGetLatestReviewsQuery();
-    const { data: trendingReviewsData } = useGetTrendingReviewsQuery();
-    const { data: topReviewsData } = useGetTopReviewsQuery();
-    const { data: popularReviewsData } = useGetPopularReviewQuery();
+function ComparisonReviews() {
+    const { data: latestComparisonReviewsData } = useGetLatestComparisonReviewsQuery();
+    const { data: trendingComparisonReviewsData } = useGetTrendingComparisonReviewsQuery();
+    const { data: topComparisonReviewsData } = useGetTopComparisonReviewsQuery();
+    const { data: popularReviewsData } = useGetPopularReviewsQuery();
 
-    const latestReviews = latestReviewsData?.rows ?? [];
-    const trendingReviews = trendingReviewsData?.rows ?? [];
-    const topReviews = topReviewsData?.rows ?? [];
+    const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
+    const trendingComparisonReviews = trendingComparisonReviewsData?.rows ?? [];
+    const topComparisonReviews = topComparisonReviewsData?.rows ?? [];
     const popularReviews = popularReviewsData?.rows ?? [];
     const [activeIndex, setActiveIndex] = useState(0);
 
     const reviewData = [
-        latestReviews,
-        trendingReviews,
-        topReviews,
+        latestComparisonReviews,
+        trendingComparisonReviews,
+        topComparisonReviews,
     ];
 
     return (
@@ -53,7 +53,7 @@ function CarExpertReviews() {
                         <Link href="/" className="hover:underline">Home</Link>
                         <span className="text-yellow-500">›</span>
                         <span className="font-medium text-yellow-500">
-                            Car Expert Reviews
+                            Comparison Reviews
                         </span>
                     </div>
                 </div>
@@ -68,9 +68,9 @@ function CarExpertReviews() {
                         <div className="w-auto lg:max-w-[74%]">
                             <div className="hidden lg:block space-y-6">
                                 <CommonReviewCard
-                                    title="Latest Expert Reviews"
-                                    data={latestReviews}
-                                    viewAllLink="/latest-car-news"
+                                    title="Latest Comparison Reviews"
+                                    data={latestComparisonReviews}
+                                    viewAllLink="/latest-comparison-review"
                                     viewAllText="View All Latest Reviews"
                                 />
 
@@ -78,8 +78,8 @@ function CarExpertReviews() {
 
                                 <CommonReviewCard
                                     title="Trending Comparison Reviews"
-                                    data={trendingReviews}
-                                    viewAllLink="/trending-car-news"
+                                    data={trendingComparisonReviews}
+                                    viewAllLink="/trending-comparison-review"
                                     viewAllText="View All Trending Reviews"
                                 />
 
@@ -87,8 +87,8 @@ function CarExpertReviews() {
 
                                 <CommonReviewCard
                                     title="Top Comparison Reviews"
-                                    data={topReviews}
-                                    viewAllLink="/top-car-news"
+                                    data={topComparisonReviews}
+                                    viewAllLink="/top-comparison-review"
                                     viewAllText="View All Top Reviews"
                                 />
 
@@ -120,7 +120,7 @@ function CarExpertReviews() {
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
                             <CommonPopularCard
-                                title="Popular Expert Review"
+                                title="Popular Comparison Review"
                                 data={popularReviews}
                             />
                             <SideBarAdSmall />
@@ -132,4 +132,4 @@ function CarExpertReviews() {
     );
 }
 
-export default CarExpertReviews;
+export default ComparisonReviews;

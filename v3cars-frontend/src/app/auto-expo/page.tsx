@@ -8,7 +8,7 @@ import PopularNews from '@/components/common/PopularNews';
 import LeaderboardAd from '@/components/common/LeaderboardAd';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
 import Link from 'next/link';
-import { useGetLatestAutoExpoQuery, useGetTodayAutoExpoQuery, useGetTopAutoExpoQuery, useGetTrendingAutoExpoQuery } from '@/redux/api/autoExpoApi';
+import { useGetLatestAutoExpoQuery, useGetPopularAutoExpoQuery, useGetTodayAutoExpoQuery, useGetTopAutoExpoQuery, useGetTrendingAutoExpoQuery } from '@/redux/api/autoExpoApi';
 
 const tabs = [
     { key: 'latest', label: 'Latest Auto Expo' },
@@ -44,11 +44,13 @@ export default function Page() {
     const { data: trendingAutoExpoData, error: trendingAutoExpoError, isLoading: trendingAutoExpoLoading } = useGetTrendingAutoExpoQuery();
     const { data: topAutoExpoData, error: topAutoExpoError, isLoading: topAutoExpoLoading } = useGetTopAutoExpoQuery();
     const { data: todayAutoExpoData } = useGetTodayAutoExpoQuery();
+    const { data: popularAutoExpoData } = useGetPopularAutoExpoQuery();
 
     const todayAutoExpo: Article | null = todayAutoExpoData?.data ?? null;
     const latestAutoExpo = latestAutoExpoData?.rows ?? [];
     const trendingAutoExpo = trendingAutoExpoData?.rows ?? [];
     const topAutoExpo = topAutoExpoData?.rows ?? [];
+    const popularAutoExpo = popularAutoExpoData?.rows ?? [];
 
     return (
         <div>
@@ -151,7 +153,10 @@ export default function Page() {
                         <div className="w-auto lg:min-w-[24%] space-y-6 flex flex-col items-center">
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
-                            {/* <PopularNews /> */}
+                            <PopularNews
+                                title='Popular Auto Expo'
+                                data={popularAutoExpo}
+                            />
                             <SideBarAdSmall />
                         </div>
                     </div>
