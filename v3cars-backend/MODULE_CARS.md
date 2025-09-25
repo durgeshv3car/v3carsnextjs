@@ -97,7 +97,7 @@ GET /v1/cars/variants
   - `transmissionType` — `MT|AT|AMT|DCT`...
 - Sorting — `price_asc | price_desc | latest | name_asc | name_desc`
 - `page`, `limit`
-
+  
 **Examples**
 - By model: `/v1/cars/variants?modelId=163&limit=10&page=1`
 - Search + price sort: `/v1/cars/variants?modelId=101&q=delta&sortBy=price_asc&limit=10&page=1`
@@ -127,5 +127,3 @@ GET /v1/cars/variants
 - **Price fallback:** If model expected prices are 0/null, `priceMin/Max` come from parsed variant prices.
 - **Images:** Hero image picked by priority: `isMainImage DESC`, `position_no ASC`, `imageId ASC` (model or variant image).  
 - **MEDIA_BASE_URL:** set to build absolute image URLs.
-
-

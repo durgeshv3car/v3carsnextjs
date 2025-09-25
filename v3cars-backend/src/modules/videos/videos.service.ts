@@ -1,4 +1,3 @@
-// src/modules/videos/videos.service.ts
 import { env } from '../../config/env.js';
 import { VideosRepo } from './videos.repo.js';
 import type { VideoCard, LatestVideosQuery, VideosListQuery } from './videos.types.js';
@@ -159,6 +158,26 @@ export class VideosService {
     return withCache(key, async () => {
       const modelIds = await modelIdsForFuel(ft);
       const rows = await repo.listTop(videoType, limit, modelIds, ft);
+      return hydrate(rows);
+    }, ttlMs);
+  }
+
+  /** 🆕 Popular (GLOBAL; no type) — uniqueView DESC */
+  async popularGlobal(q: VideosListQuery & { fuelType?: string }) {
+    const limit = q.limit ?? 9;
+    const ft = q.fuelType?.trim() || undefined;
+
+    const key = cacheKey({
+      ns: 'videos:popularGlobal',
+      v: 1,
+      limit,
+      fuelType: ft,
+    });
+    const ttlMs = 2 * 60 * 1000; // 2m
+
+    return withCache(key, async () => {
+      const modelIds = await modelIdsForFuel(ft);
+      const rows = await repo.listPopularGlobal(limit, modelIds, ft);
       return hydrate(rows);
     }, ttlMs);
   }
