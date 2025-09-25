@@ -41,3 +41,9 @@ EV-scope:
 GET /v1/videos/latest-global?limit=12&fuelType=Electric
 
 
+Popular videos (global):
+
+/v1/videos/popular?limit=5
+
+/v1/videos/popular?limit=5&fuelType=Electric (EV scope)
+

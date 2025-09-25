@@ -13,6 +13,13 @@ export class VideosController {
     res.json({ success: true, rows });
   }
 
+  /** 🆕 Global popular (no type) + optional EV scope */
+  async popularGlobal(req: Request, res: Response) {
+    const q = limitDto.parse(req.query);
+    const rows = await svc.popularGlobal({ limit: q.limit, fuelType: q.fuelType });
+    res.json({ success: true, rows });
+  }
+
   async today(req: Request, res: Response) {
     const type = videoTypeFromParam(req.params.type);
     const q = limitDto.parse(req.query); // to accept fuelType
@@ -41,5 +48,4 @@ export class VideosController {
     const rows = await svc.top(type, { limit: q.limit, fuelType: q.fuelType });
     res.json({ success: true, rows });
   }
-  
 }
