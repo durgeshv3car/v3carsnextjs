@@ -32,10 +32,10 @@ const LatestVideos: React.FC<LatestVideosProps> = ({ data }) => {
                 {data.map((video) => (
                     <div
                         key={video.id}
-                        className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-h-[142px] lg:min-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
+                        className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg max-h-[142px] lg:max-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
                     >
                         {/* Thumbnail */}
-                        <div className="relative min-h-[100px] lg:min-h-[200px] group">
+                        <div className="relative max-h-[100px] lg:max-h-[200px] group">
                             <img
                                 src={`${IMAGE_URL}${video.thumbnail.url}`}
                                 alt={video.thumbnail.alt}

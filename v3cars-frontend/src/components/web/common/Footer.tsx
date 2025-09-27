@@ -28,12 +28,13 @@ const tools = [
 
 const items = [
   { label: "Car reviews", href: "/car-expert-reviews" },
-  { label: "Variants explained", href: "/variants-explained" },
+  { label: "Variants explained", href: "/variant-explained" },
   { label: "Car videos", href: "/car-review-videos" },
   { label: "Upcoming cars", href: "/upcoming-cars" },
   { label: "Latest cars", href: "/latest-launched-cars" },
   { label: "Car segments In India", href: "/car-segments-in-india" },
   { label: "Car On-Road Price", href: "/car-on-road-price-in-india" },
+  { label: "Car Guide", href: "/car-guide" },
 ];
 
 const Footer: React.FC = () => {

@@ -38,7 +38,7 @@ export default function CarNewsTile({ article }: { article: Article }) {
         alt={article.thumbnail.alt}
         width={400}
         height={200}
-        className="w-full lg:h-[200px] object-cover cursor-pointer"
+        className="w-full lg:max-h-[200px] object-cover cursor-pointer"
         onClick={() => {
           router.push(`/news/${article.pageUrl}`);
         }}

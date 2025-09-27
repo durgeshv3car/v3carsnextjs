@@ -19,6 +19,11 @@ import { comparisonApi } from "./api/comparisonApi";
 import { featuresExplainedApi } from "./api/featuresExplainedApi";
 import { carGuideApi } from "./api/carGuideApi";
 import { carReviewVideoApi } from "./api/carReviewVideosApi";
+import { compareVideosApi } from "./api/compareVideos";
+import { variantsExplainedVideosApi } from "./api/variantsExplainedVideosApi";
+import { autoExpoVideosApi } from "./api/autoExpoVideosApi";
+import { variantExplainedApi } from "./api/variantExplainedApi";
+import { otherVideosApi } from "./api/otherVideosApi";
 
 const persistConfig = {
   key: "root",
@@ -41,6 +46,11 @@ const rootReducer = combineReducers({
   [featuresExplainedApi.reducerPath]: featuresExplainedApi.reducer,
   [carGuideApi.reducerPath]: carGuideApi.reducer,
   [carReviewVideoApi.reducerPath]: carReviewVideoApi.reducer,
+  [compareVideosApi.reducerPath]: compareVideosApi.reducer,
+  [variantsExplainedVideosApi.reducerPath]: variantsExplainedVideosApi.reducer,
+  [autoExpoVideosApi.reducerPath]: autoExpoVideosApi.reducer,
+  [variantExplainedApi.reducerPath]: variantExplainedApi.reducer,
+  [otherVideosApi.reducerPath]: otherVideosApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
@@ -70,6 +80,11 @@ export const store = configureStore({
       featuresExplainedApi.middleware,
       carGuideApi.middleware,
       carReviewVideoApi.middleware,
+      compareVideosApi.middleware,
+      variantsExplainedVideosApi.middleware,
+      autoExpoVideosApi.middleware,
+      variantExplainedApi.middleware,
+      otherVideosApi.middleware,
     ),
 });
 

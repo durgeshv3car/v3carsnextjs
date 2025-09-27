@@ -41,7 +41,7 @@ const CommonMobileReviewCard: React.FC<CommonMobileReviewCardProps> = ({ data })
                         key={car.id}
                         className="border rounded-lg overflow-hidden min-h-[221px] shadow-sm dark:border-[#2E2E2E]"
                     >
-                        <div className="min-h-[116px]">
+                        <div className="max-h-[116px]">
                             <Image
                                 src={`${IMAGE_URL}${car.thumbnail.url}`}
                                 alt={car.thumbnail.alt}

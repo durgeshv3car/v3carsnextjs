@@ -44,7 +44,7 @@ const CommonPopularVideo: React.FC<CommonPopularVideoProps> = ({ title, data }) 
                             alt={`Popular news ${index + 1}`}
                             width={300}
                             height={200}
-                            className="w-full h-full object-cover rounded-lg"
+                            className="object-cover rounded-lg"
                         />
 
                         {/* Overlay */}

@@ -41,12 +41,12 @@ const CommonRecentVideo: React.FC<CommonRecentVideoProps> = ({ title, data }) =>
             className="flex items-start gap-3 px-4 py-3 transition-all cursor-pointer"
           >
             {/* Thumbnail */}
-            <div className="w-28 h-16 relative flex-shrink-0 group">
+            <div className="relative flex-shrink-0 group">
               <Image
                 src={`${IMAGE_URL}${video.thumbnail.url}`}
                 alt={video.thumbnail.alt}
-                fill
-                sizes="112px"
+                width={120}
+                height={120}
                 className="rounded-md object-cover"
               />
 

@@ -46,7 +46,7 @@ const CommonReviewCard: React.FC<CommonReviewCardProps> = ({ title, viewAllLink,
                         className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-h-[371px] shadow-md overflow-hidden transition flex flex-col"
                     >
                         {/* Fixed height image */}
-                        <div className="relative h-[200px] w-full">
+                        <div className="relative max-h-[200px] w-full">
                             <img
                                 src={`${IMAGE_URL}${item.thumbnail.url}`}
                                 alt={item.thumbnail.alt}

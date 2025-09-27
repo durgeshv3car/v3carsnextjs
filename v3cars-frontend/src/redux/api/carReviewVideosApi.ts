@@ -20,10 +20,14 @@ export const carReviewVideoApi = createApi({
         getLatestCarVideos: builder.query<LatestCarVideosResponse, void>({
             query: () => "/videos/reviews/latest?limit=9&excludeToday=0",
         }),
+        getPopularCarVideos: builder.query<LatestCarVideosResponse, void>({
+            query: () => "/videos/popular?limit=8",
+        }),
     }),
 });
 
 // Export hooks
 export const {
     useGetLatestCarVideosQuery,
+    useGetPopularCarVideosQuery,
 } = carReviewVideoApi;
