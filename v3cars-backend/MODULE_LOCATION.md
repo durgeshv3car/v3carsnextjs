@@ -1,7 +1,4 @@
 
-
-
-
 `cities` -
 
 Endpoints
@@ -95,3 +92,37 @@ Response shape (list)
   "pageSize": 20,
   "totalPages": 6
 }
+
+
+
+`States`
+
+List:
+/v1/locations/states?limit=50&page=1&sortBy=name_asc
+
+Search:
+/v1/locations/states?q=pradesh&limit=50
+
+By country:
+/v1/locations/states?countryId=1&limit=100
+
+Today-fuel flag:
+/v1/locations/states?isTodayFuelPrice=1
+
+Detail:
+/v1/locations/states/7
+
+
+`Countries`
+
+List:
+/v1/locations/countries?limit=100&page=1
+
+Only active:
+/v1/locations/countries?isActive=1
+
+Search:
+/v1/locations/countries?q=ind
+
+Detail:
+/v1/locations/countries/101

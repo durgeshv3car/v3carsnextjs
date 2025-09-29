@@ -46,6 +46,7 @@ function buildEVScope(modelIds?: number[], fuelType?: string) {
   }
 
   return Prisma.sql` AND ( ${combined} ) `;
+
 }
 
 export class VideosRepo {
