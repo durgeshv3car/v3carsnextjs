@@ -7,6 +7,6 @@ const cars = Router();
 
 cars.use('/models', modelsRouter);
 cars.use('/brands', brandsRouter);
-cars.use('/variants', variantsRouter);
+cars.use('/', variantsRouter);
 
 export const carsRouter = cars;
