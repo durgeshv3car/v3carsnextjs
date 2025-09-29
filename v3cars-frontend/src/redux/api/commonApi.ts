@@ -41,6 +41,10 @@ interface GetModelsArgs {
   brandId: number
 }
 
+interface GetVariantArgs {
+  modelId: number
+}
+
 // API definition
 export const commonApi = createApi({
   reducerPath: "commonApi",
@@ -59,6 +63,9 @@ export const commonApi = createApi({
     getModels: builder.query<BrandsResponse, GetModelsArgs>({
       query: ({ brandId }) => `/cars/models?brandId=${brandId}&isUpcoming=0`,
     }),
+    getVariants: builder.query<BrandsResponse, GetVariantArgs>({
+      query: ({ modelId }) => `/cars/variants?modelId=${modelId}`,
+    }),
     getPopularCities: builder.query<PopularCitiesResponse, void>({
       query: () => `/locations/cities?isPopular=1&limit=24&sortBy=name_asc`,
     }),
@@ -76,6 +83,7 @@ export const {
   useSendOtpMutation,
   useGetBrandsQuery,
   useGetModelsQuery,
+  useGetVariantsQuery,
   useGetPopularCitiesQuery,
   useGetAllCitiesQuery,
   useGetSearchCityQuery,

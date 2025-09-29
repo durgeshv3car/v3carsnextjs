@@ -18,13 +18,13 @@ export const otherVideosApi = createApi({
     >,
     endpoints: (builder) => ({
         getLatestReviewsVideos: builder.query<LatestCarVideosResponse, void>({
-            query: () => "/videos/other/latest?limit=9&excludeToday=0",
+            query: () => "/videos/more/latest?limit=9&excludeToday=0",
         }),
         getTrendingReviewsVideos: builder.query<LatestCarVideosResponse, void>({
-            query: () => "/videos/other/trending?limit=9&excludeToday=0",
+            query: () => "/videos/more/trending?limit=9&excludeToday=0",
         }),
         getTopReviewsVideos: builder.query<LatestCarVideosResponse, void>({
-            query: () => "/videos/other/top?limit=9&excludeToday=0",
+            query: () => "/videos/more/top?limit=9&excludeToday=0",
         }),
     }),
 });
