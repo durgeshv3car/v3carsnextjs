@@ -17,6 +17,7 @@ function buildWhere(q: VariantsWhere): Prisma.tblvariantsWhereInput {
 }
 
 export class VariantsRepo {
+
   async listRaw(q: VariantsWhere) {
     const where = buildWhere(q);
     return prisma.tblvariants.findMany({
@@ -44,6 +45,7 @@ export class VariantsRepo {
    *  - Aggregates min/max across variants
    *  - Applies 'snapApproxINR' (e.g., 4.99L → 5.00L)
    */
+
   async getPriceBandsByModelIds(modelIds: number[]) {
     const map = new Map<number, { min: number | null; max: number | null }>();
     if (!modelIds?.length) return map;
@@ -74,7 +76,6 @@ export class VariantsRepo {
 
     return map;
   }
-
 
    async listByModelId(modelId: number) {
     return prisma.tblvariants.findMany({
@@ -107,6 +108,8 @@ export class VariantsRepo {
       },
     });
   }
+
+
 }
 
 
