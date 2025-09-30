@@ -1,60 +1,50 @@
 'use client'
 
 import Image from "next/image";
-import { BiAward, BiCheckCircle } from "react-icons/bi";
-import { FiBarChart2, FiFileText } from "react-icons/fi";
-
 
 function MidSection() {
+    const items = [
+        {
+            img: '/about-us/review.png',
+            title: 'Unbiased Reviews',
+            desc: 'Decide with facts',
+        },
+        {
+            img: '/about-us/content.png',
+            title: 'Simplified Content',
+            desc: 'Clarity through simplicity',
+        },
+        {
+            img: '/about-us/research.png',
+            title: 'Research-Driven Insights',
+            desc: 'Trusted, transparent',
+        },
+        {
+            img: '/about-us/guide.png',
+            title: 'Most Trusted Car Guide',
+            desc: 'Indian Car Compas',
+        },
+    ];
+
     return (
-        <>
-            <div className="flex justify-between items-center">
-                <div className="flex flex-col max-w-40 items-center text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-4 sm:p-6">
+            {items.map((item, idx) => (
+                <div
+                    key={idx}
+                    className="flex flex-col items-center text-center"
+                >
                     <Image
-                        src={'/about-us/review.png'}
-                        alt="review"
+                        src={item.img}
+                        alt={item.title}
                         width={60}
                         height={60}
                         className="dark:invert"
                     />
-                    <p className="font-semibold text-xl mt-6">Unbiased Reviews</p>
-                    <p className="text-sm mt-1">Decide with facts</p>
+                    <p className="font-semibold text-lg sm:text-xl mt-4">{item.title}</p>
+                    <p className="text-sm mt-1">{item.desc}</p>
                 </div>
-                <div className="flex flex-col max-w-40 items-center text-center">
-                    <Image
-                        src={'/about-us/content.png'}
-                        alt="review"
-                        width={60}
-                        height={60}
-                        className="dark:invert"
-                    />
-                    <p className="font-semibold text-xl mt-6">Simplified Content</p>
-                    <p className="text-sm mt-1">Clarity through simplicity</p>
-                </div>
-                <div className="flex flex-col max-w-44 items-center text-center">
-                    <Image
-                        src={'/about-us/research.png'}
-                        alt="review"
-                        width={60}
-                        height={60}
-                        className="dark:invert"
-                    />
-                    <p className="font-semibold text-xl mt-6">Research-Driven Insights</p>
-                    <p className="text-sm mt-1">Trusted, transparent</p>
-                </div>
-                <div className="flex flex-col max-w-40 items-center text-center">
-                    <Image
-                        src={'/about-us/guide.png'}
-                        alt="review"
-                        width={60}
-                        height={60}
-                        className="dark:invert"
-                    />
-                    <p className="font-semibold text-xl mt-6">Most Trusted Car Guide</p>
-                    <p className="text-sm mt-1">Indian Car Compas</p>
-                </div>
-            </div>
-        </>
+            ))}
+        </div>
     );
 }
 

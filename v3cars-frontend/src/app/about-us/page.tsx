@@ -18,13 +18,17 @@ function AboutUs() {
                 </div>
             </div>
 
-            <div className="app-container mx-auto w-full my-16">
-                <TrustedCarGuide />
+            <div className="px-4 xl:px-10">
+                <div className="lg:app-container mx-auto w-full my-16 ">
+                    <TrustedCarGuide />
+                </div>
             </div>
 
             <div className="bg-white dark:bg-transparent">
-                <div className="app-container mx-auto w-full my-16">
-                    <MidSection />
+                <div className="px-4 xl:px-10">
+                    <div className="lg:app-container mx-auto w-full my-16">
+                        <MidSection />
+                    </div>
                 </div>
             </div>
 
@@ -38,8 +42,10 @@ function AboutUs() {
                     }}
                 ></div>
 
-                <div className="app-container mx-auto w-full my-20 relative z-10">
-                    <TeamSection />
+                <div className="px-4 xl:px-10">
+                    <div className="lg:app-container mx-auto w-full my-20 relative z-10">
+                        <TeamSection />
+                    </div>
                 </div>
             </div>
         </>

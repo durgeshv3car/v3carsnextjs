@@ -75,6 +75,9 @@ export const commonApi = createApi({
     getSearchCity: builder.query<PopularCitiesResponse, { query: string }>({
       query: ({ query }) => `/locations/cities?q=${query}&limit=1&sortBy=name_asc`,
     }),
+    getFAQByModule: builder.query<PopularCitiesResponse, { moduleId: number }>({
+      query: ({ moduleId }) => `/faqs?moduleId=${moduleId}&limit=50&page=1&sortBy=sequence_asc`,
+    }),
   }),
 });
 
@@ -87,4 +90,5 @@ export const {
   useGetPopularCitiesQuery,
   useGetAllCitiesQuery,
   useGetSearchCityQuery,
+  useGetFAQByModuleQuery,
 } = commonApi;

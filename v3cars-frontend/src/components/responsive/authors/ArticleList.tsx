@@ -12,9 +12,9 @@ export default function ArticleList() {
     });
 
     return (
-        <div className="p-6 bg-white dark:bg-[#171717] rounded-xl">
+        <div className="p-4 sm:p-6 bg-white dark:bg-[#171717] rounded-xl">
             {/* Header */}
-            <h1 className="text-lg font-semibold">List of article by Jagdev Kalsi</h1>
+            <h1 className="text-lg sm:text-xl font-semibold">List of article by Jagdev Kalsi</h1>
             <p className="text-sm text-gray-500 mb-4">2,220 Articles</p>
 
             {/* Articles List */}
@@ -22,10 +22,10 @@ export default function ArticleList() {
                 {articles.map((article, idx) => (
                     <div
                         key={idx}
-                        className="flex w-full border dark:border-[#2E2E2E] rounded-lg overflow-hidden shadow-sm p-3 gap-3"
+                        className="flex flex-col sm:flex-row w-full border dark:border-[#2E2E2E] rounded-lg overflow-hidden shadow-sm gap-3 p-3"
                     >
                         {/* Left Thumbnail Section */}
-                        <div className="relative w-[500px] flex items-center justify-center">
+                        <div className="relative w-full sm:w-1/3 flex items-center justify-center">
                             <img
                                 src="/latest-video/image.png"
                                 alt="thumbnail"
@@ -34,21 +34,21 @@ export default function ArticleList() {
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <img
                                     src="/latest-video/youtube.png"
-                                    alt="thumbnail"
-                                    width={60}
-                                    height={60}
+                                    alt="play icon"
+                                    width={50}
+                                    height={50}
                                     className="object-cover"
                                 />
                             </div>
                         </div>
 
                         {/* Right Content Section */}
-                        <div className="flex flex-col justify-start">
-                            <p className="text-xs text-gray-400">{article.date}</p>
-                            <h2 className="text-sm font-semibold leading-snug mt-1">
+                        <div className="flex flex-col justify-start w-full sm:w-2/3">
+                            <p className="text-xs sm:text-sm text-gray-400">{article.date}</p>
+                            <h2 className="text-sm sm:text-base font-semibold leading-snug mt-1">
                                 {article.title}
                             </h2>
-                            <p className="text-xs text-gray-400 mt-2 line-clamp-4">
+                            <p className="text-xs sm:text-sm text-gray-400 mt-2 line-clamp-4">
                                 {article.description}
                             </p>
                         </div>

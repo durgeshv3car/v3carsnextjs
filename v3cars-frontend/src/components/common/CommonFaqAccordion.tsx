@@ -3,13 +3,20 @@
 import React, { useState } from 'react';
 
 interface CommonFaqAccordionProps {
-  faqData: FaqItem[];
+  faqData: FAQ[];
 }
 
-type FaqItem = {
-  question: string;
-  answer: string;
-};
+interface FAQ {
+  id: number;
+  moduleId: number;
+  que: string;
+  ans: string;
+  sequance: number;
+  addedBy: string | null;
+  updatedBy: string | null;
+  careateDateTime: string;  // ISO date string
+  updateDateTime: string | null; // ISO date string or null
+}
 
 const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -20,14 +27,13 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
 
   return (
     <div className='mb-5'>
-
       <h2 className="text-center text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
         Frequently Asked <span className="font-bold text-yellow-500">Questions</span>
       </h2>
 
       <div className="space-y-3">
         {faqData.map((item, index) => (
-          <div key={index}>
+          <div key={item.id}>
             {/* Question Block */}
             <button
               type="button"
@@ -44,7 +50,9 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
                 <div className="bg-yellow-400 text-black font-bold w-7 h-7 flex items-center justify-center rounded-full text-sm">
                   Q
                 </div>
-                <p className="text-sm sm:text-base text-gray-900 dark:text-gray-100">{item.question}</p>
+                <p className="text-sm sm:text-base text-gray-900 dark:text-gray-100">
+                  {item.que}
+                </p>
               </div>
 
               <svg
@@ -53,9 +61,8 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className={`size-4 text-gray-700 dark:text-gray-200 transition-transform duration-500 ${
-                  openIndex === index ? 'rotate-180' : 'rotate-0'
-                }`}
+                className={`size-4 text-gray-700 dark:text-gray-200 transition-transform duration-500 ${openIndex === index ? 'rotate-180' : 'rotate-0'
+                  }`}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
               </svg>
@@ -63,9 +70,8 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
 
             {/* Smooth Answer Block */}
             <div
-              className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${
-                openIndex === index ? 'max-h-96' : 'max-h-0'
-              }`}
+              className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${openIndex === index ? 'max-h-96' : 'max-h-0'
+                }`}
             >
               <div
                 className={[
@@ -74,13 +80,12 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
                   'dark:bg-neutral-900 dark:text-neutral-200 dark:border-neutral-700',
                 ].join(' ')}
               >
-                {item.answer}
+                {item.ans}
               </div>
             </div>
           </div>
         ))}
       </div>
-
     </div>
   );
 };

@@ -8,6 +8,7 @@ import CarLoanCalculator from "@/components/responsive/car-loan-emi-calculator/C
 import CarLoanDetails from "@/components/responsive/car-loan-emi-calculator/CarLoanDetails";
 import LoanInfoCard from "@/components/responsive/car-loan-emi-calculator/LoanInfoCard";
 import { Metadata } from "next";
+import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
 
 // export const metadata: Metadata = {
 //     title: "Most Popular Cars in India 2024 | Top Selling Models & Prices",
@@ -51,6 +52,10 @@ function CarLoanEMICalculator() {
         emi: 0
     });
 
+    const { data: faqByModuleData, error, isLoading } = useGetFAQByModuleQuery({ moduleId: 1 });
+
+    const faqByModule = faqByModuleData?.rows ?? [];
+
     return (
         <>
             <TopSection
@@ -68,7 +73,7 @@ function CarLoanEMICalculator() {
                         emi={loanData.emi}
                     />
                     <LoanInfoCard />
-                    <CommonFaqAccordion faqData={faqData} />
+                    <CommonFaqAccordion faqData={faqByModule} />
                 </div>
             </div>
         </>
