@@ -4,6 +4,7 @@ import { modelIdParamDto, modelsListQueryDto, upcomingMonthlyCountDto, topSellin
 
 const svc = new ModelsService();
 
+
 export class ModelsController {
   async list(req: Request, res: Response) {
     const q = modelsListQueryDto.parse(req.query);
@@ -39,10 +40,10 @@ export class ModelsController {
 ;
 
 // inside class
-async topSellingMonthly(req: Request, res: Response) {
-  const q = topSellingMonthlyDto.parse(req.query);
-  const data = await svc.topSellingModelsByMonth({ year: q.year, month: q.month, limit: q.limit });
-  res.json({ success: true, ...data });
-}
+  async topSellingMonthly(req: Request, res: Response) {
+    const q = topSellingMonthlyDto.parse(req.query);
+    const data = await svc.topSellingModelsByMonth({ year: q.year, month: q.month, limit: q.limit });
+    res.json({ success: true, ...data });
+  }
 
 }

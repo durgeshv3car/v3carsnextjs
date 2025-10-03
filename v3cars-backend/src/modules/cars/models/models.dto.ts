@@ -31,3 +31,4 @@ export const topSellingMonthlyDto = z.object({
   month: z.coerce.number().int().min(1).max(12),
   limit: z.coerce.number().int().min(1).max(100).default(25).optional(),
 });
+

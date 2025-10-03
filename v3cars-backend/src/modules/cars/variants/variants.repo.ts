@@ -46,6 +46,7 @@ export class VariantsRepo {
    *  - Applies 'snapApproxINR' (e.g., 4.99L → 5.00L)
    */
 
+
   async getPriceBandsByModelIds(modelIds: number[]) {
     const map = new Map<number, { min: number | null; max: number | null }>();
     if (!modelIds?.length) return map;
@@ -109,7 +110,7 @@ export class VariantsRepo {
     });
   }
 
-
 }
+
 
 
