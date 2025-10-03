@@ -7,13 +7,29 @@ interface CarNewsSectionProps {
   title: string;
   viewAllLink: string;
   viewAllText: string;
-  data: {
-    image: string;
-    title: string;
-    desc: string;
-    author: string;
-    date: string;
-  }[];
+  data: Article[];
+}
+
+interface ArticleThumbnail {
+  url: string;
+  alt: string;
+}
+
+interface ArticleAuthor {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface Article {
+  id: number;
+  title: string;
+  pageUrl: string;
+  publishDateandTime: string; // ISO Date string
+  shortDescription: string;   // HTML string
+  thumbnail: ArticleThumbnail;
+  author: ArticleAuthor;
+  commentsCount: number;
 }
 
 export default function CarNewsSection({
@@ -34,8 +50,8 @@ export default function CarNewsSection({
         <div className="space-y-4">
           {/* Card Grid */}
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
-            {data.map((item, i) => (
-              <CarNewsTile key={i} {...item} />
+            {data.map((item: Article, i: number) => (
+              <CarNewsTile key={item.id ?? i} article={item} />
             ))}
           </div>
 

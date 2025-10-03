@@ -12,6 +12,18 @@ import { upcomingApi } from "./api/upcomingApi";
 import { latestcarApi } from "./api/latestcarApi";
 import { popularCarApi } from "./api/popularApi";
 import { electricApi } from "./api/electricApi";
+import { newsApi } from "./api/newsApi";
+import { autoExpoApi } from "./api/autoExpoApi";
+import { expertReviewApi } from "./api/expertReviewApi";
+import { comparisonApi } from "./api/comparisonApi";
+import { featuresExplainedApi } from "./api/featuresExplainedApi";
+import { carGuideApi } from "./api/carGuideApi";
+import { carReviewVideoApi } from "./api/carReviewVideosApi";
+import { compareVideosApi } from "./api/compareVideos";
+import { variantsExplainedVideosApi } from "./api/variantsExplainedVideosApi";
+import { autoExpoVideosApi } from "./api/autoExpoVideosApi";
+import { variantExplainedApi } from "./api/variantExplainedApi";
+import { otherVideosApi } from "./api/otherVideosApi";
 
 const persistConfig = {
   key: "root",
@@ -27,6 +39,18 @@ const rootReducer = combineReducers({
   [latestcarApi.reducerPath]: latestcarApi.reducer,
   [popularCarApi.reducerPath]: popularCarApi.reducer,
   [electricApi.reducerPath]: electricApi.reducer,
+  [newsApi.reducerPath]: newsApi.reducer,
+  [autoExpoApi.reducerPath]: autoExpoApi.reducer,
+  [expertReviewApi.reducerPath]: expertReviewApi.reducer,
+  [comparisonApi.reducerPath]: comparisonApi.reducer,
+  [featuresExplainedApi.reducerPath]: featuresExplainedApi.reducer,
+  [carGuideApi.reducerPath]: carGuideApi.reducer,
+  [carReviewVideoApi.reducerPath]: carReviewVideoApi.reducer,
+  [compareVideosApi.reducerPath]: compareVideosApi.reducer,
+  [variantsExplainedVideosApi.reducerPath]: variantsExplainedVideosApi.reducer,
+  [autoExpoVideosApi.reducerPath]: autoExpoVideosApi.reducer,
+  [variantExplainedApi.reducerPath]: variantExplainedApi.reducer,
+  [otherVideosApi.reducerPath]: otherVideosApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
@@ -49,6 +73,18 @@ export const store = configureStore({
       latestcarApi.middleware,
       popularCarApi.middleware,
       electricApi.middleware,
+      newsApi.middleware,
+      autoExpoApi.middleware,
+      expertReviewApi.middleware,
+      comparisonApi.middleware,
+      featuresExplainedApi.middleware,
+      carGuideApi.middleware,
+      carReviewVideoApi.middleware,
+      compareVideosApi.middleware,
+      variantsExplainedVideosApi.middleware,
+      autoExpoVideosApi.middleware,
+      variantExplainedApi.middleware,
+      otherVideosApi.middleware,
     ),
 });
 
