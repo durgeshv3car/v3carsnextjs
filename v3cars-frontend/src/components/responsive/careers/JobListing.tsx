@@ -14,8 +14,13 @@ interface Job {
     posted: string;
 }
 
-const JobListing: React.FC = () => {
-    const tabs = ["UI/UX Developer", "Fullstack Developer", "PHP Developer"];
+interface JobListingProps {
+    showJobModel: boolean;
+    setShowJobModel: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const JobListing: React.FC<JobListingProps> = ({ showJobModel, setShowJobModel }) => {
+    const tabs = ["All", "UI/UX Developer", "Fullstack Developer", "PHP Developer"];
 
     const jobData: Record<string, Job[]> = {
         "UI/UX Developer": [
@@ -40,6 +45,52 @@ const JobListing: React.FC = () => {
                 tags: ["UI/UX", "Figma", "Design"],
                 womenOnly: false,
                 posted: "1 week ago",
+            },
+        ],
+        "All": [
+            {
+                title: "UI/UX Developer",
+                reviews: "454111 Reviews",
+                exp: "4-9 Yrs",
+                location: "Hyderabad, Chennai",
+                description:
+                    "Hiring for UI/UX Developer with experience range 1 to 18 YearsMandatory ...",
+                tags: ["UI/UX", "User Interfaces", "Graphic"],
+                womenOnly: true,
+                posted: "3 days ago",
+            },
+            {
+                title: "Senior UI Designer",
+                reviews: "21123 Reviews",
+                exp: "5-10 Yrs",
+                location: "Bangalore",
+                description:
+                    "Looking for a Senior UI Designer with strong experience in Figma and Adobe XD...",
+                tags: ["UI/UX", "Figma", "Design"],
+                womenOnly: false,
+                posted: "1 week ago",
+            },
+            {
+                title: "Fullstack Developer",
+                reviews: "87612 Reviews",
+                exp: "3-8 Yrs",
+                location: "Pune, Remote",
+                description:
+                    "Hiring for MERN stack developer with good knowledge of Next.js and microservices...",
+                tags: ["Node.js", "React", "Next.js"],
+                womenOnly: false,
+                posted: "5 days ago",
+            },
+            {
+                title: "PHP Developer",
+                reviews: "54321 Reviews",
+                exp: "2-6 Yrs",
+                location: "Delhi, Noida",
+                description:
+                    "Hiring for PHP Developer with strong experience in Laravel and MySQL...",
+                tags: ["PHP", "Laravel", "MySQL"],
+                womenOnly: true,
+                posted: "2 days ago",
             },
         ],
         "Fullstack Developer": [
@@ -80,10 +131,10 @@ const JobListing: React.FC = () => {
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-6 py-2 rounded-full text-nowrap border transition ${activeTab === tab
-                                ? "bg-[#171717] text-white dark:border-[#2E2E2E]"
-                                : "bg-white dark:bg-black dark:border-[#2E2E2E] hover:bg-gray-100"
-                            } font-medium`}
+                        className={`px-10 py-3 rounded-full text-nowrap border transition ${activeTab === tab
+                            ? "bg-[#171717] text-yellow-400 dark:border-[#2E2E2E]"
+                            : "bg-white dark:bg-black dark:border-[#2E2E2E] hover:bg-gray-100"
+                            } font-semibold`}
                     >
                         {tab}
                     </button>
@@ -96,6 +147,7 @@ const JobListing: React.FC = () => {
                     <div
                         key={idx}
                         className="bg-white dark:bg-[#171717] rounded-2xl shadow-xl p-6 flex flex-col gap-3"
+                        onClick={()=>{setShowJobModel(true)}}
                     >
                         {/* Job Title */}
                         <div>

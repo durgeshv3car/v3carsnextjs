@@ -27,8 +27,8 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
 
   return (
     <div className='mb-5'>
-      <h2 className="text-center text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
-        Frequently Asked <span className="font-bold text-yellow-500">Questions</span>
+      <h2 className="text-center text-2xl mb-6 text-gray-900 dark:text-gray-100">
+        Frequently Asked <span className="font-bold">Questions</span> (FAQ)
       </h2>
 
       <div className="space-y-3">

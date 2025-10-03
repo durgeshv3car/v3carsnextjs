@@ -29,36 +29,36 @@ const DreamCareer: React.FC = () => {
                 {/* Right Side Illustration */}
                 <div className="flex-1 flex justify-center lg:justify-end">
                     <Image
-                        src="/careers/Dream.png"
+                        src="/careers/dream1.png"
                         alt="Career Illustration"
                         width={400}
                         height={400}
-                        className="w-72 sm:w-80 md:w-[350px] lg:w-[400px] h-auto dark:invert"
+                        className="w-72 sm:w-80 md:w-[350px] lg:w-[400px] h-auto"
                     />
                 </div>
             </div>
 
             {/* Bottom 3 Boxes */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-                <div className="bg-white dark:bg-[#171717] rounded-xl p-6 shadow-sm">
-                    <h3 className="text-lg font-bold mb-3">WHAT?</h3>
-                    <p className="leading-relaxed text-gray-600 dark:text-gray-300">
+                <div className="bg-[#171717] rounded-tl-none rounded-xl p-6 shadow-sm">
+                    <h3 className="text-lg font-bold mb-3 text-yellow-400">WHAT?</h3>
+                    <p className="leading-loose text-white">
                         We are helping car buyers objectively select the most suitable car
                         down to the variant and engine-transmission combo based on their
                         needs, budget and preferences.
                     </p>
                 </div>
-                <div className="bg-white dark:bg-[#171717] rounded-xl p-6 shadow-sm">
-                    <h3 className="text-lg font-bold mb-3">WHY?</h3>
-                    <p className="leading-relaxed text-gray-600 dark:text-gray-300">
+                <div className="bg-[#171717] rounded-tl-none rounded-xl p-6 shadow-sm">
+                    <h3 className="text-lg font-bold mb-3 text-yellow-400">WHY?</h3>
+                    <p className="leading-loose text-white">
                         Car buying can be stressful. Too many cars. Too many variants. A lot
                         of engine-transmission combos. And far too much misinformation. We
                         want to make the car buying journey enjoyable.
                     </p>
                 </div>
-                <div className="bg-white dark:bg-[#171717] rounded-xl p-6 shadow-sm">
-                    <h3 className="text-lg font-bold mb-3">HOW?</h3>
-                    <p className="leading-relaxed text-gray-600 dark:text-gray-300">
+                <div className="bg-[#171717] rounded-tl-none rounded-xl p-6 shadow-sm">
+                    <h3 className="text-lg font-bold mb-3 text-yellow-400">HOW?</h3>
+                    <p className="leading-loose text-white">
                         We are using data to build a car recommendation engine, which will
                         objectively suggest the most suitable car to suit the buyer’s budget
                         and feature preferences while also prioritizing the ownership

@@ -1,9 +1,16 @@
+'use client'
+
+import ApplicationModel from "@/components/responsive/careers/ApplicationModel";
 import DreamCareer from "@/components/responsive/careers/DreamCareer";
 import HiringBanner from "@/components/responsive/careers/HiringBanner";
 import JobListing from "@/components/responsive/careers/JobListing";
+import WorkWithUs from "@/components/responsive/careers/WorkWithUs";
 import Link from "next/link";
+import { useState } from "react";
 
 function Career() {
+    const [showJobModel, setShowJobModel] = useState(false)
+
     return (
         <>
 
@@ -17,7 +24,7 @@ function Career() {
                 </div>
             </div>
 
-            <div className="space-y-10 my-10">
+            <div className="space-y-20 my-10">
                 <div className="lg:px-10 px-4">
                     <div className="w-full lg:app-container mx-auto">
                         <DreamCareer />
@@ -32,10 +39,19 @@ function Career() {
 
                 <div className="lg:px-10 px-4">
                     <div className="w-full lg:app-container mx-auto">
-                        <JobListing />
+                        <JobListing showJobModel={showJobModel} setShowJobModel={setShowJobModel} />
+                    </div>
+                </div>
+
+                <div className="lg:px-10 px-4">
+                    <div className="w-full lg:app-container mx-auto">
+                        <WorkWithUs />
                     </div>
                 </div>
             </div>
+
+
+            {showJobModel && <ApplicationModel onClose={() => setShowJobModel(false)} />}
         </>
     );
 }

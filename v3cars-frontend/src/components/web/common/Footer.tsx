@@ -273,7 +273,7 @@ export default Footer;
 
 const footerLinks = [
   { label: "About", href: "/about-us" },
-  { label: "Advertise With Us", href: "/advertise" },
+  { label: "Advertise With Us", href: "mailto:editor@v3cars.com?subject=Advertise with us" },
   { label: "Careers", href: "/careers" },
   { label: "Contact Us", href: "/contact-us" },
   { label: "Term of Uses", href: "/term-of-uses" },

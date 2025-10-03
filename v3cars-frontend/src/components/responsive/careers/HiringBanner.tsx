@@ -19,16 +19,16 @@ const HiringBanner: React.FC = () => {
         </div>
 
         {/* Center Text */}
-        <div className="text-center md:flex md:flex-col md:items-center md:w-[600px]">
-          <h2 className="text-base md:text-xl font-semibold">
+        <div className="flex justify-between gap-4">
+          <h2 className="text-xl font-semibold">
             WE ARE
           </h2>
-          <h1 className="text-2xl md:text-5xl font-bold text-gray-400">
+          <h1 className="text-2xl md:text-5xl font-bold text-yellow-400">
             HIRING
           </h1>
-          <p className="text-gray-500 mt-2 text-sm md:text-base">
-            Let’s <span className="font-medium">Work</span> Together <br />
-            & Explore <span className="font-semibold">Opportunities</span>
+          <p className="mt-2 text-start">
+            Let’s <span className="font-bold">Work</span> Together <br />
+            & Explore <span className="font-bold">Opportunities</span>
           </p>
         </div>
 
