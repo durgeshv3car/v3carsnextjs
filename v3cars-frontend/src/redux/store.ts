@@ -24,6 +24,7 @@ import { variantsExplainedVideosApi } from "./api/variantsExplainedVideosApi";
 import { autoExpoVideosApi } from "./api/autoExpoVideosApi";
 import { variantExplainedApi } from "./api/variantExplainedApi";
 import { otherVideosApi } from "./api/otherVideosApi";
+import { aboutUsApi } from "./api/aboutUsApi";
 
 const persistConfig = {
   key: "root",
@@ -51,6 +52,7 @@ const rootReducer = combineReducers({
   [autoExpoVideosApi.reducerPath]: autoExpoVideosApi.reducer,
   [variantExplainedApi.reducerPath]: variantExplainedApi.reducer,
   [otherVideosApi.reducerPath]: otherVideosApi.reducer,
+  [aboutUsApi.reducerPath]: aboutUsApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
@@ -85,6 +87,7 @@ export const store = configureStore({
       autoExpoVideosApi.middleware,
       variantExplainedApi.middleware,
       otherVideosApi.middleware,
+      aboutUsApi.middleware,
     ),
 });
 

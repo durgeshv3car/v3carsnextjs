@@ -37,6 +37,15 @@ interface PopularCitiesResponse {
   rows: any[];
 }
 
+interface VideosResponse {
+  success: boolean;
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  rows: any[];
+}
+
 interface GetModelsArgs {
   brandId: number
 }
@@ -78,6 +87,9 @@ export const commonApi = createApi({
     getFAQByModule: builder.query<PopularCitiesResponse, { moduleId: number }>({
       query: ({ moduleId }) => `/faqs?moduleId=${moduleId}&limit=50&page=1&sortBy=sequence_asc`,
     }),
+    getVideosByAuthor: builder.query<VideosResponse, { slug: string }>({
+      query: ({ slug }) => `/videos/reviews/top?limit=9`,
+    }),
   }),
 });
 
@@ -91,4 +103,5 @@ export const {
   useGetAllCitiesQuery,
   useGetSearchCityQuery,
   useGetFAQByModuleQuery,
+  useGetVideosByAuthorQuery,
 } = commonApi;

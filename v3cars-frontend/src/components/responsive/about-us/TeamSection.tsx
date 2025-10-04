@@ -1,26 +1,58 @@
 'use client'
 
-import React from "react";
+import { useGetAuthorsQuery } from "@/redux/api/aboutUsApi";
+import { IMAGE_URL } from "@/utils/constant";
+import Link from "next/link";
+import React, { useMemo } from "react";
 
-interface TeamMember {
+interface Author {
+    moduleId: number;
+    id: number;
     name: string;
-    role: string;
-    image: string;
-    borderColor: string;
+    designation: string;
+    url_slug: string;
+    imageUrl: string;
+    backgroundImageUrl: string;
+    authorBio: string;
+    facebookURL: string;
+    twitterURL: string;
+    instaURL: string;
+    linkedInURL: string;
+    addedDateTime: string; // ISO date string
+    status: number;
+    imageAltText: string;
 }
 
-const teamMembers: TeamMember[] = [
-    { name: "Jagdev Kalsi", role: "Reference site about Lorem Ipsum, giving information on its origins, ", image: "/about-us/image1.png", borderColor: "bg-[#FFFFEC]" },
-    { name: "Jagdev Kalsi", role: "Reference site about Lorem Ipsum, giving information on its origins, ", image: "/about-us/image2.png", borderColor: "bg-[#F2FFF4]" },
-    { name: "Jagdev Kalsi", role: "Reference site about Lorem Ipsum, giving information on its origins, ", image: "/about-us/image3.png", borderColor: "bg-[#FFF4FB]" },
-    { name: "Jagdev Kalsi", role: "Reference site about Lorem Ipsum, giving information on its origins, ", image: "/about-us/image4.png", borderColor: "bg-[#FFFFEC]" },
-    { name: "Jagdev Kalsi", role: "Reference site about Lorem Ipsum, giving information on its origins, ", image: "/about-us/image5.png", borderColor: "bg-[#D5F8FB]" },
-    { name: "Jagdev Kalsi", role: "Reference site about Lorem Ipsum, giving information on its origins, ", image: "/about-us/image6.png", borderColor: "bg-[#F2FFF4]" },
-    { name: "Jagdev Kalsi", role: "Reference site about Lorem Ipsum, giving information on its origins, ", image: "/about-us/image27.png", borderColor: "bg-[#FFFFEC]" },
-    { name: "Jagdev Kalsi", role: "Reference site about Lorem Ipsum, giving information on its origins, ", image: "/about-us/image8.png", borderColor: "bg-[#D5F8FB]" },
-];
-
 export default function TeamSection() {
+    const { data: AuthorsData, isLoading, isError } = useGetAuthorsQuery();
+
+    // Convert API data → Author[]
+    const authors: Author[] = useMemo(() => {
+        if (!AuthorsData?.rows) return [];
+        return AuthorsData.rows
+            .map((item: any) => ({
+                moduleId: item.moduleId,
+                id: item.id,
+                name: item.name,
+                designation: item.designation,
+                url_slug: item.url_slug,
+                imageUrl: item.imageUrl,
+                backgroundImageUrl: item.backgroundImageUrl,
+                authorBio: item.authorBio,
+                facebookURL: item.facebookURL,
+                twitterURL: item.twitterURL,
+                instaURL: item.instaURL,
+                linkedInURL: item.linkedInURL,
+                addedDateTime: item.addedDateTime,
+                status: item.status,
+                imageAltText: item.imageAltText,
+            }))
+            .reverse();
+    }, [AuthorsData]);
+
+    if (isLoading) return <p>Loading authors...</p>;
+    if (isError) return <p>Failed to load authors.</p>;
+
     return (
         <div>
             {/* Heading */}
@@ -33,22 +65,22 @@ export default function TeamSection() {
 
             {/* Team Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {teamMembers.map((member, index) => (
+                {authors.map((member, index) => (
                     <div
-                        key={index}
+                        key={member.id}
                         className={`
-                            ${member.borderColor} border border-gray-300 rounded-xl overflow-hidden shadow-sm flex flex-col p-3 gap-6
-                            ${index % 2 !== 0 ? "translate-y-20" : ""}
-                        `}
+              border border-gray-300 rounded-xl overflow-hidden shadow-sm flex flex-col p-3 gap-6
+              ${index % 2 !== 0 ? "translate-y-20 bg-[#F2FFF4]" : "bg-[#FFFFEC]"}
+            `}
                     >
-                        <div className="space-y-4">
-                            <h3 className="font-bold text-xl w-20 text-black">{member.name}</h3>
-                            <p className="text-sm text-gray-500 line-clamp-2">{member.role}</p>
+                        <div className="space-y-2">
+                            <h3 className="font-bold text-xl text-black">{member.name}</h3>
+                            <p className="text-sm text-gray-500 line-clamp-2">{member.authorBio}</p>
                         </div>
                         <div>
                             <img
-                                src={member.image}
-                                alt={member.name}
+                                src={`${IMAGE_URL}${member.imageUrl}`}
+                                alt={member.imageAltText || member.name}
                                 className="w-full h-full object-cover flex-grow rounded-lg"
                             />
                         </div>
@@ -58,17 +90,17 @@ export default function TeamSection() {
 
             {/* Footer link */}
             <div className="mt-28">
-                <a
-                    href="#"
+                <Link
+                    href="/authors"
                     className="font-medium inline-flex items-center underline"
                 >
                     Explore V3Cars Author Profiles{" "}
                     <span className="ml-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>
                     </span>
-                </a>
+                </Link>
             </div>
         </div>
     );
