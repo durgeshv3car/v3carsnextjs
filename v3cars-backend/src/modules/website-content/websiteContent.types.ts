@@ -7,6 +7,7 @@ export type WebsiteContentSort =
 
 export interface WebsiteContentListQuery {
   moduleId: number;       // required
+  authorId?: number;
   q?: string;             // search
   page?: number;          // default 1
   limit?: number;         // default 50 (cap 100)

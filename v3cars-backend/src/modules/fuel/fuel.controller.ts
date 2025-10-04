@@ -9,6 +9,7 @@ import { FuelService } from './fuel.service.js';
 const svc = new FuelService();
 
 export class FuelController {
+
   /** GET /v1/fuel/price/latest?fuelType=1&districtId=5 OR &stateId=7 */
   async latest(req: Request, res: Response) {
     const q = fuelLatestQueryDto.parse(req.query);

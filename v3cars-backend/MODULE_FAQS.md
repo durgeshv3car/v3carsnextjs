@@ -234,6 +234,3 @@ curl -s "http://localhost:3121/v1/faqs?moduleId=1&limit=50&page=1&sortBy=sequenc
 
 # FAQ detail
 curl -s "http://localhost:3121/v1/faqs/101"
-
-
-

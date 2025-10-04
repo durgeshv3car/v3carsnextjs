@@ -8,6 +8,7 @@ import { withCache, cacheKey } from '../../lib/cache.js';
 const repo = new FuelRepo();
 
 export class FuelService {
+
   /** latest for city/state with delta */
   async latest(q: FuelLatestQuery) {
     const scope = q.districtId ? { key: `dist:${q.districtId}` } : { key: `state:${q.stateId}` };

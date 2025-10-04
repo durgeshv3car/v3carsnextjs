@@ -31,4 +31,6 @@ export class WebsiteContentController {
     if (!data) return res.status(204).end();
     res.json({ success: true, data });
   }
+
+  
 }

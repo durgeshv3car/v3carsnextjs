@@ -23,7 +23,7 @@ title_asc → title ASC, id ASC
 title_desc → title DESC, id DESC
 
 id_asc / id_desc
-
+  
 Response
 
 {
@@ -175,7 +175,6 @@ Quick Examples
 Latest Privacy
 
 GET /v1/website-content/modules/(:moduleId of Privacy)/latest
-
 
 
 Search in EMI copy

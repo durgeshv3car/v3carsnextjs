@@ -15,6 +15,7 @@ const c = new WebsiteContentController();
  */
 
 // Fixed paths FIRST
+
 r.get(
   '/modules/:moduleId/latest',
   setCache?.(1800, 120) ?? ((_, __, next) => next()),
