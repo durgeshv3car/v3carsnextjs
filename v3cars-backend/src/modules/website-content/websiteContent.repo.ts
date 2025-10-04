@@ -10,7 +10,7 @@ import type {
 /* ---------- Generic (tblwebsitecontent2) ---------- */
 
 function buildWC2Where(q: WebsiteContentListQuery): Prisma.tblwebsitecontent2WhereInput {
-  const where: Prisma.tblwebsitecontent2WhereInput = { moduleId: q.moduleId };
+  const where: Prisma.tblwebsitecontent2WhereInput = { moduleId: q.moduleId! };
   if (q.q) {
     where.OR = [{ title: { contains: q.q } }, { description: { contains: q.q } }];
   }
@@ -27,7 +27,6 @@ function buildWC2Order(sortBy?: WebsiteContentListQuery['sortBy']): Prisma.tblwe
     default:           return [{ createdAt: 'desc' }, { id: 'desc' }];
   }
 }
-
 
 const wc2Select = {
   id: true,
@@ -59,7 +58,6 @@ function buildInsuranceWhere(q: WebsiteContentListQuery): Prisma.tblcarinsurance
       { section10heading: { contains: q.q } }, { section10Desc: { contains: q.q } },
     ];
   }
-
   return where;
 }
 
@@ -79,23 +77,34 @@ const insuranceSelect = {
   section10heading: true, section10Desc: true,
 } as const;
 
-
 /* ---------- Authors (tblauthor) for moduleId=6 ---------- */
-
-
+/** IMPORTANT FIX:
+ * When authorId is provided, DO NOT force status = 1.
+ * Otherwise single-author fetch returns empty for inactive/NULL status authors.
+ */
 function buildAuthorsWhere(q: WebsiteContentListQuery): Prisma.tblauthorWhereInput {
-  const where: Prisma.tblauthorWhereInput = { status: 1 }; // active authors
+  const where: Prisma.tblauthorWhereInput = {};
+  if (typeof q.authorId === 'number') {
+    where.id = q.authorId;          // single author
+  } else {
+    where.status = 1;               // list only active authors
+  }
   if (q.q) {
-    where.OR = [
+    const or = [
       { name: { contains: q.q } },
       { designation: { contains: q.q } },
       { url_slug: { contains: q.q } },
       { authorBio: { contains: q.q } },
     ];
+    // If we already filter by id, keep OR under AND
+    if (where.id) {
+      (where.AND as any) = [{ OR: or }];
+    } else {
+      (where as any).OR = or;
+    }
   }
   return where;
 }
-
 
 const authorsSelect = {
   id: true,
@@ -114,53 +123,58 @@ const authorsSelect = {
   imageAltText: true,
 } satisfies Prisma.tblauthorSelect;
 
-
 export class WebsiteContentRepo {
-
   /** List */
   async list(q: WebsiteContentListQuery) {
-    const take = Math.max(1, Math.min(q.limit ?? 50, 100));
-    const skip = Math.max(0, ((q.page ?? 1) - 1) * take);
+    const takeDefault = Math.max(1, Math.min(q.limit ?? 50, 100));
+    const skipDefault = Math.max(0, ((q.page ?? 1) - 1) * takeDefault);
 
     // SPECIAL: Insurance (moduleId=5)
     if (q.moduleId === 5) {
       const where = buildInsuranceWhere(q);
       const [rows, total] = await Promise.all([
         prisma.tblcarinsurancecontent.findMany({
-          where, skip, take,
+          where,
+          skip: skipDefault,
+          take: takeDefault,
           orderBy: [{ uId: 'desc' }],
           select: insuranceSelect,
         }),
         prisma.tblcarinsurancecontent.count({ where }),
       ]);
 
-      const mapped: WebsiteContentInsurance[] = rows.map(r => ({
-        moduleId: 5,
-        ...r,
-      }));
+      const mapped: WebsiteContentInsurance[] = rows.map((r) => ({ moduleId: 5, ...r }));
 
       return {
         rows: mapped,
         total,
         page: q.page ?? 1,
-        pageSize: take,
-        totalPages: Math.max(1, Math.ceil(total / take)),
+        pageSize: takeDefault,
+        totalPages: Math.max(1, Math.ceil(total / takeDefault)),
       };
     }
 
     // SPECIAL: Authors (moduleId=6)
     if (q.moduleId === 6) {
       const where = buildAuthorsWhere(q);
+
+      // If authorId is provided -> force single row, no skip
+      const useSingle = typeof q.authorId === 'number';
+      const take = useSingle ? 1 : takeDefault;
+      const skip = useSingle ? 0 : skipDefault;
+
       const [rows, total] = await Promise.all([
         prisma.tblauthor.findMany({
-          where, skip, take,
+          where,
+          skip,
+          take,
           orderBy: [{ addedDateTime: 'desc' }, { id: 'desc' }],
           select: authorsSelect,
         }),
         prisma.tblauthor.count({ where }),
       ]);
 
-      const mapped: WebsiteContentAuthor[] = rows.map(r => ({
+      const mapped: WebsiteContentAuthor[] = rows.map((r) => ({
         moduleId: 6,
         ...r,
         addedDateTime: r.addedDateTime.toISOString(),
@@ -169,7 +183,7 @@ export class WebsiteContentRepo {
       return {
         rows: mapped,
         total,
-        page: q.page ?? 1,
+        page: useSingle ? 1 : (q.page ?? 1),
         pageSize: take,
         totalPages: Math.max(1, Math.ceil(total / take)),
       };
@@ -179,11 +193,11 @@ export class WebsiteContentRepo {
     const where = buildWC2Where(q);
     const orderBy = buildWC2Order(q.sortBy);
     const [rows, total] = await Promise.all([
-      prisma.tblwebsitecontent2.findMany({ where, orderBy, skip, take, select: wc2Select }),
+      prisma.tblwebsitecontent2.findMany({ where, orderBy, skip: skipDefault, take: takeDefault, select: wc2Select }),
       prisma.tblwebsitecontent2.count({ where }),
     ]);
 
-    const mapped: WebsiteContentGeneric[] = rows.map(r => ({
+    const mapped: WebsiteContentGeneric[] = rows.map((r) => ({
       id: r.id,
       moduleId: r.moduleId,
       title: r.title,
@@ -196,8 +210,8 @@ export class WebsiteContentRepo {
       rows: mapped,
       total,
       page: q.page ?? 1,
-      pageSize: take,
-      totalPages: Math.max(1, Math.ceil(total / take)),
+      pageSize: takeDefault,
+      totalPages: Math.max(1, Math.ceil(total / takeDefault)),
     };
   }
 
@@ -215,7 +229,7 @@ export class WebsiteContentRepo {
 
     if (moduleId === 6) {
       const r = await prisma.tblauthor.findFirst({
-        where: { id },
+        where: { id }, // single-author detail should NOT filter status
         select: authorsSelect,
       });
       if (!r) return null;
@@ -285,6 +299,4 @@ export class WebsiteContentRepo {
         } as WebsiteContentGeneric)
       : null;
   }
-
-
 }

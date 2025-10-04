@@ -19,8 +19,9 @@ export class WebsiteContentService {
 
     const key = cacheKey({
       ns,
-      v: 3, // bumped after moduleId=6 handling
+      v: 4, // 🔼 bump: include authorId in key
       moduleId: q.moduleId,
+      authorId: q.authorId ?? undefined,   // 👈 cache separation for single-author
       page,
       limit: q.limit ?? 50,
       sortBy: q.sortBy ?? 'latest',
