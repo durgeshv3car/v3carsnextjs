@@ -25,7 +25,6 @@ Card Shape (ContentCard)
   "commentsCount": 12
 }
 
-
 MEDIA_BASE_URL (env) is used to convert relative thumbnailUrl to absolute.
 
 Common query params
@@ -43,7 +42,6 @@ GET /v1/content/:type/today
 # Picks most recent row with publishDateandTime <= NOW()
 # Optional: ?fuelType=Electric
 
-
 Examples
 
 News today: /v1/content/news/today
@@ -56,7 +54,6 @@ Expert Review today: /v1/content/reviews/today
 GET /v1/content/:type/latest?limit=9&excludeToday=1
 # Ordered by publishDateandTime DESC, id DESC
 # Optional: &fuelType=Electric
-
 
 Examples
 
@@ -75,7 +72,6 @@ GET /v1/content/:type/trending?limit=9
 # Ordered by last_15days_view DESC (legacy behavior)
 # Optional: &fuelType=Electric
 
-
 Examples
 
 Trending News: /v1/content/news/trending?limit=9
@@ -89,7 +85,6 @@ GET /v1/content/:type/top?limit=9
 # Ordered by last_30days_view DESC (legacy behavior)
 # Optional: &fuelType=Electric
 
-
 Examples
 
 Top News: /v1/content/news/top?limit=9
@@ -102,7 +97,6 @@ Top EV News: /v1/content/news/top?limit=9&fuelType=Electric
 GET /v1/content/:type/popular?limit=9
 # Ordered by uniqueUsers (NumView) DESC
 # Optional: &fuelType=Electric  (EV scope via modelTagging and powertrains)
-
 
 Examples
 
@@ -141,7 +135,3 @@ EV reviews:
 
 EV videos (videos module):
 /v1/videos/latest?limit=10&fuelType=Electric
-
-
-
-

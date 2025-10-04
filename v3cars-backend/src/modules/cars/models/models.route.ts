@@ -11,4 +11,7 @@ r.get('/models/upcoming-monthly-count', setCache(1800, 120), (req, res) => c.upc
 r.get('/models', setCache(300, 60), (req, res) => c.list(req, res));
 r.get('/models/:id', setCache(600, 120), (req, res) => c.getById(req, res));
 
+
 export const modelsRouter = r;
+
+

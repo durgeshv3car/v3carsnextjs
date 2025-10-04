@@ -1258,7 +1258,7 @@ model tblloanusers {
   residencSince       DateTime? @db.Date
   employmentType      Int?      @db.TinyInt
   companyName         String?   @db.VarChar(200)
-  joiningDate         DateTime? @db.Date  
+  joiningDate         DateTime? @db.Date
   workExperience      Int?      @db.TinyInt
   panCard             String?   @db.VarChar(15)
   income              BigInt?
@@ -1320,15 +1320,15 @@ model tblmodelpagecontent {
   newsContent            String?  @db.Text
   onRoadPriceContent     String?  @db.Text
   keyFeaturesContent     String?  @db.Text
-  mileageContent         String?  @db.Text      
+  mileageContent         String?  @db.Text
   galleryContent         String?  @db.Text
   coloursContent         String?  @db.Text
   prosConsContent        String?  @db.Text
   ViewContent            String?  @map("360ViewContent") @db.Text
   sparePartsContent      String?  @db.Text
   serviceCostContent     String?  @db.LongText
-  dealersContent         String?  @db.Text   
-  brochureContent        String?  @db.Text  
+  dealersContent         String?  @db.Text
+  brochureContent        String?  @db.Text
   createEMIContent       String?  @db.Text
   createLoanContent      String?  @db.Text
   createInsuranceContent String?  @db.Text
@@ -1344,6 +1344,7 @@ model tblmodelpagecontent {
   csdpriceContent        String?  @db.Text
   overviewLatest         String?  @db.Text
   csdLatest              String?  @db.Text
+
   @@index([modelId], map: "idx_tblmodelpagecontent_modelId")
 }
 
@@ -2100,7 +2101,7 @@ model tblspinnyvariants {
 model tblstates {
   stateId          Int     @id @db.TinyInt
   stateName        String? @db.VarChar(100)
-  countryId        Int     @default(0) @db.UnsignedTinyInt   
+  countryId        Int     @default(0) @db.UnsignedTinyInt
   stateCode        String? @db.VarChar(50)
   shortCode        String? @db.VarChar(50)
   isTodayFuelPrice Int?    @default(0) @db.TinyInt
@@ -2318,7 +2319,6 @@ model tblvariants {
   @@index([modelId], map: "modelId")
 }
 
-
 model tblvariantsfeatures {
   variantFeatureId Int @id @default(autoincrement())
   variantId        Int
@@ -2371,38 +2371,6 @@ model tblwebsettings {
   value       String @db.VarChar(500)
 
   @@index([settingName], map: "idx_tblwebsettings_settingName")
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model tblwebsitecontent {
-  aboutUsTitle              String? @db.VarChar(100)
-  aboutUsContent            String? @db.Text
-  contactUsTitle            String? @db.VarChar(100)
-  contactUsContent          String? @db.Text
-  privancyTitle             String? @db.VarChar(100)
-  privancyContent           String? @db.LongText
-  termTitle                 String? @db.VarChar(100)
-  termContent               String? @db.LongText
-  consentDecTitle           String? @db.VarChar(100)
-  consentDecContent         String? @db.LongText
-  certifiedCicTitle         String? @db.VarChar(150)
-  certifiedCicContent       String? @db.LongText
-  emiCalcHeading1           String? @db.VarChar(100)
-  emiCalcDesc1              String? @db.VarChar(1000)
-  emiCalcHeading2           String? @db.VarChar(100)
-  emiCalcDesc2              String? @db.Text
-  emiCalcDesc3              String? @db.Text
-  fuelCostPageTitle         String? @db.VarChar(100)
-  fuelCostPageDesc          String? @db.Text
-  fuelCostFaqTitle          String? @db.VarChar(100)
-  fuelCostFaqDesc           String? @db.Text
-  carLoanContent            String? @db.Text
-  mileageCalcContent        String? @db.LongText
-  mileageCalcHeadingContent String? @db.LongText
-  fuelCostIntDesc           String? @db.LongText
-  fuelCostIntHeadDesc       String? @db.LongText
-
   @@ignore
 }
 
@@ -2476,22 +2444,6 @@ model tblwhatsapplog {
   dateTime     DateTime? @db.DateTime(0)
 }
 
-model tblfaqs {
-  id              Int        @id @default(autoincrement()) @db.UnsignedInt
-  moduleId        Int        @db.UnsignedInt
-  que             String     @db.VarChar(500)
-  ans             String     @db.Text
-  sequance        Int        @default(1) @db.UnsignedInt
-  addedBy         Int?       @db.UnsignedInt
-  updatedBy       Int?       @db.UnsignedInt
-  careateDateTime DateTime   @default(now()) @db.DateTime(0)
-  updateDateTime  DateTime?  @db.DateTime(0)
-  tblmodules      tblmodules @relation(fields: [moduleId], references: [id], onDelete: Cascade, map: "fk_tblfaqs_module")
-
-  @@index([moduleId], map: "idx_tblfaqs_moduleId")
-  @@index([sequance], map: "idx_tblfaqs_sequance")
-}
-
 model tblimagebank {
   id            Int       @id @default(autoincrement())
   fileName      String?   @db.VarChar(255)
@@ -2510,11 +2462,81 @@ model tblimagebank {
   isWatermarked Boolean?  @default(false)
 }
 
+model tblwebsitecontent {
+  id                        Int         @id @default(autoincrement()) @db.UnsignedInt
+  moduleId                  Int?        @db.UnsignedInt
+  modelId                   Int?        @db.UnsignedInt
+  aboutUsTitle              String?     @db.VarChar(100)
+  aboutUsContent            String?     @db.Text
+  contactUsTitle            String?     @db.VarChar(100)
+  contactUsContent          String?     @db.Text
+  privancyTitle             String?     @db.VarChar(100)
+  privancyContent           String?     @db.LongText
+  termTitle                 String?     @db.VarChar(100)
+  termContent               String?     @db.LongText
+  consentDecTitle           String?     @db.VarChar(100)
+  consentDecContent         String?     @db.LongText
+  certifiedCicTitle         String?     @db.VarChar(150)
+  certifiedCicContent       String?     @db.LongText
+  emiCalcHeading1           String?     @db.VarChar(100)
+  emiCalcDesc1              String?     @db.VarChar(1000)
+  emiCalcHeading2           String?     @db.VarChar(100)
+  emiCalcDesc2              String?     @db.Text
+  emiCalcDesc3              String?     @db.Text
+  fuelCostPageTitle         String?     @db.VarChar(100)
+  fuelCostPageDesc          String?     @db.Text
+  fuelCostFaqTitle          String?     @db.VarChar(100)
+  fuelCostFaqDesc           String?     @db.Text
+  carLoanContent            String?     @db.Text
+  mileageCalcContent        String?     @db.LongText
+  mileageCalcHeadingContent String?     @db.LongText
+  fuelCostIntDesc           String?     @db.LongText
+  fuelCostIntHeadDesc       String?     @db.LongText
+  module                    tblmodules? @relation("modules_websiteContents", fields: [moduleId], references: [id], onDelete: Cascade, map: "fk_tblwebsitecontent_module")
+
+  @@index([moduleId], map: "idx_tblwebsitecontent_moduleId")
+  @@index([modelId], map: "idx_tblwebsitecontent_modelId")
+  @@map("tblwebsitecontent")
+}
+
 model tblmodules {
-  id        Int       @id @default(autoincrement()) @db.UnsignedInt
-  name      String    @unique(map: "uq_tblmodules_name") @db.VarChar(150)
-  createdAt DateTime  @default(now()) @db.DateTime(0)
-  tblfaqs   tblfaqs[]
+  id                 Int                  @id @default(autoincrement()) @db.UnsignedInt
+  name               String               @unique(map: "uq_tblmodules_name") @db.VarChar(150)
+  createdAt          DateTime             @default(now()) @db.DateTime(0)
+  faqs               tblfaqs[]            @relation("modules_faqs")
+  websiteContents    tblwebsitecontent[]  @relation("modules_websiteContents")
+  tblwebsitecontent2 tblwebsitecontent2[]
+
+  @@map("tblmodules")
+}
+
+model tblfaqs {
+  id              Int        @id @default(autoincrement()) @db.UnsignedInt
+  moduleId        Int        @db.UnsignedInt
+  que             String     @db.VarChar(500)
+  ans             String     @db.Text
+  sequance        Int        @default(1) @db.UnsignedInt
+  addedBy         Int?       @db.UnsignedInt
+  updatedBy       Int?       @db.UnsignedInt
+  careateDateTime DateTime   @default(now()) @db.DateTime(0)
+  updateDateTime  DateTime?  @db.DateTime(0)
+  tblmodules      tblmodules @relation("modules_faqs", fields: [moduleId], references: [id], onDelete: Cascade, map: "fk_tblfaqs_module")
+
+  @@index([moduleId], map: "idx_tblfaqs_moduleId")
+  @@index([sequance], map: "idx_tblfaqs_sequance")
+  @@map("tblfaqs")
+}
+
+model tblwebsitecontent2 {
+  id          Int        @id @default(autoincrement()) @db.UnsignedInt
+  moduleId    Int        @db.UnsignedInt
+  title       String?    @db.VarChar(200)
+  description String?    @db.LongText
+  createdAt   DateTime   @default(now()) @db.DateTime(0)
+  updatedAt   DateTime   @default(now()) @db.DateTime(0)
+  tblmodules  tblmodules @relation(fields: [moduleId], references: [id], onDelete: Cascade, map: "fk_tblwebsitecontent2_module")
+
+  @@index([moduleId], map: "idx_tblwebsitecontent2_moduleId")
 }
 
 enum tblfeaturesnew_selectionType {
