@@ -9,6 +9,9 @@ import FormOne from "./CommonOption/form1";
 import FormSecond from "./CommonOption/form2";
 import FormThree from "./CommonOption/form3";
 import FormFour from "./CommonOption/form4";
+import FormFive from "./CommonOption/form5";
+import FormSix from "./CommonOption/form6";
+import FormSeven from "./CommonOption/form7";
 
 interface HelpModelProps {
     showHelpModel: number | null
@@ -57,6 +60,27 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
         pageAffected: "",
         issueDetail: "",
         screenshot: null,
+    });
+
+    const [formData5, setFormData5] = useState({
+        suggestionType: "",
+        otherSuggestion: "",
+        suggestionDetail: "",
+        whyIdea: "",
+        reference: "",
+    });
+
+    const [formData6, setFormData6] = useState({
+        partnershipType: "",
+        otherPartnership: "",
+        companyName: "",
+        website: "",
+        proposal: "",
+        budgetRange: "",
+    });
+
+    const [formData7, setFormData7] = useState({
+        queryDetail: ""
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -167,6 +191,24 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
                                 {
                                     showHelpModel === 4 && (
                                         <FormFour formData={formData4} setFormData={setFormData4} onClose={() => setStep("details")} />
+                                    )
+                                }
+
+                                {
+                                    showHelpModel === 5 && (
+                                        <FormFive formData={formData5} setFormData={setFormData5} onClose={() => setStep("details")} />
+                                    )
+                                }
+
+                                {
+                                    showHelpModel === 6 && (
+                                        <FormSix formData={formData6} setFormData={setFormData6} onClose={() => setStep("details")} />
+                                    )
+                                }
+
+                                {
+                                    showHelpModel === 7 && (
+                                        <FormSeven formData={formData7} setFormData={setFormData7} onClose={() => setStep("details")} />
                                     )
                                 }
                             </>
