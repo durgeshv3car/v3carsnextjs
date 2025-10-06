@@ -8,7 +8,7 @@ import PopularNews from '@/components/common/PopularNews';
 import LeaderboardAd from '@/components/common/LeaderboardAd';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
 import Link from 'next/link';
-import { useGetLatestAutoExpoQuery, useGetPopularAutoExpoQuery, useGetTodayAutoExpoQuery, useGetTopAutoExpoQuery, useGetTrendingAutoExpoQuery } from '@/redux/api/autoExpoApi';
+import { useGetLatestAutoExpoQuery, useGetPopularAutoExpoQuery, useGetTodayAutoExpoQuery, useGetTopAutoExpoQuery, useGetTrendingAutoExpoQuery } from '@/redux/api/contentModuleApi';
 
 const tabs = [
     { key: 'latest', label: 'Latest Auto Expo' },

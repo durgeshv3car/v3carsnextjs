@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAuthorsQuery } from '@/redux/api/aboutUsApi';
+import { useGetAuthorsQuery } from '@/redux/api/websiteContentApi';
 import { IMAGE_URL } from '@/utils/constant';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -102,14 +102,14 @@ const Authors: React.FC = () => {
                     src={`${IMAGE_URL}${author.imageUrl}`}
                     alt={author.imageAltText || author.name}
                     className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-sm cursor-pointer"
-                    onClick={() => { router.push(`/authors/${author.url_slug}`) }}
+                    onClick={() => { router.push(`/authors/${author.id}`) }}
                   />
                 </div>
                 <div className="flex flex-col justify-between">
                   <div className="space-y-1">
                     <h3
                       className="text-xl md:text-2xl font-bold w-40 cursor-pointer"
-                      onClick={() => { router.push(`/authors/${author.url_slug}`) }}
+                      onClick={() => { router.push(`/authors/${author.id}`) }}
                     >
                       {author.name}
                     </h3>

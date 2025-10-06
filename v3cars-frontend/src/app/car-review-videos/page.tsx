@@ -4,8 +4,7 @@ import CommonPopularVideo from "@/components/common/CommonPopularVideos";
 import CommonRecentVideo from "@/components/common/CommonRecentVideo";
 import LatestVideos from "@/components/responsive/car-review-video/LatestVideo";
 import TopBanner from "@/components/responsive/car-review-video/TopBanner";
-import { useGetLatestCarVideosQuery, useGetPopularCarVideosQuery } from "@/redux/api/carReviewVideosApi";
-import { Metadata } from "next";
+import { useGetLatestCarVideosQuery, useGetPopularCarVideosQuery } from "@/redux/api/videosModuleApi";
 import Link from "next/link";
 
 // export const metadata: Metadata = {

@@ -1,6 +1,7 @@
 'use client'
 
-import { useGetLatestVideosQuery } from '@/redux/api/homeApi'
+
+import { useGetLatestVideosQuery } from '@/redux/api/videosModuleApi';
 import { IMAGE_URL } from '@/utils/constant';
 import Image from 'next/image'
 import Link from 'next/link'

@@ -3,8 +3,7 @@
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 import React, { useState, useEffect } from 'react';
 import styles from './CarLoanEMICalculator.module.css'
-import { useGetAllBrandsQuery } from '@/redux/api/homeApi';
-import { useGetModelsQuery, useGetVariantsQuery } from '@/redux/api/commonApi';
+import { useGetAllBrandsQuery, useGetModelsQuery, useGetVariantsQuery } from '@/redux/api/carModuleApi';
 
 interface CarBrand {
   brandId: number

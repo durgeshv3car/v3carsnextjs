@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAboutDetailsQuery } from "@/redux/api/aboutUsApi";
+import { useGetAboutDetailsQuery } from "@/redux/api/websiteContentApi";
 import { useMemo } from "react";
 
 interface PageContent {
@@ -34,11 +34,6 @@ function TrustedCarGuide() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl md:text-4xl font-bold">
-                India’s Most Trusted Car Guide
-            </h1>
-            <div className="h-[3px] bg-yellow-400 w-[100px] my-3" />
-
             {/* Render HTML description safely */}
             {about?.description ? (
                 <div

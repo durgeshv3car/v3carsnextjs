@@ -16,8 +16,8 @@ interface LatestNewsResponse {
 }
 
 // Define the API
-export const newsApi = createApi({
-    reducerPath: "newsApi",
+export const newsModuleApi = createApi({
+    reducerPath: "newsModuleApi",
     baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }) as BaseQueryFn<
         string | FetchArgs,
         unknown,
@@ -49,4 +49,4 @@ export const {
     useGetTrendingNewsQuery,
     useGetTopNewsQuery,
     useGetPopularNewsQuery,
-} = newsApi;
+} = newsModuleApi;

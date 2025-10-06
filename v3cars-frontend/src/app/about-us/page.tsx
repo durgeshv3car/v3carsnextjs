@@ -18,6 +18,22 @@ function AboutUs() {
                 </div>
             </div>
 
+            <div className="relative w-full min-h-[250px] md:min-h-[300px]">
+                <div
+                    className="absolute inset-0 bg-no-repeat bg-cover bg-center dark:invert"
+                    style={{ backgroundImage: "url('/author/Vector.png')" }}
+                />
+                <div className="relative w-full lg:app-container mx-auto">
+                    <div className="pt-[60px] md:pt-[100px] px-4">
+                        <h1 className="text-3xl/tight md:text-4xl/tight">
+                            India’s Most <br />
+                            <span className="text-yellow-400 font-bold">Trusted Car Guide</span>
+                        </h1>
+                        <div className="h-[3px] bg-yellow-400 w-[100px] my-3" />
+                    </div>
+                </div>
+            </div>
+
             <div className="px-4 xl:px-10">
                 <div className="lg:app-container mx-auto w-full my-16 ">
                     <TrustedCarGuide />

@@ -13,8 +13,8 @@ interface GetAuthorsResponse {
 }
 
 // Define the API
-export const aboutUsApi = createApi({
-    reducerPath: "aboutUsApi",
+export const websiteContentApi = createApi({
+    reducerPath: "websiteContentApi",
     baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }) as BaseQueryFn<
         string | FetchArgs,
         unknown,
@@ -27,6 +27,15 @@ export const aboutUsApi = createApi({
         getAuthors: builder.query<GetAuthorsResponse, void>({
             query: () => "/website-content?moduleId=6&id_asc",
         }),
+        getAuthorDetails: builder.query<GetAuthorsResponse, { authorId: number }>({
+            query: ({ authorId }) => `/website-content?moduleId=6&authorId=${authorId}`,
+        }),
+        getTermsOfUses: builder.query<GetAuthorsResponse, void>({
+            query: () => "/website-content?moduleId=9",
+        }),
+        getPrivacyPolicy: builder.query<GetAuthorsResponse, void>({
+            query: () => "/website-content?moduleId=8",
+        }),
     }),
 });
 
@@ -34,4 +43,7 @@ export const aboutUsApi = createApi({
 export const {
     useGetAboutDetailsQuery,
     useGetAuthorsQuery,
-} = aboutUsApi;
+    useGetAuthorDetailsQuery,
+    useGetTermsOfUsesQuery,
+    useGetPrivacyPolicyQuery,
+} = websiteContentApi;

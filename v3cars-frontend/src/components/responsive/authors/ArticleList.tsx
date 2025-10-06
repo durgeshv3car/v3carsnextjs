@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetVideosByAuthorQuery } from "@/redux/api/commonApi";
+import { useGetVideosByAuthorQuery } from "@/redux/api/videosModuleApi";
 import { IMAGE_URL } from "@/utils/constant";
 import { useParams } from "next/navigation";
 import React, { useMemo } from "react";

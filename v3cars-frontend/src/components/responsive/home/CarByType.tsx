@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetCarByBodyTypeQuery } from '@/redux/api/homeApi'
+import { useGetCarByBodyTypeQuery } from '@/redux/api/homeModuleApi'
 import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import Link from 'next/link'

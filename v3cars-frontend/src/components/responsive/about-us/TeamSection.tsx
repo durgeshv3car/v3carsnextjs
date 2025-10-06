@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAuthorsQuery } from "@/redux/api/aboutUsApi";
+import { useGetAuthorsQuery } from "@/redux/api/websiteContentApi";
 import { IMAGE_URL } from "@/utils/constant";
 import Link from "next/link";
 import React, { useMemo } from "react";

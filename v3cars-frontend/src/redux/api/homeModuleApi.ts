@@ -48,25 +48,7 @@ interface CarByPriceResponse {
   rows: any[];
 }
 
-interface BrandsResponse {
-  success: boolean;
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-  rows: any[];
-}
-
 interface CarReviewsResponse {
-  success: boolean;
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-  rows: any[];
-}
-
-interface VariantsExplainedResponse {
   success: boolean;
   page: number;
   pageSize: number;
@@ -85,8 +67,8 @@ interface LatestVideosResponse {
 }
 
 // Define the API
-export const homeApi = createApi({
-  reducerPath: "homeApi",
+export const homeModuleApi = createApi({
+  reducerPath: "homeModuleApi",
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }) as BaseQueryFn<
     string | FetchArgs,
     unknown,
@@ -114,20 +96,9 @@ export const homeApi = createApi({
       query: ({ budget, limit = 10, page = 1 }) =>
         `/home/search-by-price?bucket=${budget}&limit=8&page=1`,
     }),
-    getLatestVideos: builder.query<LatestVideosResponse, void>({
-      query: () =>
-        `/videos/latest?limit=8`,
-    }),
-    getVariantsExplained: builder.query<VariantsExplainedResponse, void>({
-      query: () =>
-        `/content/variant-explained/latest?limit=20`,
-    }),
     getExpertCarReviews: builder.query<CarReviewsResponse, void>({
       query: () =>
         `/home/latest-reviews?limit=20`,
-    }),
-    getAllBrands: builder.query<BrandsResponse, void>({
-      query: () => "/cars/brands?sortBy=popular&limit=69&page=1",
     }),
   }),
 });
@@ -139,8 +110,5 @@ export const {
   useGetLatestCarNewsQuery,
   useGetCarByBodyTypeQuery,
   useGetCarByPriceQuery,
-  useGetLatestVideosQuery,
-  useGetVariantsExplainedQuery,
   useGetExpertCarReviewsQuery,
-  useGetAllBrandsQuery,
-} = homeApi;
+} = homeModuleApi;

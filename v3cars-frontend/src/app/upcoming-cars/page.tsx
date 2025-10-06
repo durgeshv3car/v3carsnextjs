@@ -3,13 +3,12 @@
 import NewCarsLaunched from "@/components/responsive/upcoming-cars/NewCarsLaunched";
 import NewUpcomingCars from "@/components/responsive/upcoming-cars/NewUpcomingCars";
 import TopSection from "@/components/common/TopSection";
-import { Metadata } from "next";
 import BottomAd from "@/components/common/BottomAd";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import Upcoming from "@/components/common/TopBrands";
 import { useEffect, useState } from "react";
-import { useGetMonthQuery } from "@/redux/api/upcomingApi";
+import { useGetMonthQuery } from "@/redux/api/carModuleApi";
 
 // export const metadata: Metadata = {
 //     title: "Upcoming Cars in India 2024-2025 | Latest Launches, Prices, Images",
@@ -31,21 +30,6 @@ import { useGetMonthQuery } from "@/redux/api/upcomingApi";
 //         "V3Cars"
 //     ]
 // };
-
-const months = [
-    { month: 'Aug', year: 2024 },
-    { month: 'Sep', year: 2024 },
-    { month: 'Oct', year: 2024 },
-    { month: 'Nov', year: 2024 },
-    { month: 'Dec', year: 2024 },
-    { month: 'Jan', year: 2025 },
-    { month: 'Feb', year: 2025 },
-    { month: 'Mar', year: 2024 },
-    { month: 'Apr', year: 2025 },
-    { month: 'May', year: 2025 },
-    { month: 'Jun', year: 2025 },
-    { month: 'Jul', year: 2025 },
-]
 
 interface Months {
     key: string,

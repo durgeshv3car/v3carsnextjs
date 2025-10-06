@@ -1,7 +1,9 @@
 'use client'
 
+import { useGetAuthorDetailsQuery } from "@/redux/api/websiteContentApi";
 import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
 interface Author {
     moduleId: number;
@@ -21,29 +23,17 @@ interface Author {
     imageAltText: string;
 }
 
-// Array of authors
-const authors: Author[] = [
-    {
-        moduleId: 6,
-        id: 28,
-        name: "Pratibha Yadav",
-        designation: "SEO Expert",
-        url_slug: "pratibha-yadav",
-        imageUrl: "/media/authorImage/210903WhatsApp Image 2025-08-05 at 15.49.07_8f361cf1.png",
-        backgroundImageUrl: "/media/authorBGImage/714410v3cars_sponsor_wall_16_9.png",
-        authorBio: "Pratibha is a content writer with a keen eye for detail and a passion for the evolving automotive landscape. She covers the latest industry developments, product launches, and mobility trends with clarity and precision.",
-        facebookURL: "",
-        twitterURL: "",
-        instaURL: "https://www.instagram.com/raopratibha9912",
-        linkedInURL: "https://www.linkedin.com/in/pratibha-yadav-a14a03229",
-        addedDateTime: "2025-08-05T15:52:05.000Z",
-        status: 1,
-        imageAltText: "Articles by Pratibha Yadav"
-    }
-];
-
 function ProfileSection() {
-    const author = authors[0];
+    const { details } = useParams();
+    const authorId = Number(details);
+
+    const { data: authorsDetailsData, isLoading, isError } = useGetAuthorDetailsQuery({ authorId });
+    const authorsData: Author[] = authorsDetailsData?.rows ?? [];
+
+    const author = authorsData[0];
+
+    if (isLoading) return <p className="text-center py-10">Loading author details...</p>;
+    if (isError || !author) return <p className="text-center py-10">Author details not found.</p>;
 
     return (
         <>
@@ -51,7 +41,7 @@ function ProfileSection() {
                 {/* Banner */}
                 <div className="relative h-40 sm:h-60 md:h-72 rounded-t-xl">
                     <Image
-                        src={`${IMAGE_URL}${author.backgroundImageUrl}`}
+                        src={author.backgroundImageUrl ? `${IMAGE_URL}${author.backgroundImageUrl}` : '/profile-bg.png'}
                         alt="Banner"
                         fill
                         className="object-cover rounded-t-xl"

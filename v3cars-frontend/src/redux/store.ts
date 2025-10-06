@@ -4,27 +4,16 @@ import storage from "redux-persist/lib/storage";
 
 import { authApi } from "./api/authApi";
 import { commonApi } from "./api/commonApi";
-import { homeApi } from "./api/homeApi";
 import authReducer from "./slices/authSlice";
 import commonReducer from "./slices/commonSlice";
-import sellUsedReducer from "./slices/sellUsedSlice"
-import { upcomingApi } from "./api/upcomingApi";
-import { latestcarApi } from "./api/latestcarApi";
-import { popularCarApi } from "./api/popularApi";
-import { electricApi } from "./api/electricApi";
-import { newsApi } from "./api/newsApi";
-import { autoExpoApi } from "./api/autoExpoApi";
-import { expertReviewApi } from "./api/expertReviewApi";
-import { comparisonApi } from "./api/comparisonApi";
-import { featuresExplainedApi } from "./api/featuresExplainedApi";
-import { carGuideApi } from "./api/carGuideApi";
-import { carReviewVideoApi } from "./api/carReviewVideosApi";
-import { compareVideosApi } from "./api/compareVideos";
-import { variantsExplainedVideosApi } from "./api/variantsExplainedVideosApi";
-import { autoExpoVideosApi } from "./api/autoExpoVideosApi";
-import { variantExplainedApi } from "./api/variantExplainedApi";
-import { otherVideosApi } from "./api/otherVideosApi";
-import { aboutUsApi } from "./api/aboutUsApi";
+import sellUsedReducer from "./slices/sellUsedSlice";
+import { websiteContentApi } from "./api/websiteContentApi";
+import { homeModuleApi } from "./api/homeModuleApi";
+import { carModuleApi } from "./api/carModuleApi";
+import { locationModuleApi } from "./api/locationModuleApi";
+import { newsModuleApi } from "./api/newsModuleApi";
+import { contentModuleApi } from "./api/contentModuleApi";
+import { videosModuleApi } from "./api/videosModuleApi";
 
 const persistConfig = {
   key: "root",
@@ -35,24 +24,13 @@ const persistConfig = {
 const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [commonApi.reducerPath]: commonApi.reducer,
-  [homeApi.reducerPath]: homeApi.reducer,
-  [upcomingApi.reducerPath]: upcomingApi.reducer,
-  [latestcarApi.reducerPath]: latestcarApi.reducer,
-  [popularCarApi.reducerPath]: popularCarApi.reducer,
-  [electricApi.reducerPath]: electricApi.reducer,
-  [newsApi.reducerPath]: newsApi.reducer,
-  [autoExpoApi.reducerPath]: autoExpoApi.reducer,
-  [expertReviewApi.reducerPath]: expertReviewApi.reducer,
-  [comparisonApi.reducerPath]: comparisonApi.reducer,
-  [featuresExplainedApi.reducerPath]: featuresExplainedApi.reducer,
-  [carGuideApi.reducerPath]: carGuideApi.reducer,
-  [carReviewVideoApi.reducerPath]: carReviewVideoApi.reducer,
-  [compareVideosApi.reducerPath]: compareVideosApi.reducer,
-  [variantsExplainedVideosApi.reducerPath]: variantsExplainedVideosApi.reducer,
-  [autoExpoVideosApi.reducerPath]: autoExpoVideosApi.reducer,
-  [variantExplainedApi.reducerPath]: variantExplainedApi.reducer,
-  [otherVideosApi.reducerPath]: otherVideosApi.reducer,
-  [aboutUsApi.reducerPath]: aboutUsApi.reducer,
+  [homeModuleApi.reducerPath]: homeModuleApi.reducer,
+  [contentModuleApi.reducerPath]: contentModuleApi.reducer,
+  [videosModuleApi.reducerPath]: videosModuleApi.reducer,
+  [websiteContentApi.reducerPath]: websiteContentApi.reducer,
+  [carModuleApi.reducerPath]: carModuleApi.reducer,
+  [locationModuleApi.reducerPath]: locationModuleApi.reducer,
+  [newsModuleApi.reducerPath]: newsModuleApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
@@ -70,24 +48,13 @@ export const store = configureStore({
     }).concat(
       authApi.middleware,
       commonApi.middleware,
-      homeApi.middleware,
-      upcomingApi.middleware,
-      latestcarApi.middleware,
-      popularCarApi.middleware,
-      electricApi.middleware,
-      newsApi.middleware,
-      autoExpoApi.middleware,
-      expertReviewApi.middleware,
-      comparisonApi.middleware,
-      featuresExplainedApi.middleware,
-      carGuideApi.middleware,
-      carReviewVideoApi.middleware,
-      compareVideosApi.middleware,
-      variantsExplainedVideosApi.middleware,
-      autoExpoVideosApi.middleware,
-      variantExplainedApi.middleware,
-      otherVideosApi.middleware,
-      aboutUsApi.middleware,
+      homeModuleApi.middleware,
+      contentModuleApi.middleware,
+      videosModuleApi.middleware,
+      websiteContentApi.middleware,
+      carModuleApi.middleware,
+      locationModuleApi.middleware,
+      newsModuleApi.middleware,
     ),
 });
 

@@ -1,7 +1,6 @@
 'use client'
 
 import TopSection from "@/components/common/TopSection";
-import { Metadata } from "next";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import PopularBrands from "@/components/common/PopularBrands";
@@ -9,8 +8,10 @@ import BottomAd from "@/components/common/BottomAd";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonVideos from "@/components/common/CommonVideos";
 import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
-import { useGetElectricCarNewsQuery, useGetElectricCarQuery, useGetElectricCarReviewsQuery, useGetElectricCarVideosQuery } from "@/redux/api/electricApi";
 import TopBrands from "@/components/common/TopBrands";
+import { useGetElectricCarQuery } from "@/redux/api/carModuleApi";
+import { useGetElectricCarNewsQuery, useGetElectricCarReviewsQuery } from "@/redux/api/contentModuleApi";
+import { useGetElectricCarVideosQuery } from "@/redux/api/videosModuleApi";
 
 // export const metadata: Metadata = {
 //     title: "Electric Cars in India 2024 | Prices, Range, Images & More - V3Cars",
