@@ -10,14 +10,41 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from 'recharts';
+import { useState, useEffect } from 'react';
+import { useGet10DaysFuelPriceQuery } from '@/redux/api/fuelModuleApi';
 
-const data = [
-  { name: 'r1', b1: 1, b2: 2, b3: 3 },
-  { name: 'r2', b1: 3, b2: 4, b3: 5 },
-  { name: 'r3', b1: 5, b2: 6, b3: 7 },
-];
+interface Props {
+  districtId: number;
+}
 
-export default function FuelCostBarGraph() {
+interface FuelPriceDay {
+  day: string;             // e.g., "2025-09-27"
+  petrol: number;          
+  petrolChange: number | null;
+  diesel: number;
+  dieselChange: number | null;
+  cng: number;
+  cngChange: number | null;
+}
+
+export default function FuelCostBarGraph({ districtId }: Props) {
+  const { data: apiData } = useGet10DaysFuelPriceQuery({ districtId });
+  const [fuelData, setFuelData] = useState<FuelPriceDay[]>([]);
+
+  /** Transform API data to chart data */
+  useEffect(() => {
+    if (!apiData?.rows) return;
+
+    const transformed: FuelPriceDay[] = apiData.rows
+      .map((row: FuelPriceDay) => ({
+        ...row,
+        day: new Date(row.day).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }),
+      }))
+      .reverse(); // show oldest first
+
+    setFuelData(transformed);
+  }, [apiData]);
+
   return (
     <div
       className="
@@ -39,10 +66,13 @@ export default function FuelCostBarGraph() {
 
         <div className="h-[300px] md:h-[600px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 30 }}>
+            <BarChart
+              data={fuelData}
+              margin={{ top: 20, right: 30, left: 0, bottom: 30 }}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke="var(--grid)" />
               <XAxis
-                dataKey="name"
+                dataKey="day"
                 stroke="var(--axis)"
                 tick={{ fill: 'var(--axis)' }}
                 tickLine={{ stroke: 'var(--axis)' }}
@@ -79,9 +109,9 @@ export default function FuelCostBarGraph() {
                 align="right"
                 wrapperStyle={{ paddingBottom: 10, color: 'var(--legend)' }}
               />
-              <Bar dataKey="b1" fill="#1f77b4" />
-              <Bar dataKey="b2" fill="#d62728" />
-              <Bar dataKey="b3" fill="#f1b600" />
+              <Bar dataKey="petrol" fill="#1f77b4" name="Petrol" />
+              <Bar dataKey="diesel" fill="#d62728" name="Diesel" />
+              <Bar dataKey="cng" fill="#f1b600" name="CNG" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -89,16 +119,3 @@ export default function FuelCostBarGraph() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -80,7 +80,7 @@ function SideBar() {
                     <div
                         key={auth.id}
                         className="flex items-center gap-3 p-2 rounded-xl bg-gray-100 dark:bg-gray-800 cursor-pointer justify-between hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-                        onClick={() => router.push(`/authors/${auth.url_slug}`)}
+                        onClick={() => router.push(`/authors/${auth.id}`)}
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-16 h-16 rounded-full overflow-hidden">

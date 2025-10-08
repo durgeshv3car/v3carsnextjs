@@ -28,9 +28,8 @@ export interface Video {
 
 export default function ArticleList() {
   const { details } = useParams();
-  const slug = typeof details === "string" ? details : "";
 
-  const { data, isLoading, isError } = useGetVideosByAuthorQuery({ slug });
+  const { data, isLoading, isError } = useGetVideosByAuthorQuery({ authorId: Number(details) });
 
   // Convert API data → Video[]
   const videos: Video[] = useMemo(() => {
@@ -92,7 +91,7 @@ export default function ArticleList() {
                 {video.title}
               </h2>
               <p className="text-xs sm:text-sm text-gray-400 mt-2 line-clamp-4">
-                Video ID: {video.videoYId}
+                {video.author.name}
               </p>
             </div>
           </div>

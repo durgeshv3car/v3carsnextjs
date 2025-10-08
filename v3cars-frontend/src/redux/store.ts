@@ -14,6 +14,7 @@ import { locationModuleApi } from "./api/locationModuleApi";
 import { newsModuleApi } from "./api/newsModuleApi";
 import { contentModuleApi } from "./api/contentModuleApi";
 import { videosModuleApi } from "./api/videosModuleApi";
+import { fuelModuleApi } from "./api/fuelModuleApi";
 
 const persistConfig = {
   key: "root",
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   [carModuleApi.reducerPath]: carModuleApi.reducer,
   [locationModuleApi.reducerPath]: locationModuleApi.reducer,
   [newsModuleApi.reducerPath]: newsModuleApi.reducer,
+  [fuelModuleApi.reducerPath]: fuelModuleApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
@@ -55,6 +57,7 @@ export const store = configureStore({
       carModuleApi.middleware,
       locationModuleApi.middleware,
       newsModuleApi.middleware,
+      fuelModuleApi.middleware,
     ),
 });
 

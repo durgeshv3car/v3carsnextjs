@@ -76,8 +76,10 @@ const Authors: React.FC = () => {
         />
         <div className="relative w-full lg:app-container mx-auto">
           <div className="flex flex-col lg:flex-row justify-between gap-6 pt-[60px] md:pt-[100px] px-4">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Meet The <br className="hidden md:block" /> Authors Of V3Cars
+            <h2 className="text-3xl/tight md:text-4xl/tight">
+              Meet The <br className="hidden md:block" /> 
+              <span className='text-yellow-400 font-bold'>Authors Of V3Cars</span>
+              <div className="h-[3px] bg-yellow-400 w-[100px] my-3" />
             </h2>
             <p className="text-gray-700 max-w-[500px] dark:text-gray-300 text-sm md:text-base">
               At V3Cars, our team of experts is dedicated to simplifying car buying for India.

@@ -24,6 +24,9 @@ export const locationModuleApi = createApi({
     getSearchCity: builder.query<Response, { query: string }>({
       query: ({ query }) => `/locations/cities?q=${query}&limit=1&sortBy=name_asc`,
     }),
+    getCountries: builder.query<Response, { query: string }>({
+      query: ({ query }) => `/locations/countries?q=${query}`,
+    }),
   }),
 });
 
@@ -32,4 +35,5 @@ export const {
   useGetPopularCitiesQuery,
   useGetAllCitiesQuery,
   useGetSearchCityQuery,
+  useGetCountriesQuery,
 } = locationModuleApi;
