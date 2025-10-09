@@ -12,3 +12,4 @@ export interface VariantsListQuery extends Pagination, SortInput {
   fuelType?: string;          // e.g., "Petrol", "Diesel", "CNG", "EV"
   transmissionType?: string;  // e.g., "MT", "AT", "AMT", "DCT", etc.
 }
+

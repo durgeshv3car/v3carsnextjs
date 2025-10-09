@@ -176,7 +176,6 @@ Latest Privacy
 
 GET /v1/website-content/modules/(:moduleId of Privacy)/latest
 
-
 Search in EMI copy
 
 GET /v1/website-content?moduleId=3&q=interest%20rate&limit=10&page=1&sortBy=latest
@@ -195,7 +194,6 @@ Error Payloads
 // 204 (Latest by Module no row)
 (no body)
 
-
 All authors (paginated list)
 
 GET /v1/website-content?moduleId=6&limit=20&page=1&sortBy=latest
@@ -208,7 +206,6 @@ Change page/limit as needed.
 Single author (by authorId via list filter)
 
 GET /v1/website-content?moduleId=6&authorId=1
-
 
 (Alternative single author via detail route)
 

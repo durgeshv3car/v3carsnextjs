@@ -11,7 +11,7 @@ export class WebsiteContentService {
     const ttlMs = page === 1 ? 30 * 60 * 1000 : 15 * 60 * 1000;
 
     const ns =
-      q.moduleId === 5
+      q.moduleId === 3
         ? 'websiteContent:insurance:list'
         : q.moduleId === 6
         ? 'websiteContent:authors:list'
@@ -34,7 +34,7 @@ export class WebsiteContentService {
   /** Detail (30m) */
   async getById(id: number, moduleId?: number) {
     const ns =
-      moduleId === 5
+      moduleId === 3
         ? 'websiteContent:insurance:detail'
         : moduleId === 6
         ? 'websiteContent:authors:detail'
@@ -48,7 +48,7 @@ export class WebsiteContentService {
   /** Latest by module (30m) */
   async latestByModule(moduleId: number) {
     const ns =
-      moduleId === 5
+      moduleId === 3
         ? 'websiteContent:insurance:latestByModule'
         : moduleId === 6
         ? 'websiteContent:authors:latestByModule'
