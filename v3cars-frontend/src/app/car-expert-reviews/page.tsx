@@ -5,7 +5,7 @@ import CommonPopularCard from "@/components/common/CommonPopularCard";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import CommonMobileReviewCard from "@/components/mobile/common/CommonMobileReviewCard";
-import { useGetLatestReviewsQuery, useGetPopularReviewQuery, useGetTopReviewsQuery, useGetTrendingReviewsQuery } from "@/redux/api/expertReviewApi";
+import { useGetLatestReviewsQuery, useGetPopularReviewQuery, useGetTopReviewsQuery, useGetTrendingReviewsQuery } from "@/redux/api/contentModuleApi";
 import Link from "next/link";
 import CommonReviewCard from "@/components/common/CommonReviewCard";
 import { useState } from "react";

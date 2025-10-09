@@ -1,4 +1,3 @@
-import AboutComponent from "@/components/responsive/authors/About";
 import ArticleList from "@/components/responsive/authors/ArticleList";
 import ProfileSection from "@/components/responsive/authors/ProfileSection";
 import SideBar from "@/components/responsive/authors/SideBar";
@@ -11,6 +10,10 @@ function AuthorsDetails() {
                 <div className=''>
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
+                        <span className="">›</span>
+                        <Link href="/authors" className="font-medium hover:underline">
+                            Authors
+                        </Link>
                         <span className="text-yellow-500">›</span>
                         <span className="font-medium text-yellow-500">
                             Authors Details
@@ -23,7 +26,6 @@ function AuthorsDetails() {
                 <div className="lg:app-container mx-auto w-full my-6 flex flex-col lg:flex-row gap-5">
                     <div className="w-full lg:min-w-[74%] space-y-6">
                         <ProfileSection />
-                        <AboutComponent />
                         <ArticleList />
                     </div>
 
@@ -37,3 +39,4 @@ function AuthorsDetails() {
 }
 
 export default AuthorsDetails;
+

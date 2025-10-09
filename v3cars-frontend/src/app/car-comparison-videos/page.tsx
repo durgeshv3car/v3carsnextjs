@@ -3,12 +3,11 @@
 import LeaderboardAd from "@/components/common/LeaderboardAd";
 import Link from "next/link";
 import { useState } from "react";
-import { useGetLatestCompareVideosQuery, useGetTopCompareVideosQuery, useGetTrendingCompareVideosQuery } from "@/redux/api/compareVideos";
 import CommonVideoCard from "@/components/common/CommonVideoCard";
 import CommonRecentVideo from "@/components/common/CommonRecentVideo";
 import CommonPopularVideo from "@/components/common/CommonPopularVideos";
-import { useGetLatestCarVideosQuery, useGetPopularCarVideosQuery } from "@/redux/api/carReviewVideosApi";
 import CommonMobileVideoCard from "@/components/mobile/common/CommonMobileVideoCard";
+import { useGetLatestCarVideosQuery, useGetLatestCompareVideosQuery, useGetPopularCarVideosQuery, useGetTopCompareVideosQuery, useGetTrendingCompareVideosQuery } from "@/redux/api/videosModuleApi";
 
 // export const metadata: Metadata = {
 //     title: "Compare Cars in India | Specs, Features, Prices - V3Cars",

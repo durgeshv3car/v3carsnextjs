@@ -13,10 +13,11 @@ import MobileExpertCarReviews from "@/components/mobile/home/ExpertCarReviews";
 import LatestVideos from "@/components/responsive/home/LatestVideos";
 import CarWebStories from "@/components/responsive/home/CarWebStories";
 import BottomAd from "@/components/common/BottomAd";
-import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useGetVariantsExplainedQuery, useUpcomingCarsQuery } from "@/redux/api/homeApi";
-import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/commonApi";
+import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useUpcomingCarsQuery } from "@/redux/api/homeModuleApi";
 import { useState } from "react";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/carModuleApi";
+import { useGetVariantsExplainedQuery } from "@/redux/api/contentModuleApi";
 
 export type CarPriceTab =
   | 'UNDER_5L'
@@ -27,12 +28,12 @@ export type CarPriceTab =
 
 export default function Home() {
   const [selectBrand, setSelectBrand] = useState<number | null>(null)
-  const { data: upcomingData, error, isLoading } = useUpcomingCarsQuery();
-  const { data: latestCarNewsData, error: latestCarNewsError, isLoading: latestCarNewsLoading } = useGetLatestCarNewsQuery();
-  const { data: brandsData, error: brandsError, isLoading: brandsLoading } = useGetBrandsQuery();
-  const { data: modelsData, error: modelsError, isLoading: modelsLoading } = useGetModelsQuery({ brandId: selectBrand ?? 0 });
-  const { data: expertCarReviewsData, error: expertCarReviewsError, isLoading: expertCarReviewsLoading } = useGetExpertCarReviewsQuery();
-  const { data: variantsExplainedData, error: variantsExplainedError, isLoading: variantsExplainedLoading } = useGetVariantsExplainedQuery();
+  const { data: upcomingData } = useUpcomingCarsQuery();
+  const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+  const { data: brandsData } = useGetBrandsQuery();
+  const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand ?? 0 });
+  const { data: expertCarReviewsData } = useGetExpertCarReviewsQuery();
+  const { data: variantsExplainedData } = useGetVariantsExplainedQuery();
 
   const upcomingCars = upcomingData?.rows ?? [];
   const latestCarNews = latestCarNewsData?.rows ?? [];

@@ -1,0 +1,60 @@
+import { BASE_URL } from "@/utils/constant";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type { BaseQueryFn } from "@reduxjs/toolkit/query";
+import type { FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+
+interface Response {
+  success: boolean;
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  rows: [];
+}
+
+// Define the API
+export const homeModuleApi = createApi({
+  reducerPath: "homeModuleApi",
+  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }) as BaseQueryFn<
+    string | FetchArgs,
+    unknown,
+    FetchBaseQueryError
+  >,
+  endpoints: (builder) => ({
+    UpcomingCars: builder.query<Response, void>({
+      query: () => "/home/upcoming-cars?limit=30&page=1",
+    }),
+    getQuickLook: builder.query<
+      Response,
+      { type: string; limit?: number; page?: number }
+    >({
+      query: ({ type, limit = 10, page = 1 }) =>
+        `/home/quick-look?type=${type}&limit=${limit}&page=${page}`,
+    }),
+    getLatestCarNews: builder.query<Response, void>({
+      query: () => `/home/latest-news?limit=20`,
+    }),
+    getCarByBodyType: builder.query<Response, { id: number; limit?: number; page?: number }>({
+      query: ({ id, limit = 10, page = 1 }) =>
+        `/home/search-by-body-type?bodyTypeId=${id}&limit=${limit}&page=${page}`,
+    }),
+    getCarByPrice: builder.query<Response, { budget: string; limit?: number; page?: number }>({
+      query: ({ budget }) =>
+        `/home/search-by-price?bucket=${budget}&limit=8&page=1`,
+    }),
+    getExpertCarReviews: builder.query<Response, void>({
+      query: () =>
+        `/home/latest-reviews?limit=20`,
+    }),
+  }),
+});
+
+// Export hooks
+export const {
+  useUpcomingCarsQuery,
+  useGetQuickLookQuery,
+  useGetLatestCarNewsQuery,
+  useGetCarByBodyTypeQuery,
+  useGetCarByPriceQuery,
+  useGetExpertCarReviewsQuery,
+} = homeModuleApi;

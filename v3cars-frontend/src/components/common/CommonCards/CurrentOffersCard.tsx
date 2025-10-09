@@ -1,6 +1,5 @@
 'use client'
 
-import { useGetLatestLaunchedCarsQuery } from "@/redux/api/latestcarApi";
 import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 import { BiTachometer } from "react-icons/bi";

@@ -4,10 +4,10 @@ import BrandPriceTable from "@/components/responsive/brand/BrandPriceTable";
 import BrandSelector from '@/components/responsive/brand/BrandSelector';
 import DiscontinuedCarList from "@/components/responsive/brand/DiscontinuedCarList";
 import SimilarBrands from "@/components/responsive/brand/SimilarBrands";
-import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
-import LatestVideos from "@/components/responsive/car-review-video/LatestVideo";
-import CommonLatestCarNews from "@/components/web/common/CommonLatestCarNews";
-import UpcomingCarInIndia from "@/components/common/UpcomingCarInIndia";
+// import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
+// import LatestVideos from "@/components/responsive/car-review-video/LatestVideo";
+// import CommonLatestCarNews from "@/components/web/common/CommonLatestCarNews";
+// import UpcomingCarInIndia from "@/components/common/UpcomingCarInIndia";
 
 
 const mahindraCars = [
@@ -95,18 +95,18 @@ const discontinuedMahindraCars = [
     "Mahindra Xylo",
 ];
 
-const carsData = [
+// const carsData = [
 
-    {
-        image: "/ford.jpg",
-        name: "S-Presso",
-        engine: "83PS",
-        nitro: "113Nm",
-        mileage: "21.11kmpl",
-        price: "₹90.99 - 200.93 lakh*",
-    },
+//     {
+//         image: "/ford.jpg",
+//         name: "S-Presso",
+//         engine: "83PS",
+//         nitro: "113Nm",
+//         mileage: "21.11kmpl",
+//         price: "₹90.99 - 200.93 lakh*",
+//     },
 
-]
+// ]
 
 export default function BrandPage() {
 
@@ -144,20 +144,20 @@ export default function BrandPage() {
                             <p className="text-3xl font-bold mb-5">Mahindra Cars In India</p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
-                                <CurrentOffersCard carsData={carsData} />
+                                {/* <CurrentOffersCard carsData={carsData} /> */}
                             </div>
                         </div>
 
-                        <LatestVideos />
+                        {/* <LatestVideos /> */}
 
                         <div className="hidden lg:block">
-                            <CommonLatestCarNews />
+                            {/* <CommonLatestCarNews /> */}
                         </div>
 
 
-                        <UpcomingCarInIndia
+                        {/* <UpcomingCarInIndia
                             title={"Upcoming Cars In India"}
-                        />
+                        /> */}
 
                     </div>
 

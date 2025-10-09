@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetTopSellingCarQuery } from '@/redux/api/popularApi';
+import { useGetTopSellingCarQuery } from '@/redux/api/carModuleApi';
 import { IMAGE_URL } from '@/utils/constant';
 import Image from 'next/image';
 import React from 'react';

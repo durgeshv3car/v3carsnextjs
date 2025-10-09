@@ -5,7 +5,7 @@ import { FaThList } from 'react-icons/fa'
 import CarGridCard from './card-type-show/CarGridCard'
 import CarListCard from './card-type-show/CarListCard'
 import { IoGrid } from 'react-icons/io5'
-import CustomSelect from '@/components/ui/custom-inputs/CustomSelect'
+// import CustomSelect from '@/components/ui/custom-inputs/CustomSelect'
 
 const dummyData = [
     {
@@ -31,11 +31,11 @@ const dummyData = [
 export default function SearchResult() {
     const [view, setView] = useState<"grid" | "list">("grid");
 
-    const items = ['Popularity', 'Upcoming', "Latest"];
+    // const items = ['Popularity', 'Upcoming', "Latest"];
 
-    const handleSelection = (value: string) => {
-        console.log('Selected:', value);
-    };
+    // const handleSelection = (value: string) => {
+    //     console.log('Selected:', value);
+    // };
 
     return (
         <>
@@ -46,7 +46,7 @@ export default function SearchResult() {
                 </div>
                 <div className="flex gap-2">
                     <div className='w-[300px] border dark:border-[#2E2E2E] rounded-lg text-sm'>
-                        <CustomSelect options={items} placeholder={"Select Type"} onSelect={handleSelection} />
+                        {/* <CustomSelect options={items} placeholder={"Select Type"} onSelect={handleSelection} /> */}
                     </div>
                     <button
                         onClick={() => setView("list")}

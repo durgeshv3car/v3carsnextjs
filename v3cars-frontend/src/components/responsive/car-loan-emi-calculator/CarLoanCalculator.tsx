@@ -3,8 +3,7 @@
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 import React, { useState, useEffect } from 'react';
 import styles from './CarLoanEMICalculator.module.css'
-import { useGetAllBrandsQuery } from '@/redux/api/homeApi';
-import { useGetModelsQuery, useGetVariantsQuery } from '@/redux/api/commonApi';
+import { useGetAllBrandsQuery, useGetModelsQuery, useGetVariantsQuery } from '@/redux/api/carModuleApi';
 
 interface CarBrand {
   brandId: number
@@ -219,7 +218,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className='space-y-1'>
           <label className='text-sm'>Select Brand</label>
-          <div className='border rounded-lg text-sm'>
+          <div className='border dark:border-[#2E2E2E] rounded-lg text-sm'>
             <CustomSelect
               groupedOptions={groupedOptions}
               placeholder="Select Brand"
@@ -233,7 +232,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
 
         <div className='space-y-1'>
           <label className='text-sm'>Select Model</label>
-          <div className='border rounded-lg text-sm'>
+          <div className='border dark:border-[#2E2E2E] rounded-lg text-sm'>
             <CustomSelect
               options={models}
               placeholder="Select Model"
@@ -247,7 +246,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
 
         <div className='space-y-1'>
           <label className='text-sm'>Select Variant</label>
-          <div className='border rounded-lg text-sm'>
+          <div className='border dark:border-[#2E2E2E] rounded-lg text-sm'>
             <CustomSelect
               options={variants}
               placeholder="Select Variant"
@@ -266,7 +265,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
       </div>
 
       {/* Sliders & Results */}
-      <div className='flex flex-col-reverse lg:flex-row gap-4 justify-between border-2 border-b-8 p-3 lg:p-6 rounded-2xl'>
+      <div className='flex flex-col-reverse lg:flex-row gap-4 justify-between border-2 border-b-8 dark:border-[#2E2E2E] p-3 lg:p-6 rounded-2xl'>
         <div className='w-full flex flex-col justify-between gap-4'>
 
           {/* Loan Amount */}
@@ -291,7 +290,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
                 <p className="text-sm text-right">₹1Cr</p>
               </div>
             </div>
-            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 font-bold min-w-[180px] text-center">
+            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 text-black font-bold min-w-[180px] text-center">
               ₹ {principalAmount.toLocaleString("en-IN")}
             </div>
           </div>
@@ -319,7 +318,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
                 <p className="text-sm text-right">₹50L</p>
               </div>
             </div>
-            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 font-bold min-w-[180px] text-center">
+            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 text-black font-bold min-w-[180px] text-center">
               ₹ {downPayment.toLocaleString("en-IN")}
             </div>
           </div>
@@ -347,7 +346,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
                 <p className="text-sm text-right">20%</p>
               </div>
             </div>
-            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 font-bold min-w-[180px] text-center">
+            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 text-black font-bold min-w-[180px] text-center">
               {interestRate.toFixed(1)}%
             </div>
           </div>
@@ -375,7 +374,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
                 <p className="text-sm text-right">7Y</p>
               </div>
             </div>
-            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 font-bold min-w-[180px] text-center">
+            <div className="hidden lg:block p-3 rounded-full border bg-gray-100 text-black font-bold min-w-[180px] text-center">
               {loanTenure} Years
             </div>
           </div>

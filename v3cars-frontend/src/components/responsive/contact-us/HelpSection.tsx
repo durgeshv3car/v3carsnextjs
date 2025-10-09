@@ -15,7 +15,7 @@ const HelpSection = () => {
                 {/* Left Section */}
                 <div className="flex">
                     <div className="max-w-md">
-                        <h1 className="text-4xl/snug text-gray-700">
+                        <h1 className="text-4xl/snug">
                             We’re Here To Help <br />
                             <span className="text-yellow-400 font-bold">Just Pick An Option</span>
                         </h1>

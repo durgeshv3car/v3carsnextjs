@@ -7,7 +7,7 @@ import CarNewsSection from '@/components/responsive/car-news/CarNewsSection';
 import PopularNews from '@/components/common/PopularNews';
 import LeaderboardAd from '@/components/common/LeaderboardAd';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
-import { useGetLatestNewsQuery, useGetPopularNewsQuery, useGetTodayNewsQuery, useGetTopNewsQuery, useGetTrendingNewsQuery } from '@/redux/api/newsApi';
+import { useGetLatestNewsQuery, useGetPopularNewsQuery, useGetTodayNewsQuery, useGetTopNewsQuery, useGetTrendingNewsQuery } from '@/redux/api/newsModuleApi';
 import Link from 'next/link';
 
 const tabs = [

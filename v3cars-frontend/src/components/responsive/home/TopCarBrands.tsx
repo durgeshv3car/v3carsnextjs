@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAllBrandsQuery } from "@/redux/api/homeApi";
+import { useGetAllBrandsQuery } from "@/redux/api/carModuleApi";
 import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +19,7 @@ interface CarBrand {
 }
 
 export default function TopCarBrands() {
-    const { data: brandData, error, isLoading } = useGetAllBrandsQuery();
+    const { data: brandData } = useGetAllBrandsQuery();
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);

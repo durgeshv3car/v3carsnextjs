@@ -6,9 +6,8 @@ import { useState } from "react";
 import CommonVideoCard from "@/components/common/CommonVideoCard";
 import CommonRecentVideo from "@/components/common/CommonRecentVideo";
 import CommonPopularVideo from "@/components/common/CommonPopularVideos";
-import { useGetLatestCarVideosQuery, useGetPopularCarVideosQuery } from "@/redux/api/carReviewVideosApi";
 import CommonMobileVideoCard from "@/components/mobile/common/CommonMobileVideoCard";
-import { useGetLatestVariantExplainedVideosQuery, useGetTopVariantExplainedVideosQuery, useGetTrendingVariantExplainedVideosQuery } from "@/redux/api/variantsExplainedVideosApi";
+import { useGetLatestCarVideosQuery, useGetLatestVariantExplainedVideosQuery, useGetPopularCarVideosQuery, useGetTopVariantExplainedVideosQuery, useGetTrendingVariantExplainedVideosQuery } from "@/redux/api/videosModuleApi";
 
 // export const metadata: Metadata = {
 //     title: "Compare Cars in India | Specs, Features, Prices - V3Cars",

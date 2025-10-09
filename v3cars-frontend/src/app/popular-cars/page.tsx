@@ -2,7 +2,6 @@
 
 import BottomAd from "@/components/common/BottomAd";
 import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
-import CommonExpertReviews from "@/components/common/CommonExpertReviews";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonVideos from "@/components/common/CommonVideos";
 import PopularBrands from "@/components/common/PopularBrands";
@@ -11,9 +10,9 @@ import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import TopSection from "@/components/common/TopSection";
 import UpcomingCarByTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import PopularCar from "@/components/responsive/popular-cars/PopularCar";
-import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useGetLatestVideosQuery } from "@/redux/api/homeApi";
-import { useGetPopularCarQuery } from "@/redux/api/popularApi";
-import { Metadata } from "next";
+import { useGetPopularCarQuery } from "@/redux/api/carModuleApi";
+import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
+import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 
 // export const metadata: Metadata = {
 //     title: "Most Popular Cars in India 2024 | Top Selling Models & Prices",
@@ -37,75 +36,11 @@ import { Metadata } from "next";
 //     ],
 // };
 
-const reviewList = [
-
-    {
-        id: 1,
-        image: '/car-review/image1.png',
-        tag: 'June 2024',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-
-    {
-        id: 2,
-        image: '/car-review/image2.png',
-        tag: 'Mahindra Thar Roxx',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-
-    {
-        id: 3,
-        image: '/car-review/image3.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-
-    {
-        id: 4,
-        image: '/car-review/image1.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-
-    {
-        id: 5,
-        image: '/car-review/image2.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-
-]
-
-const videoList = new Array(8).fill({
-    thumbnail: '/latest-video/image2.png',
-    playIcon: '/latest-video/youtube.png',
-    date: 'July 30 2024',
-    title:
-        'Summer Range Impact and Charging Issue in EVs | 4 Months & 4000km Driv EVs | 4 Months & 4000km Dr...',
-    description:
-        'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
-})
-
 function PopularCars() {
-    const { data: latestCarNewsData, error: latestCarNewsError, isLoading: latestCarNewsLoading } = useGetLatestCarNewsQuery();
-    const { data: popularCarData, error: popularCarError, isLoading: popularCarLoading } = useGetPopularCarQuery();
-    const { data: expertCarReviewsData, error: expertCarReviewsError, isLoading: expertCarReviewsLoading } = useGetExpertCarReviewsQuery();
-    const { data: latestVideosData, error, isLoading } = useGetLatestVideosQuery()
+    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const { data: popularCarData } = useGetPopularCarQuery();
+    const { data: expertCarReviewsData } = useGetExpertCarReviewsQuery();
+    const { data: latestVideosData } = useGetLatestVideosQuery()
 
     const latestVideos = latestVideosData?.rows ?? []
     const latestCarNews = latestCarNewsData?.rows ?? [];

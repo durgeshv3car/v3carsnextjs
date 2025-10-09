@@ -9,10 +9,21 @@ import FormOne from "./CommonOption/form1";
 import FormSecond from "./CommonOption/form2";
 import FormThree from "./CommonOption/form3";
 import FormFour from "./CommonOption/form4";
+import FormFive from "./CommonOption/form5";
+import FormSix from "./CommonOption/form6";
+import FormSeven from "./CommonOption/form7";
 
 interface HelpModelProps {
     showHelpModel: number | null
     onClose: () => void;
+}
+
+interface FormData {
+    issueType: string;
+    otherIssue: string;
+    pageAffected: string;
+    issueDetail: string;
+    screenshot: File | null;
 }
 
 const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
@@ -51,12 +62,33 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
         queryDetail: "",
     });
 
-    const [formData4, setFormData4] = useState({
+    const [formData4, setFormData4] = useState<FormData>({
         issueType: "",
         otherIssue: "",
         pageAffected: "",
         issueDetail: "",
         screenshot: null,
+    });
+
+    const [formData5, setFormData5] = useState({
+        suggestionType: "",
+        otherSuggestion: "",
+        suggestionDetail: "",
+        whyIdea: "",
+        reference: "",
+    });
+
+    const [formData6, setFormData6] = useState({
+        partnershipType: "",
+        otherPartnership: "",
+        companyName: "",
+        website: "",
+        proposal: "",
+        budgetRange: "",
+    });
+
+    const [formData7, setFormData7] = useState({
+        queryDetail: ""
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -169,6 +201,24 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
                                         <FormFour formData={formData4} setFormData={setFormData4} onClose={() => setStep("details")} />
                                     )
                                 }
+
+                                {
+                                    showHelpModel === 5 && (
+                                        <FormFive formData={formData5} setFormData={setFormData5} onClose={() => setStep("details")} />
+                                    )
+                                }
+
+                                {
+                                    showHelpModel === 6 && (
+                                        <FormSix formData={formData6} setFormData={setFormData6} onClose={() => setStep("details")} />
+                                    )
+                                }
+
+                                {
+                                    showHelpModel === 7 && (
+                                        <FormSeven formData={formData7} setFormData={setFormData7} onClose={() => setStep("details")} />
+                                    )
+                                }
                             </>
                         )}
 
@@ -243,37 +293,49 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
                                         <input
                                             type="text"
                                             placeholder="Full Name*"
-                                            // value={formData.fullName}
-                                            // onChange={(e) =>
-                                            //     handleChange("fullName", e.target.value)
-                                            // }
+                                            value={formData.fullName}
+                                            onChange={(e) => {
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    fullName: e.target.value,
+                                                }));
+                                            }}
                                             className="w-full text-sm outline-none bg-transparent border border-gray-800 rounded-lg px-4 py-3"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Last Name"
-                                            // value={formData.lastName}
-                                            // onChange={(e) =>
-                                            //     handleChange("lastName", e.target.value)
-                                            // }
+                                            value={formData.lastName}
+                                            onChange={(e) => {
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    lastName: e.target.value,
+                                                }));
+                                            }}
                                             className="w-full text-sm outline-none bg-transparent border border-gray-800 rounded-lg px-4 py-3"
                                         />
                                         <input
                                             type="email"
                                             placeholder="Email Address*"
-                                            // value={formData.email}
-                                            // onChange={(e) =>
-                                            //     handleChange("email", e.target.value)
-                                            // }
+                                            value={formData.email}
+                                            onChange={(e) => {
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    email: e.target.value,
+                                                }));
+                                            }}
                                             className="w-full text-sm outline-none bg-transparent border border-gray-800 rounded-lg px-4 py-3"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Phone Number*"
-                                            // value={formData.phone}
-                                            // onChange={(e) =>
-                                            //     handleChange("phone", e.target.value)
-                                            // }
+                                            value={formData.phone}
+                                            onChange={(e) => {
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    phone: e.target.value,
+                                                }));
+                                            }}
                                             className="w-full text-sm outline-none bg-transparent border border-gray-800 rounded-lg px-4 py-3"
                                         />
                                     </div>

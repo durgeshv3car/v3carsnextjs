@@ -8,7 +8,7 @@ import PopularNews from '@/components/common/PopularNews';
 import LeaderboardAd from '@/components/common/LeaderboardAd';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
 import Link from 'next/link';
-import { useGetLatestAutoExpoQuery, useGetPopularAutoExpoQuery, useGetTodayAutoExpoQuery, useGetTopAutoExpoQuery, useGetTrendingAutoExpoQuery } from '@/redux/api/autoExpoApi';
+import { useGetLatestAutoExpoQuery, useGetPopularAutoExpoQuery, useGetTodayAutoExpoQuery, useGetTopAutoExpoQuery, useGetTrendingAutoExpoQuery } from '@/redux/api/contentModuleApi';
 
 const tabs = [
     { key: 'latest', label: 'Latest Auto Expo' },
@@ -16,37 +16,15 @@ const tabs = [
     { key: 'trending', label: 'Trending Auto Expo' },
 ];
 
-interface ArticleThumbnail {
-    url: string;
-    alt: string;
-}
-
-interface ArticleAuthor {
-    id: number;
-    name: string;
-    slug: string;
-}
-
-export interface Article {
-    id: number;
-    title: string;
-    pageUrl: string;
-    publishDateandTime: string; // ISO Date string
-    shortDescription: string;   // HTML string
-    thumbnail: ArticleThumbnail;
-    author: ArticleAuthor;
-    commentsCount: number;
-}
-
 export default function Page() {
     const [activeTab, setActiveTab] = useState('latest');
-    const { data: latestAutoExpoData, error, isLoading } = useGetLatestAutoExpoQuery();
-    const { data: trendingAutoExpoData, error: trendingAutoExpoError, isLoading: trendingAutoExpoLoading } = useGetTrendingAutoExpoQuery();
-    const { data: topAutoExpoData, error: topAutoExpoError, isLoading: topAutoExpoLoading } = useGetTopAutoExpoQuery();
+    const { data: latestAutoExpoData } = useGetLatestAutoExpoQuery();
+    const { data: trendingAutoExpoData } = useGetTrendingAutoExpoQuery();
+    const { data: topAutoExpoData } = useGetTopAutoExpoQuery();
     const { data: todayAutoExpoData } = useGetTodayAutoExpoQuery();
     const { data: popularAutoExpoData } = useGetPopularAutoExpoQuery();
 
-    const todayAutoExpo: Article | null = todayAutoExpoData?.data ?? null;
+    const todayAutoExpo = todayAutoExpoData?.data ?? null;
     const latestAutoExpo = latestAutoExpoData?.rows ?? [];
     const trendingAutoExpo = trendingAutoExpoData?.rows ?? [];
     const topAutoExpo = topAutoExpoData?.rows ?? [];

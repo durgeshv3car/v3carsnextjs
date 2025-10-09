@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type Props = {
@@ -14,11 +15,40 @@ export default function InsuranceQuoteSection({
     bannerSrc = '/car-insurance/man.png',
     onGetQuote,
 }: Props) {
-    const [reg, setReg] = useState('');
+    const [reg, setReg] = useState<string>("");
+    const router = useRouter();
+
+    const carNumberRegex = /^[A-Z]{2}-\d{2}-[A-Z]-\d{4}$/;
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.toUpperCase();
+        value = value.replace(/[^A-Z0-9]/g, ""); // remove invalid chars
+
+        // limit length to 9 characters (without dashes)
+        if (value.length > 9) value = value.slice(0, 9);
+
+        // insert dashes at correct positions: XX-00-X-0000
+        if (value.length > 2) value = value.slice(0, 2) + "-" + value.slice(2);
+        if (value.length > 5) value = value.slice(0, 5) + "-" + value.slice(5);
+        if (value.length > 7) value = value.slice(0, 7) + "-" + value.slice(7);
+
+        setReg(value);
+
+        // show error if complete but invalid
+        if (value.length === 13 && !carNumberRegex.test(value)) {
+            alert("Invalid car number format");
+        }
+    };
 
     const submit = () => {
         if (!reg.trim()) return;
-        onGetQuote?.(reg.trim());
+        if (!carNumberRegex.test(reg)) {
+            alert("Please enter a valid car number");
+            return;
+        }
+        router.push(
+            `https://v3cars.coverfox.com/car-insurance/?fs=FALLBACK_MAKE&ft=flf&vehicle_reg_no=${reg}`
+        );
     };
 
     return (
@@ -49,7 +79,7 @@ export default function InsuranceQuoteSection({
                         <div className="w-full max-w-2xl flex overflow-hidden rounded-xl ring-1 ring-neutral-300 dark:ring-neutral-700 bg-white dark:bg-neutral-800">
                             <input
                                 value={reg}
-                                onChange={(e) => setReg(e.target.value.toUpperCase())}
+                                onChange={handleChange}
                                 placeholder="Enter your car number"
                                 className="flex-1 h-12 md:h-14 px-4 text-sm md:text-base outline-none bg-transparent text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
                             />

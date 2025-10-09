@@ -8,7 +8,7 @@ import CommonMobileReviewCard from "@/components/mobile/common/CommonMobileRevie
 import Link from "next/link";
 import CommonReviewCard from "@/components/common/CommonReviewCard";
 import { useState } from "react";
-import { useGetLatestFeaturesExplainedQuery, useGetPopularFeaturesExplainedQuery, useGetTopFeaturesExplainedQuery, useGetTrendingFeaturesExplainedQuery } from "@/redux/api/featuresExplainedApi";
+import { useGetLatestFeaturesExplainedQuery, useGetPopularFeaturesExplainedQuery, useGetTopFeaturesExplainedQuery, useGetTrendingFeaturesExplainedQuery } from "@/redux/api/contentModuleApi";
 
 // export const metadata: Metadata = {
 //     title: "Compare Cars in India | Specs, Features, Prices - V3Cars",

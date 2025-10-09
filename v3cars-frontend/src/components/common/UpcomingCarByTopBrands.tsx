@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAllBrandsQuery } from "@/redux/api/homeApi";
+import { useGetAllBrandsQuery } from "@/redux/api/carModuleApi";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,7 +17,7 @@ interface CarBrand {
 }
 
 function UpcomingCarByTopBrands() {
-    const { data: brandData, error, isLoading } = useGetAllBrandsQuery();
+    const { data: brandData } = useGetAllBrandsQuery();
     const brands: CarBrand[] = brandData?.rows ?? [];
 
     return (

@@ -33,7 +33,7 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
 
       <div className="space-y-3">
         {faqData.map((item, index) => (
-          <div key={item.id}>
+          <div key={index}>
             {/* Question Block */}
             <button
               type="button"

@@ -17,7 +17,7 @@ interface FormThreeProps {
 }
 
 function FormThree({ formData, setFormData, onClose }: FormThreeProps) {
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [key]: value,

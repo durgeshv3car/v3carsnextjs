@@ -2,12 +2,11 @@ import { BASE_URL } from "@/utils/constant";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import type { FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import type { Article } from "@/components/responsive/car-news/CarNewsCard";
 
 // Correct response interfaces
 interface TodayNewsResponse {
     success: boolean;
-    data?: Article;
+    data?: null;
 }
 
 interface LatestNewsResponse {
@@ -16,8 +15,8 @@ interface LatestNewsResponse {
 }
 
 // Define the API
-export const newsApi = createApi({
-    reducerPath: "newsApi",
+export const newsModuleApi = createApi({
+    reducerPath: "newsModuleApi",
     baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }) as BaseQueryFn<
         string | FetchArgs,
         unknown,
@@ -49,4 +48,4 @@ export const {
     useGetTrendingNewsQuery,
     useGetTopNewsQuery,
     useGetPopularNewsQuery,
-} = newsApi;
+} = newsModuleApi;

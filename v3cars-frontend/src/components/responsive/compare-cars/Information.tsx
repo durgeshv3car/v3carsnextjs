@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
-import CustomSelect from "../../ui/custom-inputs/CustomSelect";
+// import CustomSelect from "../../ui/custom-inputs/CustomSelect";
 
 const carData = [
     {
@@ -47,15 +47,15 @@ const specsKeys = ["Engine", "Transmission", "Drivetrain", "Power", "Torque"];
 
 export default function Information() {
     const [cars, setCars] = useState(carData);
-    const items3 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+    // const items3 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
 
     const removeCar = (id: number) => {
         setCars(cars.filter((car) => car.id !== id));
     };
 
-    const handleVariant = (value: string) => {
-        console.log('Selected:', value);
-    };
+    // const handleVariant = (value: string) => {
+    //     console.log('Selected:', value);
+    // };
 
     return (
         <div className="overflow-x-auto scroll-smooth scrollbar-hide">
@@ -86,11 +86,11 @@ export default function Information() {
 
                                     {/* Variant Dropdown */}
                                     <div className="mt-4 w-full border dark:border-[#2E2E2E] rounded-lg text-sm">
-                                        <CustomSelect
+                                        {/* <CustomSelect
                                             options={items3}
                                             placeholder="Select Variant"
                                             onSelect={handleVariant}
-                                        />
+                                        /> */}
                                     </div>
                                 </div>
                             </td>

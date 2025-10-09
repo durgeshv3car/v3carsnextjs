@@ -1,7 +1,7 @@
-'use client'
+'use client';
 import { IMAGE_URL } from '@/utils/constant';
-import Image from 'next/image'
-import { FiCalendar, FiUser } from 'react-icons/fi'
+import Image from 'next/image';
+import { FiCalendar, FiUser } from 'react-icons/fi';
 
 interface ArticleThumbnail {
     url: string;
@@ -14,7 +14,7 @@ interface ArticleAuthor {
     slug: string;
 }
 
-export interface Article {
+interface Article {
     id: number;
     title: string;
     pageUrl: string;
@@ -26,15 +26,19 @@ export interface Article {
 }
 
 interface CarNewsCardProps {
-  data: Article;
+    data: Article;
 }
 
 export default function CarNewsCard({ data }: CarNewsCardProps) {
+    // ✅ Sanitize the HTML (remove inline color styles except on <a> tags)
+    const sanitizedDescription = data.shortDescription.replace(
+        /<(?!a\b)([^>]+?)\sstyle="([^"]*?)color:[^;"]+;?([^"]*?)"/gi,
+        '<$1 style="$2$3"'
+    );
 
     return (
         <div className="lg:p-8 p-4">
             <div className="flex gap-5 flex-col lg:flex-row overflow-hidden w-full lg:app-container mx-auto p-2 border-b pb-6">
-
                 {/* Left: Thumbnail */}
                 <div className="mx-auto w-full lg:min-w-[600px]">
                     <Image
@@ -54,9 +58,9 @@ export default function CarNewsCard({ data }: CarNewsCardProps) {
                     </h2>
 
                     {/* Description */}
-                    <p
-                        className="text-[16px] text-gray-700 dark:text-gray-300 line-clamp-3"
-                        dangerouslySetInnerHTML={{ __html: data.shortDescription }}
+                    <div
+                        className="text-[16px] line-clamp-3 prose prose-invert max-w-none leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
                     />
 
                     {/* Author + Date + Button */}
@@ -68,10 +72,11 @@ export default function CarNewsCard({ data }: CarNewsCardProps) {
                             </span>
                             <span className="flex items-center gap-1">
                                 <FiCalendar className="text-[14px]" />
-                                {new Date(data.publishDateandTime).toLocaleDateString(
-                                    'en-US',
-                                    { year: 'numeric', month: 'long', day: 'numeric' }
-                                )}
+                                {new Date(data.publishDateandTime).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                })}
                             </span>
                         </div>
 

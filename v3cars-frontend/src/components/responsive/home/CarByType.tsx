@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetCarByBodyTypeQuery } from '@/redux/api/homeApi'
+import { useGetCarByBodyTypeQuery } from '@/redux/api/homeModuleApi'
 import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -51,7 +51,7 @@ const tabNames: Record<CarBodyTab, string> = {
 
 const CarByType: React.FC = () => {
     const [carBodyTab, setCarBodyTab] = useState<CarBodyTab>(3);
-    const { data: carByBodyTypeData, error: carByBodyTypeError, isLoading: carByBodyTypeLoading } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 15, page: 1 });
+    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 15, page: 1 });
     const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
