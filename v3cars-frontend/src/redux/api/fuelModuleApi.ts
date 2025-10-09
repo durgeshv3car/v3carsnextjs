@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface Response {
   success: boolean;
-  rows: any[];
+  rows: [];
 }
 
 // API definition

@@ -5,25 +5,29 @@ import FuelCostBarGraph from '@/components/responsive/fuel-cost-calcultor/FuelCo
 import FuelCostInfoBlock from '@/components/responsive/fuel-cost-calcultor/FuelCostInfoBlock'
 import FuelCostTable from '@/components/responsive/fuel-cost-calcultor/FuelCostTable'
 import QuickLinks from '@/components/responsive/fuel-cost-calcultor/QuickLinks'
-import TopControls, { Currency, DistanceUnit, Period } from '@/components/responsive/fuel-cost-calcultor/TopControls'
+import TopControls from '@/components/responsive/fuel-cost-calcultor/TopControls'
 import { useGetFAQByModuleQuery } from '@/redux/api/commonApi'
 import { RootState } from '@/redux/store'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
+type FuelCostInputs = {
+  drivingDistance?: number;
+  country?: string;
+  currencySymbol?: string;
+  exchangeCurrencyRate?: number;
+};
+
 export default function Page() {
-    const { data: faqByModuleData, error, isLoading } = useGetFAQByModuleQuery({ moduleId: 2 });
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 2 });
     const faqByModule = faqByModuleData?.rows ?? [];
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
 
-    console.log(selectedCity);
-    
+    const [inputs, setInputs] = useState<FuelCostInputs>({});
 
-    const [inputs, setInputs] = useState({});
-
-    const handleInputChange = (updatedValues: any) => {
+    const handleInputChange = (updatedValues: FuelCostInputs) => {
         setInputs((prev) => ({ ...prev, ...updatedValues }));
-    };    
+    };
 
     return (
         <div className="min-h-screen bg-[#f6f7f8] dark:bg-black">
@@ -43,7 +47,11 @@ export default function Page() {
             </div>
 
             <FuelCostInfoBlock />
-            <FuelCostBarGraph districtId={145} />
+            {
+                inputs.country === "India" && (
+                    <FuelCostBarGraph districtId={145} />
+                )
+            }
             <QuickLinks />
 
             <div className='app-container mx-auto px-4 lg:px-10'>

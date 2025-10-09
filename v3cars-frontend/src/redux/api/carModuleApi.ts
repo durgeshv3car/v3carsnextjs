@@ -7,7 +7,7 @@ interface Response {
     pageSize: number;
     total: number;
     totalPages: number;
-    rows: any[];
+    rows: [];
 }
 
 interface GetModelsArgs {

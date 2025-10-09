@@ -34,7 +34,7 @@ export default function ArticleList() {
   // Convert API data → Video[]
   const videos: Video[] = useMemo(() => {
     if (!data?.rows) return [];
-    return data.rows.map((item: any): Video => ({
+    return data.rows.map((item: Video) => ({
       id: item.id,
       title: item.title,
       pageUrl: item.pageUrl,

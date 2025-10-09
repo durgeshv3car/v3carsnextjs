@@ -21,7 +21,8 @@ interface FormOneProps {
 }
 
 function FormSecond({ formData, setFormData, onClose }: FormOneProps) {
-    const handleChange = (key: string, value: any) => {
+
+    const handleChange = (key: string, value: string) => {
         setFormData((prev) => ({
             ...prev,
             [key]: value,
@@ -29,6 +30,9 @@ function FormSecond({ formData, setFormData, onClose }: FormOneProps) {
     };
 
     const toggleMultiSelect = (key: string, value: string) => {
+        console.log(key);
+        console.log(value);
+        
         // setFormData((prev) => {
         //   const selected = prev[key as keyof typeof prev] as string[];
         //   if (selected.includes(value)) {

@@ -1,5 +1,5 @@
 "use client";
-import { FiMail, FiUser, FiPhone } from "react-icons/fi";
+
 import { IoCloseOutline } from "react-icons/io5";
 import { TbEdit } from "react-icons/tb";
 import Image from "next/image";

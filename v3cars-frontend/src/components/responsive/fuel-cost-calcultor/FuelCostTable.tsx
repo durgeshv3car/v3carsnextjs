@@ -1,8 +1,7 @@
 'use client';
+
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { FiInfo, FiEdit2 } from 'react-icons/fi';
-import { RootState } from '@/redux/store';
 
 type FuelCostInputs = {
   drivingDistance?: number;

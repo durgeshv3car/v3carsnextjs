@@ -19,7 +19,7 @@ interface CarBrand {
 }
 
 export default function TopCarBrands() {
-    const { data: brandData, error, isLoading } = useGetAllBrandsQuery();
+    const { data: brandData } = useGetAllBrandsQuery();
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);

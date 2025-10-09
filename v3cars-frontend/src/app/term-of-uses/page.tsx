@@ -66,19 +66,28 @@ export default function TermsOfUse() {
                 <div className="lg:px-10 px-4">
                     <div className="w-full lg:app-container mx-auto my-6 space-y-6 text-white">
                         {termsOfUses.length > 0 ? (
-                            termsOfUses.map((term) => (
-                                <div key={term.id}>
-                                    <div
-                                        className="prose prose-invert max-w-none text-base leading-loose"
-                                        dangerouslySetInnerHTML={{ __html: term.description }}
-                                    />
-                                </div>
-                            ))
+                            termsOfUses.map((term) => {
+                                // Sanitize the description by removing inline color styles
+                                const sanitizedDescription = term.description.replace(
+                                    /<(?!a\b)([^>]+?)\sstyle="([^"]*?)color:[^;"]+;?([^"]*?)"/gi,
+                                    '<$1 style="$2$3"'
+                                );
+
+                                return (
+                                    <div key={term.id}>
+                                        <div
+                                            className="prose prose-invert max-w-none text-base leading-loose"
+                                            dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                                        />
+                                    </div>
+                                );
+                            })
                         ) : (
                             <p>No terms found.</p>
                         )}
                     </div>
                 </div>
+
             </div>
         </>
     );

@@ -37,10 +37,10 @@ import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 // };
 
 function PopularCars() {
-    const { data: latestCarNewsData, error: latestCarNewsError, isLoading: latestCarNewsLoading } = useGetLatestCarNewsQuery();
-    const { data: popularCarData, error: popularCarError, isLoading: popularCarLoading } = useGetPopularCarQuery();
-    const { data: expertCarReviewsData, error: expertCarReviewsError, isLoading: expertCarReviewsLoading } = useGetExpertCarReviewsQuery();
-    const { data: latestVideosData, error, isLoading } = useGetLatestVideosQuery()
+    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const { data: popularCarData } = useGetPopularCarQuery();
+    const { data: expertCarReviewsData } = useGetExpertCarReviewsQuery();
+    const { data: latestVideosData } = useGetLatestVideosQuery()
 
     const latestVideos = latestVideosData?.rows ?? []
     const latestCarNews = latestCarNewsData?.rows ?? [];

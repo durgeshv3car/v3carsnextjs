@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { useGetCountriesQuery } from '@/redux/api/locationModuleApi';
-import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 
 export type DistanceUnit = 'km' | 'mi';
 export type Period = 'daily' | 'monthly' | 'yearly';
@@ -24,7 +23,7 @@ interface Country {
 }
 
 interface TopControlsProps {
-  onInputChange: (data: Record<string, any>) => void;
+  onInputChange: (data: Record<string, unknown>) => void;
 }
 
 export default function TopControls({ onInputChange }: TopControlsProps) {
@@ -54,7 +53,7 @@ export default function TopControls({ onInputChange }: TopControlsProps) {
 
   const filteredCountries =
     query.length >= 2
-      ? countries.filter((c) =>
+      ? countries.filter((c: Country) =>
         c.countryName.toLowerCase().includes(query.toLowerCase())
       )
       : [];
@@ -174,10 +173,10 @@ export default function TopControls({ onInputChange }: TopControlsProps) {
               >
                 <input
                   type="text"
+                  placeholder="Search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search"
-                  className="block w-full border-b border-[#2E2E2E] p-3 focus:outline-none bg-transparent text-white placeholder-gray-400 transition-colors duration-300"
+                  className="block w-full border-b border-[#2E2E2E] p-3 focus:outline-none bg-transparent text-white"
                 />
 
                 <div className="transition-opacity duration-300 ease-in-out">
@@ -190,13 +189,13 @@ export default function TopControls({ onInputChange }: TopControlsProps) {
                   {query.length >= 2 && (
                     <ul className="max-h-40 overflow-y-auto bg-[#171717] overflow-hidden text-white">
                       {filteredCountries.length > 0 ? (
-                        filteredCountries.map((country, index) => (
+                        filteredCountries.map((country: Country, index: number) => (
                           <li
                             key={index}
                             className="p-3 hover:bg-[#2E2E2E] cursor-pointer border-b border-[#2E2E2E] transition-colors duration-200"
                             onClick={() => handleCountryChange(country)}
                           >
-                            {country.countryName}
+                            {country?.countryName}
                           </li>
                         ))
                       ) : (

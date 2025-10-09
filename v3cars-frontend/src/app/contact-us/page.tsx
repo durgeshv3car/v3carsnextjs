@@ -8,7 +8,7 @@ import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
 import Link from "next/link";
 
 function ContactUs() {
-    const { data: faqByModuleData, error, isLoading } = useGetFAQByModuleQuery({ moduleId: 7 });
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 7 });
 
     const faqByModule = faqByModuleData?.rows ?? [];
 

@@ -13,7 +13,7 @@ interface FormSevenProps {
 }
 
 function FormSeven({ formData, setFormData, onClose }: FormSevenProps) {
-    const handleChange = (key: string, value: any) => {
+    const handleChange = (key: string, value: string) => {
         setFormData((prev) => ({
             ...prev,
             [key]: value,

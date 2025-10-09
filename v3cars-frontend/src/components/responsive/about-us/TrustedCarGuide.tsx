@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useGetAboutDetailsQuery } from "@/redux/api/websiteContentApi";
 import { useMemo } from "react";
@@ -17,7 +17,7 @@ function TrustedCarGuide() {
 
     const aboutDetails: PageContent[] = useMemo(() => {
         if (!AboutDetailsData?.rows) return [];
-        return AboutDetailsData.rows.map((item: any) => ({
+        return AboutDetailsData.rows.map((item: PageContent) => ({
             id: item.id,
             moduleId: item.moduleId,
             title: item.title,
@@ -30,16 +30,22 @@ function TrustedCarGuide() {
     if (isLoading) return <p>Loading...</p>;
     if (isError) return <p>Failed to load About details.</p>;
 
-    const about = aboutDetails[0];
-
     return (
         <div className="space-y-6">
             {/* Render HTML description safely */}
-            {about?.description ? (
-                <div
-                    className="text-xl/loose"
-                    dangerouslySetInnerHTML={{ __html: about.description }}
-                />
+            {aboutDetails.length > 0 ? (
+                aboutDetails.map((about, index) => {
+                    // ✅ Remove inline color styles except those on <a> tags
+                    const sanitizedDescription = about.description.replace(/color:\s*[^;"]+;?/gi, '');
+
+                    return (
+                        <div
+                            key={index}
+                            className="prose prose-invert max-w-none text-xl/loose"
+                            dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                        />
+                    );
+                })
             ) : (
                 <p>No content available.</p>
             )}

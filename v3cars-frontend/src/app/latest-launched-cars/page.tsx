@@ -36,10 +36,10 @@ import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 
 
 function LatestCars() {
-    const { data: latestCarNewsData, error: latestCarNewsError, isLoading: latestCarNewsLoading } = useGetLatestCarNewsQuery();
-    const { data: latestCarData, error, isLoading } = useGetLatestLaunchedCarsQuery();
-    const { data: latestVideosData, error: latestVideosError, isLoading: latestVideosLoading } = useGetLatestVideosQuery()
-    const { data: expertCarReviewsData, error: expertCarReviewsError, isLoading: expertCarReviewsLoading } = useGetExpertCarReviewsQuery();
+    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const { data: latestCarData } = useGetLatestLaunchedCarsQuery();
+    const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: expertCarReviewsData } = useGetExpertCarReviewsQuery();
 
     const latestCarNews = latestCarNewsData?.rows ?? [];
     const latestCars = latestCarData?.rows ?? [];

@@ -39,7 +39,7 @@ function CarLoanEMICalculator() {
         emi: 0
     });
 
-    const { data: faqByModuleData, error, isLoading } = useGetFAQByModuleQuery({ moduleId: 1 });
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
 
     const faqByModule = faqByModuleData?.rows ?? [];
 

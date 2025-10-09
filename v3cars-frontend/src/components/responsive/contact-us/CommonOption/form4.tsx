@@ -1,35 +1,29 @@
 "use client";
 
-import { useState } from "react";
+interface FormData {
+    issueType: string;
+    otherIssue: string;
+    pageAffected: string;
+    issueDetail: string;
+    screenshot: File | null;
+}
 
 interface FormFourProps {
-    formData: {
-        issueType: string;
-        otherIssue: string;
-        pageAffected: string;
-        issueDetail: string;
-        screenshot: null;
-    };
-    setFormData: React.Dispatch<
-        React.SetStateAction<{
-            issueType: string;
-            otherIssue: string;
-            pageAffected: string;
-            issueDetail: string;
-            screenshot: null;
-        }>
-    >;
+    formData: FormData;
+    setFormData: React.Dispatch<React.SetStateAction<FormData>>;
     onClose: () => void;
 }
 
 function FormFour({ formData, setFormData, onClose }: FormFourProps) {
-    const handleChange = (key: string, value: any) => {
+    // Generic change handler (type-safe)
+    const handleChange = <K extends keyof FormData>(key: K, value: FormData[K]) => {
         setFormData((prev) => ({
             ...prev,
             [key]: value,
         }));
     };
 
+    // File input handler
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             handleChange("screenshot", e.target.files[0]);
@@ -40,7 +34,9 @@ function FormFour({ formData, setFormData, onClose }: FormFourProps) {
         <>
             {/* Type of Issue */}
             <div className="space-y-1">
-                <label className="text-sm font-medium">Type of Issue <span className="text-red-500">*</span></label>
+                <label className="text-sm font-medium">
+                    Type of Issue <span className="text-red-500">*</span>
+                </label>
                 <select
                     value={formData.issueType}
                     onChange={(e) => handleChange("issueType", e.target.value)}
@@ -70,7 +66,9 @@ function FormFour({ formData, setFormData, onClose }: FormFourProps) {
 
             {/* Page/Tool Affected */}
             <div className="space-y-1">
-                <label className="text-sm font-medium">Which page or tool has the issue? <span className="text-red-500">*</span></label>
+                <label className="text-sm font-medium">
+                    Which page or tool has the issue? <span className="text-red-500">*</span>
+                </label>
                 <input
                     type="text"
                     placeholder="Paste the URL or mention the tool name (e.g. Car Comparison Tool, On-Road Price Calculator)"
@@ -86,7 +84,9 @@ function FormFour({ formData, setFormData, onClose }: FormFourProps) {
 
             {/* Issue Detail */}
             <div className="space-y-1">
-                <label className="text-sm font-medium">Please describe the issue <span className="text-red-500">*</span></label>
+                <label className="text-sm font-medium">
+                    Please describe the issue <span className="text-red-500">*</span>
+                </label>
                 <textarea
                     placeholder="E.g. variant missing, specs mismatch, page not opening on mobile, etc."
                     value={formData.issueDetail}

@@ -32,7 +32,7 @@ const Authors: React.FC = () => {
   const authors: Author[] = useMemo(() => {
     if (!AuthorsData?.rows) return [];
     return AuthorsData.rows
-      .map((item: any) => ({
+      .map((item: Author) => ({
         moduleId: item.moduleId,
         id: item.id,
         name: item.name,

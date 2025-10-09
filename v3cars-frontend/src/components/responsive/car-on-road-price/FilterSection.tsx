@@ -1,6 +1,6 @@
 'use client'
 
-import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
+// import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import React, { useState } from "react";
 
 const FilterSection: React.FC = () => {
@@ -8,12 +8,12 @@ const FilterSection: React.FC = () => {
 
     const fuelOptions: ("Petrol" | "Diesel" | "CNG")[] = ["Petrol", "Diesel", "CNG"];
 
-    const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
-    const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+    // const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+    // const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
 
-    const handleSelection = (value: string) => {
-        console.log('Selected:', value);
-    };
+    // const handleSelection = (value: string) => {
+    //     console.log('Selected:', value);
+    // };
 
     return (
         <div className="px-4 xl:px-10 bg-[#E2E2E2] dark:bg-[#2E2E2E]">
@@ -40,11 +40,11 @@ const FilterSection: React.FC = () => {
                     </div>
                     <div className="px-4 py-8 grid grid-cols-2 gap-6 text-sm">
                         <div className='border-b dark:border-[#2E2E2E] w-full'>
-                            <CustomSelect options={items} placeholder={"Select Brand Name"} onSelect={handleSelection} />
+                            {/* <CustomSelect options={items} placeholder={"Select Brand Name"} onSelect={handleSelection} /> */}
                         </div>
 
                         <div className='border-b dark:border-[#2E2E2E] w-full'>
-                            <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handleSelection} />
+                            {/* <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handleSelection} /> */}
                         </div>
 
                         <div className="col-span-2 lg:col-span-1">
@@ -66,15 +66,15 @@ const FilterSection: React.FC = () => {
                         </div>
 
                         <div className='border-b dark:border-[#2E2E2E] w-full'>
-                            <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handleSelection} />
+                            {/* <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handleSelection} /> */}
                         </div>
 
                         <div className='border-b dark:border-[#2E2E2E] w-full'>
-                            <CustomSelect options={items} placeholder={"Select Brand Name"} onSelect={handleSelection} />
+                            {/* <CustomSelect options={items} placeholder={"Select Brand Name"} onSelect={handleSelection} /> */}
                         </div>
 
                         <div className='border-b dark:border-[#2E2E2E] w-full col-span-2 lg:col-span-1'>
-                            <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handleSelection} />
+                            {/* <CustomSelect options={items2} placeholder={"Select Model"} onSelect={handleSelection} /> */}
                         </div>
 
                         {/* Button */}

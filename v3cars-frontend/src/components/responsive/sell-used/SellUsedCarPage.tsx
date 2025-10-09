@@ -19,7 +19,7 @@ import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
 
 export default function SellUsedCarPage() {
   const step = useSelector((s: RootState) => s.sellUsed.step);
-  const { data: faqByModuleData, error, isLoading } = useGetFAQByModuleQuery({ moduleId: 1 });
+  const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
 
   const faqByModule = faqByModuleData?.rows ?? [];
 

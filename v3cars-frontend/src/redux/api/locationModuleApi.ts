@@ -7,7 +7,7 @@ interface Response {
   pageSize: number;
   total: number;
   totalPages: number;
-  rows: any[];
+  rows: [];
 }
 
 // API definition
@@ -19,13 +19,22 @@ export const locationModuleApi = createApi({
       query: () => `/locations/cities?isPopular=1&limit=24&sortBy=name_asc`,
     }),
     getAllCities: builder.query<Response, { page: number; limit: number }>({
-      query: ({ page, limit }) => `/locations/cities?limit=50&page=${page}&sortBy=name_asc`,
+      query: ({ page, limit }) => `/locations/cities?limit=${limit}&page=${page}&sortBy=name_asc`,
     }),
     getSearchCity: builder.query<Response, { query: string }>({
       query: ({ query }) => `/locations/cities?q=${query}&limit=1&sortBy=name_asc`,
     }),
     getCountries: builder.query<Response, { query: string }>({
       query: ({ query }) => `/locations/countries?q=${query}`,
+    }),
+    getStates: builder.query<Response, void>({
+      query: () => `/locations/states?limit=50&page=1&sortBy=name_asc`,
+    }),
+    getCityByStatesId: builder.query<Response, { stateId: number }>({
+      query: ({ stateId }) => `/locations/cities?stateId=${stateId}&sortBy=name_asc`,
+    }),
+    getCities: builder.query<Response, { query: string }>({
+      query: ({ query }) => `/locations/cities?q=${query}`,
     }),
   }),
 });
@@ -36,4 +45,7 @@ export const {
   useGetAllCitiesQuery,
   useGetSearchCityQuery,
   useGetCountriesQuery,
+  useGetStatesQuery,
+  useGetCityByStatesIdQuery,
+  useGetCitiesQuery,
 } = locationModuleApi;

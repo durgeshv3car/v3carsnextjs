@@ -1,25 +1,25 @@
 'use client'
 
 import { MdCompareArrows } from "react-icons/md";
-import CustomSelect from "../../ui/custom-inputs/CustomSelect";
+// import CustomSelect from "../../ui/custom-inputs/CustomSelect";
 
 export default function CompareNow() {
     const boxes = Array(4).fill(0);
-    const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
-    const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
-    const items3 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+    // const items = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+    // const items2 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
+    // const items3 = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pineapple'];
 
-    const handleBrand = (value: string) => {
-        console.log('Selected:', value);
-    };
+    // const handleBrand = (value: string) => {
+    //     console.log('Selected:', value);
+    // };
 
-    const handleType = (value: string) => {
-        console.log('Selected:', value);
-    };
+    // const handleType = (value: string) => {
+    //     console.log('Selected:', value);
+    // };
 
-    const handleVariant = (value: string) => {
-        console.log('Selected:', value);
-    };
+    // const handleVariant = (value: string) => {
+    //     console.log('Selected:', value);
+    // };
 
     return (
 
@@ -44,15 +44,15 @@ export default function CompareNow() {
 
                         {/* Dropdowns */}
                         <div className='w-full border dark:border-[#2E2E2E] rounded-lg text-sm'>
-                            <CustomSelect options={items} placeholder={"Select Brands"} onSelect={handleBrand} />
+                            {/* <CustomSelect options={items} placeholder={"Select Brands"} onSelect={handleBrand} /> */}
                         </div>
 
                         <div className='w-full border dark:border-[#2E2E2E] rounded-lg text-sm'>
-                            <CustomSelect options={items2} placeholder={"Select Type"} onSelect={handleType} />
+                            {/* <CustomSelect options={items2} placeholder={"Select Type"} onSelect={handleType} /> */}
                         </div>
 
                         <div className='w-full border dark:border-[#2E2E2E] rounded-lg text-sm'>
-                            <CustomSelect options={items3} placeholder={"Select Variant"} onSelect={handleVariant} />
+                            {/* <CustomSelect options={items3} placeholder={"Select Variant"} onSelect={handleVariant} /> */}
                         </div>
                     </div>
                 ))}

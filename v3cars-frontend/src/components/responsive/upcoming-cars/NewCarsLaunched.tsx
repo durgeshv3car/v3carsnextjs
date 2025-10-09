@@ -61,11 +61,11 @@ export default function NewCarsLaunched({ selected }: NewCarsLaunchedProps) {
     const { data: latestCarData, error, isLoading } = useGetLatestCarsQuery({ launchMonth: selected });
 
     // Calculate maxViews for confidence
-    const maxViews = Math.max(...(latestCarData?.rows.map((c: any) => c.totalViews) ?? [1]));
+    const maxViews = Math.max(...(latestCarData?.rows.map((c: CarModel) => c.totalViews) ?? [1]));
 
     // Map API response to CarModel[]
     const latestCars: CarModel[] =
-        latestCarData?.rows.map((car: any) => ({
+        latestCarData?.rows.map((car: CarModel) => ({
             ...car,
             confidence: Math.round((car.totalViews / maxViews) * 100),
             price:

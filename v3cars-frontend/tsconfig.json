@@ -22,7 +22,7 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/car-news/[news]", "src/app/page.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/car-news/[news]", "src/app/page.tsx", "src/components/responsive/car-loan/ApplyForCarLoan.jsx"],
   "exclude": ["node_modules"]
 
   

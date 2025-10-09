@@ -24,7 +24,7 @@ interface VideoItem {
 }
 
 const LatestVideos: React.FC = () => {
-    const { data: latestVideosData, error, isLoading } = useGetLatestVideosQuery()
+    const { data: latestVideosData } = useGetLatestVideosQuery()
     const latestVideos: VideoItem[] = latestVideosData?.rows ?? []
 
     return (
