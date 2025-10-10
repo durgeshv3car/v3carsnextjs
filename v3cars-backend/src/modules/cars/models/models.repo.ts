@@ -19,6 +19,8 @@ function normalizeAnd(andInput: PrismaTypes.tblmodelsWhereInput | PrismaTypes.tb
  * Build a Prisma where object from ModelsListQuery.
  * Accepts an optional `opts.allowedModelIds` which will restrict modelId IN (...) at DB-level.
  */
+
+
 function buildWhere(q: ModelsListQuery, opts?: { allowedModelIds?: number[] }): PrismaTypes.tblmodelsWhereInput {
   const where: PrismaTypes.tblmodelsWhereInput = {};
 
@@ -89,6 +91,7 @@ function buildWhere(q: ModelsListQuery, opts?: { allowedModelIds?: number[] }): 
         ].filter(Boolean) as PrismaTypes.tblmodelsWhereInput[],
       },
     ];
+
   }
 
   const existingAND = normalizeAnd(where.AND);
@@ -121,6 +124,7 @@ function buildWhere(q: ModelsListQuery, opts?: { allowedModelIds?: number[] }): 
   if (existingAND.length) where.AND = existingAND;
 
   return where;
+
 }
 
 function buildOrderBy(sortBy: ModelsListQuery['sortBy']): PrismaTypes.tblmodelsOrderByWithRelationInput[] {
@@ -143,6 +147,8 @@ const baseSelect = {
   expectedBasePrice: true, expectedTopPrice: true,
   seats: true, // include seats so callers can use it without extra query
 } satisfies PrismaTypes.tblmodelsSelect;
+
+
 
 export class ModelsRepo {
   /**
