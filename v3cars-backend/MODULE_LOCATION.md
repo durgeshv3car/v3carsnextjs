@@ -126,3 +126,6 @@ Search:
 
 Detail:
 /v1/locations/countries/101
+
+
+

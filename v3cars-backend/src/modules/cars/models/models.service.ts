@@ -1,3 +1,4 @@
+// src/modules/cars/models/models.service.ts
 import type { ModelsListQuery } from './models.types.js';
 import { ModelsRepo } from './models.repo.js';
 import { BrandsService } from '../brands/brands.service.js';
@@ -25,6 +26,7 @@ const priceRanges: Record<string, { min?: number; max?: number }> = {
 };
 
 function inBucket(min: number | null, max: number | null, bucket?: keyof typeof priceRanges): boolean {
+
   if (!bucket) return true;
   const { min: bmin, max: bmax } = priceRanges[bucket] ?? {};
   if (min == null && max == null) return false;
@@ -35,27 +37,51 @@ function inBucket(min: number | null, max: number | null, bucket?: keyof typeof 
   if (typeof bmin === 'number' && hi < bmin) return false;
   if (typeof bmax === 'number' && lo > bmax) return false;
   return true;
+
 }
 
 // Small helper to stringify dates safely for cache key
 const toYmd = (d?: Date | string) => (d ? new Date(d).toISOString().slice(0, 10) : undefined);
 
 export class ModelsService {
+
   async list(q: ModelsListQuery) {
     const fuelType = q.fuelType?.trim();
+    const transmissionType = q.transmissionType?.trim();
+
+    // single-valued fields
+    const cylinders = (q as any).cylinders as string | undefined;
+    const engineDisplacement = (q as any).engineDisplacement as string | undefined;
+    const mileage = (q as any).mileage as string | undefined;
+    const seating = (q as any).seating as string | undefined;
+
+    // multi-select lists (may come as arrays or comma-separated strings, validators should normalize them)
+    const brandIdsList = (q as any).brandIds as number[] | undefined;
+    const bodyTypeIdsList = (q as any).bodyTypeIds as number[] | undefined;
+    const cylindersList = (q as any).cylindersList as string[] | undefined;
+    const seatingList = (q as any).seatingList as number[] | undefined;
 
     // 🔑 Stable, versioned cache key for the *final shaped* list payload
     const key = cacheKey({
       ns: 'models:list',
-      v: 1,
+      v: 2,
       page: q.page ?? 1,
       limit: q.limit ?? 12,
       sortBy: q.sortBy ?? 'id_asc',
       q: q.q ?? undefined,
       brandId: q.brandId ?? undefined,
+      brandIds: brandIdsList ?? undefined,
       bodyTypeId: q.bodyTypeId ?? undefined,
+      bodyTypeIds: bodyTypeIdsList ?? undefined,
       isUpcoming: typeof q.isUpcoming === 'boolean' ? (q.isUpcoming ? 1 : 0) : undefined,
       fuelType: fuelType || undefined,
+      transmissionType: transmissionType || undefined,
+      cylinders: cylinders ?? undefined,
+      cylindersList: cylindersList ?? undefined,
+      engineDisplacement: engineDisplacement ?? undefined,
+      mileage: mileage ?? undefined,
+      seating: seating ?? undefined,
+      seatingList: seatingList ?? undefined,
       priceBucket: q.priceBucket ?? undefined,
       launchMonth: (q as any).launchMonth ?? undefined,
       launchFrom: toYmd((q as any).launchFrom),
@@ -67,17 +93,45 @@ export class ModelsService {
 
     return withCache(key, async () => {
       /** ------------------------------
+       * Pre-filter: get allowed modelIds from powertrains if any powertrain/spec filters provided
+       * ------------------------------ */
+      let allowedModelIdsArray: number[] | undefined;
+      const hasPowertrainFilters =
+        !!fuelType ||
+        !!transmissionType ||
+        !!cylinders ||
+        !!cylindersList ||
+        !!engineDisplacement ||
+        !!mileage;
+      if (hasPowertrainFilters) {
+        // pass cylindersList (array) if present, otherwise single cylinders value
+        const modelIds = await powertrainsSvc.findModelIdsByFilters({
+          fuelType,
+          transmissionType,
+          cylinders: cylindersList ?? cylinders,
+          engineDisplacement,
+          mileage,
+        });
+        if (!modelIds.length) {
+          return { rows: [], total: 0, page: q.page || 1, pageSize: q.limit || 12, totalPages: 0 };
+        }
+        allowedModelIdsArray = modelIds;
+      }
+
+      // prepare opts to pass to repo functions
+      const repoOpts = allowedModelIdsArray ? { allowedModelIds: allowedModelIdsArray } : undefined;
+
+      /** ------------------------------
        * PRICE BUCKET FLOW (variant-based)
        * ------------------------------ */
       if (q.priceBucket) {
-        // 1) Pull all base rows for non-price filters
-        let baseRows = await repo.listIgnoringPriceBucket(q);
-
-        // 1b) Apply fuelType filter (if any) BEFORE band computation
-        if (fuelType) {
-          const allowedModelIds = new Set(await powertrainsSvc.findModelIdsByFuel({ fuelType }));
-          baseRows = baseRows.filter(m => allowedModelIds.has(m.modelId));
-        }
+        // 1) Pull all base rows for non-price filters (DB-level will apply seatingList, brandIdsList, bodyTypeIdsList, allowedModelIds)
+        // ensure we propagate multi-selects via q object (repo.buildWhere reads brandIds/bodyTypeIds/seatingList)
+        const baseRows = await repo.listIgnoringPriceBucket(
+          // pass q as-is; validators already normalize brandIds/bodyTypeIds/seatingList if present
+          q,
+          repoOpts
+        );
 
         const allIds = baseRows.map(r => r.modelId);
         if (!allIds.length) {
@@ -129,7 +183,7 @@ export class ModelsService {
           }
         });
 
-        // 6) Paginate
+        // 6) Paginate (after filter/sort)
         const pageSize = Math.max(1, Math.min(q.limit || 12, 100));
         const page = Math.max(1, q.page || 1);
         const total = sorted.length;
@@ -172,15 +226,12 @@ export class ModelsService {
       }
 
       /** ------------------------------
-       * FUEL-ONLY FLOW (no priceBucket)
+       * FUEL / POWERTRAIN-ONLY FLOW (no priceBucket)
        * ------------------------------ */
-      if (fuelType) {
-        // 1) Pull all base rows (ignore pagination) so we can filter by fuel first
-        let baseRows = await repo.listIgnoringPriceBucket(q);
-
-        // 2) Apply fuelType filter via powertrains
-        const allowedModelIds = new Set(await powertrainsSvc.findModelIdsByFuel({ fuelType }));
-        baseRows = baseRows.filter(m => allowedModelIds.has(m.modelId));
+      if (fuelType || transmissionType || cylinders || cylindersList || engineDisplacement || mileage) {
+        // 1) Pull all base rows (ignore pagination) so we can filter by powertrain/model-spec first
+        // Repo will apply seatingList, brandIdsList, bodyTypeIdsList, and allowedModelIds at DB-level
+        let baseRows = await repo.listIgnoringPriceBucket(q, repoOpts);
 
         // 3) If sorting by price, compute bands for sorting
         const sortBy = q.sortBy;
@@ -220,7 +271,7 @@ export class ModelsService {
           });
         }
 
-        // 4) Paginate
+        // 4) Paginate (after filter/sort)
         const pageSize = Math.max(1, Math.min(q.limit || 12, 100));
         const page = Math.max(1, q.page || 1);
         const total = sorted.length;
@@ -269,10 +320,11 @@ export class ModelsService {
       }
 
       /** ------------------------------
-       * ORIGINAL (no priceBucket, no fuelType)
+       * ORIGINAL (no priceBucket, no powertrain filters)
        * ------------------------------ */
-      const base = await repo.list(q);
-      const rows = base.rows;
+      // Pass allowedModelIds to repo so DB does filtering + correct count/pagination
+      const base = await repo.list(q, repoOpts);
+      let rows = base.rows;
 
       const modelIds = rows.map((r) => r.modelId).filter((x): x is number => typeof x === 'number');
       const brandIds = Array.from(new Set(rows.map((r) => r.brandId).filter((x): x is number => typeof x === 'number')));
@@ -381,11 +433,11 @@ export class ModelsService {
           modelSlug: true,
           brandId: true,
           modelBodyTypeId: true,
-          // NOTE: assuming there is a foreign key to segments on tblmodels (commonly: segmentId)
-          // If your column name differs, change it here:
           segmentId: true,
+          seats: true,
         },
       });
+
       const modelMap = new Map(modelRows.map(m => [m.modelId, m]));
 
       // 2) Brand names
@@ -490,4 +542,6 @@ export class ModelsService {
       return { rows, total: rows.length };
     }, ttlMs);
   }
+
 }
+

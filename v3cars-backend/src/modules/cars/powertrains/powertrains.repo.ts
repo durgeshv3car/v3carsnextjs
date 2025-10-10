@@ -11,6 +11,10 @@ export class PowertrainsRepo {
         fuelType: true,
         transmissionType: true,
         powerTrain: true,
+        cylinders: true,
+        cubicCapacity: true,
+        claimedFE: true,
+        realWorldMileage: true,
       },
     });
   }
@@ -38,7 +42,90 @@ export class PowertrainsRepo {
     const rows = await prisma.tblmodelpowertrains.findMany({
       where: { fuelType: { contains: ft } },   // avoids 'mode' to keep prisma happy
       select: { modelId: true },
+      distinct: ['modelId'],
     });
+    const set = new Set<number>();
+    for (const r of rows) {
+      if (typeof r.modelId === 'number') set.add(r.modelId);
+    }
+    return Array.from(set);
+  }
+
+  /** NEW: Distinct modelIds for combined powertrain/spec filters
+   *  Handles: fuelType, transmissionType, cylinders (array or single), engineDisplacement ranges (mapped to cubicCapacity),
+   *  mileage ranges (claimedFE/realWorldMileage)
+   *
+   *  NOTE: The DB column used for cc is `cubicCapacity` (INT).
+   */
+  async findModelIdsByFilters(opts: {
+    fuelType?: string;
+    transmissionType?: string;
+    cylinders?: string | string[]; // single or array
+    engineDisplacement?: string; // keys like '1000_1500' (we map this to cubicCapacity ranges)
+    mileage?: string; // 'UNDER_10','BETWEEN_10_15','ABOVE_15'
+  }) {
+    const where: any = {};
+
+    if (opts.fuelType) where.fuelType = { contains: opts.fuelType };
+    if (opts.transmissionType) where.transmissionType = { contains: opts.transmissionType };
+
+    // cylinders: allow array OR single value
+    if (opts.cylinders) {
+      const cyls = Array.isArray(opts.cylinders) ? opts.cylinders : [opts.cylinders];
+      const clauses: any[] = [];
+      for (const cval of cyls) {
+        if (cval === '8_PLUS') {
+          clauses.push({ cylinders: { gte: 8 } });
+        } else {
+          const c = Number(cval);
+          if (!Number.isNaN(c)) clauses.push({ cylinders: c });
+        }
+      }
+      if (clauses.length === 1) where.AND = [...(where.AND ?? []), clauses[0]];
+      else if (clauses.length > 1) where.OR = [...(where.OR ?? []), ...clauses];
+    }
+
+    // engineDisplacement mapping → use cubicCapacity field (INT)
+    if (opts.engineDisplacement) {
+      const map: Record<string, { min?: number; max?: number }> = {
+        '800': { max: 800 },
+        '1000': { min: 1000, max: 1000 },
+        '800_1000': { min: 800, max: 1000 },
+        '1000_1500': { min: 1000, max: 1500 },
+        '1500_2000': { min: 1500, max: 2000 },
+        '2000_3000': { min: 2000, max: 3000 },
+        '3000_4000': { min: 3000, max: 4000 },
+        'ABOVE_4000': { min: 4000 },
+      };
+      const r = map[opts.engineDisplacement];
+      if (r) {
+        if (r.min != null && r.max != null) where.cubicCapacity = { gte: r.min, lte: r.max };
+        else if (r.min != null) where.cubicCapacity = { gte: r.min };
+        else if (r.max != null) where.cubicCapacity = { lte: r.max };
+      }
+    }
+
+    // mileage mapping — use claimedFE OR realWorldMileage
+    if (opts.mileage) {
+      if (opts.mileage === 'UNDER_10') {
+        where.OR = [...(where.OR ?? []), { claimedFE: { lt: 10 } }, { realWorldMileage: { lt: 10 } }];
+      } else if (opts.mileage === 'BETWEEN_10_15') {
+        where.OR = [...(where.OR ?? []), { claimedFE: { gte: 10, lt: 15 } }, { realWorldMileage: { gte: 10, lt: 15 } }];
+      } else if (opts.mileage === 'ABOVE_15') {
+        where.OR = [...(where.OR ?? []), { claimedFE: { gte: 15 } }, { realWorldMileage: { gte: 15 } }];
+      }
+    }
+
+    // If no filters were added, return empty
+    if (!Object.keys(where).length) return [];
+
+    // distinct modelId
+    const rows = await prisma.tblmodelpowertrains.findMany({
+      where,
+      select: { modelId: true },
+      distinct: ['modelId'],
+    });
+
     const set = new Set<number>();
     for (const r of rows) {
       if (typeof r.modelId === 'number') set.add(r.modelId);
@@ -58,20 +145,17 @@ export class PowertrainsRepo {
       _min: { modelPowertrainId: true },
     });
 
-    const idByModel = new Map<number, number>();
     const ptIds: number[] = [];
     for (const g of mins) {
       const mid = g.modelId as number;
       const minId = g._min.modelPowertrainId as number | null;
       if (typeof mid === 'number' && typeof minId === 'number') {
-        idByModel.set(mid, minId);
         ptIds.push(minId);
       }
     }
 
     if (!ptIds.length) return map;
 
-    // Step 2: fetch those first powertrain rows
     const rows = await prisma.tblmodelpowertrains.findMany({
       where: { modelPowertrainId: { in: ptIds } },
       select: {
@@ -85,7 +169,6 @@ export class PowertrainsRepo {
       },
     });
 
-    // Step 3: map → { powerPS, torqueNM, mileageKMPL } (claimedFE preferred)
     for (const r of rows) {
       const feRaw = r.claimedFE ?? r.realWorldMileage ?? null;
       const fe = feRaw != null ? Number(feRaw as unknown as any) : null;
