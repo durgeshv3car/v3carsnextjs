@@ -31,7 +31,7 @@ export default function Home() {
   const { data: upcomingData } = useUpcomingCarsQuery();
   const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
   const { data: brandsData } = useGetBrandsQuery();
-  const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand ?? 0 });
+  const { data: modelsData } = useGetModelsQuery( { brandId: selectBrand! }, {skip: !selectBrand,} );
   const { data: expertCarReviewsData } = useGetExpertCarReviewsQuery();
   const { data: variantsExplainedData } = useGetVariantsExplainedQuery();
 

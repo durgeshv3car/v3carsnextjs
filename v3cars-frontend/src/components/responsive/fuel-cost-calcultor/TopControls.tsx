@@ -29,7 +29,7 @@ interface TopControlsProps {
 export default function TopControls({ onInputChange }: TopControlsProps) {
   const [query, setQuery] = useState("");
   const [openModel, setOpenModel] = useState(false);
-  const { data: countriesData } = useGetCountriesQuery({ query });
+  const { data: countriesData } = useGetCountriesQuery({ query }, { skip: !query } );
   const countries = countriesData?.rows ?? [];
 
   const [drivingDistance, setDrivingDistance] = useState<number>(70);

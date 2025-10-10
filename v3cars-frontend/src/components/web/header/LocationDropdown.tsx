@@ -41,7 +41,7 @@ const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, se
   const dispatch = useDispatch<AppDispatch>();
 
   // --- Search ---
-  const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: searchCity });
+  const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: searchCity! }, { skip: !searchCity });
   const searchData: City[] = searchCityData?.rows ?? [];
 
   // --- Popular Cities ---

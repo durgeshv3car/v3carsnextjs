@@ -31,32 +31,35 @@ const dummyData = [
 export default function SearchResult() {
     const [view, setView] = useState<"grid" | "list">("grid");
 
-    // const items = ['Popularity', 'Upcoming', "Latest"];
-
-    // const handleSelection = (value: string) => {
-    //     console.log('Selected:', value);
-    // };
-
     return (
         <>
             <div className="flex flex-col lg:flex-row justify-between lg:items-center mb-4">
-                <div>
+                <div className='space-y-2'>
                     <h2 className="text-2xl font-bold">Your Search Result</h2>
-                    <p>258  Cars in India With Search Options</p>
+                    <p>
+                        <span className='bg-[#171717] rounded-md text-yellow-400 font-semibold px-2 p-1'>258</span>{" "}
+                        Cars in India With Search Options
+                    </p>
                 </div>
+
                 <div className="flex gap-2">
-                    <div className='w-[300px] border dark:border-[#2E2E2E] rounded-lg text-sm'>
-                        {/* <CustomSelect options={items} placeholder={"Select Type"} onSelect={handleSelection} /> */}
-                    </div>
+                    
+                        <select
+                        className='w-[300px] border dark:border-[#2E2E2E] rounded-lg px-2 bg-white dark:bg-[#171717]'
+                    >
+                        <option value="popularity">Popularity</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="latest">Latest</option>
+                    </select>
                     <button
                         onClick={() => setView("list")}
-                        className={`w-10 h-10 flex justify-center items-center border dark:border-[#2E2E2E] rounded ${view === "list" ? "bg-gray-200 dark:bg-[#27272a]" : ""}`}
+                        className={`w-10 h-10 flex justify-center items-center border dark:border-[#2E2E2E] rounded ${view === "list" ? "bg-gray-200 dark:bg-[#27272a]" : "bg-white dark:bg-black"}`}
                     >
                         <FaThList />
                     </button>
                     <button
                         onClick={() => setView("grid")}
-                        className={`w-10 h-10 flex justify-center items-center border dark:border-[#2E2E2E] rounded ${view === "grid" ? "bg-gray-200 dark:bg-[#27272a]" : ""}`}
+                        className={`w-10 h-10 flex justify-center items-center border dark:border-[#2E2E2E] rounded ${view === "grid" ? "bg-gray-200 dark:bg-[#27272a]" : "bg-white dark:bg-black"}`}
                     >
                         <IoGrid />
                     </button>
