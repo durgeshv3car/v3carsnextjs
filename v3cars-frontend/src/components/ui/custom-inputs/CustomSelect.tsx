@@ -13,7 +13,7 @@ interface CustomSelectProps<T> {
   groupedOptions?: GroupedOptions<T>[] // ✅ new: grouped list
   placeholder?: string
   onSelect?: (value: T) => void
-  value?: any
+  value?: unknown
   labelKey: keyof T
   valueKey: keyof T
 }

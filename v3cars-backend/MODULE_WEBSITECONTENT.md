@@ -196,7 +196,6 @@ Error Payloads
 (no body)
 
 
-
 All authors (paginated list)
 
 GET /v1/website-content?moduleId=6&limit=20&page=1&sortBy=latest

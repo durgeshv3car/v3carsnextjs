@@ -54,24 +54,31 @@ export default function PrivacyPolicy() {
             style={{ backgroundImage: "url('/term/image.png')" }}
           />
           <div className="w-full lg:app-container mx-auto">
-          <h1 className=" relative z-10 text-3xl font-semibold text-white w-[500px]">
-            {policy ? policy.title : "Privacy Policy for V3Cars.com"}
-          </h1>
+            <h1 className=" relative z-10 text-3xl font-semibold text-white w-[500px]">
+              {policy ? policy.title : "Privacy Policy for V3Cars.com"}
+            </h1>
           </div>
         </div>
 
         {/* Content */}
         <div className="lg:px-10 px-4">
-          <div className="w-full lg:app-container mx-auto my-6 space-y-6 text-white">
+          <div className="w-full lg:app-container mx-auto my-6 space-y-6">
             {privacyPolicy.length > 0 ? (
-              privacyPolicy.map((policy) => (
-                <div key={policy.id}>
-                  <div
-                    className="prose prose-invert max-w-none leading-loose"
-                    dangerouslySetInnerHTML={{ __html: policy.description }}
-                  />
-                </div>
-              ))
+              privacyPolicy.map((policy) => {
+                const sanitizedDescription = policy.description.replace(
+                  /<(?!a\b)([^>]+?)\sstyle="([^"]*?)color:[^;"]+;?([^"]*?)"/gi,
+                  '<$1 style="$2$3"'
+                );
+
+                return (
+                  <div key={policy.id}>
+                    <div
+                      className="prose prose-invert max-w-none leading-loose"
+                      dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                    />
+                  </div>
+                )
+              })
             ) : (
               <p>No Privacy Policy found.</p>
             )}

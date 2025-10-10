@@ -2,16 +2,16 @@
 
 
 import CommonFaqAccordion from "@/components/common/CommonFaqAccordion";
-import UpcomingCarInIndia from "@/components/common/UpcomingCarInIndia";
+// import UpcomingCarInIndia from "@/components/common/UpcomingCarInIndia";
 import DiscontinuedCarList from "@/components/responsive/brand/DiscontinuedCarList";
 import CarInIndia from "@/components/responsive/car-on-road-price/CarsInIndia";
 import FilterSection from "@/components/responsive/car-on-road-price/FilterSection";
 import FuelTab from "@/components/responsive/car-on-road-price/FuelTab";
 import Link from "next/link";
 import useIsMobile from "@/hooks/useIsMobile";
-import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
+// import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
-import CommonLatestCarNews from "@/components/web/common/CommonLatestCarNews";
+// import CommonLatestCarNews from "@/components/web/common/CommonLatestCarNews";
 
 const discontinuedMahindraCars = [
     "Mahindra Alturas G4",
@@ -25,7 +25,7 @@ const discontinuedMahindraCars = [
 
 
 function CarOnRoadPrice() {
-    const { data: faqByModuleData, error, isLoading } = useGetFAQByModuleQuery({ moduleId: 1 });
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
 
     const faqByModule = faqByModuleData?.rows ?? [];
 
@@ -63,19 +63,22 @@ function CarOnRoadPrice() {
                 </div>
             </div>
 
-            {isMobile ? <MobileLatestCarNews /> :
+            {isMobile ? 
+            // <MobileLatestCarNews /> 
+            "Mobile"
+            :
                 <div className="py-6 px-4 lg:px-10">
                     <div className="w-full lg:app-container mx-auto space-y-6">
-                        <CommonLatestCarNews />
+                        {/* <CommonLatestCarNews /> */}
                     </div>
                 </div>
             }
 
             <div className="py-6 px-4 lg:px-10">
                 <div className="w-full lg:app-container mx-auto space-y-6">
-                    <UpcomingCarInIndia
+                    {/* <UpcomingCarInIndia
                         title={"Upcoming Car News"}
-                    />
+                    /> */}
                 </div>
             </div>
 

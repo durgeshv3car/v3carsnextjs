@@ -21,7 +21,7 @@ interface FormFiveProps {
 }
 
 function FormFive({ formData, setFormData, onClose }: FormFiveProps) {
-    const handleChange = (key: string, value: any) => {
+    const handleChange = (key: string, value: string) => {
         setFormData((prev) => ({
             ...prev,
             [key]: value,

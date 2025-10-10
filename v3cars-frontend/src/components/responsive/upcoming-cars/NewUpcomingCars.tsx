@@ -56,11 +56,11 @@ export default function NewUpcomingCars() {
 
     // Calculate maxViews for confidence
     const maxViews =
-        Math.max(...(upcomingData?.rows.map((c: any) => c.totalViews) ?? [1]));
+        Math.max(...(upcomingData?.rows.map((c: CarModel) => c.totalViews) ?? [1]));
 
     // Map API response into UI-friendly CarModel[]
     const upcomingCars: CarModel[] =
-        upcomingData?.rows.map((car: any) => ({
+        upcomingData?.rows.map((car: CarModel) => ({
             ...car,
             confidence: Math.round((car.totalViews / maxViews) * 100),
             price:

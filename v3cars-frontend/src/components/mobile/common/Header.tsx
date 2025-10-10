@@ -8,16 +8,27 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import MobileLoginModal from "./MobileLoginModal";
 import { useRouter } from "next/navigation";
 import LocationDropdown from "@/components/web/header/LocationDropdown";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+
+type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
+
+interface Location {
+  cityId?: number;
+  cityName?: string;
+}
 
 const MobileHeader = () => {
+  const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
   const [isOpen, setIsOpen] = useState(false);
   const [openTab, setOpenTab] = useState<string | null>(null);
   const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
   const [dropdownTop, setDropdownTop] = useState<number>(45);
   const fixedWrapStyle = { top: dropdownTop };
-  const [hoverTab, setHoverTab] = useState(false);
+  const [hoverTab, setHoverTab] = useState<TabKey>(null);
   const headerRef = useRef<HTMLElement | null>(null);
+  const [location, setLocation] = useState<Location>(selectedCity);
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -128,7 +139,7 @@ const MobileHeader = () => {
           {/* Right: Location + Login Icon */}
           <div className="flex items-center gap-4"
             onClick={() =>
-              setHoverTab(!hoverTab)
+              setHoverTab(hoverTab === "location" ? null : "location")
             }
           >
             <div className="flex items-center gap-1 text-md">
@@ -245,8 +256,8 @@ const MobileHeader = () => {
           {/* backdrop */}
           <div
             className="fixed inset-0 z-[140]"
-            onClick={() => setHoverTab(false)}
-            onWheel={() => setHoverTab(false)}
+            onClick={() => setHoverTab(null)}
+            onWheel={() => setHoverTab(null)}
           />
           {/* panel */}
           <div
@@ -258,7 +269,7 @@ const MobileHeader = () => {
               onClick={(e) => e.stopPropagation()}
               onWheel={(e) => e.stopPropagation()}
             >
-              <LocationDropdown />
+              <LocationDropdown location={location} setLocation={setLocation} setHoverTab={setHoverTab} />
             </div>
           </div>
         </>

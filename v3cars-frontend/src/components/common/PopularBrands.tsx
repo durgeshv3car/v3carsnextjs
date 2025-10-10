@@ -18,7 +18,7 @@ interface CarBrand {
 }
 
 function PopularBrands() {
-    const { data: brandData, error, isLoading } = useGetAllBrandsQuery();
+    const { data: brandData } = useGetAllBrandsQuery();
     const brands: CarBrand[] = brandData?.rows ?? [];
 
     return (

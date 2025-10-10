@@ -32,8 +32,8 @@ export const videosModuleApi = createApi({
         getPopularCarVideos: builder.query<Response, void>({
             query: () => "/videos/popular?limit=8",
         }),
-        getVideosByAuthor: builder.query<Response, { slug: string }>({
-            query: ({ slug }) => `/videos/reviews/top?limit=9`,
+        getVideosByAuthor: builder.query<Response, { authorId: number }>({
+            query: ({ authorId }) => `/videos/popular?limit=10&authorId=${authorId}`,
         }),
         getLatestCompareVideos: builder.query<Response, void>({
             query: () => "/videos/compare/latest?limit=9&excludeToday=0",

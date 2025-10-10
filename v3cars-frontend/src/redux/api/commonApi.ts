@@ -25,16 +25,7 @@ interface PopularCitiesResponse {
   pageSize: number;
   total: number;
   totalPages: number;
-  rows: any[];
-}
-
-interface VideosResponse {
-  success: boolean;
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-  rows: any[];
+  rows: [];
 }
 
 // API definition

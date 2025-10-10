@@ -11,9 +11,9 @@ function AuthorsDetails() {
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
                         <span className="">›</span>
-                        <span className="font-medium">
+                        <Link href="/authors" className="font-medium hover:underline">
                             Authors
-                        </span>
+                        </Link>
                         <span className="text-yellow-500">›</span>
                         <span className="font-medium text-yellow-500">
                             Authors Details

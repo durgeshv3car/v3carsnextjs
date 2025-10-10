@@ -121,6 +121,9 @@ const JobListing: React.FC<JobListingProps> = ({ showJobModel, setShowJobModel }
         ],
     };
 
+    console.log(showJobModel);
+    
+
     const [activeTab, setActiveTab] = useState(tabs[0]);
 
     return (

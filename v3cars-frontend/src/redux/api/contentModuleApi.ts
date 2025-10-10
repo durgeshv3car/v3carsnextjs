@@ -8,6 +8,11 @@ interface Response {
     rows: [];
 }
 
+interface AutoExpoResponse {
+    success: boolean;
+    data: null;
+}
+
 // Define the API
 export const contentModuleApi = createApi({
     reducerPath: "contentModuleApi",
@@ -29,7 +34,7 @@ export const contentModuleApi = createApi({
         getPopularReview: builder.query<Response, void>({
             query: () => `/content/reviews/popular?limit=10`,
         }),
-        getTodayAutoExpo: builder.query<Response, void>({
+        getTodayAutoExpo: builder.query<AutoExpoResponse, void>({
             query: () => "/content/auto-expo/today",
         }),
         getLatestAutoExpo: builder.query<Response, void>({

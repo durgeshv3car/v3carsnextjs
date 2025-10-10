@@ -45,7 +45,7 @@ export default function CarLoanRepaymentDetails({ principal, annualInterestRate,
     const totalMonths = tenureYears * 12;
     let balance = principal;
     let totalPrincipalPaid = 0;
-    let schedule: MonthlyRow[] = [];
+    const schedule: MonthlyRow[] = [];
 
     const today = new Date();
     const startMonth = today.getMonth();
@@ -75,6 +75,7 @@ export default function CarLoanRepaymentDetails({ principal, annualInterestRate,
     return schedule;
   }
 
+  console.log(monthlySchedule);
 
   function getYearlyTotals(schedule: MonthlyRow[]): YearlyData[] {
     const yearlyTotals: Record<number, YearlyData> = {};

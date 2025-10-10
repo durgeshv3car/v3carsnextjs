@@ -39,10 +39,9 @@ interface LocationDropdownProps {
 const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, setHoverTab }) => {
   const [searchCity, setSearchCity] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const [loading, setLoading] = useState(false);
 
   // --- Search ---
-  const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: searchCity });
+  const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: searchCity! }, { skip: !searchCity });
   const searchData: City[] = searchCityData?.rows ?? [];
 
   // --- Popular Cities ---
@@ -96,7 +95,6 @@ const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, se
       return;
     }
 
-    setLoading(true);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
@@ -120,13 +118,10 @@ const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, se
           }
         } catch (err) {
           console.error("Failed to fetch city:", err);
-        } finally {
-          setLoading(false);
         }
       },
       (error) => {
         console.error("Error getting location:", error);
-        setLoading(false);
       }
     );
   };

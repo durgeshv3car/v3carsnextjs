@@ -34,10 +34,10 @@ import { useGetElectricCarVideosQuery } from "@/redux/api/videosModuleApi";
 // };
 
 function ElectricCars() {
-    const { data: electricCarData, error: electricCarError, isLoading: electricCarLoading } = useGetElectricCarQuery();
-    const { data: electricCarNewsData, error: electricCarNewsError, isLoading: electricCarNewsLoading } = useGetElectricCarNewsQuery();
-    const { data: electricCarReviewsData, error: electricCarReviewsError, isLoading: electricCarReviewsLoading } = useGetElectricCarReviewsQuery();
-    const { data: electricCarVideosData, error: electricCarVideosError, isLoading: electricCarVideosLoading } = useGetElectricCarVideosQuery();
+    const { data: electricCarData } = useGetElectricCarQuery();
+    const { data: electricCarNewsData } = useGetElectricCarNewsQuery();
+    const { data: electricCarReviewsData } = useGetElectricCarReviewsQuery();
+    const { data: electricCarVideosData } = useGetElectricCarVideosQuery();
 
     const electricCar = electricCarData?.rows ?? [];
     const electricCarNews = electricCarNewsData?.rows ?? [];

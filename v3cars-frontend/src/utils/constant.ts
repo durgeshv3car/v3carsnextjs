@@ -1,7 +1,7 @@
 export let BASE_URL: string;
 
 
-export let IMAGE_URL = "https://www.v3cars.com"
+export const IMAGE_URL = "https://www.v3cars.com"
 
 if (typeof window !== "undefined") {
   if (window.location.origin.includes("localhost")) {

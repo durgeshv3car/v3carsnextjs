@@ -23,7 +23,7 @@ interface FormSixProps {
 }
 
 function FormSix({ formData, setFormData, onClose }: FormSixProps) {
-    const handleChange = (key: string, value: any) => {
+    const handleChange = (key: string, value: string) => {
         setFormData((prev) => ({
             ...prev,
             [key]: value,

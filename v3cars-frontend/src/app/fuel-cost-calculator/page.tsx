@@ -5,69 +5,53 @@ import FuelCostBarGraph from '@/components/responsive/fuel-cost-calcultor/FuelCo
 import FuelCostInfoBlock from '@/components/responsive/fuel-cost-calcultor/FuelCostInfoBlock'
 import FuelCostTable from '@/components/responsive/fuel-cost-calcultor/FuelCostTable'
 import QuickLinks from '@/components/responsive/fuel-cost-calcultor/QuickLinks'
-import TopControls, { Currency, DistanceUnit, Period } from '@/components/responsive/fuel-cost-calcultor/TopControls'
+import TopControls from '@/components/responsive/fuel-cost-calcultor/TopControls'
 import { useGetFAQByModuleQuery } from '@/redux/api/commonApi'
+import { RootState } from '@/redux/store'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+
+type FuelCostInputs = {
+  drivingDistance?: number;
+  country?: string;
+  currencySymbol?: string;
+  exchangeCurrencyRate?: number;
+};
 
 export default function Page() {
-    const { data: faqByModuleData, error, isLoading } = useGetFAQByModuleQuery({ moduleId: 2 });
-
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 2 });
     const faqByModule = faqByModuleData?.rows ?? [];
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
 
-    // shared state
-    const [country, setCountry] = useState('India');
-    const [currency, setCurrency] = useState<Currency>('INR');
-    const [distanceUnit, setDistanceUnit] = useState<DistanceUnit>('km');
-    const [period, setPeriod] = useState<Period>('daily');
-    const [distanceValue, setDistanceValue] = useState<number>(2100); // default like design
+    const [inputs, setInputs] = useState<FuelCostInputs>({});
 
-    // fuel prices (editable in table row)
-    const [prices, setPrices] = useState({
-        petrol: 95.08,
-        diesel: 88.23,
-        cng: 80.67, // per kg
-    });
-
-    // efficiencies (km per liter, km per kg for CNG)
-    const [eff, setEff] = useState({
-        petrol: 15,
-        diesel: 15,
-        cng: 15,
-    });
+    const handleInputChange = (updatedValues: FuelCostInputs) => {
+        setInputs((prev) => ({ ...prev, ...updatedValues }));
+    };
 
     return (
         <div className="min-h-screen bg-[#f6f7f8] dark:bg-black">
 
-            <TopControls
-                country={country}
-                setCountry={setCountry}
-                currency={currency}
-                setCurrency={setCurrency}
-                distanceUnit={distanceUnit}
-                setDistanceUnit={setDistanceUnit}
-                period={period}
-                setPeriod={setPeriod}
-                distanceValue={distanceValue}
-                setDistanceValue={setDistanceValue}
-            />
+            <TopControls onInputChange={handleInputChange} />
 
             <div className='px-4 lg:px-10'>
                 <div className='app-container mx-auto'>
                     <FuelCostTable
-                        currency={currency}
-                        distanceUnit={distanceUnit}
-                        period={period}
-                        distanceValue={distanceValue}
-                        prices={prices}
-                        setPrices={setPrices}
-                        efficiencies={eff}
-                        setEfficiencies={setEff}
+                        inputs={inputs}
+                        selectedCity={{
+                            ...selectedCity,
+                            cityId: selectedCity.cityId ?? 0 // or provide a default value
+                        }}
                     />
                 </div>
             </div>
 
             <FuelCostInfoBlock />
-            <FuelCostBarGraph />
+            {
+                inputs.country === "India" && (
+                    <FuelCostBarGraph districtId={145} />
+                )
+            }
             <QuickLinks />
 
             <div className='app-container mx-auto px-4 lg:px-10'>

@@ -38,7 +38,7 @@ interface Months {
 }
 
 function UpcomingCars() {
-    const { data: monthData, error, isLoading } = useGetMonthQuery()
+    const { data: monthData } = useGetMonthQuery()
     const months: Months[] = monthData?.rows ?? [];
     const [selected, setSelected] = useState<string>("");
 

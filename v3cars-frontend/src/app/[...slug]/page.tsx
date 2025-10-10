@@ -9,21 +9,11 @@ import StateWiseFuelChart from "@/components/responsive/pages/StateWiseFuelChart
 import StateWiseFuelList from "@/components/responsive/pages/StateWiseFuelList";
 import TopSection from "@/components/responsive/pages/TopSection";
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
-import { redirect } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 
-type FAQItem = {
-    question: string;
-    answer: string;
-};
-
-interface SlugPageProps {
-    params: Promise<{ slug?: string[] }>;
-    searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}
-
-export default async function Slug({ params }: SlugPageProps) {
-    const { slug } = await params;
-    const { data: faqByModuleData, error, isLoading } = useGetFAQByModuleQuery({ moduleId: 1 });
+export default function Slug() {
+    const { slug } = useParams();
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
 
     const faqByModule = faqByModuleData?.rows ?? [];
 

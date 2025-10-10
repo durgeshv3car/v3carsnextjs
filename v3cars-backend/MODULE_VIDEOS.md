@@ -46,3 +46,4 @@ Popular videos (global):
 
 /v1/videos/popular?limit=5&fuelType=Electric (EV scope)
 
+by author add authorId params
