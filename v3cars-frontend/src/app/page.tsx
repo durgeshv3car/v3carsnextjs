@@ -13,10 +13,11 @@ import MobileExpertCarReviews from "@/components/mobile/home/ExpertCarReviews";
 import LatestVideos from "@/components/responsive/home/LatestVideos";
 import CarWebStories from "@/components/responsive/home/CarWebStories";
 import BottomAd from "@/components/common/BottomAd";
-import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useGetVariantsExplainedQuery, useUpcomingCarsQuery } from "@/redux/api/homeApi";
-import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/commonApi";
+import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useUpcomingCarsQuery } from "@/redux/api/homeModuleApi";
 import { useState } from "react";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/carModuleApi";
+import { useGetVariantsExplainedQuery } from "@/redux/api/contentModuleApi";
 
 export type CarPriceTab =
   | 'UNDER_5L'

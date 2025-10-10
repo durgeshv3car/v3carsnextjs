@@ -7,6 +7,7 @@ import { withCache, cacheKey } from '../../../lib/cache.js';
 const repo = new BrandsRepo();
 
 export class BrandsService {
+
   /** List brands with cache (page 1 hotter ⇒ longer TTL) */
   async list(q: BrandsListQuery) {
     const page = q?.page ?? 1;
@@ -30,6 +31,7 @@ export class BrandsService {
     return withCache(key, async () => {
       return repo.list(q);
     }, ttlMs);
+    
   }
 
   /** Brand detail (30m) */
@@ -53,4 +55,5 @@ export class BrandsService {
       return repo.findByIds(uniq);
     }, ttlMs);
   }
+
 }

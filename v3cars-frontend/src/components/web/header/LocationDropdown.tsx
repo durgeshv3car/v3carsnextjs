@@ -1,5 +1,6 @@
 "use client";
-import { useGetAllCitiesQuery, useGetPopularCitiesQuery, useGetSearchCityQuery } from "@/redux/api/commonApi";
+
+import { useGetAllCitiesQuery, useGetPopularCitiesQuery, useGetSearchCityQuery } from "@/redux/api/locationModuleApi";
 import { setSelectedCity } from "@/redux/slices/commonSlice";
 import { AppDispatch } from "@/redux/store";
 import Image from "next/image";

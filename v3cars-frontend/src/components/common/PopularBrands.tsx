@@ -1,7 +1,6 @@
 'use client'
 
-import { useGetBrandsQuery } from "@/redux/api/commonApi";
-import { useGetAllBrandsQuery } from "@/redux/api/homeApi";
+import { useGetAllBrandsQuery } from "@/redux/api/carModuleApi";
 import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 import Link from "next/link";

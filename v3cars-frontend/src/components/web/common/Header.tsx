@@ -13,6 +13,7 @@ import ToolsDropdown from "../header/ToolsDropdown.";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import Link from "next/link";
 // import ThemeToggle from "@/components/common/ThemeToggle";
 
 type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
@@ -229,7 +230,7 @@ const Header = () => {
 
                         {/* Variant Explained (no dropdown; no timers needed) */}
                         <div className="relative py-4">
-                            <span className="cursor-pointer">Variant Explained</span>
+                            <Link href={"/variant-explained"} className="cursor-pointer">Variant Explained</Link>
                         </div>
 
                         {/* Tools (hover with intent; full-width panel) */}

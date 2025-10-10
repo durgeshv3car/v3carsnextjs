@@ -28,12 +28,13 @@ const tools = [
 
 const items = [
   { label: "Car reviews", href: "/car-expert-reviews" },
-  { label: "Variants explained", href: "/variants-explained-videos" },
+  { label: "Variants explained", href: "/variant-explained" },
   { label: "Car videos", href: "/car-review-videos" },
   { label: "Upcoming cars", href: "/upcoming-cars" },
-  { label: "New cars", href: "/new-cars" },
-  { label: "Car segments In India", href: "/car-guide" },
+  { label: "Latest cars", href: "/latest-launched-cars" },
+  { label: "Car segments In India", href: "/car-segments-in-india" },
   { label: "Car On-Road Price", href: "/car-on-road-price-in-india" },
+  { label: "Car Guide", href: "/car-guide" },
 ];
 
 const Footer: React.FC = () => {
@@ -246,22 +247,14 @@ const Footer: React.FC = () => {
           <div className="w-full lg:app-container mx-auto flex flex-col md:flex-row justify-between items-center">
             <span className="text-black">Copyright 2024 V3Cars</span>
             <div className="text-black">
-              {[
-                "About",
-                "Advertise With Us",
-                "Careers",
-                "Contact Us",
-                "Term of Uses",
-                "Privacy Policy",
-                "RSS",
-                "Sitemap",
-              ].map((item, i) => (
+              {footerLinks.map((link, i) => (
                 <Link
                   key={i}
-                  href="#"
-                  className={`px-3 hover:underline ${i !== 7 ? "border-r border-[#262629]" : ""}`}
+                  href={link.href}
+                  className={`px-3 hover:underline ${i !== footerLinks.length - 1 ? "border-r border-[#262629]" : ""
+                    }`}
                 >
-                  {item}
+                  {link.label}
                 </Link>
               ))}
             </div>
@@ -277,3 +270,14 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+
+const footerLinks = [
+  { label: "About", href: "/about-us" },
+  { label: "Advertise With Us", href: "mailto:editor@v3cars.com?subject=Advertise with us" },
+  { label: "Careers", href: "/careers" },
+  { label: "Contact Us", href: "/contact-us" },
+  { label: "Term of Uses", href: "/term-of-uses" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "RSS", href: "/rss-feed" },
+  { label: "Sitemap", href: "/sitemap.xml" },
+]

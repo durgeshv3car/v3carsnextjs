@@ -8,7 +8,7 @@ import CommonNewsUpdate from '@/components/common/CommonNewsUpdate';
 import CommonExpertReviews from '@/components/common/CommonExpertReviews';
 import CommonVideos from '@/components/common/CommonVideos';
 import SideBarAdSmall from '@/components/common/SideBarAdSmall';
-import RecentVideos from '@/components/common/RecentVideo';
+import RecentVideos from '@/components/common/CommonRecentVideo';
 import LeaderboardAd from '@/components/common/LeaderboardAd';
 import UpcomingCarInIndia from '@/components/common/UpcomingCarInIndia';
 

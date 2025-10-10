@@ -1,18 +1,17 @@
 'use client'
 
 import TopSection from "@/components/common/TopSection";
-import { Metadata } from "next";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import UpcomingCars from "@/components/common/TopBrands";
 import UpcomingTopBrands from "@/components/common/UpcomingCarByTopBrands";
 import PopularBrands from "@/components/common/PopularBrands";
 import BottomAd from "@/components/common/BottomAd";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
-import CommonExpertReviews from "@/components/common/CommonExpertReviews";
 import CommonVideos from "@/components/common/CommonVideos";
 import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
-import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useGetLatestVideosQuery } from "@/redux/api/homeApi";
-import { useGetLatestLaunchedCarsQuery } from "@/redux/api/latestcarApi";
+import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
+import { useGetLatestLaunchedCarsQuery } from "@/redux/api/carModuleApi";
+import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 
 // export const metadata: Metadata = {
 //     title: "Latest Car Launches in India 2024 | New Car Prices, Images & Specs",
@@ -34,122 +33,6 @@ import { useGetLatestLaunchedCarsQuery } from "@/redux/api/latestcarApi";
 //         "V3Cars"
 //     ],
 // };
-
-const newsList = [
-    {
-        id: "1",
-        image: "/latest-news/image1.png",
-        tag: "June 2024",
-        heading:
-            "Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...",
-        description:
-            "In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures...",
-        author: "Mahesh Yadav",
-        date: "July 31 2024",
-    },
-    {
-        id: "2",
-        image: "/latest-news/image2.png",
-        tag: "Mahindra Thar Roxx",
-        heading:
-            "Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...",
-        description:
-            "In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures...",
-        author: "Mahesh Yadav",
-        date: "July 31 2024",
-    },
-    {
-        id: "3",
-        image: "/latest-news/image3.png",
-        tag: "Upcoming Cars",
-        heading:
-            "Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...",
-        description:
-            "In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures...",
-        author: "Mahesh Yadav",
-        date: "July 31 2024",
-    },
-    {
-        id: "4",
-        image: "/latest-news/image3.png",
-        tag: "Upcoming Cars",
-        heading:
-            "Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...",
-        description:
-            "In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures...",
-        author: "Mahesh Yadav",
-        date: "July 31 2024",
-    },
-    {
-        id: "5",
-        image: "/latest-news/image3.png",
-        tag: "Upcoming Cars",
-        heading:
-            "Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...",
-        description:
-            "In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures...",
-        author: "Mahesh Yadav",
-        date: "July 31 2024",
-    },
-];
-
-const reviewList = [
-    {
-        id: 1,
-        image: '/car-review/image1.png',
-        tag: 'June 2024',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 2,
-        image: '/car-review/image2.png',
-        tag: 'Mahindra Thar Roxx',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 3,
-        image: '/car-review/image3.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 4,
-        image: '/car-review/image1.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-    {
-        id: 5,
-        image: '/car-review/image2.png',
-        tag: 'Upcoming Cars',
-        heading: 'Upcoming Cars In August 2024 - Tata Curvv, Thar Roxx, Citroen Basalt city in...',
-        description: 'In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car in this June 2024 all car sales analysis article, ...',
-        author: 'Mahesh Yadav',
-        date: 'July 31 2024',
-    },
-]
-
-const videoList = new Array(8).fill({
-    thumbnail: '/latest-video/image2.png',
-    playIcon: '/latest-video/youtube.png',
-    date: 'July 30 2024',
-    title:
-        'Summer Range Impact and Charging Issue in EVs | 4 Months & 4000km Driv EVs | 4 Months & 4000km Dr...',
-    description:
-        'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
-})
 
 
 function LatestCars() {

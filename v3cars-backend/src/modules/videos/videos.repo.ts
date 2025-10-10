@@ -11,6 +11,7 @@ type VideoRow = {
   dateTimePublishing: Date;
   last_15days_view?: number;
   last_30days_view?: number;
+  metaDescription?: string | null; // used in latestGlobal/popularGlobal
 };
 
 /** Build EV scope:
@@ -45,6 +46,7 @@ function buildEVScope(modelIds?: number[], fuelType?: string) {
   }
 
   return Prisma.sql` AND ( ${combined} ) `;
+
 }
 
 export class VideosRepo {
@@ -118,6 +120,23 @@ export class VideosRepo {
         AND publishStatus = 2
         ${buildEVScope(modelIds, fuelType)}
       ORDER BY last_30days_view DESC, videoId DESC
+      LIMIT ${limit}
+    `);
+  }
+
+  /** 🆕 Popular (GLOBAL; no type): uniqueView DESC — optional EV scope */
+  async listPopularGlobal(limit = 9, modelIds?: number[], fuelType?: string) {
+    return prisma.$queryRaw<VideoRow[]>(Prisma.sql`
+      SELECT
+        videoId, video_title, metaDescription, pageUrl, video_thumbnail,
+        videoYId, authorId, dateTimePublishing,
+        CAST(uniqueView AS UNSIGNED) AS NumView
+      FROM tblwebvideos
+      WHERE status = 1
+        AND publishStatus = 2
+        AND dateTimePublishing <= NOW()
+        ${buildEVScope(modelIds, fuelType)}
+      ORDER BY NumView DESC, dateTimePublishing DESC, videoId DESC
       LIMIT ${limit}
     `);
   }

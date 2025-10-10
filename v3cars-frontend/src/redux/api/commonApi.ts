@@ -19,15 +19,6 @@ interface SendOtpResponse {
   data?: Record<string, unknown>; // ✅ avoids "any"
 }
 
-interface BrandsResponse {
-  success: boolean;
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-  rows: any[];
-}
-
 interface PopularCitiesResponse {
   success: boolean;
   page: number;
@@ -37,8 +28,13 @@ interface PopularCitiesResponse {
   rows: any[];
 }
 
-interface GetModelsArgs {
-  brandId: number
+interface VideosResponse {
+  success: boolean;
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  rows: any[];
 }
 
 // API definition
@@ -53,20 +49,8 @@ export const commonApi = createApi({
         body: { mobileNumber, otp, otp_options },
       }),
     }),
-    getBrands: builder.query<BrandsResponse, void>({
-      query: () => "/cars/brands?limit=69&page=1",
-    }),
-    getModels: builder.query<BrandsResponse, GetModelsArgs>({
-      query: ({ brandId }) => `/cars/models?brandId=${brandId}&isUpcoming=0`,
-    }),
-    getPopularCities: builder.query<PopularCitiesResponse, void>({
-      query: () => `/locations/cities?isPopular=1&limit=24&sortBy=name_asc`,
-    }),
-    getAllCities: builder.query<PopularCitiesResponse, { page: number; limit: number }>({
-      query: ({ page, limit }) => `/locations/cities?limit=50&page=${page}&sortBy=name_asc`,
-    }),
-    getSearchCity: builder.query<PopularCitiesResponse, { query: string }>({
-      query: ({ query }) => `/locations/cities?q=${query}&limit=1&sortBy=name_asc`,
+    getFAQByModule: builder.query<PopularCitiesResponse, { moduleId: number }>({
+      query: ({ moduleId }) => `/faqs?moduleId=${moduleId}&limit=50&page=1&sortBy=sequence_asc`,
     }),
   }),
 });
@@ -74,9 +58,5 @@ export const commonApi = createApi({
 // Export hook
 export const {
   useSendOtpMutation,
-  useGetBrandsQuery,
-  useGetModelsQuery,
-  useGetPopularCitiesQuery,
-  useGetAllCitiesQuery,
-  useGetSearchCityQuery,
+  useGetFAQByModuleQuery,
 } = commonApi;

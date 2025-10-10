@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetLatestCarsQuery } from '@/redux/api/upcomingApi'
+import { useGetLatestCarsQuery } from '@/redux/api/carModuleApi'
 import { IMAGE_URL } from '@/utils/constant'
 import Link from 'next/link'
 import { FaArrowRight } from 'react-icons/fa'

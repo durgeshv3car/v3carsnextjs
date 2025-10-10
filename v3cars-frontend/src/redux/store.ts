@@ -4,14 +4,16 @@ import storage from "redux-persist/lib/storage";
 
 import { authApi } from "./api/authApi";
 import { commonApi } from "./api/commonApi";
-import { homeApi } from "./api/homeApi";
 import authReducer from "./slices/authSlice";
 import commonReducer from "./slices/commonSlice";
-import sellUsedReducer from "./slices/sellUsedSlice"
-import { upcomingApi } from "./api/upcomingApi";
-import { latestcarApi } from "./api/latestcarApi";
-import { popularCarApi } from "./api/popularApi";
-import { electricApi } from "./api/electricApi";
+import sellUsedReducer from "./slices/sellUsedSlice";
+import { websiteContentApi } from "./api/websiteContentApi";
+import { homeModuleApi } from "./api/homeModuleApi";
+import { carModuleApi } from "./api/carModuleApi";
+import { locationModuleApi } from "./api/locationModuleApi";
+import { newsModuleApi } from "./api/newsModuleApi";
+import { contentModuleApi } from "./api/contentModuleApi";
+import { videosModuleApi } from "./api/videosModuleApi";
 
 const persistConfig = {
   key: "root",
@@ -22,11 +24,13 @@ const persistConfig = {
 const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [commonApi.reducerPath]: commonApi.reducer,
-  [homeApi.reducerPath]: homeApi.reducer,
-  [upcomingApi.reducerPath]: upcomingApi.reducer,
-  [latestcarApi.reducerPath]: latestcarApi.reducer,
-  [popularCarApi.reducerPath]: popularCarApi.reducer,
-  [electricApi.reducerPath]: electricApi.reducer,
+  [homeModuleApi.reducerPath]: homeModuleApi.reducer,
+  [contentModuleApi.reducerPath]: contentModuleApi.reducer,
+  [videosModuleApi.reducerPath]: videosModuleApi.reducer,
+  [websiteContentApi.reducerPath]: websiteContentApi.reducer,
+  [carModuleApi.reducerPath]: carModuleApi.reducer,
+  [locationModuleApi.reducerPath]: locationModuleApi.reducer,
+  [newsModuleApi.reducerPath]: newsModuleApi.reducer,
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
@@ -44,11 +48,13 @@ export const store = configureStore({
     }).concat(
       authApi.middleware,
       commonApi.middleware,
-      homeApi.middleware,
-      upcomingApi.middleware,
-      latestcarApi.middleware,
-      popularCarApi.middleware,
-      electricApi.middleware,
+      homeModuleApi.middleware,
+      contentModuleApi.middleware,
+      videosModuleApi.middleware,
+      websiteContentApi.middleware,
+      carModuleApi.middleware,
+      locationModuleApi.middleware,
+      newsModuleApi.middleware,
     ),
 });
 

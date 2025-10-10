@@ -206,18 +206,20 @@ model tbladvsearchsitemap_del {
 }
 
 model tblauthor {
-  id            Int      @id @default(autoincrement())
-  name          String   @db.VarChar(120)
-  url_slug      String?  @db.VarChar(150)
-  imageUrl      String   @db.VarChar(555)
-  authorBio     String   @db.Text
-  facebookURL   String?  @db.VarChar(355)
-  twitterURL    String?  @db.VarChar(355)
-  instaURL      String?  @db.VarChar(355)
-  linkedInURL   String?  @db.VarChar(355)
-  addedDateTime DateTime @db.DateTime(0)
-  status        Int?     @default(1) @db.TinyInt
-  imageAltText  String?  @db.VarChar(255)
+  id                 Int      @id @default(autoincrement())
+  name               String   @db.VarChar(120)
+  designation        String?  @db.VarChar(255)
+  url_slug           String?  @db.VarChar(150)
+  imageUrl           String   @db.VarChar(555)
+  backgroundImageUrl String   @db.VarChar(555)
+  authorBio          String   @db.Text
+  facebookURL        String?  @db.VarChar(355)
+  twitterURL         String?  @db.VarChar(355)
+  instaURL           String?  @db.VarChar(355)
+  linkedInURL        String?  @db.VarChar(355)
+  addedDateTime      DateTime @db.DateTime(0)
+  status             Int?     @default(1) @db.TinyInt
+  imageAltText       String?  @db.VarChar(255)
 
   @@index([url_slug], map: "idx_tblauthor_url_slug")
   @@index([status], map: "status")
@@ -1646,7 +1648,6 @@ model tbloffers {
   uniqueCode      String?   @db.VarChar(45)
 }
 
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model tbloffers_view {
   visitor_ip String   @db.VarChar(30)
@@ -2373,38 +2374,6 @@ model tblwebsettings {
   @@ignore
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model tblwebsitecontent {
-  aboutUsTitle              String? @db.VarChar(100)
-  aboutUsContent            String? @db.Text
-  contactUsTitle            String? @db.VarChar(100)
-  contactUsContent          String? @db.Text
-  privancyTitle             String? @db.VarChar(100)
-  privancyContent           String? @db.LongText
-  termTitle                 String? @db.VarChar(100)
-  termContent               String? @db.LongText
-  consentDecTitle           String? @db.VarChar(100)
-  consentDecContent         String? @db.LongText
-  certifiedCicTitle         String? @db.VarChar(150)
-  certifiedCicContent       String? @db.LongText
-  emiCalcHeading1           String? @db.VarChar(100)
-  emiCalcDesc1              String? @db.VarChar(1000)
-  emiCalcHeading2           String? @db.VarChar(100)
-  emiCalcDesc2              String? @db.Text
-  emiCalcDesc3              String? @db.Text
-  fuelCostPageTitle         String? @db.VarChar(100)
-  fuelCostPageDesc          String? @db.Text
-  fuelCostFaqTitle          String? @db.VarChar(100)
-  fuelCostFaqDesc           String? @db.Text
-  carLoanContent            String? @db.Text
-  mileageCalcContent        String? @db.LongText
-  mileageCalcHeadingContent String? @db.LongText
-  fuelCostIntDesc           String? @db.LongText
-  fuelCostIntHeadDesc       String? @db.LongText
-
-  @@ignore
-}
-
 model tblwebsiteimages {
   imageId      Int      @id @default(autoincrement())
   imagePath    String   @db.VarChar(500)
@@ -2473,6 +2442,101 @@ model tblwhatsapplog {
   formType     Int?      @db.TinyInt
   ipAddress    String?   @db.VarChar(45)
   dateTime     DateTime? @db.DateTime(0)
+}
+
+model tblimagebank {
+  id            Int       @id @default(autoincrement())
+  fileName      String?   @db.VarChar(255)
+  fileType      String?   @db.VarChar(20)
+  fileSize      Int?
+  width         Int?
+  height        Int?
+  altText       String?   @db.Text
+  tags          String?   @db.Text
+  linkedPages   String?   @db.Text
+  uploadedBy    String?   @db.VarChar(100)
+  uploadTime    DateTime? @default(now()) @db.DateTime(0)
+  updatedTime   DateTime? @default(now()) @db.DateTime(0)
+  isDeleted     Boolean?  @default(false)
+  isLogo        Boolean?  @default(false)
+  isWatermarked Boolean?  @default(false)
+}
+
+model tblwebsitecontent {
+  id                        Int         @id @default(autoincrement()) @db.UnsignedInt
+  moduleId                  Int?        @db.UnsignedInt
+  modelId                   Int?        @db.UnsignedInt
+  aboutUsTitle              String?     @db.VarChar(100)
+  aboutUsContent            String?     @db.Text
+  contactUsTitle            String?     @db.VarChar(100)
+  contactUsContent          String?     @db.Text
+  privancyTitle             String?     @db.VarChar(100)
+  privancyContent           String?     @db.LongText
+  termTitle                 String?     @db.VarChar(100)
+  termContent               String?     @db.LongText
+  consentDecTitle           String?     @db.VarChar(100)
+  consentDecContent         String?     @db.LongText
+  certifiedCicTitle         String?     @db.VarChar(150)
+  certifiedCicContent       String?     @db.LongText
+  emiCalcHeading1           String?     @db.VarChar(100)
+  emiCalcDesc1              String?     @db.VarChar(1000)
+  emiCalcHeading2           String?     @db.VarChar(100)
+  emiCalcDesc2              String?     @db.Text
+  emiCalcDesc3              String?     @db.Text
+  fuelCostPageTitle         String?     @db.VarChar(100)
+  fuelCostPageDesc          String?     @db.Text
+  fuelCostFaqTitle          String?     @db.VarChar(100)
+  fuelCostFaqDesc           String?     @db.Text
+  carLoanContent            String?     @db.Text
+  mileageCalcContent        String?     @db.LongText
+  mileageCalcHeadingContent String?     @db.LongText
+  fuelCostIntDesc           String?     @db.LongText
+  fuelCostIntHeadDesc       String?     @db.LongText
+  module                    tblmodules? @relation("modules_websiteContents", fields: [moduleId], references: [id], onDelete: Cascade, map: "fk_tblwebsitecontent_module")
+
+  @@index([moduleId], map: "idx_tblwebsitecontent_moduleId")
+  @@index([modelId], map: "idx_tblwebsitecontent_modelId")
+  @@map("tblwebsitecontent")
+}
+
+model tblmodules {
+  id                 Int                  @id @default(autoincrement()) @db.UnsignedInt
+  name               String               @unique(map: "uq_tblmodules_name") @db.VarChar(150)
+  createdAt          DateTime             @default(now()) @db.DateTime(0)
+  faqs               tblfaqs[]            @relation("modules_faqs")
+  websiteContents    tblwebsitecontent[]  @relation("modules_websiteContents")
+  tblwebsitecontent2 tblwebsitecontent2[]
+
+  @@map("tblmodules")
+}
+
+model tblfaqs {
+  id              Int        @id @default(autoincrement()) @db.UnsignedInt
+  moduleId        Int        @db.UnsignedInt
+  que             String     @db.VarChar(500)
+  ans             String     @db.Text
+  sequance        Int        @default(1) @db.UnsignedInt
+  addedBy         Int?       @db.UnsignedInt
+  updatedBy       Int?       @db.UnsignedInt
+  careateDateTime DateTime   @default(now()) @db.DateTime(0)
+  updateDateTime  DateTime?  @db.DateTime(0)
+  tblmodules      tblmodules @relation("modules_faqs", fields: [moduleId], references: [id], onDelete: Cascade, map: "fk_tblfaqs_module")
+
+  @@index([moduleId], map: "idx_tblfaqs_moduleId")
+  @@index([sequance], map: "idx_tblfaqs_sequance")
+  @@map("tblfaqs")
+}
+
+model tblwebsitecontent2 {
+  id          Int        @id @default(autoincrement()) @db.UnsignedInt
+  moduleId    Int        @db.UnsignedInt
+  title       String?    @db.VarChar(200)
+  description String?    @db.LongText
+  createdAt   DateTime   @default(now()) @db.DateTime(0)
+  updatedAt   DateTime   @default(now()) @db.DateTime(0)
+  tblmodules  tblmodules @relation(fields: [moduleId], references: [id], onDelete: Cascade, map: "fk_tblwebsitecontent2_module")
+
+  @@index([moduleId], map: "idx_tblwebsitecontent2_moduleId")
 }
 
 enum tblfeaturesnew_selectionType {
