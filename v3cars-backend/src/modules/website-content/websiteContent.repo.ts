@@ -7,8 +7,9 @@ import type {
   WebsiteContentAuthor,
 } from './websiteContent.types.js';
 
-/* ---------- Generic (tblwebsitecontent2) ---------- */
 
+
+/* ---------- Generic (tblwebsitecontent2) ---------- */
 function buildWC2Where(q: WebsiteContentListQuery): Prisma.tblwebsitecontent2WhereInput {
   const where: Prisma.tblwebsitecontent2WhereInput = { moduleId: q.moduleId! };
   if (q.q) {
@@ -16,6 +17,7 @@ function buildWC2Where(q: WebsiteContentListQuery): Prisma.tblwebsitecontent2Whe
   }
   return where;
 }
+
 
 function buildWC2Order(sortBy?: WebsiteContentListQuery['sortBy']): Prisma.tblwebsitecontent2OrderByWithRelationInput[] {
   switch (sortBy) {
@@ -27,6 +29,7 @@ function buildWC2Order(sortBy?: WebsiteContentListQuery['sortBy']): Prisma.tblwe
     default:           return [{ createdAt: 'desc' }, { id: 'desc' }];
   }
 }
+
 
 const wc2Select = {
   id: true,
@@ -78,6 +81,8 @@ const insuranceSelect = {
 } as const;
 
 /* ---------- Authors (tblauthor) for moduleId=6 ---------- */
+
+
 /** IMPORTANT FIX:
  * When authorId is provided, DO NOT force status = 1.
  * Otherwise single-author fetch returns empty for inactive/NULL status authors.
@@ -107,6 +112,7 @@ function buildAuthorsWhere(q: WebsiteContentListQuery): Prisma.tblauthorWhereInp
   return where;
 }
 
+
 const authorsSelect = {
   id: true,
   name: true,
@@ -127,6 +133,7 @@ const authorsSelect = {
 export class WebsiteContentRepo {
   /** List */
   async list(q: WebsiteContentListQuery) {
+
     const takeDefault = Math.max(1, Math.min(q.limit ?? 50, 100));
     const skipDefault = Math.max(0, ((q.page ?? 1) - 1) * takeDefault);
 
@@ -218,6 +225,7 @@ export class WebsiteContentRepo {
 
   /** Detail by id */
   async getById(id: number, moduleId?: number) {
+
     if (moduleId === 3) {
       const row = await prisma.tblcarinsurancecontent.findFirst({
         where: { uId: id },
@@ -302,5 +310,6 @@ export class WebsiteContentRepo {
   }
 
 }
+
 
 
