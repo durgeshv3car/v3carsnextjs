@@ -42,6 +42,9 @@ export const websiteContentApi = createApi({
         getApplyCarLoanIndia: builder.query<Response, void>({
             query: () => "/website-content?moduleId=10",
         }),
+        getMileageCalculator: builder.query<Response, void>({
+            query: () => "/website-content?moduleId=11",
+        }),
     }),
 });
 
@@ -54,4 +57,5 @@ export const {
     useGetPrivacyPolicyQuery,
     useGetCarInsuranceIndiaQuery,
     useGetApplyCarLoanIndiaQuery,
+    useGetMileageCalculatorQuery,
 } = websiteContentApi;

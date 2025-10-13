@@ -4,6 +4,7 @@ import { useGetQuickLookQuery } from '@/redux/api/homeModuleApi'
 import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { BiTachometer } from 'react-icons/bi'
 import { FaArrowRight } from 'react-icons/fa'
@@ -51,6 +52,7 @@ const QuickLook: React.FC = () => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
+    const router = useRouter()
 
     const handleScroll = () => {
         const container = scrollRef.current;
@@ -86,7 +88,7 @@ const QuickLook: React.FC = () => {
                 <div className="w-full lg:app-container mx-auto space-y-3">
                     <div className="flex items-center w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-semibold lg:font-medium">For Your Quick Look</h2>
-                        <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center capitalize">
+                        <Link href={activeTab === "popular" ? "/popular-cars" : "/latest-launched-cars"} className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center capitalize">
                             View All {activeTab} Cars
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -194,7 +196,10 @@ const QuickLook: React.FC = () => {
                                         <p className="font-semibold">
                                             ₹{(car.priceMin / 100000).toFixed(2)} - {(car.priceMax / 100000).toFixed(2)} Lakh*
                                         </p>
-                                        <button className='p-3 font-semibold text-sm w-full text-black flex justify-between items-center cursor-pointer rounded-lg bg-yellow-400'>
+                                        <button
+                                            className='p-3 font-semibold text-sm w-full text-black flex justify-between items-center cursor-pointer rounded-lg bg-yellow-400'
+                                            onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
+                                        >
                                             View Current Offers
                                             <FaArrowRight />
                                         </button>

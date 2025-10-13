@@ -6,6 +6,23 @@ interface Response {
   rows: [];
 }
 
+interface LatestFuelPriceResponse {
+  success: boolean;
+  data: LatestFuelPriceType;
+}
+
+type LatestFuelPriceType = {
+  scope: string;
+  stateId: number;
+  stateName: string;
+  districtId: number;
+  cityName: string;
+  price: number;
+  prevPrice: number;
+  change: number;
+  updatedAt: string;
+}
+
 // API definition
 export const fuelModuleApi = createApi({
   reducerPath: "fuelModuleApi",
@@ -14,10 +31,14 @@ export const fuelModuleApi = createApi({
     get10DaysFuelPrice: builder.query<Response, { districtId: number }>({
       query: ({ districtId }) => `/fuel/price/history/combined?districtId=${districtId}&days=11`,
     }),
+    getLatestFuelPrice: builder.query<LatestFuelPriceResponse, { districtId: number }>({
+      query: ({ districtId }) => `/fuel/price/latest?fuelType=1&districtId=${districtId}`,
+    }),
   }),
 });
 
 // Export hook
 export const {
   useGet10DaysFuelPriceQuery,
+  useGetLatestFuelPriceQuery,
 } = fuelModuleApi;

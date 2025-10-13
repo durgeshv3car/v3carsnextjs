@@ -7,11 +7,13 @@ import { useEffect, useRef, useState } from 'react';
 import { CiCalendarDate } from 'react-icons/ci';
 import { FaUserEdit } from 'react-icons/fa';
 import DOMPurify from "dompurify";
+import { useRouter } from 'next/navigation';
 
 interface CommonNewsUpdateProps {
   title: string;
   view: string;
   newsList: NewsItem[];
+  link: string;
 }
 
 interface NewsItem {
@@ -32,10 +34,11 @@ interface NewsItem {
   commentsCount: number;
 }
 
-const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsList }) => {
+const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsList, link }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
+  const router = useRouter()
 
   const handleScroll = () => {
     const container = scrollRef.current;
@@ -71,7 +74,7 @@ const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsLi
         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
           <h2 className="text-lg font-medium">{title}</h2>
           <Link
-            href="#"
+            href={link}
             className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
           >
             View All {view}
@@ -135,7 +138,8 @@ const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsLi
           return (
             <div
               key={item.id}
-              className="bg-white dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg snap-start h-auto overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4"
+              className="bg-white dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg snap-start h-auto overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4 cursor-pointer"
+              onClick={()=>{router.push(`${link}/${item.pageUrl}`)}}
             >
               {/* Fixed height image */}
               <div className="relative w-full">

@@ -37,6 +37,8 @@ const items = [
   { label: "Car Guide", href: "/car-guide" },
 ];
 
+const currentYear = new Date().getFullYear();
+
 const Footer: React.FC = () => {
   return (
     <>
@@ -245,7 +247,7 @@ const Footer: React.FC = () => {
 
         <div className="bg-yellow-400 text-sm py-6 text-center px-6 lg:px-10">
           <div className="w-full lg:app-container mx-auto flex flex-col md:flex-row justify-between items-center">
-            <span className="text-black">Copyright 2024 V3Cars</span>
+            <span className="text-black">Copyright {currentYear} V3Cars</span>
             <div className="text-black">
               {footerLinks.map((link, i) => (
                 <Link

@@ -13,7 +13,7 @@ import MobileExpertCarReviews from "@/components/mobile/home/ExpertCarReviews";
 import LatestVideos from "@/components/responsive/home/LatestVideos";
 import CarWebStories from "@/components/responsive/home/CarWebStories";
 import BottomAd from "@/components/common/BottomAd";
-import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery, useUpcomingCarsQuery } from "@/redux/api/homeModuleApi";
+import { useGetExpertCarReviewsQuery, useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import { useState } from "react";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/carModuleApi";
@@ -26,16 +26,50 @@ export type CarPriceTab =
   | 'BETWEEN_20_40L'
   | 'ABOVE_40L';
 
+
+interface Brand {
+  id: number;
+  name: string;
+  slug: string;
+  logo: string;
+}
+
+interface ImageType {
+  name: string;
+  alt: string;
+  url: string;
+}
+
+interface CarProps {
+  modelId: number;
+  modelName: string;
+  modelSlug: string;
+  brandId: number;
+  modelBodyTypeId: number;
+  isUpcoming: boolean;
+  launchDate: string;
+  totalViews: number;
+  expectedBasePrice: number;
+  expectedTopPrice: number;
+  brand: Brand;
+  priceMin: number;
+  priceMax: number;
+  powerPS: number;
+  torqueNM: number;
+  mileageKMPL: number;
+  image: ImageType;
+  imageUrl: string;
+}
+
 export default function Home() {
+  const [upcomingCount, setUpcomingCount] = useState<number | null>(null);
   const [selectBrand, setSelectBrand] = useState<number | null>(null)
-  const { data: upcomingData } = useUpcomingCarsQuery();
   const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
   const { data: brandsData } = useGetBrandsQuery();
-  const { data: modelsData } = useGetModelsQuery( { brandId: selectBrand! }, {skip: !selectBrand,} );
+  const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand! }, { skip: !selectBrand, });
   const { data: expertCarReviewsData } = useGetExpertCarReviewsQuery();
   const { data: variantsExplainedData } = useGetVariantsExplainedQuery();
 
-  const upcomingCars = upcomingData?.rows ?? [];
   const latestCarNews = latestCarNewsData?.rows ?? [];
   const brands = brandsData?.rows ?? [];
   const models = modelsData?.rows ?? [];
@@ -53,8 +87,8 @@ export default function Home() {
         <div className="py-6 px-4 lg:px-10">
           <div className="w-full lg:app-container mx-auto space-y-6">
             <UpcomingCarInIndia
-              title={"158+ Upcoming Cars In India"}
-              data={upcomingCars ?? []}
+              title={`${upcomingCount}+ Upcoming Cars In India`}
+              // setUpcomingCount={setUpcomingCount}
             />
           </div>
         </div>
@@ -63,6 +97,7 @@ export default function Home() {
         title="Latest Car News"
         view="Latest News"
         data={latestCarNews}
+        link="/news"
       />
         :
         <div className="w-full lg:app-container mx-auto py-6">
@@ -70,6 +105,7 @@ export default function Home() {
             title="Latest Car News"
             view="Latest News"
             newsList={latestCarNews}
+            link={"/news"}
           />
         </div>
 
@@ -88,6 +124,7 @@ export default function Home() {
           title="Variants Explained"
           view="Variants Explained"
           data={variantsExplained}
+          link="/variant-explained"
         />
         :
         // <VariantsExplained />
@@ -96,6 +133,7 @@ export default function Home() {
             title="Variants Explained"
             view="Variants Explained"
             newsList={variantsExplained}
+            link={"/variant-explained"}
           />
         </div>
       }
@@ -110,6 +148,7 @@ export default function Home() {
             title="Expert Car Reviews"
             view="Car Reviews"
             newsList={expertCarReviews}
+            link={"/car-expert-reviews"}
           />
         </div>
       }

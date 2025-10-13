@@ -87,12 +87,14 @@ function PopularCars() {
                                 title="Cars News Updates"
                                 view="Cars News"
                                 newsList={latestCarNews}
+                                link={"/news"}
                             />
 
                             <CommonNewsUpdate
                                 title="Car Expert Reviews"
                                 view="Reviews"
                                 newsList={expertCarReviews}
+                                link={"/news"}
                             />
 
                             <CommonVideos

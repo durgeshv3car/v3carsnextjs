@@ -8,6 +8,9 @@ import 'swiper/css/pagination';
 import { CiSearch } from 'react-icons/ci';
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 import Image from 'next/image';
+import { useDispatch } from 'react-redux';
+import { setBodyTypeIds, setBrandIds, setPriceBucket } from '@/redux/slices/advanceSearchSlice';
+import { useRouter } from 'next/navigation';
 
 const slides = [
     {
@@ -96,6 +99,8 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
     const [budget, setBudget] = useState<string>("")
     const [vehicleType, setVehicleType] = useState<number | null>(null)
     const [activeTab, setActiveTab] = useState('budget');
+    const dispatch = useDispatch();
+    const router = useRouter()
 
     function normalizeBrandName(name: string) {
         const lower = name.toLowerCase();
@@ -103,6 +108,35 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
             return "Maruti Suzuki";
         }
         return name;
+    }
+
+    function handleSearch() {
+
+        if (activeTab === "budget") {
+            if (!budget) {
+                alert("Budget Not Selected");
+                return;
+            }
+
+            if (!vehicleType) {
+                alert("Vehicle Not Selected");
+                return;
+            }
+
+            dispatch(setPriceBucket(budget));
+            dispatch(setBodyTypeIds([vehicleType]));
+
+        } else {
+            if (!selectBrand) {
+                alert("Brand Not Selected");
+                return;
+            }
+
+            dispatch(setBrandIds([selectBrand]));
+        }
+
+        // 🔹 Common redirect
+        router.push("/search/new-cars");
     }
 
     function splitBrands(brands: CarBrand[]) {
@@ -325,7 +359,10 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                         </div>
                     )}
 
-                    <button className="w-full font-semibold text-xs bg-yellow-400 hover:bg-yellow-500 text-black py-3 rounded-md flex items-center justify-center gap-1">
+                    <button
+                        className="w-full font-semibold text-xs bg-yellow-400 hover:bg-yellow-500 text-black py-3 rounded-md flex items-center justify-center gap-1"
+                        onClick={handleSearch}
+                    >
                         <CiSearch size={16} /> SEARCH
                     </button>
                 </div>

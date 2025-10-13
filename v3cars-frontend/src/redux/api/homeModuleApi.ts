@@ -21,8 +21,8 @@ export const homeModuleApi = createApi({
     FetchBaseQueryError
   >,
   endpoints: (builder) => ({
-    UpcomingCars: builder.query<Response, void>({
-      query: () => "/home/upcoming-cars?limit=30&page=1",
+    UpcomingCars: builder.query<Response, number | void>({
+      query: (page = 1) => `/home/upcoming-cars?limit=50&page=${page}`,
     }),
     getQuickLook: builder.query<
       Response,

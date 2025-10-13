@@ -5,6 +5,7 @@ import { useGetLatestVideosQuery } from '@/redux/api/videosModuleApi';
 import { IMAGE_URL } from '@/utils/constant';
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation';
 
 interface VideoItem {
     id: number;
@@ -26,6 +27,7 @@ interface VideoItem {
 const LatestVideos: React.FC = () => {
     const { data: latestVideosData } = useGetLatestVideosQuery()
     const latestVideos: VideoItem[] = latestVideosData?.rows ?? []
+    const router = useRouter()
 
     return (
         <div className="bg-[#E2E2E2] dark:bg-[#262629] py-10 px-6 lg:px-10">
@@ -33,7 +35,7 @@ const LatestVideos: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                         <h2 className="text-lg font-medium">Latest Videos</h2>
-                        <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
+                        <Link href="/car-review-videos" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
                             View All Latest Videos
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -47,7 +49,9 @@ const LatestVideos: React.FC = () => {
                     {latestVideos.map((video) => (
                         <div
                             key={video.id}
-                            className="snap-start lg:snap-none h-auto rounded shadow-md overflow-hidden bg-white dark:bg-[#171717] border border-[#DEE2E6] dark:border-[#2E2E2E] p-1 flex flex-col">
+                            className="snap-start lg:snap-none h-auto rounded shadow-md overflow-hidden bg-white dark:bg-[#171717] border border-[#DEE2E6] dark:border-[#2E2E2E] p-1 flex flex-col"
+                            onClick={()=>{router.push(`/car-review-videos/${video.pageUrl}`)}}
+                            >
                             {/* Thumbnail */}
                             <div className="relative h-[225px] cursor-pointer group">
                                 <Image

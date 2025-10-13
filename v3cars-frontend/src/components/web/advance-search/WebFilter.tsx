@@ -37,7 +37,7 @@ export default function WebFilter() {
 
     const renderFilterComponent = (key: string) => {
         switch (key) {
-            case 'brand':
+            case 'brand':   
                 return <BrandFilter openSection={key} />;
             case 'price':
                 return <PriceRangeFilter openSection={key} />;
