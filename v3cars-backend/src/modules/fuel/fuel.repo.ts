@@ -3,38 +3,49 @@ import { Prisma } from '@prisma/client';
 
 export class FuelRepo {
   /** latest for districtId (city) */
-  async latestByDistrict(districtId: number, fuelType: number) {
-    const rows = await prisma.$queryRaw<Array<{
+   async latestByDistrict(districtId: number, fuelType: number) {
+    // try city first
+    const cityRow = await prisma.$queryRaw<Array<{
       districtId: number; stateId: number; price: number; ts: Date;
-      prevPrice: number | null; stateName: string | null; cityName: string | null;
     }>>(Prisma.sql`
-      WITH latest AS (
-        SELECT f.districtId, f.stateId, f.fuelPrice AS price, f.addedDateTime AS ts
-        FROM tblfuelprice f
-        WHERE f.districtId = ${districtId}
-          AND f.fuelType   = ${fuelType}
-        ORDER BY f.addedDateTime DESC
-        LIMIT 1
-      ),
-      prev AS (
+      SELECT f.districtId, f.stateId, f.fuelPrice AS price, f.addedDateTime AS ts
+      FROM tblfuelprice f
+      WHERE f.districtId = ${districtId} AND f.fuelType = ${fuelType}
+      ORDER BY f.addedDateTime DESC, f.id DESC
+      LIMIT 1
+    `);
+
+    if (cityRow.length) {
+      const prev = await prisma.$queryRaw<Array<{ prevPrice: number | null }>>(Prisma.sql`
         SELECT fp.fuelPrice AS prevPrice
         FROM tblfuelprice fp
-        JOIN latest l ON l.districtId = fp.districtId
-        WHERE fp.fuelType = ${fuelType}
-          AND fp.addedDateTime < (SELECT ts FROM latest)
-        ORDER BY fp.addedDateTime DESC
+        WHERE fp.districtId = ${districtId} AND fp.fuelType = ${fuelType}
+          AND fp.addedDateTime < ${cityRow[0].ts}
+        ORDER BY fp.addedDateTime DESC, fp.id DESC
         LIMIT 1
-      )
-      SELECT
-        l.districtId, l.stateId, l.price, l.ts,
-        (SELECT prevPrice FROM prev) AS prevPrice,
-        s.stateName AS stateName,
-        c.cityName  AS cityName
-      FROM latest l
-      LEFT JOIN tblstates s ON s.stateId = l.stateId
-      LEFT JOIN tblcities c ON c.cityId  = l.districtId
-    `);
-    return rows[0] ?? null;
+      `);
+      const meta = await prisma.tblcities.findFirst({ where: { cityId: districtId }, select: { cityName: true, stateId: true } });
+      const stateName = meta?.stateId ? (await prisma.tblstates.findFirst({ where: { stateId: meta.stateId }, select: { stateName: true } }))?.stateName ?? null : null;
+      return {
+        districtId, stateId: meta?.stateId ?? cityRow[0].stateId,
+        price: cityRow[0].price, ts: cityRow[0].ts,
+        prevPrice: prev[0]?.prevPrice ?? null,
+        stateName, cityName: meta?.cityName ?? null,
+      };
+    }
+
+    // fallback → state
+    const meta = await prisma.tblcities.findFirst({ where: { cityId: districtId }, select: { cityName: true, stateId: true } });
+    if (!meta?.stateId) return null;
+
+    const stateLatest = await this.latestByState(meta.stateId, fuelType);
+    if (!stateLatest) return null;
+
+    return {
+      ...stateLatest,
+      districtId,
+      cityName: meta.cityName ?? null,
+    };
   }
 
   /** latest for stateId — pick latest row across its districts (cities) */
@@ -79,19 +90,32 @@ export class FuelRepo {
   }
 
   /** history last N days for a district (city): latest per day */
+   /** history for city — fallback to state if city has no rows */
   async historyByDistrict(districtId: number, fuelType: number, days: number) {
-    return prisma.$queryRaw<Array<{ day: string; price: number }>>(Prisma.sql`
-      SELECT DATE_FORMAT(fp.addedDateTime, '%Y-%m-%d') AS day,
-             CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
-      FROM tblfuelprice fp
-      WHERE fp.districtId = ${districtId}
-        AND fp.fuelType   = ${fuelType}
-        AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
-      GROUP BY DATE(fp.addedDateTime)
-      ORDER BY day ASC
+    const anyCity = await prisma.$queryRaw<Array<{ n: number }>>(Prisma.sql`
+      SELECT COUNT(*) AS n
+      FROM tblfuelprice
+      WHERE districtId = ${districtId} AND fuelType = ${fuelType}
+        AND addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
     `);
-  }
+    if (Number(anyCity[0]?.n ?? 0) > 0) {
+      return prisma.$queryRaw<Array<{ day: string; price: number }>>(Prisma.sql`
+        SELECT DATE_FORMAT(fp.addedDateTime, '%Y-%m-%d') AS day,
+               CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
+        FROM tblfuelprice fp
+        WHERE fp.districtId = ${districtId}
+          AND fp.fuelType   = ${fuelType}
+          AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
+        GROUP BY DATE(fp.addedDateTime)
+        ORDER BY day ASC
+      `);
+    }
 
+    // fallback to state history
+    const meta = await prisma.tblcities.findFirst({ where: { cityId: districtId }, select: { stateId: true } });
+    if (!meta?.stateId) return [];
+    return this.historyByState(meta.stateId, fuelType, days);
+  }
   /** history last N days for a state: latest per day across its cities */
   async historyByState(stateId: number, fuelType: number, days: number) {
     return prisma.$queryRaw<Array<{ day: string; price: number }>>(Prisma.sql`
@@ -110,7 +134,7 @@ export class FuelRepo {
   }
 
   /** state-wise list (latest + prev delta) for one fuelType */
- async statesLatest(fuelType: number, q?: { q?: string; skip?: number; take?: number; sortBy?: string }) {
+  async statesLatest(fuelType: number, q?: { q?: string; skip?: number; take?: number; sortBy?: string }) {
     const nameFilter = q?.q ? Prisma.sql` AND s.stateName LIKE ${'%' + q.q + '%'} ` : Prisma.empty;
 
     const rows = await prisma.$queryRaw<Array<{
@@ -166,7 +190,7 @@ export class FuelRepo {
     return { rows, total: Number(totalRows[0]?.cnt ?? 0) };
   }
 
-   async statesLatestCombined(q?: { q?: string; skip?: number; take?: number }) {
+  async statesLatestCombined(q?: { q?: string; skip?: number; take?: number }) {
     const nameFilter = q?.q ? Prisma.sql` AND s.stateName LIKE ${'%' + q.q + '%'} ` : Prisma.empty;
 
     const rows = await prisma.$queryRaw<Array<{
@@ -227,162 +251,172 @@ export class FuelRepo {
   }
 
   /** cities list within a state (latest + delta) for one fuelType */
-  async citiesLatest(stateId: number, fuelType: number, q?: { q?: string; skip?: number; take?: number; sortBy?: string }) {
-    const nameFilter = q?.q ? Prisma.sql` AND c.cityName LIKE ${'%' + q.q + '%'} ` : Prisma.empty;
+  async citiesLatest(
+    stateId: number,
+    fuelType: number,
+    q?: { q?: string; skip?: number; take?: number; sortBy?: string; popular?: number }
+  ) {
+    const nameFilter  = q?.q ? Prisma.sql` AND c.cityName LIKE ${'%' + q.q + '%'} ` : Prisma.empty;
+    const popularOnly = q?.popular === 1 ? Prisma.sql` AND c.isPopularCity = 1 ` : Prisma.empty;
 
-    const rows = await prisma.$queryRaw<Array<{
-      districtId: number; cityName: string | null; stateId: number;
-      price: number | null; prevPrice: number | null; ts: Date | null;
-    }>>(Prisma.sql`
-      WITH latest_city AS (
-        SELECT districtId, MAX(addedDateTime) AS maxTs
-        FROM tblfuelprice
-        WHERE stateId = ${stateId} AND fuelType = ${fuelType}
-        GROUP BY districtId
-      ),
-      latest_row AS (
-        SELECT lc.districtId, f.fuelPrice AS price, f.addedDateTime AS ts
-        FROM latest_city lc
-        JOIN tblfuelprice f
-          ON f.districtId = lc.districtId
-         AND f.addedDateTime = lc.maxTs
-         AND f.fuelType = ${fuelType}
-      ),
-      prev_row AS (
-        SELECT f.districtId,
-               CAST(SUBSTRING_INDEX(GROUP_CONCAT(f.fuelPrice ORDER BY f.addedDateTime DESC), ',', 2) AS CHAR) AS pair
-        FROM tblfuelprice f
-        JOIN latest_city lc ON lc.districtId = f.districtId
-        WHERE f.fuelType = ${fuelType}
-          AND f.addedDateTime <= lc.maxTs
-        GROUP BY f.districtId
-      )
-      SELECT
-        c.cityId      AS districtId,       -- keep API field name
-        c.cityName    AS cityName,
-        c.stateId     AS stateId,
-        lr.price,
-        CASE
-          WHEN LOCATE(',', pr.pair) > 0
-          THEN CAST(SUBSTRING_INDEX(pr.pair, ',', -1) AS DECIMAL(10,2))
-          ELSE NULL
-        END AS prevPrice,
-        lr.ts
+    // 1) State latest & previous once
+    const stateLatest = await prisma.$queryRaw<Array<{ price: number | null; ts: Date | null }>>(Prisma.sql`
+      SELECT fp.fuelPrice AS price, fp.addedDateTime AS ts
+      FROM tblfuelprice fp
+      WHERE fp.stateId = ${stateId} AND fp.fuelType = ${fuelType}
+      ORDER BY fp.addedDateTime DESC, fp.id DESC
+      LIMIT 1
+    `);
+    const statePrev = await prisma.$queryRaw<Array<{ prevPrice: number | null }>>(Prisma.sql`
+      SELECT fp.fuelPrice AS prevPrice
+      FROM tblfuelprice fp
+      WHERE fp.stateId = ${stateId} AND fp.fuelType = ${fuelType}
+        AND fp.addedDateTime < (SELECT addedDateTime FROM tblfuelprice
+                                 WHERE stateId=${stateId} AND fuelType=${fuelType}
+                                 ORDER BY addedDateTime DESC, id DESC LIMIT 1)
+      ORDER BY fp.addedDateTime DESC, fp.id DESC
+      LIMIT 1
+    `);
+
+    const latestPrice = stateLatest[0]?.price ?? null;
+    const latestTs    = stateLatest[0]?.ts ?? null;
+    const prevPrice   = statePrev[0]?.prevPrice ?? null;
+
+    // 2) Cities list (scope from master)
+    const rows = await prisma.$queryRaw<Array<{ districtId: number; cityName: string | null; stateId: number }>>(Prisma.sql`
+      SELECT c.cityId AS districtId, c.cityName, c.stateId
       FROM tblcities c
-      LEFT JOIN latest_row lr ON lr.districtId = c.cityId
-      LEFT JOIN prev_row pr   ON pr.districtId = c.cityId
       WHERE c.stateId = ${stateId}
+        ${popularOnly}
         ${nameFilter}
       ORDER BY
-        ${q?.sortBy === 'price_desc' ? Prisma.sql`lr.price DESC` :
-          q?.sortBy === 'price_asc' ? Prisma.sql`lr.price ASC` :
-          Prisma.sql`c.cityName ASC`}
+        ${q?.sortBy === 'price_desc' || q?.sortBy === 'price_asc'
+          ? Prisma.sql`c.cityName ASC` // price same for all, so keep name order stable
+          : Prisma.sql`c.cityName ASC`}
       LIMIT ${q?.take ?? 50} OFFSET ${q?.skip ?? 0}
     `);
 
     const totalRows = await prisma.$queryRaw<Array<{ cnt: number }>>(Prisma.sql`
-      SELECT COUNT(*) AS cnt FROM tblcities c
-      WHERE c.stateId = ${stateId} ${nameFilter}
+      SELECT COUNT(*) AS cnt
+      FROM tblcities c
+      WHERE c.stateId = ${stateId}
+        ${popularOnly}
+        ${nameFilter}
     `);
-    return { rows, total: Number(totalRows[0]?.cnt ?? 0) };
+
+    // 3) Shape with state-level price
+    const shaped = rows.map(r => ({
+      districtId: r.districtId,
+      cityName: r.cityName,
+      stateId: r.stateId,
+      price: latestPrice == null ? null : Number(latestPrice),
+      prevPrice: prevPrice == null ? null : Number(prevPrice),
+      ts: latestTs,
+    }));
+
+    return { rows: shaped, total: Number(totalRows[0]?.cnt ?? 0) };
   }
 
   async historyCombinedByState(stateId: number, days: number) {
-  return prisma.$queryRaw<Array<{
-    day: string; petrol: number | null; diesel: number | null; cng: number | null;
-  }>>(Prisma.sql`
-    WITH
-    p AS (
-      SELECT DATE(fp.addedDateTime) AS day,
-             CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
-      FROM tblfuelprice fp
-      WHERE fp.stateId = ${stateId} AND fp.fuelType = 1
-        AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
-      GROUP BY DATE(fp.addedDateTime)
-    ),
-    d AS (
-      SELECT DATE(fp.addedDateTime) AS day,
-             CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
-      FROM tblfuelprice fp
-      WHERE fp.stateId = ${stateId} AND fp.fuelType = 2
-        AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
-      GROUP BY DATE(fp.addedDateTime)
-    ),
-    c AS (
-      SELECT DATE(fp.addedDateTime) AS day,
-             CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
-      FROM tblfuelprice fp
-      WHERE fp.stateId = ${stateId} AND fp.fuelType = 3
-        AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
-      GROUP BY DATE(fp.addedDateTime)
-    ),
-    days_union AS (
-      SELECT day FROM p
-      UNION
-      SELECT day FROM d
-      UNION
-      SELECT day FROM c
-    )
-    SELECT
-      DATE_FORMAT(u.day, '%Y-%m-%d') AS day,
-      p.price AS petrol,
-      d.price AS diesel,
-      c.price AS cng
-    FROM days_union u
-    LEFT JOIN p ON p.day = u.day
-    LEFT JOIN d ON d.day = u.day
-    LEFT JOIN c ON c.day = u.day
-    ORDER BY u.day ASC
-  `);
-}
+    return prisma.$queryRaw<Array<{
+      day: string; petrol: number | null; diesel: number | null; cng: number | null;
+    }>>(Prisma.sql`
+      WITH
+      p AS (
+        SELECT DATE(fp.addedDateTime) AS day,
+               CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
+        FROM tblfuelprice fp
+        WHERE fp.stateId = ${stateId} AND fp.fuelType = 1
+          AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
+        GROUP BY DATE(fp.addedDateTime)
+      ),
+      d AS (
+        SELECT DATE(fp.addedDateTime) AS day,
+               CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
+        FROM tblfuelprice fp
+        WHERE fp.stateId = ${stateId} AND fp.fuelType = 2
+          AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
+        GROUP BY DATE(fp.addedDateTime)
+      ),
+      c AS (
+        SELECT DATE(fp.addedDateTime) AS day,
+               CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
+        FROM tblfuelprice fp
+        WHERE fp.stateId = ${stateId} AND fp.fuelType = 3
+          AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
+        GROUP BY DATE(fp.addedDateTime)
+      ),
+      days_union AS (
+        SELECT day FROM p
+        UNION
+        SELECT day FROM d
+        UNION
+        SELECT day FROM c
+      )
+      SELECT
+        DATE_FORMAT(u.day, '%Y-%m-%d') AS day,
+        p.price AS petrol,
+        d.price AS diesel,
+        c.price AS cng
+      FROM days_union u
+      LEFT JOIN p ON p.day = u.day
+      LEFT JOIN d ON d.day = u.day
+      LEFT JOIN c ON c.day = u.day
+      ORDER BY u.day ASC
+    `);
+  }
 
-/** history (last N days) for a CITY (districtId) — all 3 fuel types together (latest-per-day) */
-async historyCombinedByDistrict(districtId: number, days: number) {
-  return prisma.$queryRaw<Array<{
-    day: string; petrol: number | null; diesel: number | null; cng: number | null;
-  }>>(Prisma.sql`
-    WITH
-    p AS (
-      SELECT DATE(fp.addedDateTime) AS day,
-             CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
-      FROM tblfuelprice fp
-      WHERE fp.districtId = ${districtId} AND fp.fuelType = 1
-        AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
-      GROUP BY DATE(fp.addedDateTime)
-    ),
-    d AS (
-      SELECT DATE(fp.addedDateTime) AS day,
-             CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
-      FROM tblfuelprice fp
-      WHERE fp.districtId = ${districtId} AND fp.fuelType = 2
-        AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
-      GROUP BY DATE(fp.addedDateTime)
-    ),
-    c AS (
-      SELECT DATE(fp.addedDateTime) AS day,
-             CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
-      FROM tblfuelprice fp
-      WHERE fp.districtId = ${districtId} AND fp.fuelType = 3
-        AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
-      GROUP BY DATE(fp.addedDateTime)
-    ),
-    days_union AS (
-      SELECT day FROM p
-      UNION
-      SELECT day FROM d
-      UNION
-      SELECT day FROM c
-    )
-    SELECT
-      DATE_FORMAT(u.day, '%Y-%m-%d') AS day,
-      p.price AS petrol,
-      d.price AS diesel,
-      c.price AS cng
-    FROM days_union u
-    LEFT JOIN p ON p.day = u.day
-    LEFT JOIN d ON d.day = u.day
-    LEFT JOIN c ON c.day = u.day
-    ORDER BY u.day ASC
-  `);
-}
+  /** history (last N days) for a CITY (districtId) — all 3 fuel types together (latest-per-day) */
+  async historyCombinedByDistrict(districtId: number, days: number) {
+    return prisma.$queryRaw<Array<{
+      day: string; petrol: number | null; diesel: number | null; cng: number | null;
+    }>>(Prisma.sql`
+      WITH
+      p AS (
+        SELECT DATE(fp.addedDateTime) AS day,
+               CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
+        FROM tblfuelprice fp
+        WHERE fp.districtId = ${districtId} AND fp.fuelType = 1
+          AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
+        GROUP BY DATE(fp.addedDateTime)
+      ),
+      d AS (
+        SELECT DATE(fp.addedDateTime) AS day,
+               CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
+        FROM tblfuelprice fp
+        WHERE fp.districtId = ${districtId} AND fp.fuelType = 2
+          AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
+        GROUP BY DATE(fp.addedDateTime)
+      ),
+      c AS (
+        SELECT DATE(fp.addedDateTime) AS day,
+               CAST(SUBSTRING_INDEX(GROUP_CONCAT(fp.fuelPrice ORDER BY fp.addedDateTime DESC), ',', 1) AS DECIMAL(10,2)) AS price
+        FROM tblfuelprice fp
+        WHERE fp.districtId = ${districtId} AND fp.fuelType = 3
+          AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
+        GROUP BY DATE(fp.addedDateTime)
+      ),
+      days_union AS (
+        SELECT day FROM p
+        UNION
+        SELECT day FROM d
+        UNION
+        SELECT day FROM c
+      )
+      SELECT
+        DATE_FORMAT(u.day, '%Y-%m-%d') AS day,
+        p.price AS petrol,
+        d.price AS diesel,
+        c.price AS cng
+      FROM days_union u
+      LEFT JOIN p ON p.day = u.day
+      LEFT JOIN d ON d.day = u.day
+      LEFT JOIN c ON c.day = u.day
+      ORDER BY u.day ASC
+    `);
+  }
+
+
+
+
 }

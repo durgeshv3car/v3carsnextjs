@@ -193,5 +193,3 @@ We can add: GET /v1/fuel/cities/combined?stateId=<STATE_ID>&page=1&limit=50&q=<s
 Want weekly/monthly aggregates? We can extend history to group by week/month easily.                      
 
 TTLs adjustable in fuel.service.ts (look for ttlMs).
-
-

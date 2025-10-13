@@ -5,6 +5,7 @@ import {  idParamDto, listQueryDto, moduleIdParamDto } from './websiteContent.dt
 const svc = new WebsiteContentService();
 
 export class WebsiteContentController {
+
   async list(req: Request, res: Response) {
     const q = listQueryDto.parse(req.query);
     const data = await svc.list(q as any);
@@ -22,6 +23,7 @@ export class WebsiteContentController {
     res.json({ success: true, data: row });
   }
 
+
   async latestByModule(req: Request, res: Response) {
     const parsed = moduleIdParamDto.safeParse(req.params);
     if (!parsed.success) {
@@ -32,5 +34,5 @@ export class WebsiteContentController {
     res.json({ success: true, data });
   }
 
-  
+
 }

@@ -78,12 +78,16 @@ export class FuelService {
       fuelType: q.fuelType, stateId: q.stateId,
       page, limit, sortBy: q.sortBy ?? 'name_asc',
       q: q.q ?? undefined,
+      /** 🔑 include popular in the cache key so cached pages don't mix */
+      popular: typeof q.popular === 'number' ? q.popular : undefined,
     });
     const ttlMs = page === 1 ? 10 * 60 * 1000 : 5 * 60 * 1000;
 
     return withCache(key, async () => {
       const { rows, total } = await repo.citiesLatest(q.stateId, q.fuelType, {
         q: q.q, skip, take: limit, sortBy: q.sortBy,
+        /** 🔁 forward the flag to repo so SQL adds `c.isPopularCity = 1` */
+        popular: q.popular,
       });
       return {
         rows: rows.map(r => ({
@@ -101,7 +105,7 @@ export class FuelService {
     }, ttlMs);
   }
 
-    async statesCombined(q: { q?: string; page?: number; limit?: number }) {
+  async statesCombined(q: { q?: string; page?: number; limit?: number }) {
     const page = q.page ?? 1;
     const limit = Math.max(1, Math.min(q.limit ?? 50, 100));
     const skip = (page - 1) * limit;
