@@ -116,6 +116,7 @@ export class FuelRepo {
     if (!meta?.stateId) return [];
     return this.historyByState(meta.stateId, fuelType, days);
   }
+
   /** history last N days for a state: latest per day across its cities */
   async historyByState(stateId: number, fuelType: number, days: number) {
     return prisma.$queryRaw<Array<{ day: string; price: number }>>(Prisma.sql`
@@ -416,7 +417,5 @@ export class FuelRepo {
     `);
   }
 
-
-
-
+  /** history (last N days) for a CITY (districtId) — all 3 fuel types together (latest-per-day) */
 }
