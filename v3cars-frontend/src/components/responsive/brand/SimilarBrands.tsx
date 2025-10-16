@@ -1,13 +1,20 @@
+import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 
-interface SimilarBrand {
-    name: string;
-    logo: string;
-    bg?: string; // optional background like red for Eicher
+interface CarBrand {
+    brandId: number
+    brandName: string
+    brandSlug: string
+    logoPath: string
+    popularity: string
+    unquieViews: number | null
+    brandStatus: number
+    serviceNetwork: boolean
+    brandType: number
 }
 
 interface SimilarBrandsProps {
-    brands: SimilarBrand[];
+    brands: CarBrand[];
 }
 
 
@@ -18,34 +25,33 @@ export default function SimilarBrands({ brands }: SimilarBrandsProps) {
 
             {/* Header */}
             <div className="text-white text-[18px] font-semibold px-2 py-3">
-                Similar Brands 
+                Similar Brands
             </div>
 
             {/* Grid */}
             <div className="grid grid-cols-2 gap-2 ">
 
-                {brands.map((brand, i) => (
+                {brands.slice(0,10).map((brand, i) => (
 
                     <div
                         key={i}
-                        className={`bg-white flex items-center justify-center aspect-[3/2] p-2 rounded-xl `}
+                        className={`bg-white flex items-center justify-center aspect-[3/2] p-2 rounded-xl cursor-pointer `}
                     >
-
                         <Image
-                            src={brand.logo}
-                            alt={brand.name}
+                            src={`${IMAGE_URL}/media/brand-imgs/${brand.logoPath}`}
+                            alt={brand.brandName}
                             width={500}
                             height={500}
                             className="object-contain w-full"
                         />
 
                     </div>
-                    
+
                 ))}
             </div>
         </div>
 
     );
-} 
+}
 
 

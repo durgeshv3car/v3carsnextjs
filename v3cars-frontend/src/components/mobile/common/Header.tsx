@@ -144,7 +144,7 @@ const MobileHeader = () => {
           >
             <div className="flex items-center gap-1 text-md">
               <FiMapPin size={16} />
-              Visakhapatnam
+              {selectedCity.cityName}
             </div>
             <HiOutlineUserCircle size={24} />
           </div>

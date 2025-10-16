@@ -31,7 +31,7 @@ export const locationModuleApi = createApi({
       query: () => `/locations/states?limit=50&page=1&sortBy=name_asc`,
     }),
     getCityByStatesId: builder.query<Response, { stateId: number }>({
-      query: ({ stateId }) => `/locations/cities?stateId=${stateId}&sortBy=name_asc`,
+      query: ({ stateId }) => `/locations/cities?stateId=${stateId}&sortBy=name_asc&limit=50`,
     }),
     getCities: builder.query<Response, { query: string }>({
       query: ({ query }) => `/locations/cities?q=${query}`,

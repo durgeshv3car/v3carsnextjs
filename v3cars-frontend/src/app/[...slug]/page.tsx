@@ -9,13 +9,16 @@ import StateWiseFuelChart from "@/components/responsive/pages/StateWiseFuelChart
 import StateWiseFuelList from "@/components/responsive/pages/StateWiseFuelList";
 import TopSection from "@/components/responsive/pages/TopSection";
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
+import { useGetFuelPriceStateQuery } from "@/redux/api/fuelModuleApi";
 import { redirect, useParams } from "next/navigation";
 
 export default function Slug() {
     const { slug } = useParams();
-    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 13 });
+    const { data: fuelPriceStateData, isLoading } = useGetFuelPriceStateQuery();
 
     const faqByModule = faqByModuleData?.rows ?? [];
+    const fuelPriceState = fuelPriceStateData?.rows ?? [];
 
     const allowedSlugs: Record<string, string> = {
         "fuel-price-in-india": "Fuel",
@@ -41,7 +44,7 @@ export default function Slug() {
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:min-w-[74%] space-y-6">
                             <FuelPrices />
-                            <StateWiseFuelList />
+                            <StateWiseFuelList data={fuelPriceState} />
                             <StateWiseFuelChart />
                             <CommonFaqAccordion faqData={faqByModule} />
                         </div>

@@ -2,6 +2,7 @@
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import { useGetCityByStatesIdQuery, useGetStatesQuery } from "@/redux/api/locationModuleApi";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface FuelTypes {
@@ -30,7 +31,7 @@ interface State {
     countryId: number;
     stateCode: string;
     shortCode: string;
-    isTodayFuelPrice: number; // 1 ya 0 - fuel price available today ya nahi
+    isTodayFuelPrice: number;
 }
 
 interface City {
@@ -48,16 +49,34 @@ interface City {
 }
 
 
-function SearchSection() {
-    const [fuelType, setFuelType] = useState<number | null>(null)
-    const [selectState, setSelectState] = useState<number | null>(null)
-    const [selectCity, setSelectCity] = useState<number | null>(null)
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()  
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+}
 
-    const { data: cityByStatesIdData } = useGetCityByStatesIdQuery({ stateId: Number(selectState) })
+function SearchSection() {
+    const [fuelType, setFuelType] = useState("")
+    const [selectState, setSelectState] = useState<number | null>(null)
+    const [selectCity, setSelectCity] = useState("")
+    const [selectStateName, setSelectStateName] = useState("")
+    const router = useRouter()
+
+    const { data: cityByStatesIdData } = useGetCityByStatesIdQuery({ stateId: Number(selectState) }, { skip: !selectState })
     const { data: statesData } = useGetStatesQuery()
 
     const states = statesData?.rows ?? []
     const citys = cityByStatesIdData?.rows ?? []
+
+    function handleCity(value: City) {
+        const city = value.cityName
+        setSelectCity(city);
+        const slug = slugify(selectStateName)
+        const citySlug = slugify(city)                
+        router.push(`https://www.v3cars.com/${slug}/${fuelType.toLowerCase()}-price-in-${citySlug}`)
+    }
 
     return (
         <>
@@ -69,9 +88,9 @@ function SearchSection() {
                                 options={fuelTypes}
                                 placeholder="Select Fuel Type"
                                 labelKey="name"
-                                valueKey="id"
+                                valueKey="name"
                                 value={fuelType}
-                                onSelect={(value: FuelTypes) => { setFuelType(Number(value.id)) }}
+                                onSelect={(value: FuelTypes) => { setFuelType(value.name) }}
                             />
                         </div>
 
@@ -82,7 +101,10 @@ function SearchSection() {
                                 labelKey="stateName"
                                 valueKey="stateId"
                                 value={selectState}
-                                onSelect={(value: State) => { setSelectState(value.countryId); }}
+                                onSelect={(value: State) => {
+                                    setSelectState(value.stateId);
+                                    setSelectStateName(value.stateName);
+                                }}
                             />
                         </div>
 
@@ -91,11 +113,10 @@ function SearchSection() {
                                 options={citys}
                                 placeholder="Select City"
                                 labelKey="cityName"
-                                valueKey="cityId"
+                                valueKey="cityName"
                                 value={selectCity}
-                                onSelect={(value: City) => { setSelectCity(value.cityId); }}
+                                onSelect={(value: City) => { handleCity(value) }}
                             />
-                            {/* <CustomSelect options={items} placeholder={"Select City"} onSelect={handleSelection} /> */}
                         </div>
                     </div>
                 </div>

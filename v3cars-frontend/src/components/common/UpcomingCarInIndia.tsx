@@ -60,7 +60,8 @@ interface CarUIProps {
 }
 
 interface UpcomingCarInIndiaProps {
-  title: string
+  title: string,
+  setUpcomingCount: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const mapToUIData = (cars: CarProps[]): CarUIProps[] => {
@@ -85,7 +86,7 @@ const mapToUIData = (cars: CarProps[]): CarUIProps[] => {
   })
 }
 
-const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title }) => {
+const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title, setUpcomingCount }) => {
   const [page, setPage] = useState(1)
   const [allCars, setAllCars] = useState<CarUIProps[]>([])
   const [hasMore, setHasMore] = useState(true)
@@ -104,6 +105,7 @@ const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title }) => {
       setAllCars((prev) => [...prev, ...newCars])
       setHasMore(page < upcomingData.totalPages)
       setLoadingPage(false) // 🔓 unlock after data append
+      setUpcomingCount(upcomingData?.total ?? 0)
     }
   }, [upcomingData, isSuccess, page])
 
@@ -238,8 +240,8 @@ const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title }) => {
                 <p className="font-semibold truncate">{car.name}</p>
               </div>
               <div className="text-center mx-4 text-sm">
-                <p className="text-gray-500">Expected Launch</p>
-                <p className="font-semibold">{car.expectedLaunch}</p>
+                <p className="text-gray-500 truncate">Expected Launch</p>
+                <p className="font-semibold truncate">{car.expectedLaunch}</p>
               </div>
             </div>
           </div>

@@ -1,5 +1,7 @@
 'use client'
 
+import CurrentOffersCard from '@/components/common/CommonCards/CurrentOffersCard'
+import { useGetPopularCarQuery } from '@/redux/api/carModuleApi'
 import { CiCalendarDate } from 'react-icons/ci'
 import { FaUserEdit } from 'react-icons/fa'
 
@@ -63,44 +65,17 @@ const newsList: NewsItem[] = [
 
 
 const CarInIndia: React.FC = () => {
+    const { data: popularCarData } = useGetPopularCarQuery();
+
+    const popularCar = popularCarData?.rows ?? [];
 
     return (
         <>
             <section className='space-y-4'>
-                <h2 className="text-2xl font-semibold">Mahindra Cars In India</h2>
+                <h2 className="text-2xl font-semibold">Popular Cars In India</h2>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" >
-                    {newsList.map((item) => (
-                        <div
-                            key={item.id}
-                            className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-h-[371px] shadow-md overflow-hidden transition flex flex-col"
-                        >
-                            {/* Fixed height image */}
-                            <div className="relative h-[230px] w-full">
-                                <img
-                                    src={item.image}
-                                    alt="news"
-                                    className="w-full h-full rounded-lg"
-                                />
-                            </div>
-
-                            {/* Fills the remaining space */}
-                            <div className="flex flex-col flex-grow space-y-2 p-3">
-                                <h3 className="text-lg font-semibold line-clamp-2">{item.heading}</h3>
-                                <p className="line-clamp-3 text-sm/8">{item.description}</p>
-                                <div className="flex justify-between items-center text-xs text-gray-500">
-                                    <div className="flex items-center gap-1">
-                                        <FaUserEdit size={16} />
-                                        <span>{item.author}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <CiCalendarDate size={16} />
-                                        <span>{item.date}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <CurrentOffersCard data={popularCar} />
                 </div>
             </section>
         </>

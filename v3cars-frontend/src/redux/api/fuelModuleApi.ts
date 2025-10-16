@@ -34,6 +34,9 @@ export const fuelModuleApi = createApi({
     getLatestFuelPrice: builder.query<LatestFuelPriceResponse, { districtId: number }>({
       query: ({ districtId }) => `/fuel/price/latest?fuelType=1&districtId=${districtId}`,
     }),
+    getFuelPriceState: builder.query<Response, void>({
+      query: () => `/fuel/states/combined?page=1&limit=50`,
+    }),
   }),
 });
 
@@ -41,4 +44,5 @@ export const fuelModuleApi = createApi({
 export const {
   useGet10DaysFuelPriceQuery,
   useGetLatestFuelPriceQuery,
+  useGetFuelPriceStateQuery,
 } = fuelModuleApi;

@@ -21,8 +21,8 @@ type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
 const HOVER_CLOSE_DELAY = 160; // ms grace period   
 
 interface Location {
-  cityId?: number;
-  cityName?: string;
+    cityId?: number;
+    cityName?: string;
 }
 
 const Header = () => {
@@ -166,7 +166,7 @@ const Header = () => {
                                     }`}
                             >
                                 <FiMapPin size={16} />
-                                {location.cityName}
+                                {selectedCity.cityName}
                                 <IoChevronDownOutline size={14} />
                             </div>
                         </div>

@@ -24,8 +24,8 @@ type LatestFuelPriceType = {
 };
 
 // --- Constants ---
-const kmToMiles = 0.621371;
-const literToGallon = 0.264172;
+const kmToMiles = 1.60934; 
+const literToGallon = 3.78541;
 const exchangeRates = { INR: 1, USD: 0.012, EUR: 0.011, AED: 0.044 };
 
 // --- Helpers ---
@@ -62,9 +62,8 @@ function UnitToggle<T extends string>({
           <button
             key={opt.key}
             onClick={() => onChange(opt.key)}
-            className={`px-3 h-8 rounded-full text-sm font-medium transition ${
-              active ? 'bg-yellow-400 text-black' : 'text-neutral-600 dark:hover:bg-black'
-            }`}
+            className={`px-3 h-8 rounded-full text-sm font-medium transition ${active ? 'bg-yellow-400 text-black' : 'text-neutral-600 dark:hover:bg-black'
+              }`}
             type="button"
           >
             {opt.label}
@@ -78,8 +77,6 @@ function UnitToggle<T extends string>({
 export default function MileageCalculator() {
   const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
 
-  console.log(selectedCity);
-  
   const { data: LatestFuelPriceData } = useGetLatestFuelPriceQuery({ districtId: Number(selectedCity.cityId) });
   const latestFuelPrice = (LatestFuelPriceData?.data ?? null) as LatestFuelPriceType | null;
 
@@ -91,21 +88,18 @@ export default function MileageCalculator() {
   const [fuelUnit, setFuelUnit] = useState<FuelUnit>('ltr');
 
   const [currency, setCurrency] = useState<Currency>('INR');
-  const [totalAmount, setTotalAmount] = useState<number | null>(null);
+  const [cityPrice, setCityPrice] = useState<number | null>(null);
 
   const [mileage, setMileage] = useState<number>(0);
   const [costPerKm, setCostPerKm] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   // --- Auto-load latest fuel price ---
   useEffect(() => {
     if (latestFuelPrice?.price) {
-      setTotalAmount(latestFuelPrice.price);
+      setCityPrice(latestFuelPrice.price);
     }
   }, [latestFuelPrice]);
-
-  // --- Conversion helpers ---
-  const convertCurrency = (value: number, from: Currency, to: Currency) =>
-    (value / exchangeRates[from]) * exchangeRates[to];
 
   const convertUnit = (
     value: number,
@@ -124,51 +118,73 @@ export default function MileageCalculator() {
   const calculateMileage = (
     distVal = distance,
     fuelVal = fuel,
-    amountVal = totalAmount,
+    priceVal = cityPrice,
     currVal = currency
   ) => {
     const distNum = Number(distVal);
     const fuelNum = Number(fuelVal);
-    const amountNum = Number(amountVal);
+    const priceNum = Number(priceVal);
 
-    if (distNum > 0 && fuelNum > 0 && amountNum > 0) {
-      const distKm = distanceUnit === 'mi' ? distNum / kmToMiles : distNum;
-      const fuelLtr = fuelUnit === 'gal' ? fuelNum / literToGallon : fuelNum;
+    if (distNum > 0 && fuelNum > 0 && priceNum > 0) {
+      // Base conversions
+      const distKm = distanceUnit === "mi" ? distNum * kmToMiles : distNum;
+      const fuelLtr = fuelUnit === "gal" ? fuelNum * literToGallon : fuelNum;
 
-      const mileageCalc = distKm / fuelLtr;
-      const convertedAmount = convertCurrency(amountNum, currVal, 'INR');
-      const costPerKmCalc = convertedAmount / mileageCalc;
+      // Mileage according to selected unit
+      let mileageCalc = 0;
+
+      if (distanceUnit === "km" && fuelUnit === "ltr") {
+        mileageCalc = distNum / fuelNum; // km per litre
+      }
+      else if (distanceUnit === "mi" && fuelUnit === "gal") {
+        mileageCalc = distNum / fuelNum; // miles per gallon
+      }
+      else if (distanceUnit === "km" && fuelUnit === "gal") {
+        mileageCalc = distNum / fuelNum; // km per gallon
+      }
+      else if (distanceUnit === "mi" && fuelUnit === "ltr") {
+        mileageCalc = distNum / fuelNum; // miles per litre
+      }
+
+      // Total price (always using litre base)
+      const totalPriceCalc = fuelLtr * priceNum;
+
+      // Cost per km (base)
+      const costPerKmCalc = totalPriceCalc / distKm;
 
       setMileage(Number(mileageCalc.toFixed(2)));
+      setTotalPrice(Number(totalPriceCalc.toFixed(2)));
       setCostPerKm(Number(costPerKmCalc.toFixed(2)));
     } else {
       setMileage(0);
+      setTotalPrice(0);
       setCostPerKm(0);
     }
   };
 
+
   // --- Input Handlers ---
   const handleDistanceChange = (val: string) => {
     setDistance(val);
-    calculateMileage(val, fuel, totalAmount, currency);
+    calculateMileage(val, fuel, cityPrice, currency);
   };
 
   const handleFuelChange = (val: string) => {
     setFuel(val);
-    calculateMileage(distance, val, totalAmount, currency);
+    calculateMileage(distance, val, cityPrice, currency);
   };
 
   const handleAmountChange = (val: string) => {
     const num = val === '' ? null : Number(val);
-    setTotalAmount(num);
+    setCityPrice(num);
     calculateMileage(distance, fuel, num, currency);
   };
 
   const handleCurrencyChange = (val: Currency) => {
-    if (totalAmount == null) return;
-    const converted = (totalAmount / exchangeRates[currency]) * exchangeRates[val];
+    if (cityPrice == null) return;
+    const converted = (cityPrice / exchangeRates[currency]) * exchangeRates[val];
     setCurrency(val);
-    setTotalAmount(Number(converted.toFixed(2)));
+    setCityPrice(Number(converted.toFixed(2)));
     calculateMileage(distance, fuel, Number(converted.toFixed(2)), val);
   };
 
@@ -176,25 +192,26 @@ export default function MileageCalculator() {
     const convertedDistance = convertUnit(Number(distance), distanceUnit, newUnit).toFixed(2);
     setDistanceUnit(newUnit);
     setDistance(convertedDistance);
-    calculateMileage(convertedDistance, fuel, totalAmount, currency);
+    calculateMileage(convertedDistance, fuel, cityPrice, currency);
   };
 
   const handleFuelUnitChange = (newUnit: FuelUnit) => {
     const convertedFuel = convertUnit(Number(fuel), fuelUnit, newUnit).toFixed(2);
     setFuelUnit(newUnit);
     setFuel(convertedFuel);
-    calculateMileage(distance, convertedFuel, totalAmount, currency);
+    calculateMileage(distance, convertedFuel, cityPrice, currency);
   };
 
   const handleReset = () => {
     setDistance('');
     setFuel('');
-    setTotalAmount(latestFuelPrice?.price ?? null);
+    setCityPrice(latestFuelPrice?.price ?? null);
     setDistanceUnit('km');
     setFuelUnit('ltr');
     setCurrency('INR');
     setMileage(0);
     setCostPerKm(0);
+    setTotalPrice(0);
   };
 
   return (
@@ -262,7 +279,7 @@ export default function MileageCalculator() {
                     type="number"
                     inputMode="decimal"
                     placeholder="Total Amount"
-                    value={totalAmount ?? ''}
+                    value={cityPrice ?? ''}
                     onChange={(e) => handleAmountChange(e.target.value)}
                     className="w-full h-10 rounded-lg border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] px-3 text-sm outline-none focus:ring-2 focus:ring-yellow-400"
                   />
@@ -301,7 +318,7 @@ export default function MileageCalculator() {
               <Row label="Fuel" value={`${fuel || 0} ${fuelUnit}`} />
               <Row
                 label="Total Amount"
-                value={`${currencySymbol(currency)} ${totalAmount ?? 0} ${currency}`}
+                value={`${currencySymbol(currency)} ${totalPrice ?? 0} ${currency}`}
               />
               <Row
                 label="Fuel Cost Per"

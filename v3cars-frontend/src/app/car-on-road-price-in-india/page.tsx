@@ -2,16 +2,18 @@
 
 
 import CommonFaqAccordion from "@/components/common/CommonFaqAccordion";
-// import UpcomingCarInIndia from "@/components/common/UpcomingCarInIndia";
 import DiscontinuedCarList from "@/components/responsive/brand/DiscontinuedCarList";
 import CarInIndia from "@/components/responsive/car-on-road-price/CarsInIndia";
 import FilterSection from "@/components/responsive/car-on-road-price/FilterSection";
 import FuelTab from "@/components/responsive/car-on-road-price/FuelTab";
 import Link from "next/link";
 import useIsMobile from "@/hooks/useIsMobile";
-// import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
-// import CommonLatestCarNews from "@/components/web/common/CommonLatestCarNews";
+import UpcomingCarInIndia from "@/components/common/UpcomingCarInIndia";
+import { useState } from "react";
+import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
+import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 
 const discontinuedMahindraCars = [
     "Mahindra Alturas G4",
@@ -25,9 +27,12 @@ const discontinuedMahindraCars = [
 
 
 function CarOnRoadPrice() {
-    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
+    const [upcomingCount, setUpcomingCount] = useState<number | null>(null);
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
+    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
 
     const faqByModule = faqByModuleData?.rows ?? [];
+    const latestCarNews = latestCarNewsData?.rows ?? [];
 
     const isMobile = useIsMobile()
 
@@ -63,22 +68,32 @@ function CarOnRoadPrice() {
                 </div>
             </div>
 
-            {isMobile ? 
-            // <MobileLatestCarNews /> 
-            "Mobile"
-            :
+            {isMobile ?
+                <MobileLatestCarNews
+                    title="Latest Car News"
+                    view="Latest News"
+                    data={latestCarNews}
+                    link="/news"
+                />
+                :
                 <div className="py-6 px-4 lg:px-10">
                     <div className="w-full lg:app-container mx-auto space-y-6">
-                        {/* <CommonLatestCarNews /> */}
+                        <CommonNewsUpdate
+                            title="Latest Car News"
+                            view="Latest News"
+                            newsList={latestCarNews}
+                            link={"/news"}
+                        />
                     </div>
                 </div>
             }
 
             <div className="py-6 px-4 lg:px-10">
                 <div className="w-full lg:app-container mx-auto space-y-6">
-                    {/* <UpcomingCarInIndia
-                        title={"Upcoming Car News"}
-                    /> */}
+                    <UpcomingCarInIndia
+                        title={`Upcoming Car News`}
+                        setUpcomingCount={setUpcomingCount}
+                    />
                 </div>
             </div>
 

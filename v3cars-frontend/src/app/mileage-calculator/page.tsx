@@ -15,7 +15,7 @@ type MileageCalculatorType = {
 }
 
 export default function Page() {
-  const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
+  const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 11 });
   const { data: mileageCalculatorData } = useGetMileageCalculatorQuery()
 
   const mileageCalculator: MileageCalculatorType[] = mileageCalculatorData?.rows ?? []

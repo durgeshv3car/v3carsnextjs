@@ -88,7 +88,7 @@ export default function Home() {
           <div className="w-full lg:app-container mx-auto space-y-6">
             <UpcomingCarInIndia
               title={`${upcomingCount}+ Upcoming Cars In India`}
-              // setUpcomingCount={setUpcomingCount}
+              setUpcomingCount={setUpcomingCount}
             />
           </div>
         </div>
@@ -118,7 +118,13 @@ export default function Home() {
       <CarByPrice />
       <BottomAd />
       <CarWebStories />
-      <LatestVideos />
+
+      <div className="bg-[#E2E2E2] dark:bg-[#262629] py-10 px-6 lg:px-10">
+        <div className="w-full lg:app-container mx-auto">
+          <LatestVideos />
+        </div>
+      </div>
+
       {isMobile ?
         <MobileLatestCarNews
           title="Variants Explained"
