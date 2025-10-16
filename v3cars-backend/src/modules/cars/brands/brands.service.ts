@@ -31,15 +31,23 @@ export class BrandsService {
     return withCache(key, async () => {
       return repo.list(q);
     }, ttlMs);
-    
   }
 
-  /** Brand detail (30m) */
+  /** Brand detail (ALL columns) — 30m cache */
   async getById(id: number) {
-    const key = cacheKey({ ns: 'brand:detail', v: 1, id });
+    const key = cacheKey({ ns: 'brand:detail', v: 2, id }); // v:2 since now returning ALL columns
     const ttlMs = 30 * 60 * 1000;
     return withCache(key, async () => {
       return repo.getById(id);
+    }, ttlMs);
+  }
+
+  /** 🆕 Discontinued models for a brand — 10m cache */
+  async getDiscontinuedModelsByBrand(brandId: number) {
+    const key = cacheKey({ ns: 'brand:discontinuedModels', v: 1, brandId });
+    const ttlMs = 10 * 60 * 1000;
+    return withCache(key, async () => {
+      return repo.discontinuedModelsByBrand(brandId);
     }, ttlMs);
   }
 

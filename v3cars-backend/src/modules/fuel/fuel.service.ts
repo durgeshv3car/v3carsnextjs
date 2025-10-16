@@ -1,3 +1,6 @@
+
+
+
 import { FuelRepo } from './fuel.repo.js';
 import type {
   FuelLatestQuery, FuelHistoryQuery,
@@ -8,6 +11,7 @@ import { withCache, cacheKey } from '../../lib/cache.js';
 const repo = new FuelRepo();
 
 export class FuelService {
+
 
   /** latest for city/state with delta */
   async latest(q: FuelLatestQuery) {
@@ -65,6 +69,7 @@ export class FuelService {
         totalPages: Math.max(1, Math.ceil(total / limit)),
       };
     }, ttlMs);
+    
   }
 
   /** city list within a state */
@@ -178,4 +183,7 @@ export class FuelService {
     }, ttlMs);
   }
 
+
 }
+
+
