@@ -8,6 +8,7 @@ const server = app.listen(env.PORT, () => {
   console.log(`[server] listening on :${env.PORT}`);
 });
 
+
 async function shutdown(code = 0) {
   try {
     await new Promise<void>((resolve) => server.close(() => resolve()));
@@ -17,6 +18,7 @@ async function shutdown(code = 0) {
   process.exit(code);
 }
 
+
 process.on('SIGINT', () => shutdown(0));
 process.on('SIGTERM', () => shutdown(0));
 process.on('SIGQUIT', () => shutdown(0));
@@ -25,7 +27,9 @@ process.on('uncaughtException', (err) => {
   shutdown(1);
 });
 
+
 process.on('unhandledRejection', (err) => {
   console.error('[fatal] unhandledRejection', err);
   shutdown(1);
 });
+

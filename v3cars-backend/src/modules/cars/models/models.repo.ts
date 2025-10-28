@@ -15,7 +15,13 @@ function normalizeAnd(andInput: PrismaTypes.tblmodelsWhereInput | PrismaTypes.tb
   return Array.isArray(andInput) ? andInput : andInput ? [andInput] : [];
 }
 
-function buildWhere(q: ModelsListQuery): PrismaTypes.tblmodelsWhereInput {
+/**
+ * Build a Prisma where object from ModelsListQuery.
+ * Accepts an optional `opts.allowedModelIds` which will restrict modelId IN (...) at DB-level.
+ */
+
+
+function buildWhere(q: ModelsListQuery, opts?: { allowedModelIds?: number[] }): PrismaTypes.tblmodelsWhereInput {
   const where: PrismaTypes.tblmodelsWhereInput = {};
 
   if (q.q) {
@@ -23,8 +29,44 @@ function buildWhere(q: ModelsListQuery): PrismaTypes.tblmodelsWhereInput {
     where.OR = [{ modelName: { contains: term } }, { modelSlug: { contains: term } }];
   }
   if (typeof q.isUpcoming === 'boolean') where.isUpcoming = q.isUpcoming;
-  if (q.brandId) where.brandId = q.brandId;
-  if (q.bodyTypeId) where.modelBodyTypeId = q.bodyTypeId;
+
+  // brand: single or multi
+  const brandIds = (q as any).brandIds as number[] | undefined;
+  if (brandIds && Array.isArray(brandIds) && brandIds.length) {
+    where.brandId = { in: brandIds };
+  } else if (q.brandId) {
+    where.brandId = q.brandId;
+  }
+
+  // bodyType: single or multi
+  const bodyTypeIds = (q as any).bodyTypeIds as number[] | undefined;
+  if (bodyTypeIds && Array.isArray(bodyTypeIds) && bodyTypeIds.length) {
+    where.modelBodyTypeId = { in: bodyTypeIds };
+  } else if (q.bodyTypeId) {
+    where.modelBodyTypeId = q.bodyTypeId;
+  }
+
+  // seating (seats) filter on tblmodels (DB-level)
+  const seatingVal = (q as any).seating as number | undefined;
+  const seatingList = (q as any).seatingList as number[] | undefined;
+  if (seatingList && seatingList.length) {
+    where.seats = { in: seatingList };
+  } else if (typeof seatingVal === 'number') {
+    where.seats = seatingVal;
+  }
+
+  // optional allowedModelIds (pre-filter from powertrains) -> modelId IN (...)
+  if (opts?.allowedModelIds && Array.isArray(opts.allowedModelIds) && opts.allowedModelIds.length) {
+    // if where.modelId already exists as something else, combine with AND
+    if (where.modelId) {
+      const existingAND = normalizeAnd(where.AND);
+      existingAND.push({ modelId: { in: opts.allowedModelIds } });
+      where.AND = existingAND;
+      delete where.modelId;
+    } else {
+      where.modelId = { in: opts.allowedModelIds };
+    }
+  }
 
   // (legacy expected* price filter; service overrides for variant-based)
   if (q.priceBucket) {
@@ -49,6 +91,7 @@ function buildWhere(q: ModelsListQuery): PrismaTypes.tblmodelsWhereInput {
         ].filter(Boolean) as PrismaTypes.tblmodelsWhereInput[],
       },
     ];
+
   }
 
   const existingAND = normalizeAnd(where.AND);
@@ -81,6 +124,7 @@ function buildWhere(q: ModelsListQuery): PrismaTypes.tblmodelsWhereInput {
   if (existingAND.length) where.AND = existingAND;
 
   return where;
+
 }
 
 function buildOrderBy(sortBy: ModelsListQuery['sortBy']): PrismaTypes.tblmodelsOrderByWithRelationInput[] {
@@ -101,14 +145,21 @@ const baseSelect = {
   brandId: true, modelBodyTypeId: true, isUpcoming: true,
   launchDate: true, totalViews: true,
   expectedBasePrice: true, expectedTopPrice: true,
+  seats: true, // include seats so callers can use it without extra query
 } satisfies PrismaTypes.tblmodelsSelect;
 
+
+
 export class ModelsRepo {
-  async list(q: ModelsListQuery) {
+  /**
+   * list - fetch paginated models.
+   * New optional second param `opts.allowedModelIds` restricts results to modelId IN (...)
+   */
+  async list(q: ModelsListQuery, opts?: { allowedModelIds?: number[] }) {
     const take = Math.max(1, Math.min(q.limit || 12, 100));
     const skip = Math.max(0, ((q.page || 1) - 1) * take);
 
-    const where = buildWhere(q);
+    const where = buildWhere(q, opts);
     const orderBy = buildOrderBy(q.sortBy);
 
     const [rows, total] = await Promise.all([
@@ -125,9 +176,13 @@ export class ModelsRepo {
     };
   }
 
-  async listIgnoringPriceBucket(q: ModelsListQuery) {
+  /**
+   * listIgnoringPriceBucket - returns all matching models (no pagination)
+   * Accepts same opts for allowedModelIds
+   */
+  async listIgnoringPriceBucket(q: ModelsListQuery, opts?: { allowedModelIds?: number[] }) {
     const q2 = { ...q, priceBucket: undefined } as ModelsListQuery;
-    const where = buildWhere(q2);
+    const where = buildWhere(q2, opts);
     const rows = await prisma.tblmodels.findMany({ where, select: baseSelect });
     return rows;
   }
@@ -158,8 +213,6 @@ export class ModelsRepo {
   async getById(id: number) {
     return prisma.tblmodels.findFirst({ where: { modelId: id } });
   }
-
-  // add inside export class ModelsRepo { ... }
 
   /** 🆕 Top selling by a specific month (ordered by that month’s sales) */
   async topSellingByMonth(opts: { year: number; month: number; limit?: number }) {

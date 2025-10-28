@@ -82,6 +82,7 @@ const insuranceSelect = {
  * When authorId is provided, DO NOT force status = 1.
  * Otherwise single-author fetch returns empty for inactive/NULL status authors.
  */
+
 function buildAuthorsWhere(q: WebsiteContentListQuery): Prisma.tblauthorWhereInput {
   const where: Prisma.tblauthorWhereInput = {};
   if (typeof q.authorId === 'number') {
@@ -130,7 +131,7 @@ export class WebsiteContentRepo {
     const skipDefault = Math.max(0, ((q.page ?? 1) - 1) * takeDefault);
 
     // SPECIAL: Insurance (moduleId=5)
-    if (q.moduleId === 5) {
+    if (q.moduleId === 3) {
       const where = buildInsuranceWhere(q);
       const [rows, total] = await Promise.all([
         prisma.tblcarinsurancecontent.findMany({
@@ -143,7 +144,7 @@ export class WebsiteContentRepo {
         prisma.tblcarinsurancecontent.count({ where }),
       ]);
 
-      const mapped: WebsiteContentInsurance[] = rows.map((r) => ({ moduleId: 5, ...r }));
+      const mapped: WebsiteContentInsurance[] = rows.map((r) => ({ moduleId: 3, ...r }));
 
       return {
         rows: mapped,
@@ -217,13 +218,13 @@ export class WebsiteContentRepo {
 
   /** Detail by id */
   async getById(id: number, moduleId?: number) {
-    if (moduleId === 5) {
+    if (moduleId === 3) {
       const row = await prisma.tblcarinsurancecontent.findFirst({
         where: { uId: id },
         select: insuranceSelect,
       });
       if (!row) return null;
-      const out: WebsiteContentInsurance = { moduleId: 5, ...row };
+      const out: WebsiteContentInsurance = { moduleId: 3, ...row };
       return out;
     }
 
@@ -259,13 +260,13 @@ export class WebsiteContentRepo {
 
   /** Latest by module */
   async getLatestByModule(moduleId: number) {
-    if (moduleId === 5) {
+    if (moduleId === 3) {
       const r = await prisma.tblcarinsurancecontent.findFirst({
         where: {},
         orderBy: [{ uId: 'desc' }],
         select: insuranceSelect,
       });
-      return r ? ({ moduleId: 5, ...r } as WebsiteContentInsurance) : null;
+      return r ? ({ moduleId: 3, ...r } as WebsiteContentInsurance) : null;
     }
 
     if (moduleId === 6) {
@@ -299,4 +300,7 @@ export class WebsiteContentRepo {
         } as WebsiteContentGeneric)
       : null;
   }
+
 }
+
+

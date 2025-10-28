@@ -27,7 +27,7 @@ export interface WebsiteContentGeneric {
 /** Insurance row (tblcarinsurancecontent) — FULL column-wise */
 export interface WebsiteContentInsurance {
   uId: number;
-  moduleId: 5;
+  moduleId: 3;
   carInsuranceHeading: string | null;
   carInsuranceContent: string | null;
   section1Heading: string | null; section1Desc: string | null;
