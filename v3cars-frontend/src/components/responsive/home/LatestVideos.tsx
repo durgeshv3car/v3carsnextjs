@@ -24,7 +24,11 @@ interface VideoItem {
     };
 }
 
-const LatestVideos: React.FC = () => {
+interface LatestVideosProps {
+    title: string
+}
+
+const LatestVideos: React.FC<LatestVideosProps> = ({ title }) => {
     const { data: latestVideosData } = useGetLatestVideosQuery()
     const latestVideos: VideoItem[] = latestVideosData?.rows ?? []
     const router = useRouter()
@@ -33,9 +37,9 @@ const LatestVideos: React.FC = () => {
         <div>
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center justify-between w-full lg:w-auto gap-4">
-                    <h2 className="text-lg font-medium">Latest Videos</h2>
+                    <h2 className="text-lg font-medium">{title}</h2>
                     <Link href="/car-review-videos" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
-                        View All Latest Videos
+                        View All {title}
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>

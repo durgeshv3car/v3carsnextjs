@@ -139,7 +139,7 @@ export default function BrandSelector({ data, setSelectBrand, selectBrand }: Bra
   return (
     <div className="space-y-4">
       {/* Select dropdown */}
-      <div className='border-b dark:border-[#2E2E2E] bg-[#FFCC00] rounded-sm'>
+      <div className='border-b dark:border-[#2E2E2E] bg-[#FFCC00] rounded-md'>
         <CustomSelect
           groupedOptions={groupedOptions}
           placeholder="Select Brand"

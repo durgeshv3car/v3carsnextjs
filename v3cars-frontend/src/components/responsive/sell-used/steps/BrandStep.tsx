@@ -7,7 +7,6 @@ import StepHeader from "../common/StepHeader";
 import BrandCard from "../brand/BrandCard";
 import SelectedTrail from "../brand/SelectedTrail";
 import Card from "../common/Card";
-import { BRANDS as RAW_BRANDS } from "@/data/sell-used/brands";
 import { selectBrand, setStep, type Brand } from "@/redux/slices/sellUsedSlice";
 import { RootState } from "@/redux/store";
 import StepTopBar from "../common/StepTopBar";
@@ -15,35 +14,45 @@ import StepTopBar from "../common/StepTopBar";
 const toId = (name: string, i: number) =>
   `${name.toLowerCase().replace(/\s+/g, "-")}-${i}`;
 
-export default function BrandStep() {
+interface BrandStepProps {
+  brands: CarBrand[];
+}
+
+interface CarBrand {
+  brandId: number;
+  brandName: string;
+  brandSlug: string;
+  logoPath: string;
+  popularity: string;
+  unquieViews: number | null;
+  brandStatus: number;
+  serviceNetwork: boolean;
+  brandType: number;
+}
+
+export default function BrandStep({ brands }: BrandStepProps) {
   const dispatch = useDispatch();
   const selected = useSelector((s: RootState) => s.sellUsed.brand);
   const [q, setQ] = useState("");
 
-  // normalize data + ensure id present
-  const ALL: Brand[] = useMemo(() => {
-    return (RAW_BRANDS as Partial<Brand>[])
-      .filter(Boolean)
-      .filter(
-        (b): b is Partial<Brand> & { name: string; logo: string } =>
-          !!b?.name && !!b?.logo
-      )
-      .map((b, i) => ({
-        id: b.id ?? toId(b.name, i),
-        name: b.name,
-        logo: b.logo,
-      }));
-  }, []);
+  // ✅ Normalize data from API/interface
+  const ALL: CarBrand[] = useMemo(() => {
+    // Sirf active brands le rahe hain (brandStatus === 1)
+    return brands.filter((b) => b.brandStatus === 1);
+  }, [brands]);
 
+  // ✅ Normal brand name search filter
   const list = useMemo(() => {
-    const t = q.trim().toLowerCase();
-    if (!t) return ALL;
-    return ALL.filter((b) => b.name.toLowerCase().includes(t));
+    const search = q.trim().toLowerCase();
+    if (!search) return ALL;
+    return ALL.filter((b) =>
+      b.brandName.toLowerCase().includes(search)
+    );
   }, [q, ALL]);
 
   const onPick = (b: Brand) => {
     dispatch(selectBrand(b));
-    dispatch(setStep("period")); // ⬅️ go to Step 2
+    dispatch(setStep("period"));
   };
 
   return (
@@ -57,21 +66,20 @@ export default function BrandStep() {
       <div className="mx-auto app-container px-4 py-6 grid grid-cols-12 gap-6">
         {/* Left */}
         <div className="col-span-12 lg:col-span-8 space-y-4">
-          {/* top bar */}
           <StepTopBar
             title="Select Your Car Brand"
             query={q}
             onQueryChange={setQ}
             placeholder="Search Brand name"
           />
-          {/* grid */}
+
           <div className="h-[62vh] overflow-y-auto pr-1 custom-scroll">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 p-2">
-              {list.map((b) => (
+              {list.map((b: CarBrand) => (
                 <BrandCard
-                  key={b.id}
+                  key={b.brandId}
                   brand={b}
-                  active={selected?.id === b.id}
+                  active={selected?.brandId === b.brandId}
                   onClick={() => onPick(b)}
                 />
               ))}
@@ -92,7 +100,6 @@ export default function BrandStep() {
         </div>
       </div>
 
-      {/* optional subtle texture */}
       <div className="pointer-events-none fixed inset-x-0 top-0 -z-10 opacity-20">
         <Image
           src="/sell-used/header-texture.png"

@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type Brand = { id: string; name: string; logo: string };
+export type Brand = {
+  brandId: number;
+  brandName: string;
+  logoPath: string;
+};
 
 export type StepKey =
   | "landing"

@@ -1,6 +1,19 @@
+'use client'
+
+import Link from "next/link";
+
 interface DiscontinuedCarListProps {
     title: string;
-    cars: string[];
+    cars: DiscontinuedCarModel[];
+}
+
+interface DiscontinuedCarModel {
+    modelId: number;
+    modelName: string;
+    modelSlug: string;
+    discontinuedYear: number;
+    isUpcoming: number;
+    brandId: number;
 }
 
 export default function DiscontinuedCarList({ title, cars }: DiscontinuedCarListProps) {
@@ -14,9 +27,11 @@ export default function DiscontinuedCarList({ title, cars }: DiscontinuedCarList
             {/* List */}
             <ul className="divide-y dark:divide-[#2A2A2A]">
                 {cars.map((car, i) => (
-                    <li key={i} className="px-4 py-3 text-sm">
-                        {car}
-                    </li>
+                    <Link href={`/mahindra-cars/${car.modelSlug}`} key={i}>
+                        <li className="px-4 py-3 text-sm hover:underline">
+                            {car.modelName}
+                        </li>
+                    </Link>
                 ))}
             </ul>
 

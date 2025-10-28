@@ -121,7 +121,9 @@ export default function Home() {
 
       <div className="bg-[#E2E2E2] dark:bg-[#262629] py-10 px-6 lg:px-10">
         <div className="w-full lg:app-container mx-auto">
-          <LatestVideos />
+          <LatestVideos
+            title="Latest Videos"
+          />
         </div>
       </div>
 

@@ -1,60 +1,100 @@
-import CommonVideos from "@/components/common/CommonVideos";
+'use client'
+
 import TopSection from "@/components/common/TopSection";
 import CompareNow from "@/components/responsive/compare-cars/CompareNow";
-import ComparisonNews from "@/components/responsive/compare-cars/ComparisonNews";
 import Information from "@/components/responsive/compare-cars/Information";
+import ComparisonNews from "@/components/responsive/compare-cars/ComparisonNews";
 import MostPopularCarComparison from "@/components/responsive/compare-cars/MostPopularCarComparison";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-    title: "Compare Cars in India | Specs, Features, Prices - V3Cars",
-    description:
-        "Compare cars in India by price, features, mileage, specifications & more. Use V3Cars' car comparison tool to find the best car for you.",
-    keywords: [
-        "compare cars India",
-        "car comparison tool",
-        "car specs comparison",
-        "price comparison cars",
-        "V3Cars compare",
-        "car features comparison",
-    ],
-};
-
-const videoList = new Array(8).fill({
-    thumbnail: '/latest-video/image2.png',
-    playIcon: '/latest-video/youtube.png',
-    date: 'July 30 2024',
-    title:
-        'Summer Range Impact and Charging Issue in EVs | 4 Months & 4000km Driv EVs | 4 Months & 4000km Dr...',
-    description:
-        'The success of the Volkswagen Virtus in the Indian market is a clear reflection of our customers’ trust and confidence in the brand’s commitment to quality, safety, safety and performance...',
-})
+import { useGetBrandsQuery, useGetModelsQuery, useGetVariantsQuery } from "@/redux/api/carModuleApi";
+import { useState } from "react";
+import useIsMobile from "@/hooks/useIsMobile";
+import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
+import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
+import LatestVideos from "@/components/responsive/home/LatestVideos";
 
 function CompareCars() {
+    const [selectedBrands, setSelectedBrands] = useState<(number | null)[]>(Array(4).fill(null));
+    const [selectedModels, setSelectedModels] = useState<(number | null)[]>(Array(4).fill(null));
+    const [selectedVariants, setSelectedVariants] = useState<(number | null)[]>(Array(4).fill(null));
+
+    const { data: brandsData } = useGetBrandsQuery();
+    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+
+    const brands = brandsData?.rows ?? [];
+    const latestCarNews = latestCarNewsData?.rows ?? [];
+
+    const modelsData = selectedBrands.map((brandId) => {
+        const { data } = useGetModelsQuery(
+            { brandId: brandId! },
+            { skip: !brandId }
+        );
+        return data?.rows ?? [];
+    });
+
+    const variantsData = selectedModels.map((modelId) => {
+        const { data } = useGetVariantsQuery(
+            { modelId: modelId! },
+            { skip: !modelId }
+        );
+        return data?.rows ?? [];
+    });
+
+    const isMobile = useIsMobile()
+
     return (
         <>
             <TopSection
                 title={"Compare to choose the right car!"}
-                description={"Want to buy a Car but confused how to select the best car as per your requirements? V3Cars compare car tool can help you to finalize your car. To compare cars you just need to select two or more cars of your choice as per your requirements and get the comparison instantly. You can compare Car price, engine specifications, dimensions & interior exterior features. So now compare your favourite"}
+                description={
+                    "Want to buy a Car but confused how to select the best car as per your requirements? V3Cars compare car tool can help you to finalize your car..."
+                }
             />
 
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:app-container py-6 mx-auto space-y-7">
-                    <CompareNow />
-                    <Information />
+                    <CompareNow
+                        brands={brands}
+                        modelsData={modelsData}
+                        variantsData={variantsData}
+                        selectedBrands={selectedBrands}
+                        setSelectedBrands={setSelectedBrands}
+                        selectedModels={selectedModels}
+                        setSelectedModels={setSelectedModels}
+                        selectedVariants={selectedVariants}
+                        setSelectedVariants={setSelectedVariants}
+                    />
 
-                    <div className="hidden lg:block">
-                        <ComparisonNews />
-                    </div>
+                    <Information
+                        selectedModels={selectedModels}
+                        modelsData={modelsData}
+                        variantsData={variantsData}
+                        selectedVariants={selectedVariants}
+                        setSelectedVariants={setSelectedVariants}
+                    />
+
+                    {
+                        isMobile ?
+                            <MobileLatestCarNews
+                                title="Comparison Car News"
+                                view="Comparison News"
+                                data={latestCarNews}
+                                link="/news"
+                            />
+                            :
+                            <CommonNewsUpdate
+                                title="Comparison Car News"
+                                view="Comparison News"
+                                newsList={latestCarNews}
+                                link={"/news"}
+                            />
+                    }
 
                     <MostPopularCarComparison />
 
-                    <CommonVideos
+                    <LatestVideos
                         title="Car Comparison Latest Videos"
-                        view="Videos"
-                        videoList={videoList}
                     />
-
                 </div>
             </div>
         </>

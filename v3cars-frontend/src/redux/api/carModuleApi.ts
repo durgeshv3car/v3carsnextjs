@@ -10,6 +10,11 @@ interface Response {
     rows: [];
 }
 
+interface BrandByIdResponse {
+    success: boolean;
+    data: CarBrandDetail | null;
+}
+
 interface GetModelsArgs {
     brandId: number
 }
@@ -111,6 +116,12 @@ export const carModuleApi = createApi({
                 return `/cars/models?${params.toString()}`;
             },
         }),
+        getDiscontinuedModel: builder.query<Response, { brandId: number }>({
+            query: ({ brandId }) => `/cars/brands/${brandId}/discontinued-models`,
+        }),
+        getBrandsById: builder.query<BrandByIdResponse, { brandId: number }>({
+            query: ({ brandId }) => `/cars/brands/${brandId}`,
+        }),
     }),
 });
 
@@ -128,4 +139,47 @@ export const {
     useGetLatestCarsQuery,
     useGetMonthQuery,
     useGetAdvanceSearchDataQuery,
+    useGetDiscontinuedModelQuery,
+    useGetBrandsByIdQuery,
 } = carModuleApi;
+
+
+
+
+
+
+
+
+
+interface CarBrandDetail {
+  brandId: number;
+  brandName: string;
+  logoPath: string;
+  unquieViews: number | null;
+  popularity: string;
+  brandSlug: string;
+  brandDescription: string;
+  bannerImage: string;
+  bannerImageAltTag: string;
+  isFasttag: number;
+  brandType: number;
+  displayName: string;
+  roadsideAssistance: number;
+  emailAddress: string;
+  stateId: number;
+  cityId: number;
+  parentOrganization: string;
+  products: string;
+  founderName: string;
+  customerService: string;
+  serviceNetwork: boolean;
+  websiteUrl: string;
+  brandKeyPeople: string;
+  introContent: string; // HTML content
+  brandOrganizationName: string;
+  websiteName: string;
+  brandTitle: string;
+  iconPath: string;
+  brandStatus: number;
+  similarBrand: string;
+}

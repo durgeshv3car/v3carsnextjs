@@ -50,19 +50,35 @@ interface City {
 
 
 function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()  
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-");
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
 }
 
-function SearchSection() {
-    const [fuelType, setFuelType] = useState("")
+interface SearchSectionProps {
+    type: string;
+    city: string | null;
+    state: string | null;
+}
+
+function slugToName(slug: string): string {
+    if (!slug) return "";
+
+    return slug
+        .replace(/-/g, " ") // sab "-" ko space me badal de
+        .replace(/\b\w/g, (char) => char.toUpperCase()); // har word ka pehla letter capital kare
+}
+
+function SearchSection({ type, city, state }: SearchSectionProps) {
+    const stateName = slugToName(state || "")
+    const cityName = slugToName(city || "")
+    const [fuelType, setFuelType] = useState(type)
     const [selectState, setSelectState] = useState<number | null>(null)
-    const [selectCity, setSelectCity] = useState("")
-    const [selectStateName, setSelectStateName] = useState("")
-    const router = useRouter()
+    const [selectCity, setSelectCity] = useState(cityName)
+    const [selectStateName, setSelectStateName] = useState(stateName)
+    const router = useRouter()    
 
     const { data: cityByStatesIdData } = useGetCityByStatesIdQuery({ stateId: Number(selectState) }, { skip: !selectState })
     const { data: statesData } = useGetStatesQuery()
@@ -74,8 +90,8 @@ function SearchSection() {
         const city = value.cityName
         setSelectCity(city);
         const slug = slugify(selectStateName)
-        const citySlug = slugify(city)                
-        router.push(`https://www.v3cars.com/${slug}/${fuelType.toLowerCase()}-price-in-${citySlug}`)
+        const citySlug = slugify(city)
+        router.push(`/${slug}/${fuelType.toLowerCase()}-price-in-${citySlug}`)
     }
 
     return (
@@ -99,8 +115,8 @@ function SearchSection() {
                                 options={states}
                                 placeholder="Select State"
                                 labelKey="stateName"
-                                valueKey="stateId"
-                                value={selectState}
+                                valueKey="stateName"
+                                value={selectStateName}
                                 onSelect={(value: State) => {
                                     setSelectState(value.stateId);
                                     setSelectStateName(value.stateName);

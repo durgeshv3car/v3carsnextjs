@@ -61,7 +61,7 @@ function CarOnRoadPrice() {
                         </div>
                         <div className="w-auto lg:min-w-[24%] space-y-6 lg:mt-12">
                             <FuelTab />
-                            <DiscontinuedCarList title="Discontinued Mahindra Cars" cars={discontinuedMahindraCars} />
+                            {/* <DiscontinuedCarList title="Discontinued Mahindra Cars" cars={discontinuedMahindraCars} /> */}
                         </div>
                     </div>
 

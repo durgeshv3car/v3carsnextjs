@@ -1,5 +1,6 @@
 import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface CarBrand {
     brandId: number
@@ -19,6 +20,7 @@ interface SimilarBrandsProps {
 
 
 export default function SimilarBrands({ brands }: SimilarBrandsProps) {
+    const router = useRouter()
     return (
 
         <div className=" rounded-xl overflow-hidden">
@@ -36,6 +38,7 @@ export default function SimilarBrands({ brands }: SimilarBrandsProps) {
                     <div
                         key={i}
                         className={`bg-white flex items-center justify-center aspect-[3/2] p-2 rounded-xl cursor-pointer `}
+                        onClick={()=>{router.push(`/brands/${brand.brandSlug}`)}}
                     >
                         <Image
                             src={`${IMAGE_URL}/media/brand-imgs/${brand.logoPath}`}
