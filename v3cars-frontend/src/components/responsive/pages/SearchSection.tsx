@@ -3,7 +3,7 @@
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import { useGetCityByStatesIdQuery, useGetStatesQuery } from "@/redux/api/locationModuleApi";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface FuelTypes {
     id: number,
@@ -61,38 +61,68 @@ interface SearchSectionProps {
     type: string;
     city: string | null;
     state: string | null;
+    setCityId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 function slugToName(slug: string): string {
     if (!slug) return "";
 
     return slug
-        .replace(/-/g, " ") // sab "-" ko space me badal de
-        .replace(/\b\w/g, (char) => char.toUpperCase()); // har word ka pehla letter capital kare
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-function SearchSection({ type, city, state }: SearchSectionProps) {
+function SearchSection({ type, city, state, setCityId }: SearchSectionProps) {
     const stateName = slugToName(state || "")
     const cityName = slugToName(city || "")
     const [fuelType, setFuelType] = useState(type)
     const [selectState, setSelectState] = useState<number | null>(null)
     const [selectCity, setSelectCity] = useState(cityName)
     const [selectStateName, setSelectStateName] = useState(stateName)
-    const router = useRouter()    
+    const router = useRouter()
 
     const { data: cityByStatesIdData } = useGetCityByStatesIdQuery({ stateId: Number(selectState) }, { skip: !selectState })
     const { data: statesData } = useGetStatesQuery()
 
-    const states = statesData?.rows ?? []
-    const citys = cityByStatesIdData?.rows ?? []
+    const states: State[] = statesData?.rows ?? []
+    const citys: City[] = cityByStatesIdData?.rows ?? []
 
     function handleCity(value: City) {
         const city = value.cityName
+        setCityId(value.cityId)
         setSelectCity(city);
         const slug = slugify(selectStateName)
         const citySlug = slugify(city)
         router.push(`/${slug}/${fuelType.toLowerCase()}-price-in-${citySlug}`)
     }
+
+    useEffect(() => {
+        if (states.length > 0 && selectStateName) {
+            const matched = states.find(
+                (s: State) =>
+                    s.stateName.toLowerCase() === selectStateName.toLowerCase()
+            );
+            if (matched) {
+                setSelectState(matched.stateId);
+            } else {
+                setSelectState(null);
+            }
+        }
+    }, [states, selectStateName]);
+
+    useEffect(() => {
+        if (citys.length > 0 && cityName) {
+            const matched = citys.find(
+                (c: City) =>
+                    c.cityName.toLowerCase() === cityName.toLowerCase()
+            );
+            if (matched) {
+                setCityId(matched.cityId);
+            } else {
+                setCityId(null);
+            }
+        }
+    }, [citys, cityName]);
 
     return (
         <>

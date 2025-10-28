@@ -37,6 +37,12 @@ export const fuelModuleApi = createApi({
     getFuelPriceState: builder.query<Response, void>({
       query: () => `/fuel/states/combined?page=1&limit=50`,
     }),
+    getMetroCityFuel: builder.query<Response, { fuelType: number }>({
+      query: ({ fuelType }) => `/fuel/metros?fuelType=${fuelType}`,
+    }),
+    getMetroCityFuelByCity: builder.query<LatestFuelPriceResponse, { fuelType: number, cityId: number }>({
+      query: ({ fuelType, cityId }) => `/fuel/price/latest?fuelType=${fuelType}&districtId=${cityId}`,
+    }),
   }),
 });
 
@@ -45,4 +51,6 @@ export const {
   useGet10DaysFuelPriceQuery,
   useGetLatestFuelPriceQuery,
   useGetFuelPriceStateQuery,
+  useGetMetroCityFuelQuery,
+  useGetMetroCityFuelByCityQuery,
 } = fuelModuleApi;
