@@ -176,6 +176,7 @@ Response item (enriched)
   "imageUrl": "https://cdn.example.com/grand-vitara-main.jpg"
 }
 
+
 Variants
 
 List
@@ -189,6 +190,7 @@ modelId — recommended to scope variants
 q — search in variantName
 
 Price filters
+
 
 priceBucket — UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L
 
@@ -206,6 +208,7 @@ page, limit
 
 Examples
 
+
 By model: /v1/cars/variants?modelId=163&limit=10&page=1
 
 Search + price sort: /v1/cars/variants?modelId=101&q=delta&sortBy=price_asc&limit=10&page=1
@@ -215,6 +218,8 @@ Fuel + Transmission: /v1/cars/variants?modelId=101&fuelType=Petrol&transmissionT
 Bucket: /v1/cars/variants?modelId=101&priceBucket=BETWEEN_10_20L&sortBy=price_asc&limit=10&page=1
 
 Numeric window: /v1/cars/variants?modelId=101&minPrice=700000&maxPrice=1200000&limit=10&page=1
+
+
 
 Response item
 
@@ -229,6 +234,7 @@ Response item
   "priceMax": 779000,
   "powertrain": { "id": 549, "fuelType": "Petrol", "transmissionType": "MT", "label": "1.5P MT" }
 }
+
 
 Notes
 
