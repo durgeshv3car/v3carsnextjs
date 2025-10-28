@@ -9,7 +9,7 @@ import type {
 } from './fuel.types.js';
 import { withCache, cacheKey } from '../../lib/cache.js';
 
-const METRO_IDS = [612, 352, 280, 465]; // New Delhi, Chennai, Mumbai, Kolkata
+const METRO_IDS = [612, 353, 280, 465]; // New Delhi, Chennai, Mumbai, Kolkata
 
 const repo = new FuelRepo();
 
@@ -18,6 +18,8 @@ const repo = new FuelRepo();
  * - else if cityId is given → map cityId -> tbldistricts.id
  * - else if districtId is actually a cityId → map it
  */
+
+
 async function resolveDistrictId(opts: { districtId?: number; cityId?: number }): Promise<number | undefined> {
   // 1) If a real tbldistricts id
   if (opts.districtId) {
@@ -54,7 +56,6 @@ async function resolveDistrictId(opts: { districtId?: number; cityId?: number })
 
   return undefined;
 }
-
 
 
 export class FuelService {
@@ -116,8 +117,7 @@ export class FuelService {
     }, ttlMs);
   }
 
-  
-   
+
    async latestPopularByState(stateId: number, fuelType: number) {
     const key = cacheKey({ ns: 'fuel:latestPopularByState', v: 1, stateId, fuelType });
     const ttlMs = 5 * 60 * 1000;
@@ -359,4 +359,5 @@ export class FuelService {
       };
     }, ttlMs);
   }
+
 }
