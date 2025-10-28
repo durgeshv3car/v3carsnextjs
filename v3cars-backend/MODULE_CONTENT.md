@@ -56,7 +56,6 @@ GET /v1/content/:type/latest?limit=9&excludeToday=1
 # Optional: &fuelType=Electric
 
 
-
 Examples
 
 Latest News (default): /v1/content/news/latest?limit=9

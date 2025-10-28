@@ -39,22 +39,6 @@ function buildEvScope(modelIds?: number[], fuelType?: string) {
 }
 
 export class ContentRepo {
-  async getToday(contentType: number, modelIds?: number[], fuelType?: string) {
-    const rows = await prisma.$queryRaw<ContentRow[]>(Prisma.sql`
-      SELECT id, title, pageUrl, publishDateandTime, shortDescription,
-             thumbnailAltText, thumbnailUrl, authorId
-      FROM tblcontents
-      WHERE contentType = ${contentType}
-        AND publishDateandTime <= NOW()
-        AND contentPublishType IN (1,2)
-        AND contentPublishStatus = 2
-        ${buildEvScope(modelIds, fuelType)}
-      ORDER BY publishDateandTime DESC, id DESC
-      LIMIT 1
-    `);
-    return rows[0] ?? null;
-  }
-
   async listLatest(contentType: number, limit = 9, excludeId?: number, modelIds?: number[], fuelType?: string) {
     return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
       SELECT id, title, pageUrl, publishDateandTime, shortDescription,
@@ -132,7 +116,6 @@ export class ContentRepo {
     `);
   }
 
-
   async findAuthorsByIds(ids: number[]) {
     if (!ids.length) return [];
     return prisma.tblauthor.findMany({
@@ -152,4 +135,6 @@ export class ContentRepo {
     grouped.forEach(g => map.set(g.contentId, g._count.contentId));
     return map;
   }
+
 }
+
