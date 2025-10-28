@@ -55,6 +55,8 @@ GET /v1/content/:type/latest?limit=9&excludeToday=1
 # Ordered by publishDateandTime DESC, id DESC
 # Optional: &fuelType=Electric
 
+
+
 Examples
 
 Latest News (default): /v1/content/news/latest?limit=9

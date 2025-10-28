@@ -1,26 +1,153 @@
-
-
-
+import { Prisma } from '@prisma/client';
+import { prisma } from '../../lib/prisma.js';
 import { FuelRepo } from './fuel.repo.js';
 import type {
   FuelLatestQuery, FuelHistoryQuery,
-  FuelStatesListQuery, FuelCitiesListQuery
+  FuelStatesListQuery, FuelCitiesListQuery,
+  FuelMetrosQuery,
+  FuelMonthlyTrendsQuery
 } from './fuel.types.js';
 import { withCache, cacheKey } from '../../lib/cache.js';
 
+const METRO_IDS = [612, 352, 280, 465]; // New Delhi, Chennai, Mumbai, Kolkata
+
 const repo = new FuelRepo();
+
+/** Robust mapper:
+ * - if districtId is a real tbldistricts.id → keep it
+ * - else if cityId is given → map cityId -> tbldistricts.id
+ * - else if districtId is actually a cityId → map it
+ */
+async function resolveDistrictId(opts: { districtId?: number; cityId?: number }): Promise<number | undefined> {
+  // 1) If a real tbldistricts id
+  if (opts.districtId) {
+    const found = await prisma.$queryRaw<Array<{ id: number }>>(Prisma.sql`
+      SELECT id FROM tbldistricts WHERE id = ${opts.districtId} LIMIT 1
+    `);
+    if (found.length) return opts.districtId;
+  }
+
+  // 2) Map cityId -> districtId (state+name join)
+  const tryMap = async (cityId: number) => {
+    const rows = await prisma.$queryRaw<Array<{ districtId: number }>>(Prisma.sql`
+      SELECT d.id AS districtId
+      FROM tblcities c
+      JOIN tbldistricts d
+        ON d.stateId = c.stateId
+       AND d.districtName = c.cityName
+      WHERE c.cityId = ${cityId}
+      LIMIT 1
+    `);
+    return rows.length ? rows[0].districtId : undefined;
+  };
+
+  if (opts.cityId) {
+    const mapped = await tryMap(opts.cityId);
+    if (mapped) return mapped;
+  }
+
+  // 3) If districtId was actually a cityId
+  if (opts.districtId) {
+    const mapped = await tryMap(opts.districtId);
+    if (mapped) return mapped;
+  }
+
+  return undefined;
+}
+
+
 
 export class FuelService {
 
+   async metros(q: FuelMetrosQuery) {
+    const fuels = q.fuelType ? [q.fuelType] : [1,2,3];
+    const key = cacheKey({ ns: 'fuel:metros', v: 1, fuels: fuels.join(',') });
+    const ttlMs = 10 * 60 * 1000;
+
+    return withCache(key, async () => {
+      const raw = await repo.metrosLatest(METRO_IDS, fuels);
+
+      if (q.fuelType) {
+        // return flat rows for a single fuel
+        return raw
+          .filter(r => r.fuelType === q.fuelType)
+          .map(r => ({
+            districtId: r.districtId,
+            cityName: r.cityName,
+            stateId: r.stateId,
+            stateName: r.stateName,
+            fuelType: r.fuelType,
+            price: r.price == null ? null : Number(r.price),
+            prevPrice: r.prevPrice == null ? null : Number(r.prevPrice),
+            change: (r.price == null || r.prevPrice == null)
+              ? null : Number((Number(r.price) - Number(r.prevPrice)).toFixed(2)),
+            updatedAt: r.ts ? new Date(r.ts).toISOString() : null,
+          }));
+      }
+
+      // combined (three fuels) grouped by city
+      const byCity: Record<number, any> = {};
+      for (const r of raw) {
+        if (!byCity[r.districtId]) {
+          byCity[r.districtId] = {
+            districtId: r.districtId,
+            cityName: r.cityName,
+            stateId: r.stateId,
+            stateName: r.stateName,
+            petrol: null, diesel: null, cng: null,
+          };
+        }
+        const block = {
+          price: r.price == null ? null : Number(r.price),
+          prevPrice: r.prevPrice == null ? null : Number(r.prevPrice),
+          change: (r.price == null || r.prevPrice == null)
+            ? null : Number((Number(r.price) - Number(r.prevPrice)).toFixed(2)),
+          updatedAt: r.ts ? new Date(r.ts).toISOString() : null,
+        };
+        if (r.fuelType === 1) byCity[r.districtId].petrol = block;
+        if (r.fuelType === 2) byCity[r.districtId].diesel = block;
+        if (r.fuelType === 3) byCity[r.districtId].cng    = block;
+      }
+
+      // keep the order as METRO_IDS
+      return METRO_IDS
+        .map(id => byCity[id])
+        .filter(Boolean);
+    }, ttlMs);
+  }
+
+  
+   
+   async latestPopularByState(stateId: number, fuelType: number) {
+    const key = cacheKey({ ns: 'fuel:latestPopularByState', v: 1, stateId, fuelType });
+    const ttlMs = 5 * 60 * 1000;
+    return withCache(key, async () => {
+      const rows = await repo.latestPopularByState(stateId, fuelType);
+      return rows.map(r => ({
+        districtId: r.districtId,
+        cityName: r.cityName,
+        stateId: r.stateId,
+        isPopularCity: r.isPopularCity ?? null,
+        price: r.price == null ? null : Number(r.price),
+        prevPrice: r.prevPrice == null ? null : Number(r.prevPrice),
+        change: (r.price == null || r.prevPrice == null)
+          ? null
+          : Number((Number(r.price) - Number(r.prevPrice)).toFixed(2)),
+        updatedAt: r.ts ? new Date(r.ts).toISOString() : null,
+      }));
+    }, ttlMs);
+  }
 
   /** latest for city/state with delta */
   async latest(q: FuelLatestQuery) {
-    const scope = q.districtId ? { key: `dist:${q.districtId}` } : { key: `state:${q.stateId}` };
-    const key = cacheKey({ ns: 'fuel:latest', v: 1, fuelType: q.fuelType, scope: scope.key });
-    const ttlMs = 5 * 60 * 1000; // 5m
+    const districtId = await resolveDistrictId({ districtId: q.districtId, cityId: q.cityId });
+    const scope = districtId ? { key: `dist:${districtId}` } : { key: `state:${q.stateId}` };
+    const key = cacheKey({ ns: 'fuel:latest', v: 4, fuelType: q.fuelType, scope: scope.key });
+    const ttlMs = 5 * 60 * 1000;
+
     return withCache(key, async () => {
-      return q.districtId
-        ? repo.latestByDistrict(q.districtId!, q.fuelType)
+      return districtId
+        ? repo.latestByDistrict(districtId, q.fuelType)
         : repo.latestByState(q.stateId!, q.fuelType);
     }, ttlMs);
   }
@@ -28,12 +155,14 @@ export class FuelService {
   /** history last N days for city/state */
   async history(q: FuelHistoryQuery) {
     const days = q.days ?? 10;
-    const scope = q.districtId ? { key: `dist:${q.districtId}` } : { key: `state:${q.stateId}` };
-    const key = cacheKey({ ns: 'fuel:history', v: 1, fuelType: q.fuelType, days, scope: scope.key });
-    const ttlMs = 10 * 60 * 1000; // 10m
+    const districtId = await resolveDistrictId({ districtId: q.districtId, cityId: q.cityId });
+    const scope = districtId ? { key: `dist:${districtId}` } : { key: `state:${q.stateId}` };
+    const key = cacheKey({ ns: 'fuel:history', v: 3, fuelType: q.fuelType, days, scope: scope.key });
+    const ttlMs = 10 * 60 * 1000;
+
     return withCache(key, async () => {
-      return q.districtId
-        ? repo.historyByDistrict(q.districtId!, q.fuelType, days)
+      return districtId
+        ? repo.historyByDistrict(districtId, q.fuelType, days)
         : repo.historyByState(q.stateId!, q.fuelType, days);
     }, ttlMs);
   }
@@ -62,17 +191,18 @@ export class FuelService {
           stateName: r.stateName,
           price: r.price == null ? null : Number(r.price),
           prevPrice: r.prevPrice == null ? null : Number(r.prevPrice),
-          change: r.prevPrice == null || r.price == null ? null : Number((Number(r.price) - Number(r.prevPrice)).toFixed(2)),
+          change: (r.prevPrice == null || r.price == null)
+            ? null
+            : Number((Number(r.price) - Number(r.prevPrice)).toFixed(2)),
           updatedAt: r.ts ? new Date(r.ts).toISOString() : null,
         })),
         page, pageSize: limit, total,
         totalPages: Math.max(1, Math.ceil(total / limit)),
       };
     }, ttlMs);
-    
   }
 
-  /** city list within a state */
+  /** city list within a state (popular filter supported) */
   async cities(q: FuelCitiesListQuery) {
     const page = q.page ?? 1;
     const limit = Math.max(1, Math.min(q.limit ?? 50, 100));
@@ -83,16 +213,13 @@ export class FuelService {
       fuelType: q.fuelType, stateId: q.stateId,
       page, limit, sortBy: q.sortBy ?? 'name_asc',
       q: q.q ?? undefined,
-      /** 🔑 include popular in the cache key so cached pages don't mix */
       popular: typeof q.popular === 'number' ? q.popular : undefined,
     });
     const ttlMs = page === 1 ? 10 * 60 * 1000 : 5 * 60 * 1000;
 
     return withCache(key, async () => {
       const { rows, total } = await repo.citiesLatest(q.stateId, q.fuelType, {
-        q: q.q, skip, take: limit, sortBy: q.sortBy,
-        /** 🔁 forward the flag to repo so SQL adds `c.isPopularCity = 1` */
-        popular: q.popular,
+        q: q.q, skip, take: limit, sortBy: q.sortBy, popular: q.popular,
       });
       return {
         rows: rows.map(r => ({
@@ -101,7 +228,9 @@ export class FuelService {
           stateId: r.stateId,
           price: r.price == null ? null : Number(r.price),
           prevPrice: r.prevPrice == null ? null : Number(r.prevPrice),
-          change: r.prevPrice == null || r.price == null ? null : Number((Number(r.price) - Number(r.prevPrice)).toFixed(2)),
+          change: (r.prevPrice == null || r.price == null)
+            ? null
+            : Number((Number(r.price) - Number(r.prevPrice)).toFixed(2)),
           updatedAt: r.ts ? new Date(r.ts).toISOString() : null,
         })),
         page, pageSize: limit, total,
@@ -156,34 +285,78 @@ export class FuelService {
         ? await repo.historyCombinedByDistrict(q.districtId!, days)
         : await repo.historyCombinedByState(q.stateId!, days);
 
-      // add per-day change = today - previousDay (for each fuel)
+      // per-day delta
       let prevP: number | null = null, prevD: number | null = null, prevC: number | null = null;
       const rows = raw.map(r => {
         const p = r.petrol == null ? null : Number(r.petrol);
         const d = r.diesel == null ? null : Number(r.diesel);
-        const c = r.cng    == null ? null : Number(r.cng);
+        const c = r.cng == null ? null : Number(r.cng);
 
         const petrolChange = (p == null || prevP == null) ? null : Number((p - prevP).toFixed(2));
         const dieselChange = (d == null || prevD == null) ? null : Number((d - prevD).toFixed(2));
-        const cngChange    = (c == null || prevC == null) ? null : Number((c - prevC).toFixed(2));
+        const cngChange = (c == null || prevC == null) ? null : Number((c - prevC).toFixed(2));
 
         prevP = p ?? prevP;
         prevD = d ?? prevD;
         prevC = c ?? prevC;
 
-        return {
-          day: r.day,
-          petrol: p, petrolChange,
-          diesel: d, dieselChange,
-          cng: c,   cngChange,
-        };
+        return { day: r.day, petrol: p, petrolChange, diesel: d, dieselChange, cng: c, cngChange };
       });
 
       return rows;
     }, ttlMs);
   }
 
+ /** monthly trends (one fuel, city or cityId->district mapped) */
+  async monthlyTrends(q: FuelMonthlyTrendsQuery) {
+    const months = q.months ?? 6;
 
+    // 🔁 Resolve districtId from cityId if needed
+    let districtId = q.districtId ?? null;
+    if (!districtId && q.cityId) {
+      districtId = await repo.mapCityIdToDistrictId(q.cityId);
+    }
+    if (!districtId) {
+      return { city: null, fuelType: q.fuelType, months: [] }; // nothing to do
+    }
+
+    const key = cacheKey({
+      ns: 'fuel:monthlyTrends', v: 2,     // bump cache version
+      fuelType: q.fuelType, districtId, months,
+    });
+    const ttlMs = 10 * 60 * 1000;
+
+    return withCache(key, async () => {
+      const meta = await repo.getDistrictMeta(districtId!);
+      const rows = await repo.monthlyTrendsByDistrict(districtId!, q.fuelType, months);
+
+      const monthsData = rows.map(r => ({
+        month: r.ym, // 'YYYY-MM'
+        firstPrice: r.firstPrice == null ? null : Number(r.firstPrice),
+        lastPrice:  r.lastPrice  == null ? null : Number(r.lastPrice),
+        netChange:  (r.firstPrice == null || r.lastPrice == null) ? null :
+                    Number((Number(r.lastPrice) - Number(r.firstPrice)).toFixed(2)),
+        avgPrice:   r.avgPrice   == null ? null : Number(Number(r.avgPrice).toFixed(2)),
+        highest: r.highestPrice == null ? null : {
+          price: Number(r.highestPrice),
+          date: r.highestDate ? new Date(r.highestDate).toISOString().slice(0,10) : null
+        },
+        lowest: r.lowestPrice == null ? null : {
+          price: Number(r.lowestPrice),
+          date: r.lowestDate ? new Date(r.lowestDate).toISOString().slice(0,10) : null
+        },
+      }));
+
+      return {
+        city: {
+          districtId,
+          name: meta?.districtName ?? null,
+          stateId: meta?.stateId ?? null,
+          stateName: meta?.stateName ?? null,
+        },
+        fuelType: q.fuelType,
+        months: monthsData, // newest → oldest
+      };
+    }, ttlMs);
+  }
 }
-
-
