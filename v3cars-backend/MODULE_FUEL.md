@@ -44,4 +44,6 @@ Last Six Month Trends
 /v1/fuel/monthly/trends?fuelType=1&cityId=1489&months=6
 
 
+faq -
 
+/v1/faqs?moduleId=16&pageType=1&fuelType=1&limit=50&page=1
