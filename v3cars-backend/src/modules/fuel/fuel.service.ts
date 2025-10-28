@@ -9,7 +9,7 @@ import type {
 } from './fuel.types.js';
 import { withCache, cacheKey } from '../../lib/cache.js';
 
-const METRO_IDS = [612, 352, 280, 465]; // New Delhi, Chennai, Mumbai, Kolkata
+const METRO_IDS = [612, 353, 280, 465]; // New Delhi, Chennai, Mumbai, Kolkata
 
 const repo = new FuelRepo();
 
