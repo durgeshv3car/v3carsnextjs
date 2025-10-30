@@ -60,9 +60,11 @@ Cities in a state (use popular flag = 1 for top cities list):l
 State-wise combined (petrol/diesel/cng):
 /v1/fuel/states/combined?limit=50&page=1
 
+
 Combined 10-day history (all fuels) for state or city:
 /v1/fuel/price/history/combined?stateId=29&days=10
 /v1/fuel/price/history/combined?districtId=1489&days=10
+
 
 Last Six Month Trends
 /v1/fuel/monthly/trends?fuelType=1&cityId=1489&months=6
