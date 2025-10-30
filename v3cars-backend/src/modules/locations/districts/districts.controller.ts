@@ -6,7 +6,7 @@ const svc = new DistrictsService();
 
 export class DistrictsController {
   async list(req: Request, res: Response) {
-    const q = districtsListQueryDto.parse(req.query);
+    const q : any = districtsListQueryDto.parse(req.query);
     const data = await svc.list(q);
     res.json({ success: true, ...data });
   }
@@ -18,3 +18,11 @@ export class DistrictsController {
     res.json({ success: true, data: row });
   }
 }
+
+
+
+
+
+
+
+

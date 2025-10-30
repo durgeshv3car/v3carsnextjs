@@ -30,6 +30,7 @@ function buildOrderBy(sortBy: DistrictsListQuery['sortBy']): Prisma.tbldistricts
 }
 
 export class DistrictsRepo {
+
   async list(q: DistrictsListQuery) {
     const take = Math.max(1, Math.min(q.limit || 50, 100));
     const page = q.page || 1;
@@ -39,6 +40,7 @@ export class DistrictsRepo {
     const orderBy = buildOrderBy(q.sortBy);
 
     const [rows, total] = await Promise.all([
+
       prisma.tbldistricts.findMany({
         where, orderBy, skip, take,
         select: {
@@ -58,6 +60,7 @@ export class DistrictsRepo {
       pageSize: take,
       totalPages: Math.max(1, Math.ceil(total / take)),
     };
+
   }
 
   async getById(id: number) {
@@ -71,4 +74,7 @@ export class DistrictsRepo {
       } as any,
     });
   }
+
 }
+
+

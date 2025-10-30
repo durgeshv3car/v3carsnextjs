@@ -79,6 +79,44 @@ export class FuelRepo {
     return rows;
   }
 
+  // ADD this new method inside FuelRepo
+async metrosHistory(
+  districtIds: number[],
+  fuelTypes: number[],
+  days: number
+) {
+  const idsList  = Prisma.join(districtIds);
+  const fuelsLst = Prisma.join(fuelTypes);
+
+  return prisma.$queryRaw<Array<{
+    districtId: number;
+    cityName: string | null;
+    stateId: number | null;
+    stateName: string | null;
+    fuelType: number;
+    day: string;               // 'YYYY-MM-DD'
+    price: number | null;      // per-day AVG
+  }>>(Prisma.sql`
+    SELECT
+      d.id                         AS districtId,
+      d.districtName               AS cityName,
+      d.stateId                    AS stateId,
+      s.stateName                  AS stateName,
+      fp.fuelType                  AS fuelType,
+      DATE_FORMAT(fp.addedDateTime, '%Y-%m-%d') AS day,
+      ROUND(AVG(fp.fuelPrice), 2)  AS price
+    FROM tblfuelprice fp
+    JOIN tbldistricts d ON d.id = fp.districtId
+    LEFT JOIN tblstates s ON s.stateId = d.stateId
+    WHERE fp.districtId IN (${idsList})
+      AND fp.fuelType   IN (${fuelsLst})
+      AND fp.addedDateTime >= DATE_SUB(CURDATE(), INTERVAL ${days} DAY)
+    GROUP BY d.id, d.districtName, d.stateId, s.stateName, fp.fuelType, DATE(fp.addedDateTime)
+    ORDER BY d.id ASC, fp.fuelType ASC, DATE(fp.addedDateTime) ASC
+  `);
+}
+
+
   async districtIdFromCityId(cityId: number): Promise<number | null> {
     const rows = await prisma.$queryRaw<Array<{ id: number }>>(Prisma.sql`
     SELECT d.id

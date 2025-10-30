@@ -60,13 +60,87 @@ async function resolveDistrictId(opts: { districtId?: number; cityId?: number })
 
 export class FuelService {
 
-   async metros(q: FuelMetrosQuery) {
-    const fuels = q.fuelType ? [q.fuelType] : [1,2,3];
-    const key = cacheKey({ ns: 'fuel:metros', v: 1, fuels: fuels.join(',') });
+  // REPLACE the whole `metros` method with this version
+  async metros(q: FuelMetrosQuery) {
+    const fuels = q.fuelType ? [q.fuelType] : [1, 2, 3] as const;
+    const hasDays = Number.isFinite(q.days as number);
+    const days = hasDays ? Number(q.days) : undefined;
+
+    const key = cacheKey({
+      ns: 'fuel:metros',
+      v: 2,                               // bump cache
+      fuels: fuels.join(','),
+      days: days ?? 'latest',             // cache key includes days vs latest
+    });
     const ttlMs = 10 * 60 * 1000;
 
     return withCache(key, async () => {
-      const raw = await repo.metrosLatest(METRO_IDS, fuels);
+      // If days requested → return last N days history
+      if (hasDays && days) {
+        const raw = await repo.metrosHistory(METRO_IDS, [...fuels], days);
+
+        if (q.fuelType) {
+          // Single fuel → flat list: one item per city with history[]
+          const byCity: Record<number, {
+            districtId: number;
+            cityName: string | null;
+            stateId: number | null;
+            stateName: string | null;
+            fuelType: number;
+            history: { day: string; price: number | null }[];
+          }> = {};
+
+          for (const r of raw) {
+            if (r.fuelType !== q.fuelType) continue;
+            if (!byCity[r.districtId]) {
+              byCity[r.districtId] = {
+                districtId: r.districtId,
+                cityName: r.cityName,
+                stateId: r.stateId,
+                stateName: r.stateName,
+                fuelType: r.fuelType,
+                history: [],
+              };
+            }
+            byCity[r.districtId].history.push({
+              day: r.day,
+              price: r.price == null ? null : Number(r.price),
+            });
+          }
+
+          // Keep fixed METRO_IDS order
+          return METRO_IDS
+            .map(id => byCity[id])
+            .filter(Boolean);
+        }
+
+        // All fuels → group by city, then fuel → history[]
+        const byCity: Record<number, any> = {};
+        for (const r of raw) {
+          if (!byCity[r.districtId]) {
+            byCity[r.districtId] = {
+              districtId: r.districtId,
+              cityName: r.cityName,
+              stateId: r.stateId,
+              stateName: r.stateName,
+              petrol: { history: [] as Array<{ day: string; price: number | null }> },
+              diesel: { history: [] as Array<{ day: string; price: number | null }> },
+              cng: { history: [] as Array<{ day: string; price: number | null }> },
+            };
+          }
+          const entry = { day: r.day, price: r.price == null ? null : Number(r.price) };
+          if (r.fuelType === 1) byCity[r.districtId].petrol.history.push(entry);
+          if (r.fuelType === 2) byCity[r.districtId].diesel.history.push(entry);
+          if (r.fuelType === 3) byCity[r.districtId].cng.history.push(entry);
+        }
+
+        return METRO_IDS
+          .map(id => byCity[id])
+          .filter(Boolean);
+      }
+
+      // No days → behave as earlier (latest + prev)
+      const raw = await repo.metrosLatest(METRO_IDS, [...fuels]);
 
       if (q.fuelType) {
         // return flat rows for a single fuel
@@ -107,10 +181,9 @@ export class FuelService {
         };
         if (r.fuelType === 1) byCity[r.districtId].petrol = block;
         if (r.fuelType === 2) byCity[r.districtId].diesel = block;
-        if (r.fuelType === 3) byCity[r.districtId].cng    = block;
+        if (r.fuelType === 3) byCity[r.districtId].cng = block;
       }
 
-      // keep the order as METRO_IDS
       return METRO_IDS
         .map(id => byCity[id])
         .filter(Boolean);
@@ -118,7 +191,7 @@ export class FuelService {
   }
 
 
-   async latestPopularByState(stateId: number, fuelType: number) {
+  async latestPopularByState(stateId: number, fuelType: number) {
     const key = cacheKey({ ns: 'fuel:latestPopularByState', v: 1, stateId, fuelType });
     const ttlMs = 5 * 60 * 1000;
     return withCache(key, async () => {
@@ -307,7 +380,7 @@ export class FuelService {
     }, ttlMs);
   }
 
- /** monthly trends (one fuel, city or cityId->district mapped) */
+  /** monthly trends (one fuel, city or cityId->district mapped) */
   async monthlyTrends(q: FuelMonthlyTrendsQuery) {
     const months = q.months ?? 6;
 
@@ -333,17 +406,17 @@ export class FuelService {
       const monthsData = rows.map(r => ({
         month: r.ym, // 'YYYY-MM'
         firstPrice: r.firstPrice == null ? null : Number(r.firstPrice),
-        lastPrice:  r.lastPrice  == null ? null : Number(r.lastPrice),
-        netChange:  (r.firstPrice == null || r.lastPrice == null) ? null :
-                    Number((Number(r.lastPrice) - Number(r.firstPrice)).toFixed(2)),
-        avgPrice:   r.avgPrice   == null ? null : Number(Number(r.avgPrice).toFixed(2)),
+        lastPrice: r.lastPrice == null ? null : Number(r.lastPrice),
+        netChange: (r.firstPrice == null || r.lastPrice == null) ? null :
+          Number((Number(r.lastPrice) - Number(r.firstPrice)).toFixed(2)),
+        avgPrice: r.avgPrice == null ? null : Number(Number(r.avgPrice).toFixed(2)),
         highest: r.highestPrice == null ? null : {
           price: Number(r.highestPrice),
-          date: r.highestDate ? new Date(r.highestDate).toISOString().slice(0,10) : null
+          date: r.highestDate ? new Date(r.highestDate).toISOString().slice(0, 10) : null
         },
         lowest: r.lowestPrice == null ? null : {
           price: Number(r.lowestPrice),
-          date: r.lowestDate ? new Date(r.lowestDate).toISOString().slice(0,10) : null
+          date: r.lowestDate ? new Date(r.lowestDate).toISOString().slice(0, 10) : null
         },
       }));
 
@@ -361,3 +434,4 @@ export class FuelService {
   }
 
 }
+
