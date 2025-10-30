@@ -105,6 +105,8 @@ Popular News: /v1/content/news/popular?limit=5
 
 Popular EV News: /v1/content/news/popular?limit=5&fuelType=Electric
 
+popular comparisions - /v1/comparisons/popular?limit=15
+
 Legacy News Aliases (backward compatible)
 
 Exactly same response shape & params, fixed type=news:

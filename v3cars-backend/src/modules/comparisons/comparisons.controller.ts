@@ -28,4 +28,11 @@ export class ComparisonsController {
     const rows = await svc.top({ limit: q.limit });
     res.json({ success: true, rows });
   }
+
+  /** 🆕 GET /v1/comparisons/popular?limit=15 */
+  async popular(req: Request, res: Response) {
+    const q = limitDto.parse(req.query);
+    const rows = await svc.popular({ limit: q.limit });
+    res.json({ success: true, rows });
+  }
 }

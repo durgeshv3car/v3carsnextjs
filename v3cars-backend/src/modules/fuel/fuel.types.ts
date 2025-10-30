@@ -40,6 +40,8 @@ export interface FuelCitiesListQuery {
 export interface FuelMetrosQuery {
   /** optional, if missing we return all (1,2,3) */
   fuelType?: FuelTypeNum;
+  /** optional: when provided, return last N days history */
+  days?: number;
 }
 
 export interface FuelMonthlyTrendsQuery {

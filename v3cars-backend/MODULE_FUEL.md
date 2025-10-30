@@ -7,13 +7,37 @@ Fuel types
 
 Quick test URLs (same as before, now backed by old logic)
 
-Default (all 3 fuels for the 4 metros):
-/v1/fuel/metros
+Latest (no history)
 
-Single fuel filter (1=Petrol, 2=Diesel, 3=CNG):
-/v1/fuel/metros?fuelType=1
-/v1/fuel/metros?fuelType=2
-/v1/fuel/metros?fuelType=3
+All 3 fuels (4 metros):
+http://localhost:3121/v1/fuel/metros
+
+Petrol only:
+http://localhost:3121/v1/fuel/metros?fuelType=1
+
+Diesel only:
+http://localhost:3121/v1/fuel/metros?fuelType=2
+
+CNG only:
+http://localhost:3121/v1/fuel/metros?fuelType=3
+
+Last N days history
+
+All 3 fuels, last 10 days:
+http://localhost:3121/v1/fuel/metros?days=10
+
+Petrol, last 10 days:
+http://localhost:3121/v1/fuel/metros?fuelType=1&days=10
+
+Diesel, last 7 days:
+http://localhost:3121/v1/fuel/metros?fuelType=2&days=7
+
+CNG, last 30 days:
+http://localhost:3121/v1/fuel/metros?fuelType=3&days=30
+
+
+
+
 
 City today price:
 /v1/fuel/price/latest?fuelType=1&districtId=1489
@@ -42,8 +66,9 @@ Combined 10-day history (all fuels) for state or city:
 
 Last Six Month Trends
 /v1/fuel/monthly/trends?fuelType=1&cityId=1489&months=6
+/v1/fuel/monthly/trends?fuelType=1&districtId=17&months=6
 
 
 faq -
-
 /v1/faqs?moduleId=16&pageType=1&fuelType=1&limit=50&page=1
+

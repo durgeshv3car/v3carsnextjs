@@ -51,8 +51,8 @@ export const fuelHistoryCombinedQueryDto = z.object({
 
 export const fuelMetrosQueryDto = z.object({
   fuelType: fuelTypeDto.optional(),
+  days: z.coerce.number().int().min(1).max(90).optional(), // NEW: last N days (default handled in service)
 });
-
 export const fuelMonthlyTrendsQueryDto = z.object({
   fuelType: fuelTypeDto,
   districtId: z.coerce.number().int().positive().optional(),
