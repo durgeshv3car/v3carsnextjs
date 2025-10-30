@@ -36,6 +36,9 @@ export const locationModuleApi = createApi({
     getCities: builder.query<Response, { query: string }>({
       query: ({ query }) => `/locations/cities?q=${query}`,
     }),
+    getDistrictsByStateId: builder.query<Response, { stateId: number }>({
+      query: ({ stateId }) => `/locations/districts?stateId=${stateId}&limit=100`,
+    }),
   }),
 });
 
@@ -48,4 +51,5 @@ export const {
   useGetStatesQuery,
   useGetCityByStatesIdQuery,
   useGetCitiesQuery,
+  useGetDistrictsByStateIdQuery,
 } = locationModuleApi;

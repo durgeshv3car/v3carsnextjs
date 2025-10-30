@@ -3,15 +3,17 @@
 import CommonFaqAccordion from "@/components/common/CommonFaqAccordion";
 import PopularBrands from "@/components/common/PopularBrands";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
+import CityPriceTrend from "@/components/responsive/pages/CityPriceTrend";
 import CityWiseFuelList from "@/components/responsive/pages/CityWiseFuelList";
 import FuelPrices from "@/components/responsive/pages/FuelPrices";
 import Listof10DaysPrice from "@/components/responsive/pages/Listof10DaysPrice";
+import PriceTrends from "@/components/responsive/pages/PriceTrends";
 import SearchSection from "@/components/responsive/pages/SearchSection";
 import StateWiseFuelChart from "@/components/responsive/pages/StateWiseFuelChart";
 import StateWiseFuelList from "@/components/responsive/pages/StateWiseFuelList";
 import TopSection from "@/components/responsive/pages/TopSection";
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
-import { useGetFuelPriceStateQuery, useGetMetroCityFuelByCityQuery, useGetMetroCityFuelQuery } from "@/redux/api/fuelModuleApi";
+import { useGetCityWiseFuelPriceQuery, useGetFuelPriceStateQuery, useGetList10DaysPriceQuery, useGetList10DaysStatePriceQuery, useGetMetroCityFuelByCityQuery, useGetMetroCityFuelQuery, useGetMonthlyTrendsQuery, useGetStateByMetroCityQuery } from "@/redux/api/fuelModuleApi";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -43,17 +45,18 @@ const monthName = today.toLocaleDateString("en-US", { month: "short" }).toUpperC
 const year = today.getFullYear();
 
 export const getFuelTypeId = (fuel: string): number => {
-  const tab = [
-    { fuelType: 1, fuel: "Petrol" },
-    { fuelType: 2, fuel: "Diesel" },
-    { fuelType: 3, fuel: "CNG" },
-  ];
-  return tab.find(t => t.fuel.toLowerCase() === fuel.toLowerCase())?.fuelType ?? 1;
+    const tab = [
+        { fuelType: 1, fuel: "Petrol" },
+        { fuelType: 2, fuel: "Diesel" },
+        { fuelType: 3, fuel: "CNG" },
+    ];
+    return tab.find(t => t.fuel.toLowerCase() === fuel.toLowerCase())?.fuelType ?? 1;
 };
 
 export default function Slug() {
     const { slug } = useParams<{ slug?: string[] }>();
     const [cityId, setCityId] = useState<number | null>(null)
+    const [selectState, setSelectState] = useState<number | null>(null)
     const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 13 });
     const { data: fuelPriceStateData } = useGetFuelPriceStateQuery();
     const { data: metroCityPetrolData } = useGetMetroCityFuelQuery({ fuelType: 1 });
@@ -114,6 +117,16 @@ export default function Slug() {
     const fuelTypeId = getFuelTypeId(type);
 
     const { data: metroCityFuelByCityData } = useGetMetroCityFuelByCityQuery({ fuelType: fuelTypeId, cityId: Number(cityId) }, { skip: !cityId || !fuelTypeId });
+    const { data: list10DaysPriceData } = useGetList10DaysPriceQuery({ fuelType: fuelTypeId, districtId: Number(cityId)! }, { skip: !cityId || !fuelTypeId });
+    const { data: cityWiseFuelPriceData } = useGetCityWiseFuelPriceQuery({ fuelType: fuelTypeId, stateId: Number(selectState)! }, { skip: !selectState || !fuelTypeId });
+    const { data: monthlyTrendsData } = useGetMonthlyTrendsQuery({ fuelType: fuelTypeId, districtId: Number(cityId)! }, { skip: !cityId || !fuelTypeId });
+    const { data: stateByMetroCityData } = useGetStateByMetroCityQuery({ fuelType: fuelTypeId, stateId: Number(selectState)! }, { skip: !selectState || !fuelTypeId });
+    const { data: list10DaysStatePriceData } = useGetList10DaysStatePriceQuery({ fuelType: fuelTypeId, stateId: Number(selectState)! }, { skip: !selectState || !fuelTypeId });
+
+    const list10DaysStatePrice = list10DaysStatePriceData?.rows ?? [];
+    const stateByMetroCity = stateByMetroCityData?.rows ?? [];
+    const list10DaysPrice = list10DaysPriceData?.rows ?? [];
+    const cityWiseFuelPrice = cityWiseFuelPriceData?.rows ?? [];
     const metroCityFuelByCity =
         metroCityFuelByCityData?.data
             ? [metroCityFuelByCityData.data]
@@ -123,15 +136,33 @@ export default function Slug() {
 
     function handleFuelType(tab: Tab) {
         if (tab.fuel === "Petrol") {
-            router.push('/petrol-price-in-india')
+            router.push(
+                selectState && cityId && city
+                    ? `/${state}/${tab?.fuel?.toLowerCase()}-price-in-${city}`
+                    : selectState && !cityId
+                        ? `/${state}/${tab?.fuel?.toLowerCase()}-price`
+                        : `/petrol-price-in-india`
+            );
         }
 
         if (tab.fuel === "Diesel") {
-            router.push('/diesel-price-in-india')
+            router.push(
+                selectState && cityId && city
+                    ? `/${state}/${tab?.fuel?.toLowerCase()}-price-in-${city}`
+                    : selectState && !cityId
+                        ? `/${state}/${tab?.fuel?.toLowerCase()}-price`
+                        : `/diesel-price-in-india`
+            );
         }
 
         if (tab.fuel === "CNG") {
-            router.push('/cng-price-in-india')
+            router.push(
+                selectState && cityId && city
+                    ? `/${state}/${tab?.fuel?.toLowerCase()}-price-in-${city}`
+                    : selectState && !cityId
+                        ? `/${state}/${tab?.fuel?.toLowerCase()}-price`
+                        : `/cng-price-in-india`
+            );
         }
     }
 
@@ -139,7 +170,7 @@ export default function Slug() {
         <>
             <TopSection type={type ?? "Fuel"} />
 
-            <SearchSection type={type} city={city} state={state} setCityId={setCityId} />
+            <SearchSection type={type} city={city} state={state} setCityId={setCityId} cityId={cityId} selectState={selectState} setSelectState={setSelectState} />
 
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:app-container py-6 mx-auto space-y-7">
@@ -147,7 +178,18 @@ export default function Slug() {
                         <div className="w-auto lg:min-w-[74%] space-y-6">
                             <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
                                 <div>
-                                    <h1 className="text-2xl">Fuel Prices In Metro Cities</h1>
+                                    <h1 className="text-2xl capitalize">
+                                        {type}{" "}
+                                        Prices In{" "}
+                                        {cityId !== null ?
+                                            city
+                                            :
+                                            state !== null && cityId === null ?
+                                                `Top City Of ${state}`
+                                                :
+                                                "Metro Cities"
+                                        }
+                                    </h1>
 
                                     {/* ✅ Dynamic Date */}
                                     <div className="flex items-center gap-1 mt-2 text-black">
@@ -194,29 +236,67 @@ export default function Slug() {
                                 )
                             }
 
+                            {/* State Wise Data Condication */}
+
                             {
-                                (city !== null) && (
+                                (selectState !== null && cityId === null) && (
+                                    <FuelPrices fuelData={stateByMetroCity} type={type} />
+                                )
+                            }
+
+                            {/* City Wise Data Condication */}
+
+                            {
+                                (cityId !== null) && (
                                     <FuelPrices fuelData={metroCityFuelByCity} type={type} />
                                 )
                             }
 
+                            {/* State Wise Data Condication */}
+
                             {
-                                city !== null && (
+                                selectState !== null && cityId === null && state !== null && (
                                     <>
                                         {["Petrol", "Diesel", "CNG"].includes(type) && (
-                                            <Listof10DaysPrice type={type} data={fuelPriceState} city={city} />
+                                            <CityWiseFuelList type={type} data={cityWiseFuelPrice} slug={state} />
                                         )}
 
                                         {["Petrol", "Diesel", "CNG"].includes(type) && (
-                                            <CityWiseFuelList type={type} data={fuelPriceState} />
+                                            <Listof10DaysPrice type={type} data={list10DaysStatePrice} city={state} />
+                                        )}
+
+                                        <CityPriceTrend type={type} data={list10DaysStatePrice} city={state} />
+                                    </>
+                                )
+                            }
+
+                            {/* City Wise Data Condication */}
+                            {
+                                cityId !== null && city !== null && (
+                                    <>
+                                        {["Petrol", "Diesel", "CNG"].includes(type) && (
+                                            <Listof10DaysPrice type={type} data={list10DaysPrice} city={city} />
+                                        )}
+
+                                        <CityPriceTrend type={type} city={city} data={list10DaysPrice} />
+
+                                        <PriceTrends type={type} city={city} data={monthlyTrendsData ?? null} />
+
+                                        {["Petrol", "Diesel", "CNG"].includes(type) && (
+                                            <CityWiseFuelList type={type} data={cityWiseFuelPrice} slug={city} />
                                         )}
                                     </>
                                 )
                             }
 
-
                             <StateWiseFuelList type={type} data={fuelPriceState} />
-                            <StateWiseFuelChart />
+
+                            {
+                                city === null && (
+                                    <StateWiseFuelChart />
+                                )
+                            }
+
                             <CommonFaqAccordion faqData={faqByModule} />
                         </div>
 

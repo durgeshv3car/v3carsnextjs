@@ -23,6 +23,41 @@ type LatestFuelPriceType = {
   updatedAt: string;
 }
 
+interface CityInfo {
+  districtId: number;
+  name: string;
+  stateId: number;
+  stateName: string;
+}
+
+interface PriceRecord {
+  price: number;
+  date: string; // ISO date string (e.g. "2025-10-25")
+}
+
+interface MonthlyFuelData {
+  month: string; // e.g. "2025-10"
+  firstPrice: number;
+  lastPrice: number;
+  netChange: number;
+  avgPrice: number;
+  highest: PriceRecord;
+  lowest: PriceRecord;
+}
+
+interface CityFuelTrendResponse {
+  success: boolean;
+  city: CityInfo | null;
+  fuelType: number;
+  months: MonthlyFuelData[] | [];
+}
+
+interface StateByMetroCityResponse {
+  success: boolean;
+  stateId: number
+  rows: [];
+}
+
 // API definition
 export const fuelModuleApi = createApi({
   reducerPath: "fuelModuleApi",
@@ -43,6 +78,21 @@ export const fuelModuleApi = createApi({
     getMetroCityFuelByCity: builder.query<LatestFuelPriceResponse, { fuelType: number, cityId: number }>({
       query: ({ fuelType, cityId }) => `/fuel/price/latest?fuelType=${fuelType}&districtId=${cityId}`,
     }),
+    getList10DaysPrice: builder.query<Response, { fuelType: number, districtId: number }>({
+      query: ({ fuelType, districtId }) => `/fuel/price/history?fuelType=${fuelType}&districtId=${districtId}&days=9`,
+    }),
+    getCityWiseFuelPrice: builder.query<Response, { fuelType: number, stateId: number }>({
+      query: ({ fuelType, stateId }) => `/fuel/cities?fuelType=${fuelType}&stateId=${stateId}&limit=100`,
+    }),
+    getMonthlyTrends: builder.query<CityFuelTrendResponse, { fuelType: number, districtId: number }>({
+      query: ({ fuelType, districtId }) => `/fuel/monthly/trends?fuelType=${fuelType}&districtId=${districtId}&months=6`,
+    }),
+    getStateByMetroCity: builder.query<StateByMetroCityResponse, { fuelType: number, stateId: number }>({
+      query: ({ fuelType, stateId }) => `/fuel/price/latest/popular?fuelType=${fuelType}&stateId=${stateId}`,
+    }),
+    getList10DaysStatePrice: builder.query<Response, { fuelType: number, stateId: number }>({
+      query: ({ fuelType, stateId }) => `/fuel/price/history?fuelType=${fuelType}&stateId=${stateId}&days=9`,
+    }),
   }),
 });
 
@@ -53,4 +103,9 @@ export const {
   useGetFuelPriceStateQuery,
   useGetMetroCityFuelQuery,
   useGetMetroCityFuelByCityQuery,
+  useGetList10DaysPriceQuery,
+  useGetCityWiseFuelPriceQuery,
+  useGetMonthlyTrendsQuery,
+  useGetStateByMetroCityQuery,
+  useGetList10DaysStatePriceQuery,
 } = fuelModuleApi;

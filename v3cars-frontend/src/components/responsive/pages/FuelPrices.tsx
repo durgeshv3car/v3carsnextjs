@@ -1,4 +1,7 @@
 'use client'
+
+import Link from "next/link";
+
 interface FuelPriceInfo {
     districtId: number;
     cityName: string;
@@ -17,6 +20,18 @@ interface FuelPricesProps {
     type: string
 }
 
+function toSlug(name?: string) {
+  if (!name || typeof name !== "string") return "";
+
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 const FuelPrices = ({ fuelData, type }: FuelPricesProps) => {
 
     return (
@@ -30,12 +45,23 @@ const FuelPrices = ({ fuelData, type }: FuelPricesProps) => {
                         }`}
                 >
                     <div className="flex justify-between items-center mb-2">
-                        <h2 className="font-semibold text-black">{item.cityName}</h2>
+                        <h2 className="font-semibold text-black cursor-pointer hover:underline">
+                            <Link
+                                href={
+                                    type === "Fuel" ?
+                                    `/${toSlug(item.stateName)}/petrol-price-in-${toSlug(item.cityName)}`
+                                    :
+                                    `/${toSlug(item.stateName)}/${type.toLowerCase()}-price-in-${toSlug(item.cityName)}`
+                                 }
+                            >
+                                {item.cityName}
+                            </Link>
+                        </h2>
                         <span
                             className={`text-sm font-bold text-white px-2 py-0.5 rounded ${item.change < 0 ? "bg-red-500" : "bg-green-500"
                                 }`}
                         >
-                            {item.change.toFixed(2)}
+                            {item.change}
                         </span>
                     </div>
                     <div
@@ -48,7 +74,7 @@ const FuelPrices = ({ fuelData, type }: FuelPricesProps) => {
                         className={`text-2xl font-bold ${item.change < 0 ? "text-red-600" : "text-green-600"
                             }`}
                     >
-                        ₹ {item.price.toFixed(2)}{" "}
+                        ₹ {item.price}{" "}
                         <span className="text-lg">/L</span>
                     </div>
                 </div>
