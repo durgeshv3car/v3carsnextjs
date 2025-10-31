@@ -134,53 +134,77 @@ export class PowertrainsRepo {
   }
 
   /** Per-model specs from the FIRST powertrain row by ASC(modelPowertrainId) */
-  async getSpecsByModelIds(modelIds: number[]) {
-    const map = new Map<number, { powerPS: number | null; torqueNM: number | null; mileageKMPL: number | null; powerTrain: string | null }>();
-    if (!modelIds?.length) return map;
-
-    // Step 1: get the MIN(modelPowertrainId) per modelId
-    const mins = await prisma.tblmodelpowertrains.groupBy({
-      by: ['modelId'],
-      where: { modelId: { in: modelIds } },
-      _min: { modelPowertrainId: true },
-    });
-
-    const ptIds: number[] = [];
-    for (const g of mins) {
-      const mid = g.modelId as number;
-      const minId = g._min.modelPowertrainId as number | null;
-      if (typeof mid === 'number' && typeof minId === 'number') {
-        ptIds.push(minId);
-      }
+ 
+async getSpecsByModelIds(modelIds: number[]) {
+  const map = new Map<
+    number,
+    {
+      powerPS: number | null;
+      torqueNM: number | null;
+      mileageKMPL: number | null;
+      powerTrain: string | null;
+      transmissionType: string | null;
+      transmissionSubType: string | null;
+      drivetrain: number | null;
+      isFourByFour: boolean | null;
     }
+  >();
+  if (!modelIds?.length) return map;
 
-    if (!ptIds.length) return map;
+  // Step 1: get the MIN(modelPowertrainId) per modelId
+  const mins = await prisma.tblmodelpowertrains.groupBy({
+    by: ['modelId'],
+    where: { modelId: { in: modelIds } },
+    _min: { modelPowertrainId: true },
+  });
 
-    const rows = await prisma.tblmodelpowertrains.findMany({
-      where: { modelPowertrainId: { in: ptIds } },
-      select: {
-        modelId: true,
-        modelPowertrainId: true,
-        powerPS: true,
-        torqueNM: true,
-        claimedFE: true,
-        realWorldMileage: true,
-        powerTrain: true
-      },
-    });
-
-    for (const r of rows) {
-      const feRaw = r.claimedFE ?? r.realWorldMileage ?? null;
-      const fe = feRaw != null ? Number(feRaw as unknown as any) : null;
-
-      map.set(r.modelId, {
-        powerPS: (r.powerPS ?? null) as number | null,
-        torqueNM: (r.torqueNM ?? null) as number | null,
-        mileageKMPL: fe,
-        powerTrain: r.powerTrain ?? null,
-      });
+  const ptIds: number[] = [];
+  for (const g of mins) {
+    const mid = g.modelId as number;
+    const minId = g._min.modelPowertrainId as number | null;
+    if (typeof mid === 'number' && typeof minId === 'number') {
+      ptIds.push(minId);
     }
-
-    return map;
   }
+
+  if (!ptIds.length) return map;
+
+  const rows = await prisma.tblmodelpowertrains.findMany({
+    where: { modelPowertrainId: { in: ptIds } },
+    select: {
+      modelId: true,
+      modelPowertrainId: true,
+      powerPS: true,
+      torqueNM: true,
+      claimedFE: true,
+      realWorldMileage: true,
+      powerTrain: true,
+      // ⬇️ NEW fields
+      transmissionType: true,
+      transmissionSubType: true,
+      drivetrain: true,
+      isFourByFour: true,
+    },
+  });
+
+  for (const r of rows) {
+    const feRaw = r.claimedFE ?? r.realWorldMileage ?? null;
+    const fe = feRaw != null ? Number(feRaw as unknown as any) : null;
+
+    map.set(r.modelId, {
+      powerPS: (r.powerPS ?? null) as number | null,
+      torqueNM: (r.torqueNM ?? null) as number | null,
+      mileageKMPL: fe,
+      powerTrain: r.powerTrain ?? null,
+      // ⬇️ NEW
+      transmissionType: r.transmissionType ?? null,
+      transmissionSubType: r.transmissionSubType ?? null,
+      drivetrain: (r.drivetrain ?? null) as number | null,
+      isFourByFour: (r.isFourByFour ?? null) as boolean | null,
+    });
+  }
+
+  return map;
+}
+
 }
