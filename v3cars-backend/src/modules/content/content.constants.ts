@@ -10,7 +10,10 @@ export const CONTENT_TYPES = {
   PRESS_RELEASE: 9,
 } as const;
 
+
 export type ContentTypeNum = (typeof CONTENT_TYPES)[keyof typeof CONTENT_TYPES];
+
+
 
 export const CONTENT_SLUG_BY_TYPE: Record<number, string> = {
   1: '/news/',
@@ -23,6 +26,8 @@ export const CONTENT_SLUG_BY_TYPE: Record<number, string> = {
   8: '/auto-expo/',
   9: '/press-release/',
 };
+
+
 
 export function typeFromParam(param: string): ContentTypeNum {
   const k = param.trim().toLowerCase();
@@ -40,4 +45,7 @@ export function typeFromParam(param: string): ContentTypeNum {
     case 'press-release': return CONTENT_TYPES.PRESS_RELEASE;
     default: return CONTENT_TYPES.NEWS;
   }
+
 }
+
+

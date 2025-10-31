@@ -1,6 +1,9 @@
 import { ContentService } from '../content/content.service.js';
 import { CONTENT_TYPES } from '../content/content.constants.js';
 import type { ComparisonsListQuery, LatestComparisonsQuery } from './comparisons.types.js';
+import { BrandsService } from '../cars/brands/brands.service.js';
+import { VariantsService } from '../cars/variants/variants.service.js';
+import { PowertrainsService } from '../cars/powertrains/powertrains.service.js';
 
 import { prisma } from '../../lib/prisma.js';
 import { Prisma } from '@prisma/client';
@@ -13,6 +16,10 @@ import { withCache, cacheKey } from '../../lib/cache.js';
 
 const content = new ContentService();
 const images  = new ImagesService();
+// ⬆️ NEW instances
+const brands  = new BrandsService();
+const variants = new VariantsService();
+const powertrains = new PowertrainsService();
 
 /** Comparison Reviews (contentType = 4) */
 export class ComparisonsService {
@@ -43,7 +50,8 @@ export class ComparisonsService {
   async popular(q: ComparisonsListQuery) {
     const limit = q.limit ?? 15;
 
-    const key = cacheKey({ ns: 'comparisons:popular', v: 1, limit });
+    // bumped v -> 2 (payload changed)
+    const key = cacheKey({ ns: 'comparisons:popular', v: 2, limit });
     const ttlMs = 5 * 60 * 1000; // 5 minutes
 
     return withCache(key, async () => {
@@ -61,7 +69,7 @@ export class ComparisonsService {
         LIMIT ${limit}
       `);
 
-      // 2) Collect model IDs
+      // 2) Collect unique model IDs
       const allIds = new Set<number>();
       for (const u of urls) {
         (u.modelIds ?? '')
@@ -70,14 +78,46 @@ export class ComparisonsService {
           .filter(n => Number.isFinite(n))
           .forEach(n => allIds.add(n));
       }
-      const ids = [...allIds];
+      const modelIds = [...allIds];
 
-      // 3) Hydrate images using ImagesService (internally cached 60m)
-      const imgMap = ids.length
-        ? await images.getPrimaryByModelIds(ids) // Map<modelId, { name, alt, url }>
-        : new Map<number, { name: string | null; alt: string | null; url: string | null }>();
+      // Short-circuit
+      if (!modelIds.length) {
+        return urls.map(u => ({
+          urlId: u.urlId,
+          url: u.cmpUrl,
+          totalViews: u.totalViews,
+          modelIds: [],
+          models: [],
+        }));
+      }
 
-      // 4) Final shape
+      // 3) Hydrations (images, model meta, brand names, price bands, powertrain specs)
+      const [imgMap, modelRows] = await Promise.all([
+        images.getPrimaryByModelIds(modelIds), // Map<modelId, { name, alt, url }>
+        prisma.tblmodels.findMany({
+          where: { modelId: { in: modelIds } },
+          select: {
+            modelId: true,
+            modelName: true,
+            modelSlug: true,
+            brandId: true,
+            expectedBasePrice: true,
+            expectedTopPrice: true,
+          },
+        }),
+      ]);
+
+      const modelMap = new Map(modelRows.map(m => [m.modelId, m]));
+      const brandIds = Array.from(new Set(modelRows.map(m => m.brandId).filter((x): x is number => typeof x === 'number')));
+      const [brandRows, priceBands, specsMap] = await Promise.all([
+        brands.findByIds(brandIds),
+        variants.getPriceBandsByModelIds(modelIds),      // Map<modelId, {min,max}>
+        powertrains.getSpecsByModelIds(modelIds),        // Map<modelId, { powerPS, torqueNM, mileageKMPL, powerTrain }>
+      ]);
+
+      const brandMap = new Map(brandRows.map(b => [b.brandId, b]));
+
+      // 4) Final shape per URL
       return urls.map(u => {
         const mids = (u.modelIds ?? '')
           .split(',')
@@ -85,11 +125,39 @@ export class ComparisonsService {
           .filter(n => Number.isFinite(n));
 
         const models = mids.map(modelId => {
-          const im = imgMap.get(modelId);
+          const meta = modelMap.get(modelId);
+          const brand = meta?.brandId ? brandMap.get(meta.brandId) : undefined;
+
+          // price: prefer variants band; else fall back to expected*
+          const band = priceBands.get(modelId) ?? { min: null, max: null };
+          const priceMin = (band.min ?? (meta?.expectedBasePrice ?? null)) ?? null;
+          const priceMax = (band.max ?? (meta?.expectedTopPrice ?? null)) ?? null;
+
+          const specs = specsMap.get(modelId) ?? {
+            powerPS: null, torqueNM: null, mileageKMPL: null, powerTrain: null,
+          };
+
+          const img = imgMap.get(modelId);
+
           return {
             modelId,
-            imageUrl: im?.url ?? null,
-            imageAlt: im?.alt ?? null,
+            modelName: meta?.modelName ?? null,
+            modelSlug: meta?.modelSlug ?? null,
+            brand: brand ? {
+              id: brand.brandId,
+              name: brand.brandName,
+              slug: brand.brandSlug ?? null,
+              logo: brand.logoPath ?? null,
+            } : null,
+            priceRange: { min: priceMin, max: priceMax }, // ex-showroom
+            powertrain: {
+              powerPS: specs.powerPS,
+              torqueNM: specs.torqueNM,
+              mileageKMPL: specs.mileageKMPL,
+              powerTrain: specs.powerTrain, // e.g. "1.5L Petrol AT"
+            },
+            imageUrl: img?.url ?? null,
+            imageAlt: img?.alt ?? null,
           };
         });
 

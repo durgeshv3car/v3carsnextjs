@@ -39,7 +39,8 @@ function buildEvScope(modelIds?: number[], fuelType?: string) {
 }
 
 export class ContentRepo {
-  
+
+
     async getToday(contentType: number, modelIds?: number[], fuelType?: string) {
     const rows = await prisma.$queryRaw<ContentRow[]>(Prisma.sql`
       SELECT id, title, pageUrl, publishDateandTime, shortDescription,
@@ -55,8 +56,7 @@ export class ContentRepo {
     `);
     return rows[0] ?? null;
   }
-
-
+ 
 
   async listLatest(contentType: number, limit = 9, excludeId?: number, modelIds?: number[], fuelType?: string) {
     return prisma.$queryRaw<ContentRow[]>(Prisma.sql`
@@ -155,5 +155,6 @@ export class ContentRepo {
     return map;
   }
 
+  
 }
 
