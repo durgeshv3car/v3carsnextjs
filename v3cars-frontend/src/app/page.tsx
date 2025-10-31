@@ -18,6 +18,7 @@ import { useState } from "react";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/carModuleApi";
 import { useGetVariantsExplainedQuery } from "@/redux/api/contentModuleApi";
+import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 
 export type CarPriceTab =
   | 'UNDER_5L'
@@ -69,7 +70,9 @@ export default function Home() {
   const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand! }, { skip: !selectBrand, });
   const { data: expertCarReviewsData } = useGetExpertCarReviewsQuery();
   const { data: variantsExplainedData } = useGetVariantsExplainedQuery();
+  const { data: latestVideosData } = useGetLatestVideosQuery()
 
+  const latestVideos = latestVideosData?.rows ?? []
   const latestCarNews = latestCarNewsData?.rows ?? [];
   const brands = brandsData?.rows ?? [];
   const models = modelsData?.rows ?? [];
@@ -123,6 +126,8 @@ export default function Home() {
         <div className="w-full lg:app-container mx-auto">
           <LatestVideos
             title="Latest Videos"
+            data={latestVideos}
+            link="/car-review-videos"
           />
         </div>
       </div>

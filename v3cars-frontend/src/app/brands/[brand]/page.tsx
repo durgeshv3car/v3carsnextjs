@@ -14,6 +14,7 @@ import LatestVideos from "@/components/responsive/home/LatestVideos";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useGetBrandsByIdQuery, useGetBrandsQuery, useGetDiscontinuedModelQuery, useGetModelsQuery } from "@/redux/api/carModuleApi";
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
+import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 import { useState } from "react";
 interface CarBrandDetail {
     brandId: number;
@@ -56,7 +57,9 @@ export default function BrandPage() {
     const { data: brandsByIdData } = useGetBrandsByIdQuery({ brandId: selectBrand! }, { skip: !selectBrand, });
     const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand! }, { skip: !selectBrand, });
     const { data: discontinuedModelData } = useGetDiscontinuedModelQuery({ brandId: selectBrand! }, { skip: !selectBrand, });
+    const { data: latestVideosData } = useGetLatestVideosQuery()
 
+    const latestVideos = latestVideosData?.rows ?? []
     const latestCarNews = latestCarNewsData?.rows ?? [];
     const brands = brandsData?.rows ?? [];
     const brandsById: CarBrandDetail | null = brandsByIdData?.data ?? null;
@@ -98,7 +101,11 @@ export default function BrandPage() {
                             </div>
                         </div>
 
-                        <LatestVideos />
+                        <LatestVideos
+                            title="Latest Videos"
+                            data={latestVideos}
+                            link="/car-review-videos"
+                        />
 
                         {isMobile ? <MobileLatestCarNews
                             title="Latest Car News"

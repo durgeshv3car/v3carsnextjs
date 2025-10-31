@@ -25,12 +25,12 @@ interface VideoItem {
 }
 
 interface LatestVideosProps {
-    title: string
+    title: string;
+    data: VideoItem[];
+    link: string
 }
 
-const LatestVideos: React.FC<LatestVideosProps> = ({ title }) => {
-    const { data: latestVideosData } = useGetLatestVideosQuery()
-    const latestVideos: VideoItem[] = latestVideosData?.rows ?? []
+const LatestVideos: React.FC<LatestVideosProps> = ({ title, data, link }) => {
     const router = useRouter()
 
     return (
@@ -38,7 +38,7 @@ const LatestVideos: React.FC<LatestVideosProps> = ({ title }) => {
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                     <h2 className="text-lg font-medium">{title}</h2>
-                    <Link href="/car-review-videos" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
+                    <Link href={link} className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
                         View All {title}
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -49,7 +49,7 @@ const LatestVideos: React.FC<LatestVideosProps> = ({ title }) => {
 
             <div
                 className="grid grid-flow-col auto-cols-[100%] gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide lg:grid-flow-row lg:grid-cols-4 lg:overflow-visible lg:snap-none">
-                {latestVideos.map((video) => (
+                {data.map((video) => (
                     <div
                         key={video.id}
                         className="snap-start lg:snap-none h-auto rounded shadow-md overflow-hidden bg-white dark:bg-[#171717] border border-[#DEE2E6] dark:border-[#2E2E2E] p-1 flex flex-col"

@@ -12,6 +12,8 @@ import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import LatestVideos from "@/components/responsive/home/LatestVideos";
+import { useGetLatestComparisonReviewsQuery } from "@/redux/api/contentModuleApi";
+import { useGetLatestCompareVideosQuery } from "@/redux/api/videosModuleApi";
 
 function CompareCars() {
     const [selectedBrands, setSelectedBrands] = useState<(number | null)[]>(Array(4).fill(null));
@@ -19,10 +21,12 @@ function CompareCars() {
     const [selectedVariants, setSelectedVariants] = useState<(number | null)[]>(Array(4).fill(null));
 
     const { data: brandsData } = useGetBrandsQuery();
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const { data: latestComparisonReviewsData } = useGetLatestComparisonReviewsQuery();
+    const { data: latestCompareVideosData } = useGetLatestCompareVideosQuery();
 
     const brands = brandsData?.rows ?? [];
-    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
+    const latestCompareVideos = latestCompareVideosData?.rows ?? [];
 
     const modelsData = selectedBrands.map((brandId) => {
         const { data } = useGetModelsQuery(
@@ -76,17 +80,17 @@ function CompareCars() {
                     {
                         isMobile ?
                             <MobileLatestCarNews
-                                title="Comparison Car News"
-                                view="Comparison News"
-                                data={latestCarNews}
-                                link="/news"
+                                title="Comparison Car Review"
+                                view="Comparison Review"
+                                data={latestComparisonReviews}
+                                link="/comparison"
                             />
                             :
                             <CommonNewsUpdate
-                                title="Comparison Car News"
-                                view="Comparison News"
-                                newsList={latestCarNews}
-                                link={"/news"}
+                                title="Comparison Car Review"
+                                view="Comparison Review"
+                                newsList={latestComparisonReviews}
+                                link={"/comparison"}
                             />
                     }
 
@@ -94,6 +98,8 @@ function CompareCars() {
 
                     <LatestVideos
                         title="Car Comparison Latest Videos"
+                        data={latestCompareVideos}
+                        link="/car-comparison-videos"
                     />
                 </div>
             </div>

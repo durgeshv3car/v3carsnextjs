@@ -93,6 +93,9 @@ export const fuelModuleApi = createApi({
     getList10DaysStatePrice: builder.query<Response, { fuelType: number, stateId: number }>({
       query: ({ fuelType, stateId }) => `/fuel/price/history?fuelType=${fuelType}&stateId=${stateId}&days=9`,
     }),
+    getList10DaysMetros: builder.query<Response, void>({
+      query: () => `/fuel/metros?days=10`,
+    }),
   }),
 });
 
@@ -108,4 +111,5 @@ export const {
   useGetMonthlyTrendsQuery,
   useGetStateByMetroCityQuery,
   useGetList10DaysStatePriceQuery,
+  useGetList10DaysMetrosQuery,
 } = fuelModuleApi;

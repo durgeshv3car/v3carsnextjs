@@ -7,15 +7,15 @@ import CityPriceTrend from "@/components/responsive/pages/CityPriceTrend";
 import CityWiseFuelList from "@/components/responsive/pages/CityWiseFuelList";
 import FuelPrices from "@/components/responsive/pages/FuelPrices";
 import Listof10DaysPrice from "@/components/responsive/pages/Listof10DaysPrice";
+import PriceInIndiaChart from "@/components/responsive/pages/PriceInIndiaChart";
 import PriceTrends from "@/components/responsive/pages/PriceTrends";
 import SearchSection from "@/components/responsive/pages/SearchSection";
-import StateWiseFuelChart from "@/components/responsive/pages/StateWiseFuelChart";
 import StateWiseFuelList from "@/components/responsive/pages/StateWiseFuelList";
 import TopSection from "@/components/responsive/pages/TopSection";
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
-import { useGetCityWiseFuelPriceQuery, useGetFuelPriceStateQuery, useGetList10DaysPriceQuery, useGetList10DaysStatePriceQuery, useGetMetroCityFuelByCityQuery, useGetMetroCityFuelQuery, useGetMonthlyTrendsQuery, useGetStateByMetroCityQuery } from "@/redux/api/fuelModuleApi";
+import { useGetCityWiseFuelPriceQuery, useGetFuelPriceStateQuery, useGetList10DaysMetrosQuery, useGetList10DaysPriceQuery, useGetList10DaysStatePriceQuery, useGetMetroCityFuelByCityQuery, useGetMetroCityFuelQuery, useGetMonthlyTrendsQuery, useGetStateByMetroCityQuery } from "@/redux/api/fuelModuleApi";
 import { notFound, useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Tab {
     fuelType: number,
@@ -62,7 +62,9 @@ export default function Slug() {
     const { data: metroCityPetrolData } = useGetMetroCityFuelQuery({ fuelType: 1 });
     const { data: metroCityDieselData } = useGetMetroCityFuelQuery({ fuelType: 2 });
     const { data: metroCityCNGData } = useGetMetroCityFuelQuery({ fuelType: 3 });
+    const { data: list10DaysMetrosData } = useGetList10DaysMetrosQuery();
 
+    const list10DaysMetros = list10DaysMetrosData?.rows ?? [];
     const metroCityPetrol = metroCityPetrolData?.rows ?? [];
     const metroCityDiesel = metroCityDieselData?.rows ?? [];
     const metroCityCNG = metroCityCNGData?.rows ?? [];
@@ -89,11 +91,9 @@ export default function Slug() {
     let city: string | null = null;
 
     if (slug.length === 1) {
-        // ✅ Example: /petrol-price-in-india
         const currentSlug = slug[0].toLowerCase();
         type = allowedSlugs[currentSlug] || null;
     } else if (slug.length === 2) {
-        // ✅ Example: /delhi/petrol-price-in-new-delhi
         state = slug[0].toLowerCase();
         const fuelSlug = slug[1].toLowerCase();
 
@@ -292,8 +292,8 @@ export default function Slug() {
                             <StateWiseFuelList type={type} data={fuelPriceState} />
 
                             {
-                                city === null && (
-                                    <StateWiseFuelChart />
+                                (!selectState && !cityId && !city) && (
+                                    <PriceInIndiaChart data={list10DaysMetros} type={type} />
                                 )
                             }
 
