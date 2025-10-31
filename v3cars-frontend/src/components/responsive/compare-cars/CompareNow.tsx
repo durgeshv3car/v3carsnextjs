@@ -2,6 +2,7 @@
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import { IMAGE_URL } from "@/utils/constant";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MdCompareArrows } from "react-icons/md";
 
@@ -82,6 +83,16 @@ interface CompareNowProps {
     setSelectedVariants: React.Dispatch<React.SetStateAction<(number | null)[]>>;
 }
 
+function toSlug(name: string) {
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[\s_]+/g, '-')
+        .replace(/[^\w-]+/g, '')
+        .replace(/--+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
 export default function CompareNow({
     brands,
     modelsData,
@@ -102,6 +113,7 @@ export default function CompareNow({
         }
         return name;
     }
+    const router = useRouter()
 
     function splitBrands(brands: CarBrand[]) {
         const normalizedBrands = brands.map((b) => ({
@@ -236,7 +248,9 @@ export default function CompareNow({
         </div>
 
             <div className="mt-6 flex justify-center">
-                <button className="bg-yellow-400 hover:bg-yellow-500 transition text-black px-8 py-3 rounded-full flex items-center gap-2 shadow-md">
+                <button 
+                // onClick={()=>{router.push(`/compare/${toSlug(selectedBrands)}`)}}
+                className="bg-yellow-400 hover:bg-yellow-500 transition text-black px-8 py-3 rounded-full flex items-center gap-2 shadow-md">
                     Compare Now
                     <MdCompareArrows size={24} />
                 </button>

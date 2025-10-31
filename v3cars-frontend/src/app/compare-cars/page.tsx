@@ -12,7 +12,7 @@ import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import LatestVideos from "@/components/responsive/home/LatestVideos";
-import { useGetLatestComparisonReviewsQuery } from "@/redux/api/contentModuleApi";
+import { useGetLatestComparisonReviewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetLatestCompareVideosQuery } from "@/redux/api/videosModuleApi";
 
 function CompareCars() {
@@ -23,7 +23,9 @@ function CompareCars() {
     const { data: brandsData } = useGetBrandsQuery();
     const { data: latestComparisonReviewsData } = useGetLatestComparisonReviewsQuery();
     const { data: latestCompareVideosData } = useGetLatestCompareVideosQuery();
+    const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
 
+    const popularComparisons = popularComparisonsData?.rows ?? [];
     const brands = brandsData?.rows ?? [];
     const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
     const latestCompareVideos = latestCompareVideosData?.rows ?? [];
@@ -94,7 +96,7 @@ function CompareCars() {
                             />
                     }
 
-                    <MostPopularCarComparison />
+                    <MostPopularCarComparison data={popularComparisons} />
 
                     <LatestVideos
                         title="Car Comparison Latest Videos"

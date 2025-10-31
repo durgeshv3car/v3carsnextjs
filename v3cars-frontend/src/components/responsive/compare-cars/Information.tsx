@@ -120,7 +120,7 @@ export default function Information({
                     <tr className="hidden lg:table-row">
                         <td className="p-3 font-bold w-[300px]"></td>
                         {cars.map((car, index) => (
-                            <td key={car.id} className="p-3 align-top w-[300px]">
+                            <td key={index} className="p-3 align-top w-[300px]">
                                 <div className="relative border p-2 rounded-xl flex flex-col justify-between dark:border-[#2E2E2E] shadow-sm">
                                     {/* Dynamic Model Image */}
                                     <div className="min-h-[150px] mb-2">
@@ -179,9 +179,9 @@ export default function Information({
                             <td className="border dark:border-[#2E2E2E] p-3 font-semibold text-nowrap text-sm">
                                 {spec}
                             </td>
-                            {cars.map((car) => (
+                            {cars.map((car, idx) => (
                                 <td
-                                    key={car.id}
+                                    key={idx}
                                     className="border dark:border-[#2E2E2E] text-nowrap p-3 whitespace-pre-line text-center text-sm"
                                 >
                                     {car.specs[spec as keyof typeof car.specs]}
