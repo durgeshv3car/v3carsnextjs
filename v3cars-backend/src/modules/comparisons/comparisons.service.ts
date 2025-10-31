@@ -28,6 +28,7 @@ export class ComparisonsService {
     return content.today(CONTENT_TYPES.COMPARISON_REVIEW);
   }
 
+
   /** Latest list (publishDateandTime DESC) */
   latest(q: LatestComparisonsQuery) {
     return content.latest(CONTENT_TYPES.COMPARISON_REVIEW, {
@@ -36,15 +37,18 @@ export class ComparisonsService {
     });
   }
 
+  
   /** Trending (last_15days_view DESC) */
   trending(q: ComparisonsListQuery) {
     return content.trending(CONTENT_TYPES.COMPARISON_REVIEW, { limit: q.limit });
   }
 
+
   /** Top (last_30days_view DESC) */
   top(q: ComparisonsListQuery) {
     return content.top(CONTENT_TYPES.COMPARISON_REVIEW, { limit: q.limit });
   }
+
 
   /** 🆕 Popular compare URLs (by totalViews) + model images (CACHED) */
   async popular(q: ComparisonsListQuery) {
@@ -78,6 +82,7 @@ export class ComparisonsService {
           .filter(n => Number.isFinite(n))
           .forEach(n => allIds.add(n));
       }
+
       const modelIds = [...allIds];
 
       // Short-circuit
@@ -106,7 +111,7 @@ export class ComparisonsService {
           },
         }),
       ]);
-
+      
       const modelMap = new Map(modelRows.map(m => [m.modelId, m]));
       const brandIds = Array.from(new Set(modelRows.map(m => m.brandId).filter((x): x is number => typeof x === 'number')));
       const [brandRows, priceBands, specsMap] = await Promise.all([
@@ -169,6 +174,9 @@ export class ComparisonsService {
           models,
         };
       });
+
     }, ttlMs);
   }
+
+
 }

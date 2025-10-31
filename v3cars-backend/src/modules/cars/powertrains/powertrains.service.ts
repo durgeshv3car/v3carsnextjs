@@ -66,8 +66,8 @@ export class PowertrainsService {
       opts.cylinders == null
         ? undefined
         : Array.isArray(opts.cylinders)
-        ? opts.cylinders.join(',')
-        : String(opts.cylinders);
+          ? opts.cylinders.join(',')
+          : String(opts.cylinders);
 
     const key = cacheKey({
       ns: 'powertrains:modelIdsByFilters',
@@ -85,22 +85,48 @@ export class PowertrainsService {
   }
 
   /** Specs aggregation for models */
- async getSpecsByModelIds(modelIds: number[]) {
-  const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
-  if (!ids.length) {
-    return new Map<number, { powerPS: number | null; torqueNM: number | null; mileageKMPL: number | null; powerTrain: string | null }>();
+
+  async getSpecsByModelIds(modelIds: number[]) {
+    const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
+    if (!ids.length) {
+      return new Map<
+        number,
+        {
+          powerPS: number | null;
+          torqueNM: number | null;
+          mileageKMPL: number | null;
+          powerTrain: string | null;
+          transmissionType: string | null;
+          transmissionSubType: string | null;
+          drivetrain: number | null;
+          isFourByFour: boolean | null;
+        }
+      >();
+    }
+
+    const key = cacheKey({ ns: 'powertrains:specsByModelIds', v: 2, ids }); // bump v:2 due to shape change
+    const ttlMs = 30 * 60 * 1000;
+
+    const entries = await withCache<
+      [
+        number,
+        {
+          powerPS: number | null;
+          torqueNM: number | null;
+          mileageKMPL: number | null;
+          powerTrain: string | null;
+          transmissionType: string | null;
+          transmissionSubType: string | null;
+          drivetrain: number | null;
+          isFourByFour: boolean | null;
+        }
+      ][]
+    >(key, async () => {
+      const map = await repo.getSpecsByModelIds(ids); // returns Map
+      return Array.from(map.entries());
+    }, ttlMs);
+
+    return new Map(entries);
   }
 
-  const key = cacheKey({ ns: 'powertrains:specsByModelIds', v: 1, ids });
-  const ttlMs = 30 * 60 * 1000;
-
-  const entries = await withCache<
-    [number, { powerPS: number | null; torqueNM: number | null; mileageKMPL: number | null; powerTrain: string | null }][]
-  >(key, async () => {
-    const map = await repo.getSpecsByModelIds(ids); // returns Map
-    return Array.from(map.entries());
-  }, ttlMs);
-
-  return new Map(entries);
-}
 }
