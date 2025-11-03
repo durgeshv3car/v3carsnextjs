@@ -16,6 +16,7 @@ const variantsSvc = new VariantsService();
 const powertrainsSvc = new PowertrainsService();
 const imagesSvc = new ImagesService();
 
+
 /** INR bucket edges (rupees) */
 const priceRanges: Record<string, { min?: number; max?: number }> = {
   UNDER_5L: { max: 5_00_000 },
@@ -24,6 +25,7 @@ const priceRanges: Record<string, { min?: number; max?: number }> = {
   BETWEEN_20_40L: { min: 20_00_000, max: 40_00_000 },
   ABOVE_40L: { min: 40_00_000 },
 };
+
 
 function inBucket(min: number | null, max: number | null, bucket?: keyof typeof priceRanges): boolean {
 
@@ -40,11 +42,12 @@ function inBucket(min: number | null, max: number | null, bucket?: keyof typeof 
 
 }
 
+
 // Small helper to stringify dates safely for cache key
 const toYmd = (d?: Date | string) => (d ? new Date(d).toISOString().slice(0, 10) : undefined);
 
 export class ModelsService {
-
+ 
   async list(q: ModelsListQuery) {
     const fuelType = q.fuelType?.trim();
     const transmissionType = q.transmissionType?.trim();
@@ -228,7 +231,6 @@ export class ModelsService {
             torqueNM: specs.torqueNM,
             mileageKMPL: specs.mileageKMPL,
             powerTrain: specs.powerTrain,
-            // ⬇️ NEW fields in response
             transmissionType: specs.transmissionType,
             transmissionSubType: specs.transmissionSubType,
             drivetrain: specs.drivetrain,
@@ -338,7 +340,6 @@ export class ModelsService {
             torqueNM: specs.torqueNM,
             mileageKMPL: specs.mileageKMPL,
             powerTrain: specs.powerTrain,
-            // ⬇️ NEW fields in response
             transmissionType: specs.transmissionType,
             transmissionSubType: specs.transmissionSubType,
             drivetrain: specs.drivetrain,
@@ -402,7 +403,6 @@ export class ModelsService {
           torqueNM: specs.torqueNM,
           mileageKMPL: specs.mileageKMPL,
           powerTrain: specs.powerTrain,
-          // ⬇️ NEW fields in response
           transmissionType: specs.transmissionType,
           transmissionSubType: specs.transmissionSubType,
           drivetrain: specs.drivetrain,
@@ -436,6 +436,7 @@ export class ModelsService {
     const ttlMs = 30 * 60 * 1000; // 30 min
 
     return withCache(key, async () => {
+
       const rows = await repo.upcomingMonthlyCount(opts);
 
       const start = new Date();
@@ -591,5 +592,20 @@ export class ModelsService {
     }, ttlMs);
   }
 
+
 }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
 
