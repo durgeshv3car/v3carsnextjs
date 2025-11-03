@@ -42,7 +42,7 @@ interface BrandPriceTableProps {
 
 const currentYear = new Date().getFullYear()
 
-export default function BrandPriceTable({ title, cars }: BrandPriceTableProps) {
+export default function BrandPriceTable({ cars }: BrandPriceTableProps) {
   const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
 
   return (

@@ -28,40 +28,6 @@ export type CarPriceTab =
   | 'ABOVE_40L';
 
 
-interface Brand {
-  id: number;
-  name: string;
-  slug: string;
-  logo: string;
-}
-
-interface ImageType {
-  name: string;
-  alt: string;
-  url: string;
-}
-
-interface CarProps {
-  modelId: number;
-  modelName: string;
-  modelSlug: string;
-  brandId: number;
-  modelBodyTypeId: number;
-  isUpcoming: boolean;
-  launchDate: string;
-  totalViews: number;
-  expectedBasePrice: number;
-  expectedTopPrice: number;
-  brand: Brand;
-  priceMin: number;
-  priceMax: number;
-  powerPS: number;
-  torqueNM: number;
-  mileageKMPL: number;
-  image: ImageType;
-  imageUrl: string;
-}
-
 export default function Home() {
   const [upcomingCount, setUpcomingCount] = useState<number | null>(null);
   const [selectBrand, setSelectBrand] = useState<number | null>(null)

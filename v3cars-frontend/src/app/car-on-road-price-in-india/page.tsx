@@ -2,7 +2,6 @@
 
 
 import CommonFaqAccordion from "@/components/common/CommonFaqAccordion";
-import DiscontinuedCarList from "@/components/responsive/brand/DiscontinuedCarList";
 import CarInIndia from "@/components/responsive/car-on-road-price/CarsInIndia";
 import FilterSection from "@/components/responsive/car-on-road-price/FilterSection";
 import FuelTab from "@/components/responsive/car-on-road-price/FuelTab";
@@ -15,16 +14,6 @@ import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 
-const discontinuedMahindraCars = [
-    "Mahindra Alturas G4",
-    "Mahindra KUV100",
-    "Mahindra TUV 300",
-    "Mahindra TUV 300 Plus",
-    "Mahindra XUV500",
-    "Mahindra eVerito",
-    "Mahindra Xylo",
-];
-
 
 function CarOnRoadPrice() {
     const [upcomingCount, setUpcomingCount] = useState<number | null>(null);
@@ -35,6 +24,9 @@ function CarOnRoadPrice() {
     const latestCarNews = latestCarNewsData?.rows ?? [];
 
     const isMobile = useIsMobile()
+
+    console.log(upcomingCount);
+    
 
     return (
         <>

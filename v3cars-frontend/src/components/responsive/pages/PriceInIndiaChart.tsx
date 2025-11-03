@@ -36,6 +36,11 @@ interface PriceInIndiaChartProps {
     type: string; // "Fuel" | "Petrol" | "Diesel" | "CNG"
 }
 
+interface FuelEntry {
+  date: string;
+  [cityName: string]: string | number | undefined;
+}
+
 const cityColors: Record<string, string> = {
     "new delhi": "#ef4444",
     mumbai: "#facc15",
@@ -46,14 +51,12 @@ const cityColors: Record<string, string> = {
 const PriceInIndiaChart: React.FC<PriceInIndiaChartProps> = ({ data, type }) => {
     const [activeTab, setActiveTab] = useState<"Petrol" | "Diesel" | "CNG">("Petrol");
 
-    // 🔹 If a specific fuel type is passed (not "Fuel"), lock the tab
     useEffect(() => {
         if (type !== "Fuel") {
             setActiveTab(type as "Petrol" | "Diesel" | "CNG");
         }
     }, [type]);
 
-    // 🔹 Transform data for the active tab
     const chartData = useMemo(() => {
         if (!data.length) return [];
 
@@ -68,7 +71,7 @@ const PriceInIndiaChart: React.FC<PriceInIndiaChartProps> = ({ data, type }) => 
         if (!dates) return [];
 
         return dates.map((date, index) => {
-            const entry: Record<string, any> = { date };
+            const entry: FuelEntry = { date };
 
             data.forEach((city) => {
                 const cityFuel = city[fuelKey];
@@ -84,10 +87,10 @@ const PriceInIndiaChart: React.FC<PriceInIndiaChartProps> = ({ data, type }) => 
     return (
         <div className="space-y-4">
             <h1 className="text-2xl text-center font-semibold">
-                {type === "Fuel" ? "Fuel" : type} Price in India Chart
+                <span className=" capitalize">{type === "Fuel" ? "Fuel" : type}</span> Price in India Chart
             </h1>
             <p className="text-center text-sm">
-                This chart provides a comprehensive view of petrol price fluctuations in India's four major metro cities: Delhi, Chennai, Mumbai, and Kolkata.{" "}
+                This chart provides a comprehensive view of petrol price fluctuations in India&apos;s four major metro cities: Delhi, Chennai, Mumbai, and Kolkata.{" "}
                 The data spans the last 10 days (as of Oct 30, 2025), allowing you to track the trends for{" "}
                 {
                     type === "Fuel" ?

@@ -58,7 +58,7 @@ const PriceTrends: React.FC<PriceTrendsProps> = ({ type, city, data }) => {
 
             {data.months.map((m, idx) => {
                 // convert "2025-10" to readable format
-                const [year, month] = m.month.split("-");
+                const [year] = m.month.split("-");
                 const monthName = new Date(`${m.month}-01`).toLocaleString("default", {
                     month: "long",
                 });

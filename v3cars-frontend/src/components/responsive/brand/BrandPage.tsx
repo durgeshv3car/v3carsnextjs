@@ -16,6 +16,7 @@ import { useGetBrandsByIdQuery, useGetBrandsQuery, useGetDiscontinuedModelQuery,
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 import { useState } from "react";
+
 interface CarBrandDetail {
     brandId: number;
     brandName: string;
@@ -49,7 +50,11 @@ interface CarBrandDetail {
     similarBrand: string; // comma-separated brand IDs
 }
 
-export default function BrandPage() {
+interface PageProps {
+    type: string;
+}
+
+export default function BrandPage({ type }: PageProps) {
     const [selectBrand, setSelectBrand] = useState<number | null>(null)
     const [upcomingCount, setUpcomingCount] = useState<number | null>(null);
     const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
@@ -66,6 +71,10 @@ export default function BrandPage() {
     const models = modelsData?.rows ?? [];
     const discontinuedModel = discontinuedModelData?.rows ?? [];
     const isMobile = useIsMobile()
+
+    console.log(upcomingCount);
+    console.log(type);
+    
 
     return (
         <div className="lg:p-8 p-4">

@@ -2,8 +2,6 @@
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import { IMAGE_URL } from "@/utils/constant";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { MdCompareArrows } from "react-icons/md";
 
 interface CarBrand {
@@ -83,16 +81,6 @@ interface CompareNowProps {
     setSelectedVariants: React.Dispatch<React.SetStateAction<(number | null)[]>>;
 }
 
-function toSlug(name: string) {
-    return name
-        .toLowerCase()
-        .trim()
-        .replace(/[\s_]+/g, '-')
-        .replace(/[^\w-]+/g, '')
-        .replace(/--+/g, '-')
-        .replace(/^-+|-+$/g, '');
-}
-
 export default function CompareNow({
     brands,
     modelsData,
@@ -113,7 +101,6 @@ export default function CompareNow({
         }
         return name;
     }
-    const router = useRouter()
 
     function splitBrands(brands: CarBrand[]) {
         const normalizedBrands = brands.map((b) => ({
@@ -164,7 +151,7 @@ export default function CompareNow({
                         {selectedModels[i] ? (
                             (() => {
                                 const selectedModel = modelsData[i]?.find(
-                                    (model: any) => model.modelId === selectedModels[i]
+                                    (model: CarModel) => model.modelId === selectedModels[i]
                                 );
                                 return (
                                     <img

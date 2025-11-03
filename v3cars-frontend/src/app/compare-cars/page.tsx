@@ -1,18 +1,23 @@
-'use client'
+'use client';
 
 import TopSection from "@/components/common/TopSection";
 import CompareNow from "@/components/responsive/compare-cars/CompareNow";
 import Information from "@/components/responsive/compare-cars/Information";
-import ComparisonNews from "@/components/responsive/compare-cars/ComparisonNews";
 import MostPopularCarComparison from "@/components/responsive/compare-cars/MostPopularCarComparison";
-import { useGetBrandsQuery, useGetModelsQuery, useGetVariantsQuery } from "@/redux/api/carModuleApi";
+import {
+    useGetBrandsQuery,
+    useGetModelsQuery,
+    useGetVariantsQuery,
+} from "@/redux/api/carModuleApi";
 import { useState } from "react";
 import useIsMobile from "@/hooks/useIsMobile";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import LatestVideos from "@/components/responsive/home/LatestVideos";
-import { useGetLatestComparisonReviewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import {
+    useGetLatestComparisonReviewsQuery,
+    useGetPopularComparisonsQuery,
+} from "@/redux/api/contentModuleApi";
 import { useGetLatestCompareVideosQuery } from "@/redux/api/videosModuleApi";
 
 function CompareCars() {
@@ -25,36 +30,43 @@ function CompareCars() {
     const { data: latestCompareVideosData } = useGetLatestCompareVideosQuery();
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
 
-    const popularComparisons = popularComparisonsData?.rows ?? [];
     const brands = brandsData?.rows ?? [];
     const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
     const latestCompareVideos = latestCompareVideosData?.rows ?? [];
+    const popularComparisons = popularComparisonsData?.rows ?? [];
 
-    const modelsData = selectedBrands.map((brandId) => {
-        const { data } = useGetModelsQuery(
-            { brandId: brandId! },
-            { skip: !brandId }
-        );
-        return data?.rows ?? [];
-    });
+    // ✅ Fixed number of hooks (no map)
+    const modelQuery1 = useGetModelsQuery({ brandId: selectedBrands[0]! }, { skip: !selectedBrands[0] });
+    const modelQuery2 = useGetModelsQuery({ brandId: selectedBrands[1]! }, { skip: !selectedBrands[1] });
+    const modelQuery3 = useGetModelsQuery({ brandId: selectedBrands[2]! }, { skip: !selectedBrands[2] });
+    const modelQuery4 = useGetModelsQuery({ brandId: selectedBrands[3]! }, { skip: !selectedBrands[3] });
 
-    const variantsData = selectedModels.map((modelId) => {
-        const { data } = useGetVariantsQuery(
-            { modelId: modelId! },
-            { skip: !modelId }
-        );
-        return data?.rows ?? [];
-    });
+    const variantQuery1 = useGetVariantsQuery({ modelId: selectedModels[0]! }, { skip: !selectedModels[0] });
+    const variantQuery2 = useGetVariantsQuery({ modelId: selectedModels[1]! }, { skip: !selectedModels[1] });
+    const variantQuery3 = useGetVariantsQuery({ modelId: selectedModels[2]! }, { skip: !selectedModels[2] });
+    const variantQuery4 = useGetVariantsQuery({ modelId: selectedModels[3]! }, { skip: !selectedModels[3] });
 
-    const isMobile = useIsMobile()
+    const modelsData = [
+        modelQuery1.data?.rows ?? [],
+        modelQuery2.data?.rows ?? [],
+        modelQuery3.data?.rows ?? [],
+        modelQuery4.data?.rows ?? [],
+    ];
+
+    const variantsData = [
+        variantQuery1.data?.rows ?? [],
+        variantQuery2.data?.rows ?? [],
+        variantQuery3.data?.rows ?? [],
+        variantQuery4.data?.rows ?? [],
+    ];
+
+    const isMobile = useIsMobile();
 
     return (
         <>
             <TopSection
-                title={"Compare to choose the right car!"}
-                description={
-                    "Want to buy a Car but confused how to select the best car as per your requirements? V3Cars compare car tool can help you to finalize your car..."
-                }
+                title="Compare to choose the right car!"
+                description="Want to buy a Car but confused how to select the best car as per your requirements? V3Cars compare car tool can help you to finalize your car..."
             />
 
             <div className="px-4 xl:px-10">
@@ -79,22 +91,21 @@ function CompareCars() {
                         setSelectedVariants={setSelectedVariants}
                     />
 
-                    {
-                        isMobile ?
-                            <MobileLatestCarNews
-                                title="Comparison Car Review"
-                                view="Comparison Review"
-                                data={latestComparisonReviews}
-                                link="/comparison"
-                            />
-                            :
-                            <CommonNewsUpdate
-                                title="Comparison Car Review"
-                                view="Comparison Review"
-                                newsList={latestComparisonReviews}
-                                link={"/comparison"}
-                            />
-                    }
+                    {isMobile ? (
+                        <MobileLatestCarNews
+                            title="Comparison Car Review"
+                            view="Comparison Review"
+                            data={latestComparisonReviews}
+                            link="/comparison"
+                        />
+                    ) : (
+                        <CommonNewsUpdate
+                            title="Comparison Car Review"
+                            view="Comparison Review"
+                            newsList={latestComparisonReviews}
+                            link="/comparison"
+                        />
+                    )}
 
                     <MostPopularCarComparison data={popularComparisons} />
 
