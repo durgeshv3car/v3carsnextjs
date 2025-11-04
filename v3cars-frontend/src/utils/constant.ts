@@ -4,6 +4,7 @@ export let BASE_URL: string;
 export const IMAGE_URL = "https://www.v3cars.com"
 export const IMAGE_URL2 = "https://lms.v3cars.com"
 
+
 if (typeof window !== "undefined") {
   if (window.location.origin.includes("localhost")) {
     BASE_URL = "http://localhost:3121/v1";
@@ -21,6 +22,8 @@ export const WEBSITE_URL = `https://www.v3cars.com`;
 /**
  * Capitalizes the first letter of each word, preserving "NCR" as uppercase.
  */
+
+
 export function capitalizeFirstLetter(input: string): string {
   return input
     .split('-')
@@ -32,9 +35,12 @@ export function capitalizeFirstLetter(input: string): string {
     .join('-');
 }
 
+
 /**
  * Truncates a string to a given number of words, stripping out any HTML tags.
  */
+
+
 export function truncateWords(htmlString: string, wordLimit: number): string {
   if (!htmlString) return "";
 

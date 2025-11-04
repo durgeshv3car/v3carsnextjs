@@ -129,3 +129,23 @@ Detail:
 
 
 
+`Disrticts`
+
+Search (q filter) in a state:
+
+GET /v1/locations/districts?stateId=29&q=jaipur&limit=20&page=1
+
+
+Only popular ranks (any of 1..4), ordered by rank then name:
+
+GET /v1/locations/districts?stateId=29&popularAny=1&sortBy=popular_rank
+
+Exact rank:
+
+GET /v1/locations/districts?stateId=29&popularRank=1
+
+Detail:
+
+GET /v1/locations/districts/612
+
+

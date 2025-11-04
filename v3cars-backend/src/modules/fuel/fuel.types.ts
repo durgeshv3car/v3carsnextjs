@@ -1,18 +1,19 @@
 export type FuelTypeNum = 1 | 2 | 3; // 1=Petrol, 2=Diesel, 3=CNG
 
 export interface FuelLatestQuery {
-  fuelType: FuelTypeNum;
-  stateId?: number;      // either stateId or districtId
-  districtId?: number;   // precedence to districtId if both present
+  fuelType: 1|2|3;
+  stateId?: number;
+  districtId?: number;  // tbldistricts.id
+  cityId?: number;      // tblcities.cityId  ✅
 }
 
 export interface FuelHistoryQuery {
-  fuelType: FuelTypeNum;
+  fuelType: 1|2|3;
   stateId?: number;
   districtId?: number;
-  days?: number;         // default 10, max 90
+  cityId?: number;      // ✅
+  days?: number;
 }
-
 export type FuelStatesSort = 'name_asc' | 'price_desc' | 'price_asc';
 
 export interface FuelStatesListQuery {
@@ -32,6 +33,20 @@ export interface FuelCitiesListQuery {
   page?: number;         // default 1
   limit?: number;        // default 50
   sortBy?: FuelCitiesSort;
-  /** NEW: filter popular cities only (tblcities.isPopularCity = 1) */
+  /** filter popular cities only (tblcities.isPopularCity = 1) */
   popular?: 0 | 1;
+}
+
+export interface FuelMetrosQuery {
+  /** optional, if missing we return all (1,2,3) */
+  fuelType?: FuelTypeNum;
+  /** optional: when provided, return last N days history */
+  days?: number;
+}
+
+export interface FuelMonthlyTrendsQuery {
+  fuelType: FuelTypeNum;
+  districtId?: number;  // either districtId or cityId
+  cityId?: number;
+  months?: number;      // default 6
 }

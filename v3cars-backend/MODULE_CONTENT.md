@@ -55,6 +55,7 @@ GET /v1/content/:type/latest?limit=9&excludeToday=1
 # Ordered by publishDateandTime DESC, id DESC
 # Optional: &fuelType=Electric
 
+
 Examples
 
 Latest News (default): /v1/content/news/latest?limit=9
@@ -103,6 +104,8 @@ Examples
 Popular News: /v1/content/news/popular?limit=5
 
 Popular EV News: /v1/content/news/popular?limit=5&fuelType=Electric
+
+popular comparisions - /v1/comparisons/popular?limit=15
 
 Legacy News Aliases (backward compatible)
 

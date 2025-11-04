@@ -16,6 +16,7 @@ const variantsSvc = new VariantsService();
 const powertrainsSvc = new PowertrainsService();
 const imagesSvc = new ImagesService();
 
+
 /** INR bucket edges (rupees) */
 const priceRanges: Record<string, { min?: number; max?: number }> = {
   UNDER_5L: { max: 5_00_000 },
@@ -24,6 +25,7 @@ const priceRanges: Record<string, { min?: number; max?: number }> = {
   BETWEEN_20_40L: { min: 20_00_000, max: 40_00_000 },
   ABOVE_40L: { min: 40_00_000 },
 };
+
 
 function inBucket(min: number | null, max: number | null, bucket?: keyof typeof priceRanges): boolean {
 
@@ -40,11 +42,12 @@ function inBucket(min: number | null, max: number | null, bucket?: keyof typeof 
 
 }
 
+
 // Small helper to stringify dates safely for cache key
 const toYmd = (d?: Date | string) => (d ? new Date(d).toISOString().slice(0, 10) : undefined);
 
 export class ModelsService {
-
+ 
   async list(q: ModelsListQuery) {
     const fuelType = q.fuelType?.trim();
     const transmissionType = q.transmissionType?.trim();
@@ -203,7 +206,18 @@ export class ModelsService {
 
         const enriched = pageRows.map((m) => {
           const b = m.brandId ? brandMap.get(m.brandId) : undefined;
-          const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null, powerTrain: null };
+          const specs =
+            specsMap.get(m.modelId) ??
+            {
+              powerPS: null,
+              torqueNM: null,
+              mileageKMPL: null,
+              powerTrain: null,
+              transmissionType: null,
+              transmissionSubType: null,
+              drivetrain: null,
+              isFourByFour: null,
+            };
           const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
           const priceMin = (m as any).computedMin ?? null;
           const priceMax = (m as any).computedMax ?? null;
@@ -217,6 +231,10 @@ export class ModelsService {
             torqueNM: specs.torqueNM,
             mileageKMPL: specs.mileageKMPL,
             powerTrain: specs.powerTrain,
+            transmissionType: specs.transmissionType,
+            transmissionSubType: specs.transmissionSubType,
+            drivetrain: specs.drivetrain,
+            isFourByFour: specs.isFourByFour,
             image: img,
             imageUrl: img.url,
           };
@@ -293,7 +311,18 @@ export class ModelsService {
         const enriched = pageRows.map((m) => {
           const b = m.brandId ? brandMap.get(m.brandId) : undefined;
           const band = priceBands.get(m.modelId) ?? { min: null, max: null };
-          const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null, powerTrain: null };
+          const specs =
+            specsMap.get(m.modelId) ??
+            {
+              powerPS: null,
+              torqueNM: null,
+              mileageKMPL: null,
+              powerTrain: null,
+              transmissionType: null,
+              transmissionSubType: null,
+              drivetrain: null,
+              isFourByFour: null,
+            };
           const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
 
           // Fallback policy: use expected* if > 0 else use variant band
@@ -311,6 +340,10 @@ export class ModelsService {
             torqueNM: specs.torqueNM,
             mileageKMPL: specs.mileageKMPL,
             powerTrain: specs.powerTrain,
+            transmissionType: specs.transmissionType,
+            transmissionSubType: specs.transmissionSubType,
+            drivetrain: specs.drivetrain,
+            isFourByFour: specs.isFourByFour,
             image: img,
             imageUrl: img.url,
           };
@@ -341,7 +374,18 @@ export class ModelsService {
       const enriched = rows.map((m) => {
         const b = m.brandId ? brandMap.get(m.brandId) : undefined;
         const band = priceBands.get(m.modelId) ?? { min: null, max: null };
-        const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null, powerTrain: null };
+        const specs =
+          specsMap.get(m.modelId) ??
+          {
+            powerPS: null,
+            torqueNM: null,
+            mileageKMPL: null,
+            powerTrain: null,
+            transmissionType: null,
+            transmissionSubType: null,
+            drivetrain: null,
+            isFourByFour: null,
+          };
         const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
 
         // Fallback policy: use expected* if > 0 else use variant band
@@ -359,6 +403,10 @@ export class ModelsService {
           torqueNM: specs.torqueNM,
           mileageKMPL: specs.mileageKMPL,
           powerTrain: specs.powerTrain,
+          transmissionType: specs.transmissionType,
+          transmissionSubType: specs.transmissionSubType,
+          drivetrain: specs.drivetrain,
+          isFourByFour: specs.isFourByFour,
           image: img,
           imageUrl: img.url,
         };
@@ -388,10 +436,11 @@ export class ModelsService {
     const ttlMs = 30 * 60 * 1000; // 30 min
 
     return withCache(key, async () => {
+
       const rows = await repo.upcomingMonthlyCount(opts);
 
       const start = new Date();
-      start.setDate(1); start.setHours(0,0,0,0);
+      start.setDate(1); start.setHours(0, 0, 0, 0);
 
       const fmt = new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric' });
 
@@ -454,9 +503,9 @@ export class ModelsService {
       );
       const bodyTypeRows = bodyTypeIds.length
         ? await prisma.tblmodelbodytype.findMany({
-            where: { modelBodyTypeId: { in: bodyTypeIds } },
-            select: { modelBodyTypeId: true, modelBodyTypeName: true },
-          })
+          where: { modelBodyTypeId: { in: bodyTypeIds } },
+          select: { modelBodyTypeId: true, modelBodyTypeName: true },
+        })
         : [];
       const bodyTypeNameById = new Map(
         bodyTypeRows.map(bt => [bt.modelBodyTypeId, bt.modelBodyTypeName ?? null])
@@ -468,9 +517,9 @@ export class ModelsService {
       );
       const segmentRows = segmentIds.length
         ? await prisma.tblsegments.findMany({
-            where: { segmentId: { in: segmentIds } },
-            select: { segmentId: true, segmentName: true },
-          })
+          where: { segmentId: { in: segmentIds } },
+          select: { segmentId: true, segmentName: true },
+        })
         : [];
       const segmentNameById = new Map(segmentRows.map(s => [s.segmentId, s.segmentName ?? null]));
 
@@ -481,11 +530,11 @@ export class ModelsService {
       const priceBands = await variantsSvc.getPriceBandsByModelIds(modelIds);
 
       // 7) Month labels + % change
-      const curDate  = new Date(opts.year, opts.month - 1, 1);
+      const curDate = new Date(opts.year, opts.month - 1, 1);
       const prevDate = new Date(curDate);
       prevDate.setMonth(curDate.getMonth() - 1);
       const monthFmt = new Intl.DateTimeFormat('en-IN', { month: 'long' });
-      const curLabel  = `${monthFmt.format(curDate)}`;
+      const curLabel = `${monthFmt.format(curDate)}`;
       const prevLabel = `${monthFmt.format(prevDate)}`;
 
       // 8) Build output in the same order as SQL (ranked by that month’s sales)
@@ -493,7 +542,7 @@ export class ModelsService {
         const m = modelMap.get(r.modelId);
         if (!m) return null;
 
-        const cur  = Number(r.monthSales ?? 0);
+        const cur = Number(r.monthSales ?? 0);
         const prev = Number(r.prevSales ?? 0);
         const percentChange = prev > 0 ? ((cur - prev) / prev) * 100 : null;
 
@@ -543,5 +592,20 @@ export class ModelsService {
     }, ttlMs);
   }
 
+
 }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
 

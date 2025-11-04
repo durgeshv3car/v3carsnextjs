@@ -7,19 +7,24 @@ import { withCache, cacheKey, delPrefix } from '../../lib/cache.js';
 const repo = new FaqsRepo();
 
 export class FaqsService {
+
+  
   /** List FAQs for a module (cache p1=30m, others=15m) */
-  async list(q: FaqsListQuery) {
+ async list(q: FaqsListQuery) {
     const page = q.page ?? 1;
     const ttlMs = page === 1 ? 30 * 60 * 1000 : 15 * 60 * 1000;
 
     const key = cacheKey({
       ns: 'faqs:list',
-      v: 1,
+      v: 2, // 🔺 bump version because of new filters + table switch
       moduleId: q.moduleId,
       page,
       limit: q.limit ?? 50,
       sortBy: q.sortBy ?? 'sequence_asc',
       q: q.q ?? undefined,
+      // fuel faq params
+      pageType: q.pageType ?? undefined,
+      fuelType: q.fuelType ?? undefined,
     });
 
     return withCache(key, () => repo.list(q), ttlMs);
@@ -72,4 +77,6 @@ export class FaqsService {
       delPrefix('faqs:list'), // if module name appears on UI lists
     ]);
   }
+
+  
 }
