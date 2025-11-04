@@ -10,6 +10,11 @@ interface Response {
     rows: [];
 }
 
+interface BrandByIdResponse {
+    success: boolean;
+    data: CarBrandDetail | null;
+}
+
 interface GetModelsArgs {
     brandId: number
 }
@@ -56,6 +61,67 @@ export const carModuleApi = createApi({
         getMonth: builder.query<Response, void>({
             query: () => `/cars/models/upcoming-monthly-count?months=11`,
         }),
+        getAdvanceSearchData: builder.query<
+            Response,
+            {
+                page?: number;
+                limit?: number;
+                sortBy?: string;
+                priceBucket?: string;
+                brandIds?: number[];
+                bodyTypeIds?: number[];
+                cylindersList?: number[];
+                seatingList?: number[];
+                mileage?: string;
+                transmissionType?: string;
+                fuelType?: string;
+                engineDisplacement?: string[];
+                isUpcoming?: number;
+            }
+        >({
+            query: ({
+                page,
+                limit,
+                sortBy = "popular",
+                priceBucket,
+                brandIds,
+                bodyTypeIds,
+                cylindersList,
+                seatingList,
+                mileage,
+                transmissionType,
+                fuelType,
+                engineDisplacement,
+                isUpcoming = 0,
+            }) => {
+                const params = new URLSearchParams();
+
+                params.append("page", String(page));
+                params.append("limit", String(limit));
+                params.append("sortBy", sortBy);
+                params.append("isUpcoming", String(isUpcoming));
+
+                // Add filters only if present
+                if (priceBucket) params.append("priceBucket", priceBucket);
+                if (brandIds?.length) params.append("brandIds", brandIds.join(","));
+                if (bodyTypeIds?.length) params.append("bodyTypeIds", bodyTypeIds.join(","));
+                if (cylindersList?.length) params.append("cylindersList", cylindersList.join(","));
+                if (seatingList?.length) params.append("seatingList", seatingList.join(","));
+                if (mileage) params.append("mileage", mileage);
+                if (transmissionType) params.append("transmissionType", transmissionType);
+                if (fuelType) params.append("fuelType", fuelType);
+                if (engineDisplacement?.length)
+                    params.append("engineDisplacement", engineDisplacement.join(","));
+
+                return `/cars/models?${params.toString()}`;
+            },
+        }),
+        getDiscontinuedModel: builder.query<Response, { brandId: number }>({
+            query: ({ brandId }) => `/cars/brands/${brandId}/discontinued-models`,
+        }),
+        getBrandsById: builder.query<BrandByIdResponse, { brandId: number }>({
+            query: ({ brandId }) => `/cars/brands/${brandId}`,
+        }),
     }),
 });
 
@@ -72,4 +138,48 @@ export const {
     useGetUpcomingCarsQuery,
     useGetLatestCarsQuery,
     useGetMonthQuery,
+    useGetAdvanceSearchDataQuery,
+    useGetDiscontinuedModelQuery,
+    useGetBrandsByIdQuery,
 } = carModuleApi;
+
+
+
+
+
+
+
+
+
+interface CarBrandDetail {
+  brandId: number;
+  brandName: string;
+  logoPath: string;
+  unquieViews: number | null;
+  popularity: string;
+  brandSlug: string;
+  brandDescription: string;
+  bannerImage: string;
+  bannerImageAltTag: string;
+  isFasttag: number;
+  brandType: number;
+  displayName: string;
+  roadsideAssistance: number;
+  emailAddress: string;
+  stateId: number;
+  cityId: number;
+  parentOrganization: string;
+  products: string;
+  founderName: string;
+  customerService: string;
+  serviceNetwork: boolean;
+  websiteUrl: string;
+  brandKeyPeople: string;
+  introContent: string; // HTML content
+  brandOrganizationName: string;
+  websiteName: string;
+  brandTitle: string;
+  iconPath: string;
+  brandStatus: number;
+  similarBrand: string;
+}

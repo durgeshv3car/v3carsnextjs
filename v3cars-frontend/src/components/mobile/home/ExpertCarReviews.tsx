@@ -52,7 +52,7 @@ const MobileExpertCarReviews: React.FC<MobileExpertCarReviewsProps> = ({ newsLis
           <div className="flex items-center justify-between w-full lg:w-auto gap-4">
             <h2 className="text-lg font-semibold lg:font-medium">Expert Car Reviews</h2>
             <Link
-              href="#"
+              href="/car-expert-reviews"
               className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
             >
               View All

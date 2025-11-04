@@ -1,20 +1,34 @@
 'use client';
 
+import { setBodyTypeIds } from '@/redux/slices/advanceSearchSlice';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 const categories = [
-    { label: 'SUV', icon: '/car-image/suv.png' },
-    { label: 'Sedan', icon: '/car-image/sedan.png' },
-    { label: 'Hatchback', icon: '/car-image/hatchback.png' },
-    { label: 'Pickup', icon: '/car-image/pickup.png' },
-    { label: 'Coupe', icon: '/car-image/coupe.png' },
-    { label: 'Convertible', icon: '/car-image/convertible.png' },
-    { label: 'Hybrid', icon: '/car-image/hybrid.png' },
-    { label: 'Electric', icon: '/car-image/electric.png' },
+    { id: 3, label: 'SUV', icon: '/car-image/suv.png' },
+    { id: 4, label: 'Sedan', icon: '/car-image/sedan.png' },
+    { id: 1, label: 'Hatchback', icon: '/car-image/hatchback.png' },
+    { id: 6, label: 'Pickup', icon: '/car-image/pickup.png' },
+    { id: 8, label: 'Coupe', icon: '/car-image/coupe.png' },
+    { id: 9, label: 'Convertible', icon: '/car-image/convertible.png' },
+    { id: 5, label: 'Crossover', icon: '/car-image/hybrid.png' },
+    { id: 7, label: 'MUV', icon: '/car-image/electric.png' },
 ];
 
 const CategorySection: React.FC = () => {
+    const router = useRouter()
+    const dispatch = useDispatch();
+
+    function handleCategory(value: number) {
+        if (!value) {
+            return alert("Something Went Worng. Try Again Later")
+        }
+        dispatch(setBodyTypeIds([value]));
+        router.push("/search/new-cars");
+    }
+
     return (
         <section className="px-6 lg:px-10">
             <div className="w-full xl:app-container xl:mx-auto mb-6">
@@ -26,7 +40,9 @@ const CategorySection: React.FC = () => {
                     {categories.map((category, index) => (
                         <div
                             key={index}
-                            className="group bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] h-[104px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition-transform duration-300 cursor-pointer snap-start lg:snap-none">
+                            className="group bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] h-[104px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition-transform duration-300 cursor-pointer snap-start lg:snap-none"
+                            onClick={() => { handleCategory(category.id) }}
+                        >
                             <Image
                                 src={category.icon}
                                 alt={category.label}

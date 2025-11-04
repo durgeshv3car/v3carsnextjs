@@ -34,6 +34,8 @@ Latest: /v1/cars/brands?sortBy=latest&limit=12&page=1
 
 Filters: /v1/cars/brands?status=1&hasServiceNetwork=1&brandType=0&limit=12&page=1
 
+Discontinued Model : /v1/cars/brands/3/discontinued-models
+
 Models
 
 List

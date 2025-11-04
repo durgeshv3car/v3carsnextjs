@@ -37,10 +37,13 @@ export const websiteContentApi = createApi({
             query: () => "/website-content?moduleId=8",
         }),
         getCarInsuranceIndia: builder.query<Response, void>({
-            query: () => "/website-content?moduleId=5",
+            query: () => "/website-content?moduleId=3",
         }),
         getApplyCarLoanIndia: builder.query<Response, void>({
             query: () => "/website-content?moduleId=10",
+        }),
+        getMileageCalculator: builder.query<Response, void>({
+            query: () => "/website-content?moduleId=11",
         }),
     }),
 });
@@ -54,4 +57,5 @@ export const {
     useGetPrivacyPolicyQuery,
     useGetCarInsuranceIndiaQuery,
     useGetApplyCarLoanIndiaQuery,
+    useGetMileageCalculatorQuery,
 } = websiteContentApi;

@@ -39,7 +39,8 @@ Response
     "updatedAt": "2025-09-26T00:00:00.000Z"
   }
 }
-        
+
+
 b) By State
 GET /v1/fuel/price/latest?fuelType={1|2|3}&stateId=<STATE_ID>
 
@@ -149,7 +150,7 @@ Response
 
 Quick Examples
 
-Latest Petrol in Delhi (state)       
+Latest   Petrol in Delhi (state)       
 
 /v1/fuel/price/latest?fuelType=1&stateId=11
 
@@ -193,5 +194,10 @@ We can add: GET /v1/fuel/cities/combined?stateId=<STATE_ID>&page=1&limit=50&q=<s
 Want weekly/monthly aggregates? We can extend history to group by week/month easily.                      
 
 TTLs adjustable in fuel.service.ts (look for ttlMs).
+
+
+
+
+
 
 

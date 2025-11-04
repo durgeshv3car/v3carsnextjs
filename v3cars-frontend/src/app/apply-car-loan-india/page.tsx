@@ -9,7 +9,7 @@ import CarLoanInfo from '@/components/responsive/car-loan/CarLoanInfo'
 // import { useGetApplyCarLoanIndiaQuery } from '@/redux/api/websiteContentApi'
 
 export default function Page() {
-    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 10 });
     // const { data: ApplyCarLoanData } = useGetApplyCarLoanIndiaQuery();
 
     const faqByModule = faqByModuleData?.rows ?? [];

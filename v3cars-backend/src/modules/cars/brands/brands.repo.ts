@@ -43,6 +43,7 @@ export class BrandsRepo {
     if (q.sortBy === 'popular') {
       const all = await prisma.tblbrands.findMany({
         where,
+        // list view can stay lean; detail returns all columns
         select: {
           brandId: true, brandName: true, brandSlug: true, logoPath: true,
           popularity: true, unquieViews: true, brandStatus: true,
@@ -103,16 +104,11 @@ export class BrandsRepo {
     };
   }
 
+  /** 🔁 Detail: return ALL columns for brand */
   async getById(id: number) {
+    // No 'select' => Prisma returns full row (all columns)
     return prisma.tblbrands.findFirst({
       where: { brandId: id },
-      select: {
-        brandId: true, brandName: true, brandSlug: true, logoPath: true,
-        popularity: true, unquieViews: true, brandStatus: true,
-        serviceNetwork: true, brandType: true, brandDescription: true,
-        bannerImage: true, bannerImageAltTag: true, websiteUrl: true,
-        introContent: true, displayName: true,
-      },
     });
   }
 
@@ -122,5 +118,29 @@ export class BrandsRepo {
       where: { brandId: { in: ids } },
       select: { brandId: true, brandName: true, brandSlug: true, logoPath: true },
     });
+  }
+
+  /** 🆕 Discontinued models for a brand (isUpcoming = 2)
+   * We use a raw query so this works even if Prisma model types map isUpcoming to boolean.
+   */
+  async discontinuedModelsByBrand(brandId: number) {
+    // Minimal columns returned; expand if you need more
+    const rows = await prisma.$queryRaw<
+      Array<{
+        modelId: number;
+        modelName: string | null;
+        modelSlug: string | null;
+        discontinuedYear: number | null;
+        isUpcoming: number | null;
+        brandId: number | null;
+      }>
+    >`
+      SELECT modelId, modelName, modelSlug, discontinuedYear, isUpcoming, brandId
+      FROM tblmodels
+      WHERE brandId = ${brandId}
+        AND isUpcoming = 2
+      ORDER BY discontinuedYear DESC, modelId DESC
+    `;
+    return rows;
   }
 }

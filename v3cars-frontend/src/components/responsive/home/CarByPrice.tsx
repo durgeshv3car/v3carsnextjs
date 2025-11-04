@@ -1,14 +1,17 @@
 'use client'
 
 import { useGetCarByPriceQuery } from '@/redux/api/homeModuleApi'
+import { setPriceBucket } from '@/redux/slices/advanceSearchSlice'
 import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { BiTachometer } from 'react-icons/bi'
 import { FaArrowRight } from 'react-icons/fa'
 import { IoMdStarOutline } from 'react-icons/io'
 import { PiEngine } from 'react-icons/pi'
+import { useDispatch } from 'react-redux'
 
 export type CarPriceTab =
     | 'UNDER_5L'
@@ -62,6 +65,8 @@ const CarByPrice: React.FC = () => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
+    const router = useRouter()
+    const dispatch = useDispatch();
 
     const handleScroll = () => {
         const container = scrollRef.current;
@@ -90,14 +95,22 @@ const CarByPrice: React.FC = () => {
         return () => container.removeEventListener('scroll', handleScroll);
     }, []);
 
+    function handleCarPrice() {
+        if (!carPriceTab) {
+            return alert("Something Went Wrong. Please Try Again")
+        }
+        dispatch(setPriceBucket(carPriceTab));
+        router.push("/search/new-cars");
+    }
+
     return (
         <section className="px-6 lg:px-10">
             <div className="w-full lg:app-container mx-auto space-y-3 py-6">
                 <div className="flex items-center w-full lg:w-auto gap-4">
                     <h2 className="text-lg font-semibold lg:font-medium">Search Car By Price</h2>
-                    <Link
-                        href="#"
-                        className="text-[#FFCC00] font-medium text-xs lg:text-sm hover:underline flex gap-2 items-center"
+                    <button
+                        className="text-[#FFCC00] font-medium text-xs lg:text-sm hover:underline flex gap-2 items-center cursor-pointer"
+                        onClick={handleCarPrice}
                     >
                         View All Cars {PRICE_TABS.find(tab => tab.key === carPriceTab)?.value}
                         <svg
@@ -110,7 +123,7 @@ const CarByPrice: React.FC = () => {
                         >
                             <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>
-                    </Link>
+                    </button>
                 </div>
 
                 <div className="border dark:border-[#2E2E2E] border-[#DEE2E6] rounded-lg">
@@ -220,7 +233,10 @@ const CarByPrice: React.FC = () => {
                                     <p className="font-semibold">
                                         ₹{(car.priceMin / 100000).toFixed(1)} - ₹{(car.priceMax / 100000).toFixed(1)} Lakh
                                     </p>
-                                    <button className="p-3 font-semibold text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-yellow-400">
+                                    <button
+                                        className="p-3 font-semibold text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-yellow-400"
+                                        onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
+                                    >
                                         View Current Offers
                                         <FaArrowRight />
                                     </button>

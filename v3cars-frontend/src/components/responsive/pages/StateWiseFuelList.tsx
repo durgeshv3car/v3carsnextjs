@@ -1,45 +1,52 @@
 'use client'
 
+import React, { useState, useEffect } from "react";
 
-import React, { useState } from "react";
+interface FuelPrice {
+    stateId: number;
+    stateName: string;
+    petrol: number | null;
+    petrolPrev: number | null;
+    petrolChange: number | null;
+    diesel: number | null;
+    dieselPrev: number | null;
+    dieselChange: number | null;
+    cng: number | null;
+    cngPrev: number | null;
+    cngChange: number | null;
+    updatedAt: string;
+}
 
-const StateWiseFuelList = () => {
-    const [activeTab, setActiveTab] = useState<"Petrol" | "Diesel" | "CNG">("Petrol");
+interface StateWiseFuelListProps {
+    data: FuelPrice[];
+    type: string;
+}
 
-    const fuelData = [
-        { state: "Andaman and Nicobar Islands", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Andhra Pradesh", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Arunachal Pradesh", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Assam", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Bihar", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Chandigarh", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Chhattisgarh", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Dadra and Nagar Haveli", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Daman and Diu", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Delhi", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Goa", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Gujarat", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Haryana", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Himachal Pradesh", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Jammu and Kashmir", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-        { state: "Jharkhand", petrol: "82.42₹/L", diesel: "78.01₹/L", cng: "83.99₹/kg" },
-    ];
+const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
+    const [activeTab, setActiveTab] = useState(type);
+
+    // ✅ update activeTab if prop "type" changes dynamically
+    useEffect(() => {
+        setActiveTab(type);
+    }, [type]);
+
+    const showAll = activeTab === "Fuel";
 
     return (
         <div className="space-y-4">
+            {/* Heading & Tabs */}
             <div className="flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
-                {/* Heading */}
-                <h1 className="text-2xl">State-wise List For Fuel Price</h1>
+                <h1 className="text-2xl">State-wise List For {type} Price</h1>
 
-                {/* Tabs */}
-                <div className="grid grid-cols-3 divide-x-[1px] dark:divide-[#2E2E2E] border rounded-lg dark:border-[#2E2E2E]">
+                <div className="grid grid-cols-3 divide-x-[1px] dark:divide-[#2E2E2E] border rounded-lg dark:border-[#2E2E2E] overflow-hidden">
                     {["Petrol", "Diesel", "CNG"].map((tab) => (
                         <button
                             key={tab}
-                            onClick={() => setActiveTab(tab as typeof activeTab)}
-                            className={`font-semibold px-6 py-2 ${activeTab === tab
-                                ? "text-black dark:text-white"
-                                : "text-gray-500"
+                            onClick={() => setActiveTab(tab as "Petrol" | "Diesel" | "CNG")}
+                            className={`font-semibold px-6 py-2 transition-colors duration-200
+                                ${activeTab === tab
+                                    ? "bg-yellow-400 text-white dark:bg-yellow-500"
+                                    : "bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-[#2E2E2E]"
                                 }`}
                         >
                             {tab}
@@ -54,21 +61,84 @@ const StateWiseFuelList = () => {
                     <thead className="border-b dark:border-[#2E2E2E]">
                         <tr>
                             <th className="px-4 py-2 font-semibold min-w-[200px]">STATE</th>
-                            <th className="px-4 py-2 font-semibold min-w-[200px]">PETROL</th>
-                            <th className="px-4 py-2 font-semibold min-w-[200px]">DIESEL</th>
-                            <th className="px-4 py-2 font-semibold min-w-[200px]">CNG</th>
+                            {(showAll || activeTab === "Petrol") && <th className="px-4 py-2 font-semibold min-w-[200px]">PETROL</th>}
+                            {(showAll || activeTab === "Diesel") && <th className="px-4 py-2 font-semibold min-w-[200px]">DIESEL</th>}
+                            {(showAll || activeTab === "CNG") && <th className="px-4 py-2 font-semibold min-w-[200px]">CNG</th>}
+                            {(!showAll) && <th className="px-4 py-2 font-semibold min-w-[200px]">CHANGE</th>}
                         </tr>
                     </thead>
+
                     <tbody className="border border-gray-200 dark:border-[#2E2E2E]">
-                        {fuelData.map((row, idx) => (
+                        {data.map((row) => (
                             <tr
-                                key={idx}
-                                className={idx % 2 === 0 ? "bg-transparent" : "bg-gray-50 dark:bg-[#171717]"}
+                                key={row.stateId}
+                                className="even:bg-transparent odd:bg-gray-50 dark:odd:bg-[#171717]"
                             >
-                                <td className="p-4 border dark:border-[#2E2E2E]">{row.state}</td>
-                                <td className="p-4 border dark:border-[#2E2E2E]">{row.petrol}</td>
-                                <td className="p-4 border dark:border-[#2E2E2E]">{row.diesel}</td>
-                                <td className="p-4 border dark:border-[#2E2E2E]">{row.cng}</td>
+                                <td className="p-4 border dark:border-[#2E2E2E]">{row.stateName}</td>
+
+                                {(showAll || activeTab === "Petrol") && (
+                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.petrol ?? "N/A"}</td>
+                                )}
+                                {(showAll || activeTab === "Diesel") && (
+                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.diesel ?? "N/A"}</td>
+                                )}
+                                {(showAll || activeTab === "CNG") && (
+                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.cng ?? "N/A"}</td>
+                                )}
+
+                                {(activeTab === "Petrol") && (
+                                    <td className="p-3 border dark:border-[#2E2E2E]">
+                                        <div
+                                            className={`px-4 py-1 rounded w-fit ${
+                                                row.petrol === null || row.petrolPrev === null
+                                                    ? ""
+                                                    : row.petrol > row.petrolPrev
+                                                    ? "bg-green-200 text-green-700 dark:bg-green-900/30"
+                                                    : row.petrol < row.petrolPrev
+                                                    ? "bg-red-200 text-red-700 dark:bg-red-900/30"
+                                                    : "bg-gray-200 text-gray-700 dark:bg-gray-800"
+                                            }`}
+                                        >
+                                            {row.petrolChange ?? "N/A"}
+                                        </div>
+                                    </td>
+                                )}
+
+                                {(activeTab === "Diesel") && (
+                                    <td className="p-3 border dark:border-[#2E2E2E]">
+                                        <div
+                                            className={`px-4 py-1 rounded w-fit ${
+                                                row.diesel === null || row.dieselPrev === null
+                                                    ? ""
+                                                    : row.diesel > row.dieselPrev
+                                                    ? "bg-green-200 text-green-700 dark:bg-green-900/30"
+                                                    : row.diesel < row.dieselPrev
+                                                    ? "bg-red-200 text-red-700 dark:bg-red-900/30"
+                                                    : "bg-gray-200 text-gray-700 dark:bg-gray-800"
+                                            }`}
+                                        >
+                                            {row.dieselChange ?? "N/A"}
+                                        </div>
+                                    </td>
+                                )}
+
+                                {(activeTab === "CNG") && (
+                                    <td className="p-3 border dark:border-[#2E2E2E]">
+                                        <div
+                                            className={`px-4 py-1 rounded w-fit ${
+                                                row.cng === null || row.cngPrev === null
+                                                    ? ""
+                                                    : row.cng > row.cngPrev
+                                                    ? "bg-green-200 text-green-700 dark:bg-green-900/30"
+                                                    : row.cng < row.cngPrev
+                                                    ? "bg-red-200 text-red-700 dark:bg-red-900/30"
+                                                    : "bg-gray-200 text-gray-700 dark:bg-gray-800"
+                                            }`}
+                                        >
+                                            {row.cngChange ?? "N/A"}
+                                        </div>
+                                    </td>
+                                )}
                             </tr>
                         ))}
                     </tbody>

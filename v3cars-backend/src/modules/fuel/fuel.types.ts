@@ -32,4 +32,6 @@ export interface FuelCitiesListQuery {
   page?: number;         // default 1
   limit?: number;        // default 50
   sortBy?: FuelCitiesSort;
+  /** NEW: filter popular cities only (tblcities.isPopularCity = 1) */
+  popular?: 0 | 1;
 }

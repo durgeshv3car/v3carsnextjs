@@ -2,6 +2,7 @@
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import { useGetCityByStatesIdQuery, useGetStatesQuery } from "@/redux/api/locationModuleApi";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface FuelTypes {
@@ -30,7 +31,7 @@ interface State {
     countryId: number;
     stateCode: string;
     shortCode: string;
-    isTodayFuelPrice: number; // 1 ya 0 - fuel price available today ya nahi
+    isTodayFuelPrice: number;
 }
 
 interface City {
@@ -48,16 +49,50 @@ interface City {
 }
 
 
-function SearchSection() {
-    const [fuelType, setFuelType] = useState<number | null>(null)
-    const [selectState, setSelectState] = useState<number | null>(null)
-    const [selectCity, setSelectCity] = useState<number | null>(null)
+function slugify(name: string): string {
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
+}
 
-    const { data: cityByStatesIdData } = useGetCityByStatesIdQuery({ stateId: Number(selectState) })
+interface SearchSectionProps {
+    type: string;
+    city: string | null;
+    state: string | null;
+}
+
+function slugToName(slug: string): string {
+    if (!slug) return "";
+
+    return slug
+        .replace(/-/g, " ") // sab "-" ko space me badal de
+        .replace(/\b\w/g, (char) => char.toUpperCase()); // har word ka pehla letter capital kare
+}
+
+function SearchSection({ type, city, state }: SearchSectionProps) {
+    const stateName = slugToName(state || "")
+    const cityName = slugToName(city || "")
+    const [fuelType, setFuelType] = useState(type)
+    const [selectState, setSelectState] = useState<number | null>(null)
+    const [selectCity, setSelectCity] = useState(cityName)
+    const [selectStateName, setSelectStateName] = useState(stateName)
+    const router = useRouter()    
+
+    const { data: cityByStatesIdData } = useGetCityByStatesIdQuery({ stateId: Number(selectState) }, { skip: !selectState })
     const { data: statesData } = useGetStatesQuery()
 
     const states = statesData?.rows ?? []
     const citys = cityByStatesIdData?.rows ?? []
+
+    function handleCity(value: City) {
+        const city = value.cityName
+        setSelectCity(city);
+        const slug = slugify(selectStateName)
+        const citySlug = slugify(city)
+        router.push(`/${slug}/${fuelType.toLowerCase()}-price-in-${citySlug}`)
+    }
 
     return (
         <>
@@ -69,9 +104,9 @@ function SearchSection() {
                                 options={fuelTypes}
                                 placeholder="Select Fuel Type"
                                 labelKey="name"
-                                valueKey="id"
+                                valueKey="name"
                                 value={fuelType}
-                                onSelect={(value: FuelTypes) => { setFuelType(Number(value.id)) }}
+                                onSelect={(value: FuelTypes) => { setFuelType(value.name) }}
                             />
                         </div>
 
@@ -80,9 +115,12 @@ function SearchSection() {
                                 options={states}
                                 placeholder="Select State"
                                 labelKey="stateName"
-                                valueKey="stateId"
-                                value={selectState}
-                                onSelect={(value: State) => { setSelectState(value.countryId); }}
+                                valueKey="stateName"
+                                value={selectStateName}
+                                onSelect={(value: State) => {
+                                    setSelectState(value.stateId);
+                                    setSelectStateName(value.stateName);
+                                }}
                             />
                         </div>
 
@@ -91,11 +129,10 @@ function SearchSection() {
                                 options={citys}
                                 placeholder="Select City"
                                 labelKey="cityName"
-                                valueKey="cityId"
+                                valueKey="cityName"
                                 value={selectCity}
-                                onSelect={(value: City) => { setSelectCity(value.cityId); }}
+                                onSelect={(value: City) => { handleCity(value) }}
                             />
-                            {/* <CustomSelect options={items} placeholder={"Select City"} onSelect={handleSelection} /> */}
                         </div>
                     </div>
                 </div>

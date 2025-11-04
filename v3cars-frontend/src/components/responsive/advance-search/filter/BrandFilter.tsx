@@ -1,30 +1,37 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import { useGetBrandsQuery } from '@/redux/api/carModuleApi';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { setBrandIds } from '@/redux/slices/advanceSearchSlice';
 
-type Brand = {
-    name: string;
-    count: number;
-};
+interface Brand {
+    brandId: number;
+    brandName: string;
+    brandSlug: string;
+    logoPath: string;
+    popularity: string;
+    unquieViews: number | null;
+    brandStatus: number;
+    serviceNetwork: boolean;
+    brandType: number;
+}
 
 type BrandFilterProps = {
     openSection: string | null;
 };
 
-const brands: Brand[] = [
-    { name: 'Maruti Suzuki', count: 6 },
-    { name: 'Tata', count: 10 },
-    { name: 'Skoda', count: 9 },
-    { name: 'Mahindra', count: 40 },
-    { name: 'Toyota', count: 20 },
-    { name: 'Kia', count: 9 },
-    { name: 'Hyundai', count: 10 },
-    { name: 'Honda', count: 25 },
-];
-
 function BrandFilter({ openSection }: BrandFilterProps) {
+    const dispatch = useDispatch();
+    const selectedBrandIds = useSelector((state: RootState) => state.filters.brandIds);
+
+    const { data: brandsData, isLoading } = useGetBrandsQuery();
     const contentRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<string>('0px');
+    const [searchTerm, setSearchTerm] = useState<string>('');
+
+    const brands: Brand[] = brandsData?.rows ?? [];
 
     useEffect(() => {
         if (openSection === 'brand' && contentRef.current) {
@@ -34,25 +41,66 @@ function BrandFilter({ openSection }: BrandFilterProps) {
         }
     }, [openSection]);
 
+    // Normalize brand names
+    const normalizeBrandName = (name: string) => {
+        if (name === 'Maruti Arena' || name === 'Maruti Nexa') return 'Maruti Suzuki';
+        return name;
+    };
+
+    // Filter + deduplicate
+    const filteredBrands = useMemo(() => {
+        const lower = searchTerm.toLowerCase();
+
+        const normalized = brands.map((brand) => ({
+            ...brand,
+            displayName: normalizeBrandName(brand.brandName),
+        }));
+
+        const unique = normalized.filter(
+            (value, index, self) =>
+                index === self.findIndex((b) => b.displayName === value.displayName)
+        );
+
+        return unique.filter((b) => b.displayName.toLowerCase().includes(lower));
+    }, [brands, searchTerm]);
+
+    const handleCheckboxChange = (brandId: number) => {
+        let updated = selectedBrandIds.includes(brandId)
+            ? selectedBrandIds.filter((id) => id !== brandId)
+            : [...selectedBrandIds, brandId];
+
+        dispatch(setBrandIds(updated));
+    };
+
+    if (isLoading) {
+        return <p className="text-sm text-gray-400">Loading brands...</p>;
+    }
+
     return (
-            <div
-                ref={contentRef}
-                className="transition-all duration-500 ease-in-out overflow-hidden"
-                style={{ maxHeight: height }}
-            >
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    className="w-full my-3 px-3 py-2 text-sm border rounded-lg focus:outline-none bg-transparent dark:border-[#2E2E2E]"
-                />
-                <div className="max-h-[600px] lg:max-h-48 overflow-y-auto scrollbar-filter space-y-3 pr-1">
-                    {brands.map((brand, index) => (
-                        <div key={index} className="flex items-center gap-2">
+        <div
+            ref={contentRef}
+            className="transition-all duration-500 ease-in-out overflow-hidden"
+            style={{ maxHeight: height }}
+        >
+            <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full my-3 px-3 py-2 text-sm border rounded-lg focus:outline-none bg-transparent dark:border-[#2E2E2E]"
+            />
+
+            <div className="max-h-[600px] lg:max-h-48 overflow-y-auto scrollbar-filter space-y-3 pr-1">
+                {filteredBrands.length > 0 ? (
+                    filteredBrands.map((brand, index) => (
+                        <div key={brand.brandId} className="flex items-center gap-2">
                             <label className="inline-flex items-center cursor-pointer">
                                 <input
                                     type="checkbox"
                                     className="sr-only peer"
-                                    id={`${index}`}
+                                    id={`brand-${index}`}
+                                    checked={selectedBrandIds.includes(brand.brandId)}
+                                    onChange={() => handleCheckboxChange(brand.brandId)}
                                 />
                                 <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-yellow-400 peer-checked:border-yellow-400 relative transition-all duration-200">
                                     <svg
@@ -66,14 +114,17 @@ function BrandFilter({ openSection }: BrandFilterProps) {
                                     </svg>
                                 </div>
                             </label>
+
                             <label htmlFor={`brand-${index}`} className="flex-1 text-sm">
-                                {brand.name}{' '}
-                                <span className="text-gray-500">({brand.count})</span>
+                                {brand.displayName}
                             </label>
                         </div>
-                    ))}
-                </div>
+                    ))
+                ) : (
+                    <p className="text-xs text-gray-400 italic">No brands found.</p>
+                )}
             </div>
+        </div>
     );
 }
 

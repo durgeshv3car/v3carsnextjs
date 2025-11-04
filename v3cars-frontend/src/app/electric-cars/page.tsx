@@ -65,12 +65,14 @@ function ElectricCars() {
                                 title="Electric Vehicle (EV) News Update"
                                 view="EV News Update"
                                 newsList={electricCarNews}
+                                link={"/news"}
                             />
 
                             <CommonNewsUpdate
                                 title="Electric Vehicle (EV) Expert Reviews"
                                 view="EV Expert Reviews"
                                 newsList={electricCarReviews}
+                                link={"/news"}
                             />
 
                             <CommonVideos

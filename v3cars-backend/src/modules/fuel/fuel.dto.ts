@@ -31,8 +31,7 @@ export const fuelStatesListQueryDto = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50).optional(),
   sortBy: z.enum(['name_asc', 'price_desc', 'price_asc']).optional(),
 });
-
-
+ 
 export const fuelCitiesListQueryDto = z.object({
   fuelType: fuelTypeDto,
   stateId: z.coerce.number().int().positive(),
@@ -40,8 +39,9 @@ export const fuelCitiesListQueryDto = z.object({
   page: z.coerce.number().int().min(1).default(1).optional(),
   limit: z.coerce.number().int().min(1).max(100).default(50).optional(),
   sortBy: z.enum(['name_asc', 'price_desc', 'price_asc']).optional(),
+  /** NEW: 1 => only popular cities, 0/omit => all */
+  popular: z.coerce.number().int().refine(v => v === 0 || v === 1, { message: 'popular must be 0 or 1' }).optional(),
 });
-
 
 export const fuelHistoryCombinedQueryDto = z.object({
   // either stateId or districtId required
@@ -52,6 +52,5 @@ export const fuelHistoryCombinedQueryDto = z.object({
   message: 'Either stateId or districtId is required',
   path: ['stateId'],
 });
-
 
 
