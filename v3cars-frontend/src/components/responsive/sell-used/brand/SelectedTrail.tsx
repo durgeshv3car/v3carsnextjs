@@ -65,7 +65,7 @@ export default function SelectedTrail() {
 
   const rows = useMemo(
     () => [
-      { key: "brand",     label: brand?.name ?? "Brand",           done: !!brand },
+      { key: "brand",     label: brand?.brandName ?? "Brand",           done: !!brand },
       { key: "year",      label: year ? `Year ${year}` : "Year",   done: year != null },
       { key: "model",     label: model ?? "Model",                 done: !!model },
       { key: "variant",   label: variant ?? "Variant",             done: !!variant },

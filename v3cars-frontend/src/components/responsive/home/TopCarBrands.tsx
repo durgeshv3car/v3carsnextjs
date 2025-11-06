@@ -4,6 +4,7 @@ import { useGetAllBrandsQuery } from "@/redux/api/carModuleApi";
 import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from 'react';
 
 interface CarBrand {
@@ -23,6 +24,7 @@ export default function TopCarBrands() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
+    const router = useRouter()
 
     const brands: CarBrand[] = (brandData?.rows ?? []).filter(
         (b: CarBrand) => b.popularity && b.popularity.trim() !== ""
@@ -145,6 +147,7 @@ export default function TopCarBrands() {
                             <div
                                 key={`list1-${i}`}
                                 className="relative min-w-[143px] h-[88px] lg:min-w-[260px] lg:h-[160px] bg-white flex items-center justify-center overflow-hidden"
+                                onClick={()=>{router.push(`/${brand.brandSlug}`)}}
                             >
                                 <Image
                                     src={`${IMAGE_URL}/media/brand-imgs/${brand.logoPath}`}
@@ -164,6 +167,7 @@ export default function TopCarBrands() {
                             <div
                                 key={`list2-${i}`}
                                 className="relative min-w-[143px] h-[88px] lg:min-w-[260px] lg:h-[160px] bg-white flex items-center justify-center overflow-hidden"
+                                onClick={()=>{router.push(`/${brand.brandSlug}`)}}
                             >
                                 <Image
                                     src={`${IMAGE_URL}/media/brand-imgs/${brand.logoPath}`}
@@ -201,7 +205,10 @@ export default function TopCarBrands() {
                             to most of the buyers in India.
                         </p>
                         <div>
-                            <button className="bg-yellow-400 text-black font-medium text-sm px-16 cursor-pointer py-2 rounded-full hover:bg-yellow-500 transition">
+                            <button 
+                            className="bg-yellow-400 text-black font-medium text-sm px-16 cursor-pointer py-2 rounded-full hover:bg-yellow-500 transition"
+                            onClick={()=>{router.push('/about-us')}}
+                            >
                                 Read More About V3Cars
                             </button>
                         </div>

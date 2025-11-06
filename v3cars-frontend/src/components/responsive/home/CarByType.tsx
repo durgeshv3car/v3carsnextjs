@@ -1,14 +1,16 @@
 'use client'
 
 import { useGetCarByBodyTypeQuery } from '@/redux/api/homeModuleApi'
+import { setBodyTypeIds } from '@/redux/slices/advanceSearchSlice'
 import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { BiTachometer } from 'react-icons/bi'
 import { FaArrowRight } from 'react-icons/fa'
 import { IoMdStarOutline } from 'react-icons/io'
 import { PiEngine } from 'react-icons/pi'
+import { useDispatch } from 'react-redux'
 
 type CarBodyTab = 1 | 3 | 4 | 7;
 
@@ -43,10 +45,10 @@ interface CarProps {
 }
 
 const tabNames: Record<CarBodyTab, string> = {
-  1: "Hatchback",
-  3: "SUV",
-  4: "Sedan",
-  7: "MUV",
+    1: "Hatchback",
+    3: "SUV",
+    4: "Sedan",
+    7: "MUV",
 };
 
 const CarByType: React.FC = () => {
@@ -56,6 +58,8 @@ const CarByType: React.FC = () => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
+    const router = useRouter()
+    const dispatch = useDispatch();
 
     const handleScroll = () => {
         const container = scrollRef.current;
@@ -84,20 +88,28 @@ const CarByType: React.FC = () => {
         return () => container.removeEventListener('scroll', handleScroll);
     }, []);
 
+    function handleBodyType() {
+        if (!carBodyTab) {
+            return alert("Something Went Wrong. Please Try Again")
+        }
+        dispatch(setBodyTypeIds([carBodyTab]));
+        router.push("/search/new-cars");
+    }
+
     return (
         <section className="px-6 lg:px-10">
             <div className="w-full lg:app-container mx-auto space-y-3 mt-4">
                 <div className="flex items-center w-full lg:w-auto gap-4">
                     <h2 className="text-lg font-semibold lg:font-medium">Search Car By Body Type</h2>
-                    <Link
-                        href="#"
+                    <button
                         className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                        onClick={handleBodyType}
                     >
                         View All {tabNames[carBodyTab]}
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>
-                    </Link>
+                    </button>
                 </div>
 
                 <div className="border dark:border-[#2E2E2E] border-[#DEE2E6] rounded-lg">
@@ -195,7 +207,10 @@ const CarByType: React.FC = () => {
                                     <p className="font-semibold">
                                         ₹{(car.priceMin / 100000).toFixed(2)} - {(car.priceMax / 100000).toFixed(2)} Lakh*
                                     </p>
-                                    <button className="p-3 font-semibold text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-yellow-400">
+                                    <button
+                                        className="p-3 font-semibold text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-yellow-400"
+                                        onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
+                                    >
                                         View Current Offers
                                         <FaArrowRight />
                                     </button>

@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 import { authApi } from "./api/authApi";
 import { commonApi } from "./api/commonApi";
 import authReducer from "./slices/authSlice";
+import advanceSearchReducer from "./slices/advanceSearchSlice";
 import commonReducer from "./slices/commonSlice";
 import sellUsedReducer from "./slices/sellUsedSlice";
 import { websiteContentApi } from "./api/websiteContentApi";
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   common: commonReducer,
   sellUsed: sellUsedReducer,
+  filters: advanceSearchReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

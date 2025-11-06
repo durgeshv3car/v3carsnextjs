@@ -1,8 +1,9 @@
 'use client'
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
-import { useGetCityByStatesIdQuery, useGetStatesQuery } from "@/redux/api/locationModuleApi";
-import { useState } from "react";
+import { useGetDistrictsByStateIdQuery, useGetStatesQuery } from "@/redux/api/locationModuleApi";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface FuelTypes {
     id: number,
@@ -30,34 +31,103 @@ interface State {
     countryId: number;
     stateCode: string;
     shortCode: string;
-    isTodayFuelPrice: number; // 1 ya 0 - fuel price available today ya nahi
+    isTodayFuelPrice: number;
 }
 
-interface City {
-    cityId: number;
-    cityName: string;
+interface DistrictInfo {
+    id: number;
+    districtName: string;
     stateId: number;
-    countryId: number;
-    status: number;
     isPopularCity: number;
-    isTopCity: number;
-    ismajorCityPetrol: number;
-    ismajorCityDiesel: number;
-    ismajorCityCNG: number;
-    isImage: string | null;
 }
 
 
-function SearchSection() {
-    const [fuelType, setFuelType] = useState<number | null>(null)
-    const [selectState, setSelectState] = useState<number | null>(null)
-    const [selectCity, setSelectCity] = useState<number | null>(null)
+function slugify(name: string): string {
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
+}
 
-    const { data: cityByStatesIdData } = useGetCityByStatesIdQuery({ stateId: Number(selectState) })
+interface SearchSectionProps {
+    type: string;
+    city: string | null;
+    state: string | null;
+    selectState: number | null;
+    cityId: number | null;
+    setCityId: React.Dispatch<React.SetStateAction<number | null>>;
+    setSelectState: React.Dispatch<React.SetStateAction<number | null>>;
+}
+
+function slugToName(slug: string): string {
+    if (!slug) return "";
+
+    return slug
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function toSlug(name: string) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function SearchSection({ type, city, state, setCityId, selectState, setSelectState, cityId }: SearchSectionProps) {
+    const stateName = slugToName(state || "")
+    const cityName = slugToName(city || "")
+    const [fuelType, setFuelType] = useState(type)
+    const [selectCity, setSelectCity] = useState(cityName)
+    const [selectStateName, setSelectStateName] = useState(stateName)
+    const router = useRouter()
+
+    const { data: cityByStatesIdData } = useGetDistrictsByStateIdQuery({ stateId: Number(selectState) }, { skip: !selectState })
     const { data: statesData } = useGetStatesQuery()
 
-    const states = statesData?.rows ?? []
-    const citys = cityByStatesIdData?.rows ?? []
+    const states: State[] = statesData?.rows ?? []
+    const citys: DistrictInfo[] = cityByStatesIdData?.rows ?? []
+
+    function handleCity(value: DistrictInfo) {
+        const city = value.districtName
+        setCityId(value.id)
+        setSelectCity(city);
+        const slug = slugify(selectStateName)
+        const citySlug = slugify(city)
+        router.push(`/${slug}/${fuelType.toLowerCase()}-price-in-${citySlug}`)
+    }
+
+    useEffect(() => {
+        if (states.length > 0 && selectStateName) {
+            const matched = states.find(
+                (s: State) =>
+                    s.stateName.toLowerCase() === selectStateName.toLowerCase()
+            );
+            if (matched) {
+                setSelectState(matched.stateId);
+            } else {
+                setSelectState(null);
+            }
+        }
+    }, [states, selectStateName]);
+
+    useEffect(() => {
+        if (citys.length > 0 && cityName) {
+            const matched = citys.find(
+                (c: DistrictInfo) =>
+                    c.districtName.toLowerCase() === cityName.toLowerCase()
+            );
+            if (matched) {
+                setCityId(matched.id);
+            } else {
+                setCityId(null);
+            }
+        }
+    }, [citys, cityName]);
 
     return (
         <>
@@ -69,9 +139,19 @@ function SearchSection() {
                                 options={fuelTypes}
                                 placeholder="Select Fuel Type"
                                 labelKey="name"
-                                valueKey="id"
+                                valueKey="name"
                                 value={fuelType}
-                                onSelect={(value: FuelTypes) => { setFuelType(Number(value.id)) }}
+                                onSelect={(value: FuelTypes) => {
+                                    setFuelType(value.name)
+                                    router.push(
+                                        state && cityId && city
+                                            ? `/${state.toLowerCase()}/${value.name.toLowerCase()}-price-in-${city.toLowerCase()}`
+                                            : state
+                                                ? `/${state.toLowerCase()}/${value.name.toLowerCase()}-price`
+                                                : `${value.name.toLowerCase()}-price-in-india`
+                                    );
+                                }
+                                }
                             />
                         </div>
 
@@ -80,9 +160,14 @@ function SearchSection() {
                                 options={states}
                                 placeholder="Select State"
                                 labelKey="stateName"
-                                valueKey="stateId"
-                                value={selectState}
-                                onSelect={(value: State) => { setSelectState(value.countryId); }}
+                                valueKey="stateName"
+                                value={selectStateName}
+                                onSelect={(value: State) => {
+                                    setSelectState(value.stateId);
+                                    setSelectStateName(value.stateName);
+                                    setCityId(null)
+                                    router.push(`/${toSlug(value.stateName).toLowerCase()}/${fuelType.toLowerCase()}-price`)
+                                }}
                             />
                         </div>
 
@@ -90,12 +175,11 @@ function SearchSection() {
                             <CustomSelect
                                 options={citys}
                                 placeholder="Select City"
-                                labelKey="cityName"
-                                valueKey="cityId"
+                                labelKey="districtName"
+                                valueKey="districtName"
                                 value={selectCity}
-                                onSelect={(value: City) => { setSelectCity(value.cityId); }}
+                                onSelect={(value: DistrictInfo) => { handleCity(value) }}
                             />
-                            {/* <CustomSelect options={items} placeholder={"Select City"} onSelect={handleSelection} /> */}
                         </div>
                     </div>
                 </div>

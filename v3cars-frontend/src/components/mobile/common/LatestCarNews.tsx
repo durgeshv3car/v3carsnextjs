@@ -36,10 +36,11 @@ interface MobileLatestCarNewsProps {
     title: string;
     view: string;
     data: NewsItem[];
+    link: string
 }
 
 // Component
-const MobileLatestCarNews: React.FC<MobileLatestCarNewsProps> = ({ title, view, data }) => {
+const MobileLatestCarNews: React.FC<MobileLatestCarNewsProps> = ({ title, view, data, link }) => {
     const chunkedNews = chunkArray(data, 5)
 
     return (
@@ -49,7 +50,7 @@ const MobileLatestCarNews: React.FC<MobileLatestCarNewsProps> = ({ title, view, 
                 <div className="flex justify-between items-center">
                     <h2 className="font-semibold text-lg">{title}</h2>
                     <Link
-                        href="#"
+                        href={link}
                         className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-2"
                     >
                         View All {view}

@@ -78,8 +78,8 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
   const [selectedVariantPrice, setSelectedVariantPrice] = useState<number>(500000);
 
   const { data: brandsData } = useGetAllBrandsQuery();
-  const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand ?? 0 });
-  const { data: variantsData } = useGetVariantsQuery({ modelId: modelId ?? 0 });
+  const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand! }, { skip: !selectBrand } );
+  const { data: variantsData } = useGetVariantsQuery({ modelId: modelId! }, { skip: !modelId } );
 
   const brands = brandsData?.rows ?? [];
   const models = modelsData?.rows ?? [];

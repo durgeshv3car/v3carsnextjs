@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.v3cars.com",
       },
+      {
+        protocol: "https",
+        hostname: "lms.v3cars.com",
+      },
     ],
   },
 };

@@ -89,9 +89,9 @@ export default function ApplyForCarLoan() {
   const [mobile, setMobile] = useState<number | null>(null);
 
   const { data: brandsData } = useGetAllBrandsQuery();
-  const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand ?? 0 });
-  const { data: variantsData } = useGetVariantsQuery({ modelId: modelId ?? 0 });
-  const { data: citiesData } = useGetCitiesQuery({ query });
+  const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand! }, { skip: !selectBrand });
+  const { data: variantsData } = useGetVariantsQuery({ modelId: modelId! }, { skip: !modelId } );
+  const { data: citiesData } = useGetCitiesQuery({ query }, { skip: !query } );
 
   const cities = citiesData?.rows ?? [];
   const brands = brandsData?.rows ?? [];

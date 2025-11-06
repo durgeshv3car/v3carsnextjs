@@ -16,15 +16,15 @@ export default function ModelStep() {
   const [q, setQ] = useState("");
 
   const brandShort = useMemo(() => {
-    if (!brand?.name) return "Brand";
-    if (brand.name.toLowerCase().includes("maruti")) return "Maruti";
-    return brand.name.split(" ")[0];
-  }, [brand?.name]);
+    if (!brand?.brandName) return "Brand";
+    if (brand.brandName.toLowerCase().includes("maruti")) return "Maruti";
+    return brand.brandName.split(" ")[0];
+  }, [brand?.brandName]);
 
   const allModels = useMemo<string[]>(() => {
-    if (!brand?.name) return [];
-    return MODELS[brand.name] ?? ["Base", "Deluxe", "Prime", "Plus", "Pro"];
-  }, [brand?.name]);
+    if (!brand?.brandName) return [];
+    return MODELS[brand.brandName] ?? ["Base", "Deluxe", "Prime", "Plus", "Pro"];
+  }, [brand?.brandName]);
 
   const list = useMemo(() => {
     const t = q.trim().toLowerCase();

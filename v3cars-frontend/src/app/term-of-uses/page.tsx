@@ -64,7 +64,7 @@ export default function TermsOfUse() {
 
                 {/* Content */}
                 <div className="lg:px-10 px-4">
-                    <div className="w-full lg:app-container mx-auto my-6 space-y-6 text-white">
+                    <div className="w-full lg:app-container mx-auto my-6 space-y-6">
                         {termsOfUses.length > 0 ? (
                             termsOfUses.map((term) => {
                                 // Sanitize the description by removing inline color styles

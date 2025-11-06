@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type Brand = { id: string; name: string; logo: string };
+export type Brand = {
+  brandId: number;
+  brandName: string;
+  logoPath: string;
+};
 
 export type StepKey =
   | "landing"
@@ -23,7 +27,7 @@ export const STEP_ORDER: Exclude<StepKey, "landing">[] = [
 ];
 
 type SellUsedState = {
-  step: StepKey; // 👈 controls what to show on the same URL
+  step: StepKey;
   brand: Brand | null;
   year: number | null;
   model: string | null;

@@ -58,7 +58,7 @@ interface NewCarsLaunchedProps {
 const currentYear = new Date().getFullYear();
 
 export default function NewCarsLaunched({ selected }: NewCarsLaunchedProps) {
-    const { data: latestCarData, error, isLoading } = useGetLatestCarsQuery({ launchMonth: selected });
+    const { data: latestCarData, error, isLoading } = useGetLatestCarsQuery({ launchMonth: selected! }, { skip: !selected } );
 
     // Calculate maxViews for confidence
     const maxViews = Math.max(...(latestCarData?.rows.map((c: CarModel) => c.totalViews) ?? [1]));

@@ -1,19 +1,31 @@
 "use client";
 import Image from "next/image";
 import Card from "../common/Card";
-import { Brand } from "@/redux/slices/sellUsedSlice";
 import { cn } from "@/lib/utils";
+import { IMAGE_URL2 } from "@/utils/constant";
+
+interface CarBrand {
+  brandId: number;
+  brandName: string;
+  brandSlug: string;
+  logoPath: string;
+  popularity: string;
+  unquieViews: number | null;
+  brandStatus: number;
+  serviceNetwork: boolean;
+  brandType: number;
+}
 
 export default function BrandCard({
   brand,
   active,
   onClick,
 }: {
-  brand?: Brand;        // 👈 optional to avoid runtime crash
+  brand?: CarBrand;
   active: boolean;
   onClick: () => void;
 }) {
-  if (!brand) return null;                          // 👈 guard
+  if (!brand) return null;
 
   return (
     <button
@@ -28,8 +40,8 @@ export default function BrandCard({
         )}
       >
         <Image
-          src={brand.logo || "/placeholder.svg"}     // 👈 fallback
-          alt={brand.name || "Brand"}
+          src={`${IMAGE_URL2}/ad-min/uploads/${brand.logoPath}`}
+          alt={brand.brandName || "Brand"}      
           width={96}
           height={60}
           className="object-contain opacity-95 max-h-12 dark:invert"

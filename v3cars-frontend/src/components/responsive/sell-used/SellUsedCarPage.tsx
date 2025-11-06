@@ -16,10 +16,14 @@ import OwnershipStep from "./steps/OwnershipStep";
 import OdometerStep from "./steps/OdometerStep";
 import LocationStep from "./steps/LocationStep";
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
+import { useGetBrandsQuery } from "@/redux/api/carModuleApi";
 
 export default function SellUsedCarPage() {
+  const { data: brandsData } = useGetBrandsQuery();
+
+  const brands = brandsData?.rows ?? [];
   const step = useSelector((s: RootState) => s.sellUsed.step);
-  const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 1 });
+  const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 15 });
 
   const faqByModule = faqByModuleData?.rows ?? [];
 
@@ -28,7 +32,7 @@ export default function SellUsedCarPage() {
     switch (step) {
 
       case "brand":
-        return <BrandStep />;  // Step-1 (already styled with StepHeader)
+        return <BrandStep brands={brands} />;  // Step-1 (already styled with StepHeader)
       case "period":
         return <PeriodStep />;
 
@@ -48,7 +52,7 @@ export default function SellUsedCarPage() {
       case "location": return <LocationStep />;
       // ...add others as we build them
       default:
-        return <BrandStep />;
+        return <BrandStep brands={brands} />;
     }
   }
 
@@ -66,7 +70,7 @@ export default function SellUsedCarPage() {
       </div>
 
       <TopBanner />
-      <BrandSection />
+      <BrandSection brands={brands} />
 
       <div className="px-4 lg:px-10 py-6">
         <div className="w-full lg:app-container mx-auto space-y-10">
