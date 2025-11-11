@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 interface Car {
@@ -132,11 +133,11 @@ const ModelComparisonSimilarCars: React.FC = () => {
             {/* Header */}
             <h2 className="text-lg font-semibold mb-4">
                 Tata Nexon{" "}
-                <span className="text-gray-600">Comparison With Similar Cars</span>
+                <span className="">Comparison With Similar Cars</span>
             </h2>
 
             {/* Top Row: Images */}
-            <div className="bg-white rounded-md shadow-sm border border-gray-200 p-4 overflow-x-auto">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 overflow-x-auto dark:bg-[#171717] dark:border-[#2E2E2E]">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4 min-w-[700px]">
                     {cars.map((car, index) => (
                         <div key={index} className="text-center">
@@ -145,20 +146,20 @@ const ModelComparisonSimilarCars: React.FC = () => {
                                 alt={car.name}
                                 className="w-full h-24 object-cover rounded-md mb-2"
                             />
-                            <h3 className="text-sm font-semibold text-gray-800">{car.name}</h3>
-                            <p className="text-xs text-gray-700 font-medium">{car.price}</p>
+                            <h3 className="text-sm font-semibold">{car.name}</h3>
+                            <p className="text-xs font-medium">{car.price}</p>
                         </div>
                     ))}
                 </div>
 
                 {/* Table */}
-                <div className="min-w-[700px] border-t border-gray-200">
+                <div className="min-w-[700px] border-t border-gray-200 dark:border-[#2E2E2E]">
                     {attributes.map((attr, index) => (
                         <div
                             key={index}
-                            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 text-sm border-b border-gray-100 py-2"
+                            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 text-sm border-b border-gray-100 py-4 dark:border-[#2E2E2E]"
                         >
-                            <div className="font-medium text-gray-800">{attr}</div>
+                            <div className="font-medium">{attr}</div>
                             {cars.map((car, i) => {
                                 const value =
                                     attr === "Length"
@@ -179,7 +180,7 @@ const ModelComparisonSimilarCars: React.FC = () => {
                                                                     ? car.specs.warranty
                                                                     : "";
                                 return (
-                                    <div key={i} className="text-gray-700 text-sm">
+                                    <div key={i} className="text-sm">
                                         {value}
                                     </div>
                                 );
@@ -189,12 +190,12 @@ const ModelComparisonSimilarCars: React.FC = () => {
                 </div>
 
                 {/* Footer */}
-                <div className="text-center mt-4 border-t border-gray-200 pt-3">
-                    <p className="text-sm text-gray-700">
+                <div className="text-center mt-4">
+                    <p className="text-sm">
                         Still Confused? Compare Tata Nexon with Rivals on{" "}
-                        <a href="#" className="text-blue-600 font-medium hover:underline">
+                        <Link href="#" className="font-medium hover:underline">
                             Specs, Mileage & Price &gt;
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>

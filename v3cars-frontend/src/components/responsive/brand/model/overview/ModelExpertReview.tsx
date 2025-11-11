@@ -38,8 +38,8 @@ const ModelExpertReview: React.FC<ModelExpertReviewProps> = ({ model }) => {
             </h2>
 
             {/* Highlighted Quote */}
-            <div className="bg-white rounded-md border border-gray-200">
-                <blockquote className="text-sm leading-relaxed border-b p-4 bg-[#F1F1F1]">
+            <div className="bg-white rounded-xl border border-gray-200 dark:bg-[#171717] dark:border-[#2E2E2E] overflow-hidden">
+                <blockquote className="text-sm leading-relaxed border-b p-4 bg-[#F1F1F1] dark:bg-[#171717] dark:border-[#2E2E2E]">
                     “With its chic looks and modern features, the Tata Nexon is a very
                     likable car with potential to be the segment leader. Only if Tata sorts
                     out the reliability issues of its tech package, then the Nexon wouldn’t
@@ -47,13 +47,13 @@ const ModelExpertReview: React.FC<ModelExpertReviewProps> = ({ model }) => {
                 </blockquote>
 
                 {/* Reviews */}
-                <div className="divide-y divide-gray-200 ">
+                <div className="divide-y divide-gray-200 dark:divide-[#2E2E2E] ">
                     {reviews.map((review, index) => (
                         <div key={index} className="p-4">
                             <h3 className="text-sm font-medium mb-2">
                                 {review.title}
                             </h3>
-                            <p className="text-xs text-gray-600 leading-relaxed">
+                            <p className="text-xs text-gray-400 leading-relaxed">
                                 {review.content}
                                 <a
                                     href="#"

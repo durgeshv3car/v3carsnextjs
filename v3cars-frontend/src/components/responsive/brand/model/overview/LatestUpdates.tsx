@@ -26,14 +26,14 @@ const LatestUpdates: React.FC<LatestUpdatesProps> = ({ title }) => {
     ];
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border">
+        <div className="bg-white dark:bg-[#171717] rounded-xl shadow-sm border dark:border-[#2E2E2E]">
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b">
+            <div className="flex items-center justify-between p-4 border-b dark:border-[#2E2E2E]">
                 <h2 className="text-lg">
                     {title} <span className="font-semibold">Latest Updates</span>
                 </h2>
                 <button className="flex items-center text-blue-600 hover:underline text-sm font-medium gap-1">
-                    View All News & Updates
+                    View All <span className="hidden md:block">News & Updates</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
@@ -46,15 +46,15 @@ const LatestUpdates: React.FC<LatestUpdatesProps> = ({ title }) => {
                 {updates.map((update, index) => (
                     <div key={index} className="relative pl-6">
                         {/* Dot */}
-                        <span className="absolute left-[-0.45rem] top-0 w-3 h-3 bg-gray-800 rounded-full"></span>
+                        <span className="absolute left-[-0.45rem] top-0 w-3 h-3 bg-gray-800 dark:bg-white rounded-full"></span>
 
                         {/* Date */}
-                        <h3 className="text-sm font-semibold text-gray-800">
+                        <h3 className="text-sm font-semibold">
                             {update.date}
                         </h3>
 
                         {/* Description */}
-                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+                        <p className="text-sm mt-1 leading-relaxed">
                             {update.description}
                         </p>
                     </div>

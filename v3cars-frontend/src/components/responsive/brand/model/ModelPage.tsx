@@ -10,6 +10,27 @@ import ModelExpertReview from "./overview/ModelExpertReview";
 import ModelProsCons from "./overview/ModelProsCons";
 import ModelComparisonSimilarCars from "./overview/ModelComparisonSimilarCars";
 import SideBarAdSmall from "@/components/common/SideBarAdSmall";
+import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
+import useIsMobile from "@/hooks/useIsMobile";
+import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
+import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
+import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
+import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
+import CommonVideos from "@/components/common/CommonVideos";
+import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import BrochureCard from "./sidebar/BrochureCard";
+import CSDPriceList from "./sidebar/CSDPriceList";
+import LatestOffersDiscounts from "./sidebar/LatestOffersDiscounts";
+import MonthlySales from "./sidebar/MonthlySales";
+import OnRoadPriceinTopCities from "./sidebar/OnRoadPriceinTopCities";
+import OtherCars from "./sidebar/OtherCars";
+import CarColours from "./sidebar/CarColours";
+import VariantExplained from "./sidebar/VariantExplained";
+import EMICalculator from "./sidebar/EMICalculator";
+import CostOfOwnership from "./sidebar/CostOfOwnership";
+import Marquee from "@/components/ui/Marquee";
 
 const data = [
     {
@@ -35,6 +56,14 @@ interface ModelPageProps {
 }
 
 export default function ModelPage({ type, slug }: ModelPageProps) {
+    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
+    const { data: latestVideosData } = useGetLatestVideosQuery()
+
+    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const popularComparisons = popularComparisonsData?.rows ?? [];
+    const latestVideos = latestVideosData?.rows ?? []
+    const isMobile = useIsMobile()
 
     return (
         <>
@@ -54,17 +83,37 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                 </div>
             </div>
 
-            <div className="relative">
+            <div className="flex justify-center items-center my-4">
+                <img
+                    src={'/model/bannerads.png'}
+                    alt="bannerads"
+                    width={970}
+                    height={90}
+                    className="rounded-lg"
+                />
+            </div>
+
+            <div className="relative mt-10">
                 {/* Background Image */}
-                <div
+                {/* <div
                     className="absolute inset-0 bg-no-repeat bg-center bg-cover z-0"
                     style={{ backgroundImage: "url('/model/bg.png')" }}
-                />
+                /> */}
+                <div className="absolute flex justify-center md:justify-normal inset-0 z-0 w-full lg:app-container overflow-hidden">
+                    <h1
+                        className="text-[10vw] md:text-[6vw] font-extrabold text-gray-200 dark:text-gray-500/20 uppercase select-none tracking-widest"
+                        style={{
+                            wordBreak: "break-word",
+                        }}
+                    >
+                        <Marquee text={slug} speed="25s" />
+                    </h1>
+                </div>
 
-                {/* Banner content on top */}
-                <div className="lg:px-8 px-4">
+                <div className="lg:px-8 px-4 shadow-md">
+                    {/* Banner content on top */}
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection />
+                        <BannerSection type={type} slug={slug} />
                     </div>
                 </div>
             </div>
@@ -117,11 +166,115 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             // model="Tata Nexon"
                             />
 
+                            <CommonViewOfferCard
+                                title="Tata Nexon"
+                                desc="The Nexon competes with popular models including"
+                            />
+
+                            {isMobile ? <MobileLatestCarNews
+                                title="Tata Nexon Latest News"
+                                view="Latest News"
+                                data={latestCarNews}
+                                link="/news"
+                            />
+                                :
+                                <CommonNewsUpdate
+                                    title="Tata Nexon Latest News"
+                                    view="Nexon News Update"
+                                    newsList={latestCarNews}
+                                    link={"/news"}
+                                />
+                            }
+
+                            <CommonVideos
+                                title="Tata Nexon Latest Videos"
+                                view="Nexon Videos"
+                                videoList={latestVideos}
+                            />
+
+                            <CommonComparisonModelCard data={popularComparisons} />
+
+                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+
                         </div>
 
+
                         {/* sidebar */}
-                        <div className="w-auto lg:min-w-[24%] space-y-10 sticky top-20 self-start">
-                            <SideBarAdSmall />
+                        <div className="w-auto lg:min-w-[24%] space-y-6">
+                            <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
+                                <img
+                                    src={'/model/miniads.png'}
+                                    alt="miniads"
+                                    width={300}
+                                    height={250}
+                                    className="rounded-lg"
+                                />
+                            </div>
+
+                            <BrochureCard
+                                title="Tata Nexon"
+                            />
+
+                            <CSDPriceList
+                                title="Toyota Urban Cruiser Hyryder"
+                            />
+
+                            <LatestOffersDiscounts
+                                title="Toyota Urban Cruiser Hyryder"
+                            />
+
+                            <CostOfOwnership
+                                title="Tata Nexon"
+                            />
+
+                            <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
+                                <img
+                                    src={'/model/miniads.png'}
+                                    alt="miniads"
+                                    width={300}
+                                    height={250}
+                                    className="rounded-lg"
+                                />
+                            </div>
+
+                            <MonthlySales
+                                title="Tata Nexon"
+                            />
+
+                            <OnRoadPriceinTopCities
+                                title="Tata Nexon"
+                            />
+
+                            <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
+                                <img
+                                    src={'/model/miniads.png'}
+                                    alt="miniads"
+                                    width={300}
+                                    height={250}
+                                    className="rounded-lg"
+                                />
+                            </div>
+
+                            <OtherCars
+                                title="Other Tata Nexon"
+                            />
+
+                            <OtherCars
+                                title="Upcoming Tata Nexon"
+                            />
+
+                            <CarColours
+                                title="Tata Nexon"
+                            />
+
+                            <VariantExplained
+                                title="Tata Nexon"
+                            />
+
+                            <EMICalculator
+                                title="Tata Nexon"
+                            />
+
                         </div>
                     </div>
 
@@ -130,3 +283,19 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
         </>
     );
 }
+
+
+
+const faqs = [
+    {
+        question: "What is the exact on-road price of Tata Nexon?",
+        answer:
+            "The on-road price of Nexon in Delhi starts at ₹8,22,812. The on-road price is inclusive of RTO charges and insurance.",
+    },
+    { question: "What are the latest October offers available on Tata Nexon?" },
+    { question: "Which car is better Nexon or Punch?" },
+    { question: "What will the EMI or down payment for Tata Nexon?" },
+    { question: "Is Tata Nexon a 5 or 7 seater SUV?" },
+    { question: "What is the mileage of Tata Nexon?" },
+    { question: "What are the colour options available for Tata Nexon?" },
+];

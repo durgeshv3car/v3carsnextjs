@@ -1,5 +1,6 @@
 'use client'
 
+import Link from "next/link";
 import React from "react";
 
 interface ModelProsConsProps {
@@ -31,10 +32,10 @@ const ModelProsCons: React.FC<ModelProsConsProps> = ({ model }) => {
             </h2>
 
             {/* Pros & Cons Grid */}
-            <div className="bg-white rounded-xl rounded-b-none border border-gray-200 border-b-0 p-2">
+            <div className="bg-white rounded-xl rounded-b-none border border-gray-200 border-b-0 p-2 dark:bg-[#171717] dark:border-[#2E2E2E]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Pros */}
-                    <div className="border border-green-200 bg-green-50 rounded-md p-4">
+                    <div className="border border-green-200 bg-green-50 rounded-md p-4 ">
                         <div className="flex items-center mb-4 gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-green-600">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
@@ -80,15 +81,15 @@ const ModelProsCons: React.FC<ModelProsConsProps> = ({ model }) => {
             </div>
 
             {/* Footer */}
-            <div className=" bg-[#F2F5F9] text-center border-t border-gray-200 rounded-b-xl">
-                <p className="text-sm text-gray-700 py-3 flex items-center justify-center">
-                    <span className="font-semibold text-gray-900">Pros & Cons Explained</span> —{" "}
-                    <a href="#" className="text-blue-600 font-medium hover:underline flex items-center justify-center">
+            <div className=" bg-[#F2F5F9] text-center border-t border-gray-200 rounded-b-xl dark:bg-[#171717] dark:border-[#2E2E2E]">
+                <p className="text-sm py-3 flex items-center justify-center">
+                    <span className="font-semibold hidden md:block">Pros & Cons Explained — </span>
+                    <Link href="#" className="font-medium hover:underline flex items-center justify-center">
                         View Complete Tata Nexon Assessment
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>

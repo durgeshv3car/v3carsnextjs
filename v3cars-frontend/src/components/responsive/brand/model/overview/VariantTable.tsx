@@ -14,11 +14,11 @@ const VariantTable: React.FC = () => {
 
     return (
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 ">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 dark:bg-[#171717] dark:border-[#2E2E2E]">
 
             {/* Table */}
-            <div className="border border-gray-200 rounded-xl rounded-b-none overflow-hidden">
-                <div className="grid grid-cols-3 bg-gray-50 border-b border-gray-200 text-sm font-semibold text-gray-700 p-4">
+            <div className="border border-gray-200 rounded-xl rounded-b-none overflow-hidden dark:border-[#2E2E2E]">
+                <div className="grid grid-cols-3 bg-gray-50 border-b border-gray-200 text-sm font-semibold dark:bg-[#171717] dark:border-[#2E2E2E] p-4">
                     <span>Variants</span>
                     <span>Ex-Showroom Price</span>
                     <span>On-Road Price</span>
@@ -27,12 +27,12 @@ const VariantTable: React.FC = () => {
                 {variants.map((v, idx) => (
                     <div
                         key={idx}
-                        className={`grid grid-cols-3 text-sm px-3 py-3 border-b border-gray-100 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        className={`grid grid-cols-3 text-sm px-3 py-3 border-b border-gray-100 ${idx % 2 === 0 ? "bg-white dark:bg-[#171717] dark:border-[#2E2E2E]" : "bg-gray-50 dark:bg-[#2E2E2E] dark:border-[#2E2E2E]"
                             }`}
                     >
                         <div>
-                            <p className="font-medium text-gray-800">{v.name}</p>
-                            <p className="text-xs text-gray-500">{v.engine}</p>
+                            <p className="font-medium">{v.name}</p>
+                            <p className="text-xs text-gray-400">{v.engine}</p>
                         </div>
                         <div className="flex items-center">{v.exShowroom}</div>
                         <div className="flex items-center">{v.onRoad}</div>
@@ -41,9 +41,9 @@ const VariantTable: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="text-center my-3">
+            <div className="text-center my-4">
                 <button className="text-sm font-medium flex items-center justify-center mx-auto gap-1">
-                    See Which Tata Nexon Variant Offers the <span className="font-semibold hover:underline"> Best Value for Money</span>
+                    <span className="hidden md:block">See Which Tata Nexon Variant Offers the</span> <span className="font-semibold hover:underline"> Best Value for Money</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>

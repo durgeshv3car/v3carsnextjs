@@ -44,7 +44,7 @@ const MobileLatestCarNews: React.FC<MobileLatestCarNewsProps> = ({ title, view, 
     const chunkedNews = chunkArray(data, 5)
 
     return (
-        <section className="p-6">
+        <section >
             <div className="space-y-4">
                 {/* Header */}
                 <div className="flex justify-between items-center">

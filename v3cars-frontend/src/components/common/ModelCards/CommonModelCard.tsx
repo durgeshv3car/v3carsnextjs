@@ -90,11 +90,11 @@ const CommonModelCard: React.FC<CommonModelCardProps> = ({ title, data }) => {
                     </div>
                 </div>
 
-                <div className="flex space-x-2 overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
+                <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32.70%] gap-2 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
                     {data.map((item) => (
                         <div
                             key={item.id}
-                            className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-2xl min-w-[340px] shadow-sm overflow-hidden hover:shadow-md transition flex flex-col"
+                            className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-2xl h-auto snap-start shadow-sm overflow-hidden hover:shadow-md transition flex flex-col"
                         >
                             {/* Fixed height image */}
                             <div className="overflow-hidden">

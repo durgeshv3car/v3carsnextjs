@@ -27,10 +27,10 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model }) => {
     return (
         <div>
             {/* Header */}
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg">
                     {model}{" "}
-                    <span className="font-semibold">Mileage, Specs & Features</span>
+                    <span className="font-semibold hidden md:block">Mileage, Specs & Features</span>
                 </h2>
 
                 {/* Variant Dropdown */}
@@ -38,7 +38,7 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model }) => {
                     <select
                         value={selectedVariant}
                         onChange={(e) => setSelectedVariant(e.target.value)}
-                        className="appearance-none text-sm border border-gray-300 rounded-md py-2 pl-3 pr-8 bg-white font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
+                        className="appearance-none text-sm border border-gray-300 rounded-md py-2 pl-3 pr-8 bg-white font-medium focus:outline-none focus:ring-1 focus:ring-[#2E2E2E] dark:bg-[#171717] dark:border-[#2E2E2E]"
                     >
                         <option>1.2L Turbo Petrol with 6-speed MT</option>
                         <option>1.2L Turbo Petrol with 6-speed AMT</option>
@@ -48,26 +48,26 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model }) => {
             </div>
 
             {/* Specs Table */}
-            <div className="border border-gray-200 rounded-md overflow-hidden text-sm">
-                <div className="grid grid-cols-3 bg-gray-50 font-semibold border-b border-gray-200">
-                    <div className="p-4 text-gray-700">Category</div>
-                    <div className="p-4 text-gray-700">Specification</div>
-                    <div className="p-4 text-gray-700">Details</div>
+            <div className="border border-gray-200 rounded-md overflow-hidden text-sm dark:border-[#2E2E2E]">
+                <div className="grid grid-cols-3 bg-gray-50 font-semibold border-b border-gray-200 dark:bg-[#171717] dark:border-[#2E2E2E]">
+                    <div className="p-4">Category</div>
+                    <div className="p-4">Specification</div>
+                    <div className="p-4">Details</div>
                 </div>
 
                 {specs.map((item, index) => (
                     <div
                         key={index}
-                        className={`grid grid-cols-3 border-b border-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                        className={`grid grid-cols-3 border-b border-gray-100 ${index % 2 === 0 ? "bg-white dark:bg-[#171717] dark:border-[#2E2E2E]" : "bg-gray-100 dark:bg-[#2E2E2E] dark:border-[#2E2E2E]"
                             }`}
                     >
-                        <div className="p-4 font-medium text-gray-800 border-r border-gray-100">
+                        <div className="p-4 font-medium border-r border-gray-100 dark:border-[#2E2E2E]">
                             {item.category}
                         </div>
-                        <div className="p-4 text-gray-700 border-r border-gray-100">
+                        <div className="p-4 border-r border-gray-100 dark:border-[#2E2E2E]">
                             {item.label}
                         </div>
-                        <div className="p-4 text-gray-600">{item.value}</div>
+                        <div className="p-4">{item.value}</div>
                     </div>
                 ))}
             </div>

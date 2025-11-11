@@ -1,153 +1,171 @@
+'use client';
+
+import { RootState } from "@/redux/store";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ModelTab, setActiveTab } from "@/redux/slices/carModelSlice"; // ✅ import your tab slice action here
+import Overview from "./overview/Overview";
+import CommonModelTopSection from "@/components/common/ModelCards/CommonModelTopSection";
 
-const BannerSection: React.FC = () => {
+interface BannerSectionProps {
+    type: string;
+    slug: string;
+}
+
+function toSlug(name: string) {
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[\s_]+/g, "-")
+        .replace(/[^\w-]+/g, "")
+        .replace(/--+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+const tabs = [
+    "Overview",
+    "Price",
+    "Variants",
+    "Dimensions",
+    "Mileage, Specs & Features",
+    "Reviews",
+    "Compare",
+] as const;
+
+const BannerSection: React.FC<BannerSectionProps> = ({ type, slug }) => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
+    const activeTab = useSelector((state: RootState) => state.carModelSlice.activeTab); // ✅ fixed missing parenthesis
+
+    function handleModelTab(tab: ModelTab) {
+        dispatch(setActiveTab(tab));
+        if (tab === "Overview") {
+            router.push(`/${type}/${slug}`);
+        } else if (tab === "Price") {
+            router.push(`/${type}/${slug}/price-in-${toSlug(selectedCity.cityName)}`);
+        } else if (tab === "Variants") {
+            router.push(`/${type}/${slug}/which-variant-to-buy`);
+        } else if (tab === "Dimensions") {
+            router.push(`/${type}/${slug}/dimensions`);
+        } else if (tab === "CSD Price") {
+            router.push(`/${type}/${slug}/csd-price`);
+        } else if (tab === "Mileage, Specs & Features") {
+            router.push(`/${type}/${slug}/mileage`);
+        } else if (tab === "News") {
+            router.push(`/${type}/${slug}/news`);
+        } else if (tab === "Pros Cons") {
+            router.push(`/${type}/${slug}/pros-cons`);
+        } else if (tab === "Offers Discounts") {
+            router.push(`/${type}/${slug}/offers-discounts`);
+        } else if (tab === "Monthly Sales") {
+            router.push(`/${type}/${slug}/monthly-sales`);
+        } else if (tab === "Reviews") {
+            router.push(`/${type}/${slug}/reviews`);
+        }
+        else {
+            router.push(`/${type}/${slug}/${toSlug(tab)}`);
+        }
+    }
+
     return (
-
-        <div className="space-y-10 ">
-            <div className="flex justify-center items-center">
-                <div className="border w-[970px] h-[90px] rounded-lg">
-                </div>
-            </div>
-
-            <div className="flex flex-col lg:flex-row justify-between gap-10">
-                {/* Left Side - Car Image */}
-                <div className="flex flex-col justify-end flex-1">
-                    <img
-                        src="/model/tata.png"
-                        alt="Tata Nexon"
-                        className="w-full drop-shadow-lg"
-                    />
-
-                    <div className="flex justify-between items-center">
-                        <span className="flex gap-1 items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
-                            </svg>
-                            <span className="text-gray-700 text-xs">Colours</span>
-                        </span>
-
-                        <div className="flex gap-2">
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 cursor-pointer">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                                </svg>
-                            </span>
-
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 cursor-pointer">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Side - Details */}
-                <div className="flex-1 space-y-8">
-                    <div>
-                        <div className="flex justify-between items-end">
-                            <h1 className="text-4xl font-bold text-gray-800">
-                                Tata <span className="text-yellow-400">Nexon</span>
-                            </h1>
-                            <p className="text-sm text-gray-400">Launched on Sep’25</p>
-                        </div>
-
-                        <p className="text-gray-500 text-sm leading-relaxed mt-4">
-                            The Tata Nexon is a B2-segment SUV with seating for up to 5
-                            occupants and costs between ₹7.32 lakh and ₹14.05 lakh
-                            (ex-showroom).
-                        </p>
-                    </div>
-
-                    {/* Price */}
-                    <div>
-                        <p className="text-sm">Ex-Showroom</p>
-                        <div className="flex justify-between items-end">
-                            <p className="text-2xl font-semibold text-gray-800">
-                                ₹7.32 – ₹14.05 lakh
-                            </p>
-                            <Link
-                                href="#"
-                                className="text-blue-600 text-xs underline"
-                            >
-                                Check On Road Price in <span className="font-semibold">Delhi</span>
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Fuel Type Buttons */}
-                    <div>
-                        <span className="text-sm text-gray-500">Available with</span>
-                        <div className="flex items-center space-x-3 mt-1">
-                            <div className="flex space-x-2">
-                                <button className="border-2 border-yellow-400 px-4 py-2 rounded-md text-xs hover:bg-gray-100 transition">
-                                    PETROL
-                                </button>
-                                <button className="border-2 border-yellow-400 px-4 py-2 rounded-md text-xs hover:bg-gray-100 transition">
-                                    CNG
-                                </button>
-                                <button
-                                    disabled
-                                    className="border border-gray-200 bg-gray-100 px-4 py-2 rounded-md text-xs text-gray-400 cursor-not-allowed"
-                                >
-                                    DIESEL
-                                </button>
-                                <button
-                                    disabled
-                                    className="border border-gray-200 bg-gray-100 px-4 py-2 rounded-md text-xs text-gray-400 cursor-not-allowed"
-                                >
-                                    HYBRID
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Spec Boxes */}
-                    <div className="flex space-x-4 mt-4">
-                        <div className="border border-gray-200 rounded-xl shadow-sm w-28 text-center py-3">
-                            <p className="text-xs text-gray-500">Segment</p>
-                            <p className="font-semibold text-gray-800 mt-1">D1</p>
-                        </div>
-                        <div className="border border-gray-200 rounded-xl shadow-sm w-28 text-center py-3">
-                            <p className="text-xs text-gray-500">Body Type</p>
-                            <p className="font-semibold text-gray-800 mt-1">SUV</p>
-                        </div>
-                        <div className="border border-gray-200 rounded-xl shadow-sm w-28 text-center py-3">
-                            <p className="text-xs text-gray-500">Seating</p>
-                            <p className="font-semibold text-gray-800 mt-1">5</p>
-                        </div>
-                    </div>
-
-                    {/* CTA Button */}
-                    <div className="pt-3">
-                        <button className="bg-yellow-400 hover:bg-yellow-500 transition text-black font-semibold px-6 py-2 rounded-md w-full">
-                            View Nexon Latest Offers
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div className="space-y-10">
+            {
+                activeTab === "Overview" ?
+                    <Overview city={selectedCity.cityName} />
+                    : activeTab === "Price" ?
+                        <CommonModelTopSection
+                            title="Tata"
+                            highlight="Nexon"
+                            others="Price List"
+                            description="The Tata Nexon SUV is available with 7 engine-transmission combinations. 
+                            The ex-showroom prices of the 2025 Nexon start from ₹7.32 lakh for the Smart variant (Base Model)
+                            with the 1.2L turbo petrol engine and 5-speed MT. The range tops out at ₹14.05 ..."
+                        />
+                        : activeTab === "Variants" ?
+                            <CommonModelTopSection
+                                title="Tata"
+                                highlight="Nexon"
+                                others="Price List"
+                                description="The Tata Nexon SUV is available with 7 engine-transmission combinations. 
+                            The ex-showroom prices of the 2025 Nexon start from ₹7.32 lakh for the Smart variant (Base Model)
+                            with the 1.2L turbo petrol engine and 5-speed MT. The range tops out at ₹14.05 ..."
+                            />
+                            : activeTab === "CSD Price" ?
+                                <CommonModelTopSection
+                                    title="Tata"
+                                    highlight="Nexon"
+                                    others="CSD Price"
+                                    description="This page lists the CSD price of the Tata Nexon for all variants and compares it with the civilian ex-showroom and estimated on-road price to show how much you save with CSD. We also map eligibility by rank / pay level (Officers, JCOs, NCOs & ORs) so...."
+                                />
+                                : activeTab === "Mileage, Specs & Features" ?
+                                    <CommonModelTopSection
+                                        title="Tata"
+                                        highlight="Nexon"
+                                        others="Mileage"
+                                        description="Tata Nexon mileage is 17.01kmpl to 24.08kmpl. The mileage of Nexon Petrol is 17.01kmpl to 17.44kmpl. The mileage of Nexon Diesel is 23.30kmpl to 24.08kmpl. This page empowers you with all the information you need to understand the Nexon's real-world ...."
+                                    />
+                                : activeTab === "News" ?
+                                    <CommonModelTopSection
+                                        title="Tata"
+                                        highlight="Nexon"
+                                        others="News"
+                                        description="Tata Nexon mileage is 17.01kmpl to 24.08kmpl. The mileage of Nexon Petrol is 17.01kmpl to 17.44kmpl. The mileage of Nexon Diesel is 23.30kmpl to 24.08kmpl. This page empowers you with all the information you need to understand the Nexon's real-world...."
+                                    />
+                                : activeTab === "Pros Cons" ?
+                                    <CommonModelTopSection
+                                        title="Tata"
+                                        highlight="Nexon"
+                                        others="Pros & Cons"
+                                        description="Check out pros and cons about the Tata Nexon that are worth highlighting for a potential buyer. Here are some of the highlights of the benefits of buying the Tata Nexon. We'll also list out the Nexon drawbacks to help you make an informed buying deci..."
+                                    />
+                                : activeTab === "Offers Discounts" ?
+                                    <CommonModelTopSection
+                                        title="Tata"
+                                        highlight="Nexon"
+                                        others="Offers Discounts"
+                                        description="Tata Nexon comparison review to compare price, specs, dimensions & features to know which is value for money car..."
+                                    />
+                                : activeTab === "Monthly Sales" ?
+                                    <CommonModelTopSection
+                                        title="Tata"
+                                        highlight="Nexon"
+                                        others="Monthly Sales"
+                                        description="The Tata Nexon is a popular B2-segment SUV. Are you curious about how well the Tata Nexon is selling? Look no further! This page provides you with comprehensive data and insights on Tata Nexon's sales performance in India.. We'll delve into monthly s..."
+                                    />
+                                : activeTab === "Reviews" ?
+                                    <CommonModelTopSection
+                                        title="Tata"
+                                        highlight="Nexon"
+                                        others="Reviews"
+                                        description="The Tata Nexon is a popular B2-segment SUV. Are you curious about how well the Tata Nexon is selling? Look no further! This page provides you with comprehensive data and insights on Tata Nexon's sales performance in India.. We'll delve into monthly s..."
+                                    />
+                                    :
+                                    <CommonModelTopSection
+                                        title="Tata"
+                                        highlight="Nexon"
+                                        others="Dimensions"
+                                        description="The Tata Nexon is a B2-segment SUV which has a seating capacity of up to 5 occupants. Here we present the Tata Nexon dimensions like length, width, height and wheelbase along with fuel tank capacity, boot space, ground clearance and tyre size. You can al..."
+                                    />
+            }
 
             {/* Bottom Tabs */}
-            <div className="mt-10">
-                <div className="flex flex-wrap md:flex-nowrap space-x-6 mt-4 text-gray-600 font-medium text-sm overflow-x-auto">
-                    {[
-                        "Overview",
-                        "Price",
-                        "Variants",
-                        "Dimensions",
-                        "Mileage, Specs & Features",
-                        "Reviews",
-                        "Compare",
-                    ].map((tab) => (
-                        <button
-                            key={tab}
-                            className="pb-2 border-b-2 border-transparent hover:border-yellow-400 hover:text-gray-800 transition whitespace-nowrap"
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
+            <div className="flex gap-10 font-medium overflow-x-auto scrollbar-hide">
+                {tabs.map((tab) => (
+                    <button
+                        key={tab}
+                        onClick={() => handleModelTab(tab)}
+                        className={`${tab === activeTab
+                            ? "border-b-4 border-yellow-400"
+                            : "hover:text-yellow-400 text-gray-400"
+                            } pb-2 border-b-4 border-transparent hover:border-yellow-400 transition whitespace-nowrap`}
+                    >
+                        {tab}
+                    </button>
+                ))}
             </div>
         </div>
     );

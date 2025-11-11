@@ -8,6 +8,7 @@ import authReducer from "./slices/authSlice";
 import advanceSearchReducer from "./slices/advanceSearchSlice";
 import commonReducer from "./slices/commonSlice";
 import sellUsedReducer from "./slices/sellUsedSlice";
+import carModelSlice from "./slices/carModelSlice";
 import { websiteContentApi } from "./api/websiteContentApi";
 import { homeModuleApi } from "./api/homeModuleApi";
 import { carModuleApi } from "./api/carModuleApi";
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   common: commonReducer,
   sellUsed: sellUsedReducer,
   filters: advanceSearchReducer,
+  carModelSlice: carModelSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
