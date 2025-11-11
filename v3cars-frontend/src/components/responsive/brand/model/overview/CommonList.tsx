@@ -15,7 +15,7 @@ const CommonList: React.FC<PriceListProps> = ({ model, title, desc }) => {
 
     return (
         <div>
-            <div className="flex justify-between items-start mb-3">
+            <div className="flex flex-col md:flex-row justify-between items-start mb-3 gap-2">
                 <div>
                     <h2 className="text-lg">
                         {model}{" "}
@@ -29,13 +29,13 @@ const CommonList: React.FC<PriceListProps> = ({ model, title, desc }) => {
                             }
                         </span>
                     </h2>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-gray-400 mt-1">
                         {desc}
                     </p>
                 </div>
                 {
                     title === "Price List" && (
-                        <p className="text-xs text-gray-500 whitespace-nowrap">Last Updated: 24/10/2025</p>
+                        <p className="text-xs whitespace-nowrap">Last Updated: 24/10/2025</p>
                     )
                 }
             </div>

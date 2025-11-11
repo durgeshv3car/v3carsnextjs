@@ -112,7 +112,7 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                         </div>
                     </div>
 
-                    <div className='grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32.25%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide' ref={scrollRef}>
+                    <div className='grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32.70%] gap-2 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide' ref={scrollRef}>
                         {videoList.map((video, index) => (
                             <div
                                 key={index}

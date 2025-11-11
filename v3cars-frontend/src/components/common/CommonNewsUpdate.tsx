@@ -139,7 +139,7 @@ const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsLi
             <div
               key={item.id}
               className="bg-white dark:bg-transparent dark:border dark:border-[#2E2E2E] rounded-lg snap-start h-auto overflow-hidden hover:shadow-md transition p-3 flex flex-col space-y-4 cursor-pointer"
-              onClick={()=>{router.push(`${link}/${item.pageUrl}`)}}
+              onClick={() => { router.push(`${link}/${item.pageUrl}`) }}
             >
               {/* Fixed height image */}
               <div className="relative w-full">
