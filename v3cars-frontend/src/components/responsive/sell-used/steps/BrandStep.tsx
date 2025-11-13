@@ -11,9 +11,6 @@ import { selectBrand, setStep, type Brand } from "@/redux/slices/sellUsedSlice";
 import { RootState } from "@/redux/store";
 import StepTopBar from "../common/StepTopBar";
 
-const toId = (name: string, i: number) =>
-  `${name.toLowerCase().replace(/\s+/g, "-")}-${i}`;
-
 interface BrandStepProps {
   brands: CarBrand[];
 }

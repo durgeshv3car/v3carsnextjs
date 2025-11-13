@@ -31,10 +31,13 @@ export const locationModuleApi = createApi({
       query: () => `/locations/states?limit=50&page=1&sortBy=name_asc`,
     }),
     getCityByStatesId: builder.query<Response, { stateId: number }>({
-      query: ({ stateId }) => `/locations/cities?stateId=${stateId}&sortBy=name_asc&limit=50`,
+      query: ({ stateId }) => `/locations/cities?stateId=${stateId}&sortBy=name_asc&limit=100`,
     }),
     getCities: builder.query<Response, { query: string }>({
       query: ({ query }) => `/locations/cities?q=${query}`,
+    }),
+    getDistrictsByStateId: builder.query<Response, { stateId: number }>({
+      query: ({ stateId }) => `/locations/districts?stateId=${stateId}&limit=100`,
     }),
   }),
 });
@@ -48,4 +51,5 @@ export const {
   useGetStatesQuery,
   useGetCityByStatesIdQuery,
   useGetCitiesQuery,
+  useGetDistrictsByStateIdQuery,
 } = locationModuleApi;

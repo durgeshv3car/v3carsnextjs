@@ -2,7 +2,6 @@
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import { IMAGE_URL } from "@/utils/constant";
-import { useState } from "react";
 import { MdCompareArrows } from "react-icons/md";
 
 interface CarBrand {
@@ -152,7 +151,7 @@ export default function CompareNow({
                         {selectedModels[i] ? (
                             (() => {
                                 const selectedModel = modelsData[i]?.find(
-                                    (model: any) => model.modelId === selectedModels[i]
+                                    (model: CarModel) => model.modelId === selectedModels[i]
                                 );
                                 return (
                                     <img
@@ -236,7 +235,9 @@ export default function CompareNow({
         </div>
 
             <div className="mt-6 flex justify-center">
-                <button className="bg-yellow-400 hover:bg-yellow-500 transition text-black px-8 py-3 rounded-full flex items-center gap-2 shadow-md">
+                <button 
+                // onClick={()=>{router.push(`/compare/${toSlug(selectedBrands)}`)}}
+                className="bg-yellow-400 hover:bg-yellow-500 transition text-black px-8 py-3 rounded-full flex items-center gap-2 shadow-md">
                     Compare Now
                     <MdCompareArrows size={24} />
                 </button>

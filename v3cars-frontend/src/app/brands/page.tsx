@@ -1,7 +1,7 @@
 'use client'
 
 import { useGetBrandsQuery } from "@/redux/api/carModuleApi";
-import { IMAGE_URL, IMAGE_URL2 } from "@/utils/constant";
+import { IMAGE_URL2 } from "@/utils/constant";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -56,7 +56,7 @@ export default function AllBrandsGrid() {
                         <div
                             key={index}
                             className="bg-white dark:bg-[#171717] p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center border dark:border-[#2E2E2E] cursor-pointer"
-                            onClick={() => { router.push(`/brands/${src.brandSlug}`) }}
+                            onClick={() => { router.push(`/${src.brandSlug}`) }}
                         >
                             <Image
                                 src={`${IMAGE_URL2}/ad-min/uploads/${src.logoPath}`}

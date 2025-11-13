@@ -3,7 +3,6 @@
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import { IMAGE_URL } from "@/utils/constant";
 import { useState, useEffect } from "react";
-import { IoClose } from "react-icons/io5";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 
@@ -54,6 +53,11 @@ interface CarModel {
     powerPS: number;
     torqueNM: number;
     mileageKMPL: number;
+    powerTrain: string;
+    transmissionType: string;
+    transmissionSubType: string;
+    drivetrain: number;
+    isFourByFour: boolean;
     image: CarImage;
     imageUrl: string;
 }
@@ -67,6 +71,19 @@ interface InformationProps {
 }
 
 const specsKeys = ["Engine", "Transmission", "Drivetrain", "Power", "Torque"];
+
+interface CarDemo {
+    id: number;
+    name: string | React.ReactNode;
+    image?: string;
+    specs: {
+        Engine: string;
+        Transmission: string;
+        Drivetrain: string;
+        Power: string;
+        Torque: string;
+    };
+}
 
 // ✅ Demo data for initial state
 const demoCars = [
@@ -83,7 +100,7 @@ export default function Information({
     selectedVariants,
     setSelectedVariants
 }: InformationProps) {
-    const [cars, setCars] = useState<any[]>(demoCars);
+    const [cars, setCars] = useState<CarDemo[]>(demoCars);
 
     useEffect(() => {
         const mappedCars = selectedModels.map((modelId, index) => {
@@ -101,12 +118,12 @@ export default function Information({
                 image: selectedModel.imageUrl || selectedModel.image?.url || "/compare-car/placeholder.png",
                 specs: {
                     Engine: `${selectedModel.powerPS} PS`,
-                    Transmission: "—",
-                    Drivetrain: "—",
-                    Power: `${selectedModel.powerPS} PS`,
-                    Torque: `${selectedModel.torqueNM} Nm`
-                }
-            };
+                    Transmission: selectedModel.transmissionType,
+                    Drivetrain: String(selectedModel.drivetrain), // ✅ force string
+                    Power: `${selectedModel.powerTrain}`,
+                    Torque: `${selectedModel.torqueNM} Nm`,
+                },
+            } as CarDemo; // ✅ ensure type matches
         });
 
         setCars(mappedCars);
@@ -120,7 +137,7 @@ export default function Information({
                     <tr className="hidden lg:table-row">
                         <td className="p-3 font-bold w-[300px]"></td>
                         {cars.map((car, index) => (
-                            <td key={car.id} className="p-3 align-top w-[300px]">
+                            <td key={index} className="p-3 align-top w-[300px]">
                                 <div className="relative border p-2 rounded-xl flex flex-col justify-between dark:border-[#2E2E2E] shadow-sm">
                                     {/* Dynamic Model Image */}
                                     <div className="min-h-[150px] mb-2">
@@ -128,7 +145,7 @@ export default function Information({
                                             car?.image ? (
                                                 <img
                                                     src={`${IMAGE_URL}/media/model-imgs/${car?.image}`}
-                                                    alt={car.name}
+                                                    alt={typeof car.name === "string" ? car.name : "Car image"}
                                                     className="w-full rounded-xl"
                                                 />
                                             ) : (
@@ -179,9 +196,9 @@ export default function Information({
                             <td className="border dark:border-[#2E2E2E] p-3 font-semibold text-nowrap text-sm">
                                 {spec}
                             </td>
-                            {cars.map((car) => (
+                            {cars.map((car, idx) => (
                                 <td
-                                    key={car.id}
+                                    key={idx}
                                     className="border dark:border-[#2E2E2E] text-nowrap p-3 whitespace-pre-line text-center text-sm"
                                 >
                                     {car.specs[spec as keyof typeof car.specs]}

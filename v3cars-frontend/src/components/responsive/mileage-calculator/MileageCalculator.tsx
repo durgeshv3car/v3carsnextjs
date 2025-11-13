@@ -125,6 +125,9 @@ export default function MileageCalculator() {
     const fuelNum = Number(fuelVal);
     const priceNum = Number(priceVal);
 
+    console.log(currVal);
+    
+
     if (distNum > 0 && fuelNum > 0 && priceNum > 0) {
       // Base conversions
       const distKm = distanceUnit === "mi" ? distNum * kmToMiles : distNum;

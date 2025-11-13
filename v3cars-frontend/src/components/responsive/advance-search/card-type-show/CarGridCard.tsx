@@ -1,6 +1,6 @@
 'use client'
 
-import { IMAGE_URL, IMAGE_URL2 } from "@/utils/constant";
+import { IMAGE_URL2 } from "@/utils/constant";
 import React from "react";
 import { GiGasPump } from "react-icons/gi";
 import { IoSpeedometerOutline } from "react-icons/io5";

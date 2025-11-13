@@ -106,6 +106,9 @@ export const contentModuleApi = createApi({
         getPopularVariantExplained: builder.query<Response, void>({
             query: () => `/content/variant-explained/popular?limit=10`,
         }),
+        getPopularComparisons: builder.query<Response, void>({
+            query: () => `/comparisons/popular?limit=15`,
+        }),
     }),
 });
 
@@ -139,4 +142,5 @@ export const {
     useGetTrendingVariantExplainedQuery,
     useGetTopVariantExplainedQuery,
     useGetPopularVariantExplainedQuery,
+    useGetPopularComparisonsQuery,
 } = contentModuleApi;

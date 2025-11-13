@@ -1,70 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import Select, { StylesConfig, SingleValue } from 'react-select';
 import Image from 'next/image';
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
-import { IMAGE_URL, IMAGE_URL2 } from '@/utils/constant';
-
-interface BrandOption {
-  value: string;
-  label: string;
-  image: string;
-}
-
-const brandOptions: BrandOption[] = [
-  { value: 'mahindra', label: 'Mahindra', image: '/brands/mahindra.png' },
-  { value: 'maruti', label: 'Maruti Suzuki', image: '/brands/maruti.png' },
-  { value: 'tata', label: 'Tata Motors', image: '/brands/tata.png' },
-  { value: 'honda', label: 'Honda', image: '/brands/honda.png' },
-  { value: 'hyundai', label: 'Hyundai', image: '/brands/hyundai.png' },
-];
-
-const customStyles: StylesConfig<BrandOption, false> = {
-  container: (base) => ({
-    ...base,
-    width: 'auto',
-    margin: 'auto',
-  }),
-  control: (base, state) => ({
-    ...base,
-    backgroundColor: '#FFCC00',
-    borderColor: state.isFocused ? '#FFB800' : '#FFCC00',
-    boxShadow: 'none',
-    paddingLeft: '4px',
-    minHeight: '44px',
-    '&:hover': {
-      borderColor: '#FFB800',
-    },
-  }),
-  singleValue: (provided) => ({
-    ...provided,
-    color: '#000',
-    fontWeight: 500,
-  }),
-  dropdownIndicator: (base) => ({
-    ...base,
-    color: '#000',
-  }),
-  indicatorSeparator: () => ({
-    display: 'none',
-  }),
-  menu: (base) => ({
-    ...base,
-    zIndex: 9999,
-  }),
-  option: (base, state) => ({
-    ...base,
-    backgroundColor: state.isSelected
-      ? '#FFCC00'
-      : state.isFocused
-        ? '#FFF2B3'
-        : '#fff',
-    color: '#000',
-    fontWeight: state.isSelected ? 600 : 400,
-    cursor: 'pointer',
-  }),
-};
+import { IMAGE_URL } from '@/utils/constant';
 
 interface CarBrand {
   brandId: number

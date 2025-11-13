@@ -27,7 +27,7 @@ export default function BrandSection({ brands }: BrandSectionProps) {
   const [q, setQ] = useState("");
 
   // ✅ Use minimal data structure for Redux
-  const handlePick = (b: CarBrand, i: number) => {
+  const handlePick = (b: CarBrand, ) => {
     dispatch(
       selectBrand({
         brandId: b.brandId,   // normalized ID
@@ -69,7 +69,7 @@ export default function BrandSection({ brands }: BrandSectionProps) {
             {filteredBrands.slice(0, 10).map((b, i) => (
               <button
                 key={`${b.brandName}-${i}`}
-                onClick={() => handlePick(b, i)}
+                onClick={() => handlePick(b)}
                 className="relative overflow-hidden rounded-2xl border dark:border-[#2E2E2E] ring-1 ring-black/10 hover:shadow-md transition bg-white text-black"
                 aria-label={b.brandName}
               >

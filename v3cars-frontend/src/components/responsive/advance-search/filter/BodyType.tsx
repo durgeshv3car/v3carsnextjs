@@ -36,7 +36,7 @@ const BodyTypeFilter = ({ openSection }: BodyFilterProps) => {
     }, [openSection]);
 
     const handleBodyClick = (id: number) => {
-        let updated = selectedBodyTypeIds.includes(id)
+        const updated = selectedBodyTypeIds.includes(id)
             ? selectedBodyTypeIds.filter((item) => item !== id)
             : [...selectedBodyTypeIds, id];
 

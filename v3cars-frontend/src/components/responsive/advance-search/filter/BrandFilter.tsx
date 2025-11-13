@@ -65,7 +65,7 @@ function BrandFilter({ openSection }: BrandFilterProps) {
     }, [brands, searchTerm]);
 
     const handleCheckboxChange = (brandId: number) => {
-        let updated = selectedBrandIds.includes(brandId)
+        const updated = selectedBrandIds.includes(brandId)
             ? selectedBrandIds.filter((id) => id !== brandId)
             : [...selectedBrandIds, brandId];
 

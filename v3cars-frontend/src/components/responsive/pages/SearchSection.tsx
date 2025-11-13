@@ -1,9 +1,9 @@
 'use client'
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
-import { useGetCityByStatesIdQuery, useGetStatesQuery } from "@/redux/api/locationModuleApi";
+import { useGetDistrictsByStateIdQuery, useGetStatesQuery } from "@/redux/api/locationModuleApi";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface FuelTypes {
     id: number,
@@ -34,18 +34,11 @@ interface State {
     isTodayFuelPrice: number;
 }
 
-interface City {
-    cityId: number;
-    cityName: string;
+interface DistrictInfo {
+    id: number;
+    districtName: string;
     stateId: number;
-    countryId: number;
-    status: number;
     isPopularCity: number;
-    isTopCity: number;
-    ismajorCityPetrol: number;
-    ismajorCityDiesel: number;
-    ismajorCityCNG: number;
-    isImage: string | null;
 }
 
 
@@ -61,38 +54,80 @@ interface SearchSectionProps {
     type: string;
     city: string | null;
     state: string | null;
+    selectState: number | null;
+    cityId: number | null;
+    setCityId: React.Dispatch<React.SetStateAction<number | null>>;
+    setSelectState: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 function slugToName(slug: string): string {
     if (!slug) return "";
 
     return slug
-        .replace(/-/g, " ") // sab "-" ko space me badal de
-        .replace(/\b\w/g, (char) => char.toUpperCase()); // har word ka pehla letter capital kare
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-function SearchSection({ type, city, state }: SearchSectionProps) {
+function toSlug(name: string) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function SearchSection({ type, city, state, setCityId, selectState, setSelectState, cityId }: SearchSectionProps) {
     const stateName = slugToName(state || "")
     const cityName = slugToName(city || "")
     const [fuelType, setFuelType] = useState(type)
-    const [selectState, setSelectState] = useState<number | null>(null)
     const [selectCity, setSelectCity] = useState(cityName)
     const [selectStateName, setSelectStateName] = useState(stateName)
-    const router = useRouter()    
+    const router = useRouter()
 
-    const { data: cityByStatesIdData } = useGetCityByStatesIdQuery({ stateId: Number(selectState) }, { skip: !selectState })
+    const { data: cityByStatesIdData } = useGetDistrictsByStateIdQuery({ stateId: Number(selectState) }, { skip: !selectState })
     const { data: statesData } = useGetStatesQuery()
 
-    const states = statesData?.rows ?? []
-    const citys = cityByStatesIdData?.rows ?? []
+    const states: State[] = statesData?.rows ?? []
+    const citys: DistrictInfo[] = cityByStatesIdData?.rows ?? []
 
-    function handleCity(value: City) {
-        const city = value.cityName
+    function handleCity(value: DistrictInfo) {
+        const city = value.districtName
+        setCityId(value.id)
         setSelectCity(city);
         const slug = slugify(selectStateName)
         const citySlug = slugify(city)
         router.push(`/${slug}/${fuelType.toLowerCase()}-price-in-${citySlug}`)
     }
+
+    useEffect(() => {
+        if (states.length > 0 && selectStateName) {
+            const matched = states.find(
+                (s: State) =>
+                    s.stateName.toLowerCase() === selectStateName.toLowerCase()
+            );
+            if (matched) {
+                setSelectState(matched.stateId);
+            } else {
+                setSelectState(null);
+            }
+        }
+    }, [states, selectStateName]);
+
+    useEffect(() => {
+        if (citys.length > 0 && cityName) {
+            const matched = citys.find(
+                (c: DistrictInfo) =>
+                    c.districtName.toLowerCase() === cityName.toLowerCase()
+            );
+            if (matched) {
+                setCityId(matched.id);
+            } else {
+                setCityId(null);
+            }
+        }
+    }, [citys, cityName]);
 
     return (
         <>
@@ -106,7 +141,17 @@ function SearchSection({ type, city, state }: SearchSectionProps) {
                                 labelKey="name"
                                 valueKey="name"
                                 value={fuelType}
-                                onSelect={(value: FuelTypes) => { setFuelType(value.name) }}
+                                onSelect={(value: FuelTypes) => {
+                                    setFuelType(value.name)
+                                    router.push(
+                                        state && cityId && city
+                                            ? `/${state.toLowerCase()}/${value.name.toLowerCase()}-price-in-${city.toLowerCase()}`
+                                            : state
+                                                ? `/${state.toLowerCase()}/${value.name.toLowerCase()}-price`
+                                                : `${value.name.toLowerCase()}-price-in-india`
+                                    );
+                                }
+                                }
                             />
                         </div>
 
@@ -120,6 +165,8 @@ function SearchSection({ type, city, state }: SearchSectionProps) {
                                 onSelect={(value: State) => {
                                     setSelectState(value.stateId);
                                     setSelectStateName(value.stateName);
+                                    setCityId(null)
+                                    router.push(`/${toSlug(value.stateName).toLowerCase()}/${fuelType.toLowerCase()}-price`)
                                 }}
                             />
                         </div>
@@ -128,10 +175,10 @@ function SearchSection({ type, city, state }: SearchSectionProps) {
                             <CustomSelect
                                 options={citys}
                                 placeholder="Select City"
-                                labelKey="cityName"
-                                valueKey="cityName"
+                                labelKey="districtName"
+                                valueKey="districtName"
                                 value={selectCity}
-                                onSelect={(value: City) => { handleCity(value) }}
+                                onSelect={(value: DistrictInfo) => { handleCity(value) }}
                             />
                         </div>
                     </div>
