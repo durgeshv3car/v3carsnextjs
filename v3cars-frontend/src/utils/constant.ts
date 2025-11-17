@@ -32,11 +32,13 @@ export function capitalizeFirstLetter(input: string): string {
     )
     .join('-');
 }
+
   
   
 /**
  * Truncates a string to a given number of words, stripping out any HTML tags.
  */
+
 
 
 export function truncateWords(htmlString: string, wordLimit: number): string {

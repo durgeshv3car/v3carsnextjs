@@ -68,6 +68,7 @@ function Page() {
         handleModelState()
     }, [childSlug])
 
+
     return (
         <>
             <div className="bg-[#18181b] text-white">
