@@ -31,7 +31,7 @@ const VariantExplained: React.FC<VariantExplainedProps> = ({ title }) => {
 
                     <div className="p-4">
                         <h2 className="line-clamp-2 text-lg font-semibold">Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv,Upcoming Cars In August 2024 - Tata Curvv, Mahindra Tata Curvv, ...</h2>
-                        <p className="line-clamp-4">In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car In this June 2...</p>
+                        <p className="line-clamp-4 text-justify">In this June 2024 all car sales analysis article, we’ll look at the YoY and MoM change in sales figures for each car In this June 2...</p>
                     </div>
                 </div>
 

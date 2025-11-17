@@ -19,10 +19,10 @@ const EMICalculator: React.FC<EMICalculatorProps> = ({ title }) => {
 
             {/* Body */}
             <div className="flex flex-col items-center text-center px-4 py-4">
-                <div className="flex justify-between items-center">
-                    <p className="text-sm/relaxed text-start">
-                        Your Monthly EMI 18,718
-                        <Link href={"#"}>Edit EMI</Link>
+                <div className="flex justify-between items-center gap-2">
+                    <p className="text-sm/relaxed text-justify">
+                        Your Monthly EMI 18,718{" "}
+                        <Link href={"#"}>Edit EMI</Link>{" "}
                         interest calculated at 9.8% for 48 months
                     </p>
 

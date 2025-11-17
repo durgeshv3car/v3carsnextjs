@@ -1,42 +1,25 @@
-import ArticleList from "@/components/responsive/authors/ArticleList";
-import ProfileSection from "@/components/responsive/authors/ProfileSection";
-import SideBar from "@/components/responsive/authors/SideBar";
-import Link from "next/link";
+import MainAuthorDetailsComponent from "@/components/responsive/authors/MainAuthorDetailsComponent";
+import { Metadata } from "next";
 
-function AuthorsDetails() {
+export const metadata: Metadata = {
+    title: "Compare Cars in India | Specs, Features, Prices - V3Cars",
+    description:
+        "Compare cars in India by price, features, mileage, specifications & more. Use V3Cars' car comparison tool to find the best car for you.",
+    keywords: [
+        "compare cars India",
+        "car comparison tool",
+        "car specs comparison",
+        "price comparison cars",
+        "V3Cars compare",
+        "car features comparison",
+    ],
+};
+
+function Page() {
     return (
-        <>
-            <div className='bg-[#18181b] text-white'>
-                <div className=''>
-                    <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
-                        <Link href="/" className="hover:underline">Home</Link>
-                        <span className="">›</span>
-                        <Link href="/authors" className="font-medium hover:underline">
-                            Authors
-                        </Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">
-                            Authors Details
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="px-4 xl:px-10">
-                <div className="lg:app-container mx-auto w-full my-6 flex flex-col lg:flex-row gap-5">
-                    <div className="w-full lg:min-w-[74%] space-y-6">
-                        <ProfileSection />
-                        <ArticleList />
-                    </div>
-
-                    <div className="w-full lg:min-w-[24%] space-y-6">
-                        <SideBar />
-                    </div>
-                </div>
-            </div>
-        </>
+        <MainAuthorDetailsComponent />
     );
 }
 
-export default AuthorsDetails;
+export default Page;
 

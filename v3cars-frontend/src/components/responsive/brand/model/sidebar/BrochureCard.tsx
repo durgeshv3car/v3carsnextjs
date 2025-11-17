@@ -18,11 +18,9 @@ const BrochureCard: React.FC<BrochureCardProps> = ({ title }) => {
 
             {/* Body */}
             <div className="flex flex-col items-center text-center px-4 py-4">
-                <div className="flex justify-between items-center">
-                    <p className="text-sm/relaxed text-start">
-                        Download brochure for detailed
-                        <br />
-                        information on specs, features & prices.
+                <div className="flex justify-between items-center gap-2">
+                    <p className="text-sm/relaxed text-justify">
+                        Download brochure for detailed information on specs, features & prices.
                     </p>
 
                     <img

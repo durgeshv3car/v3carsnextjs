@@ -1,147 +1,29 @@
-'use client'
+import MainAutoExpoComponent from '@/components/responsive/auto-expo/MainAutoExpoComponent';
+import type { Metadata } from "next";
 
-import { useState } from 'react';
-import UpcomingCarByTopBrands from '@/components/common/UpcomingCarByTopBrands';
-import CarNewsCard from '@/components/responsive/car-news/CarNewsCard';
-import CarNewsSection from '@/components/responsive/car-news/CarNewsSection';
-import PopularNews from '@/components/common/PopularNews';
-import LeaderboardAd from '@/components/common/LeaderboardAd';
-import SideBarAdSmall from '@/components/common/SideBarAdSmall';
-import Link from 'next/link';
-import { useGetLatestAutoExpoQuery, useGetPopularAutoExpoQuery, useGetTodayAutoExpoQuery, useGetTopAutoExpoQuery, useGetTrendingAutoExpoQuery } from '@/redux/api/contentModuleApi';
+export const metadata: Metadata = {
+    title: "Auto Expo 2025 – New Car Launches, EV Debuts & Concept Cars | AutoNews India",
+    description:
+        "Catch all the latest from Auto Expo 2025: new car launches, EV unveilings, concept vehicles, and major announcements from Tata, Maruti, Hyundai, and more – live from Delhi.",
+    keywords: [
+        "Auto Expo 2025",
+        "Auto Expo India",
+        "Delhi Auto Expo",
+        "Car Launches 2025",
+        "EV Cars India",
+        "Auto Show 2025",
+        "Concept Cars India",
+        "Tata Motors Auto Expo",
+        "Maruti Suzuki Auto Expo",
+        "Electric Vehicles Expo",
+        "AutoNews India",
+    ],
+};
 
-const tabs = [
-    { key: 'latest', label: 'Latest Auto Expo' },
-    { key: 'top', label: 'Top Auto Expo' },
-    { key: 'trending', label: 'Trending Auto Expo' },
-];
 
 export default function Page() {
-    const [activeTab, setActiveTab] = useState('latest');
-    const { data: latestAutoExpoData } = useGetLatestAutoExpoQuery();
-    const { data: trendingAutoExpoData } = useGetTrendingAutoExpoQuery();
-    const { data: topAutoExpoData } = useGetTopAutoExpoQuery();
-    const { data: todayAutoExpoData } = useGetTodayAutoExpoQuery();
-    const { data: popularAutoExpoData } = useGetPopularAutoExpoQuery();
-
-    const todayAutoExpo = todayAutoExpoData?.data ?? null;
-    const latestAutoExpo = latestAutoExpoData?.rows ?? [];
-    const trendingAutoExpo = trendingAutoExpoData?.rows ?? [];
-    const topAutoExpo = topAutoExpoData?.rows ?? [];
-    const popularAutoExpo = popularAutoExpoData?.rows ?? [];
 
     return (
-        <div>
-
-            <div className='bg-[#18181b] text-white'>
-                <div className='px-4 xl:px-10'>
-                    <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
-                        <Link href="/" className="hover:underline">Home</Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">
-                            Auto Expo
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            {todayAutoExpo && <CarNewsCard data={todayAutoExpo} />}
-
-            <div className="lg:px-10 px-4">
-                <div className="flex gap-5 flex-col lg:flex-row rounded-lg overflow-hidden shadow-sm w-full lg:app-container mx-auto">
-                    <div className="flex flex-col lg:flex-row justify-between w-full gap-5 mb-6">
-
-                        <div className="w-auto lg:max-w-[74%]">
-
-                            {/* Mobile Tab Switcher */}
-                            <div className="block lg:hidden overflow-x-auto scrollbar-hide mb-4 -mx-4 px-4">
-                                <div className="flex gap-3 w-max">
-                                    {tabs.map((tab) => (
-                                        <button
-                                            key={tab.key}
-                                            onClick={() => setActiveTab(tab.key)}
-                                            className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap ${activeTab === tab.key ? 'bg-yellow-400 text-black font-medium' : 'bg-slate-100 dark:bg-[#171717] border dark:border-[#2E2E2E]'
-                                                }`}
-                                        >
-                                            {tab.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Mobile Tab Content */}
-                            <div className="block lg:hidden">
-                                {activeTab === 'latest' && (
-                                    <CarNewsSection
-                                        title="Latest Auto Expo"
-                                        viewAllLink="/upcoming-cars"
-                                        viewAllText="View All Upcoming Cars"
-                                        data={latestAutoExpo}
-                                    />
-                                )}
-                                {activeTab === 'top' && (
-                                    <CarNewsSection
-                                        title="Top Auto Expo"
-                                        viewAllLink="/top-car-news"
-                                        viewAllText="View All Top Cars"
-                                        data={topAutoExpo}
-                                    />
-                                )}
-                                {activeTab === 'trending' && (
-                                    <CarNewsSection
-                                        title="Trending Car News"
-                                        viewAllLink="/trending-car-news"
-                                        viewAllText="View All Trending Cars"
-                                        data={trendingAutoExpo}
-                                    />
-                                )}
-                            </div>
-
-                            {/* Desktop View */}
-                            <div className="hidden lg:block space-y-6">
-                                <CarNewsSection
-                                    title="Latest Auto Expo"
-                                    viewAllLink="/upcoming-cars"
-                                    viewAllText="View All Upcoming Cars"
-                                    data={latestAutoExpo}
-                                />
-
-                                <LeaderboardAd />
-
-                                <CarNewsSection
-                                    title="Trending Auto Expo"
-                                    viewAllLink="/trending-car-news"
-                                    viewAllText="View All Trending Cars"
-                                    data={trendingAutoExpo}
-                                />
-
-                                <LeaderboardAd />
-
-                                <CarNewsSection
-                                    title="Top Auto Expo"
-                                    viewAllLink="/top-car-news"
-                                    viewAllText="View All Top Cars"
-                                    data={topAutoExpo}
-                                />
-                            </div>
-
-                        </div>
-
-                        {/* Sidebar */}
-                        <div className="w-auto lg:min-w-[24%] space-y-6 flex flex-col items-center">
-                            <SideBarAdSmall />
-                            <UpcomingCarByTopBrands />
-                            <PopularNews
-                                title='Popular Auto Expo'
-                                data={popularAutoExpo}
-                            />
-                            <SideBarAdSmall />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
+        <MainAutoExpoComponent />
     );
 }
