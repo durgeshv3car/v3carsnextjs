@@ -18,8 +18,8 @@ const CSDPriceList: React.FC<CSDPriceListProps> = ({ title }) => {
 
             {/* Body */}
             <div className="flex flex-col items-center text-center px-4 py-4">
-                <div className="flex justify-between items-center">
-                    <p className="text-sm/relaxed text-start">
+                <div className="flex justify-between items-center gap-2">
+                    <p className="text-sm/relaxed text-justify">
                         Rank-wise eligibility with a verified variant-wise CSD price list for Tata Nexon. Includes Delhi on-road prices plus CSD vs civilian comparisons for ex-showroom and on-road with clear savings
                     </p>
 

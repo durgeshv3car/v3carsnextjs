@@ -85,8 +85,8 @@ const MonthlySales: React.FC<MonthlySalesProps> = ({ title }) => {
                     </div>
 
                     {/* Chart */}
-                    <div className="h-56">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%" className={"-ml-7"}>
                             <LineChart data={salesData[selectedRange]}>
                                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                                 <YAxis tick={{ fontSize: 12 }} />

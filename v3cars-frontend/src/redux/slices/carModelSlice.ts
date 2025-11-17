@@ -12,6 +12,13 @@ export type ModelTab =
   | "Pros Cons"
   | "Monthly Sales"
   | "Offers Discounts"
+  | "Videos"
+  | "Colors"
+  | "Competitors"
+  | "Images"
+  | "Maintenance Cost"
+  | "Cost Of Ownership"
+  | "Specifications Features"
   | "CSD Price";
 
 interface ModelTabsState {

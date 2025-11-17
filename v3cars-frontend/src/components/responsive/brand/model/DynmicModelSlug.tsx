@@ -2,6 +2,7 @@
 
 import CSDPricePage from "@/components/responsive/brand/model/csd-price/CSDPricePage";
 import DimensionsPage from "@/components/responsive/brand/model/dimensions/DimensionsPage";
+import EngineSpecificationsPage from "@/components/responsive/brand/model/engine-specifications/EngineSpecificationsPage";
 import MileagePage from "@/components/responsive/brand/model/mileage/MileagePage";
 import MonthlySalesPage from "@/components/responsive/brand/model/monthly-sales/MonthlySalesPage";
 import NewsPage from "@/components/responsive/brand/model/news/NewsPage";
@@ -13,20 +14,22 @@ import VariantPage from "@/components/responsive/brand/model/variants/VariantPag
 import { setActiveTab } from "@/redux/slices/carModelSlice";
 import { RootState } from "@/redux/store";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import VideosPage from "./videos/VideosPage";
+import ColorsPage from "./colors/ColorsPage";
+import CompetitorsPage from "./competitors/CompetitorsPage";
+import ImagesPage from "./images/ImagesPage";
+import MainMaintenanceComponent from "./maintenance-cost/MainMaintenanceComponent";
+import MainOwnershipComponent from "./cost-of-ownership/MainOwnershipComponent";
 
-interface Params {
+interface DynmicModelSlugProps {
     type: string;
     slug: string;
     childSlug: string;
-    [key: string]: string;
 }
 
-function Page() {
-    const params = useParams<Params>()
-    const { type, slug, childSlug } = params;
+function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
     const dispatch = useDispatch();
     const activeTab = useSelector((state: RootState) => state.carModelSlice.activeTab);
 
@@ -62,6 +65,27 @@ function Page() {
             }
             if (childSlug === "reviews") {
                 dispatch(setActiveTab("Reviews"));
+            }
+            if (childSlug === "videos") {
+                dispatch(setActiveTab("Videos"));
+            }
+            if (childSlug === "engine-specifications") {
+                dispatch(setActiveTab("Specifications Features"));
+            }
+            if (childSlug === "colors") {
+                dispatch(setActiveTab("Colors"));
+            }
+            if (childSlug === "competitors") {
+                dispatch(setActiveTab("Competitors"));
+            }
+            if (childSlug === "images") {
+                dispatch(setActiveTab("Images"));
+            }
+            if (childSlug === "maintenance-cost") {
+                dispatch(setActiveTab("Maintenance Cost"));
+            }
+            if (childSlug === "cost-of-ownership") {
+                dispatch(setActiveTab("Cost Of Ownership"));
             }
         }
 
@@ -115,16 +139,30 @@ function Page() {
                                         <NewsPage type={type} slug={slug} childSlug={childSlug} />
                                         : activeTab === "Pros Cons" ?
                                             <ProsConsPage type={type} slug={slug} childSlug={childSlug} />
-                                        : activeTab === "Offers Discounts" ?
-                                            <OffersDiscountsPage type={type} slug={slug} childSlug={childSlug} />
-                                        : activeTab === "Monthly Sales" ?
-                                            <MonthlySalesPage type={type} slug={slug} childSlug={childSlug} />
-                                        : activeTab === "Reviews" ?
-                                            <ReviewsPage type={type} slug={slug} childSlug={childSlug} />
-                                            : null
+                                            : activeTab === "Offers Discounts" ?
+                                                <OffersDiscountsPage type={type} slug={slug} childSlug={childSlug} />
+                                                : activeTab === "Monthly Sales" ?
+                                                    <MonthlySalesPage type={type} slug={slug} childSlug={childSlug} />
+                                                    : activeTab === "Reviews" ?
+                                                        <ReviewsPage type={type} slug={slug} childSlug={childSlug} />
+                                                        : activeTab === "Specifications Features" ?
+                                                            <EngineSpecificationsPage type={type} slug={slug} childSlug={childSlug} />
+                                                            : activeTab === "Videos" ?
+                                                                <VideosPage type={type} slug={slug} childSlug={childSlug} />
+                                                                : activeTab === "Colors" ?
+                                                                    <ColorsPage type={type} slug={slug} childSlug={childSlug} />
+                                                                    : activeTab === "Competitors" ?
+                                                                        <CompetitorsPage type={type} slug={slug} childSlug={childSlug} />
+                                                                        : activeTab === "Images" ?
+                                                                            <ImagesPage type={type} slug={slug} childSlug={childSlug} />
+                                                                        : activeTab === "Maintenance Cost" ?
+                                                                            <MainMaintenanceComponent type={type} slug={slug} childSlug={childSlug} />
+                                                                        : activeTab === "Cost Of Ownership" ?
+                                                                            <MainOwnershipComponent type={type} slug={slug} childSlug={childSlug} />
+                                                                            : null
             }
         </>
     );
 }
 
-export default Page;
+export default DynmicModelSlug;

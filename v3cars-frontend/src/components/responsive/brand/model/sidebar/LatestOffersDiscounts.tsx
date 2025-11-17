@@ -18,8 +18,8 @@ const LatestOffersDiscounts: React.FC<LatestOffersDiscountsProps> = ({ title }) 
 
             {/* Body */}
             <div className="flex flex-col items-center text-center px-4 py-4">
-                <div className="flex justify-between items-center">
-                    <p className="text-sm/relaxed text-start">
+                <div className="flex justify-between items-center gap-2">
+                    <p className="text-sm/relaxed text-justify">
                         Discover Toyota Urban Cruiser Hyryder offers and discounts in Delhi including cash discount, exchange bonus, corporate discount, loyalty bonus and low-EMI finance offers. Updated regularly with amounts, eligibility and expiry.
                     </p>
 
