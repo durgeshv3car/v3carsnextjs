@@ -13,6 +13,7 @@ export interface Pagination {
   limit: number;
 }
 
+
 export interface SortInput {
   // generic key for simple sorts; module can map this to its fields
   sortBy?: 'launch_asc' | 'latest' | 'popular' | 'price_asc' | 'price_desc' | 'name_asc' | 'name_desc';
@@ -41,7 +42,7 @@ export interface BaseListResponse<T> {
   total: number;
   totalPages: number;
 }
-
+  
 
 /** Common filters used across models/variants listing */
 export interface CommonFilters {
@@ -63,6 +64,5 @@ export interface CommonFilters {
   // numeric min/max price also supported
   minPrice?: number;
   maxPrice?: number;
+  fuelPriceType?: 'city' | 'highway' | 'combined';
 }
-
-

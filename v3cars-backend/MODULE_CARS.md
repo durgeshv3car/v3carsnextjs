@@ -116,7 +116,7 @@ array-style: brandIds[]=12&brandIds[]=15
 This applies to brandIds, bodyTypeIds, cylindersList, seatingList etc.
 
 Examples
-
+ 
 Upcoming (closest first):
 /v1/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=10&page=1
 
@@ -137,7 +137,6 @@ GET /v1/cars/models?priceBucket=BETWEEN_5_10L&page=1&limit=12&sortBy=popular
 &seatingList=5,7
 &mileage=BETWEEN_10_15
 &transmissionType=Manual
-
 One-line:
 
 http://localhost:3121/v1/cars/models?priceBucket=BETWEEN_5_10L&page=1&limit=12&sortBy=popular&brandIds=12,15,20&bodyTypeIds=1,3&cylindersList=4,6&seatingList=5,7&mileage=BETWEEN_10_15&transmissionType=Manual
@@ -192,6 +191,7 @@ q — search in variantName
 Price filters
 
 
+
 priceBucket — UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L
 
 minPrice, maxPrice — numbers (₹)
@@ -207,6 +207,7 @@ Sorting — price_asc | price_desc | latest | name_asc | name_desc
 page, limit
 
 Examples
+
 
 
 By model: /v1/cars/variants?modelId=163&limit=10&page=1
@@ -236,6 +237,7 @@ Response item
 }
 
 
+
 Notes
 
 Multi-select formats accepted: comma-separated (a,b,c), repeated query keys (k=a&k=b), or array-style (k[]=a&k[]=b). Validators normalize them to arrays server-side.
@@ -252,5 +254,53 @@ Images: Hero image picked by priority: isMainImage DESC, position_no ASC, imageI
 
 MEDIA_BASE_URL: set to build absolute image URLs.
 
+
+
+
+
+
+
+
+model pages -
+
+overview  -
+
+price list -
+
+Fuel tabs
+
+/v1/cars/models/{MODEL_ID}/price-list?fuelType=petrol
+
+/v1/cars/models/{MODEL_ID}/price-list?fuelType=diesel
+
+/v1/cars/models/{MODEL_ID}/price-list?fuelType=cng
+
+/v1/cars/models/{MODEL_ID}/price-list?fuelType=hybrid
+
+/v1/cars/models/{MODEL_ID}/price-list?fuelType=electric
+
+Gearbox tabs
+
+
+
+/v1/cars/models/{MODEL_ID}/price-list?fuelType=manual
+
+/v1/cars/models/{MODEL_ID}/price-list?fuelType=automatic
+
+City + on-road calc (min price base)
+
+/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}
+
+/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}&fuelType=petrol
+
+/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}&fuelType=automatic
+
+Breakdown for a single variant (accordion open)
+
+/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}&expandVariantId={VARIANT_ID}
+
+/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}&fuelType=diesel&expandVariantId={VARIANT_ID}
+
+Loan scenario (adds hypothecation)
 
 

@@ -24,8 +24,13 @@ export class VariantsRepo {
       where,
       orderBy: [{ updatedDate: 'desc' }, { variantId: 'asc' }],
       select: {
-        variantId: true, variantName: true, modelId: true,
-        modelPowertrainId: true, variantPrice: true, updatedDate: true,
+        variantId: true,
+        variantName: true,
+        modelId: true,
+        modelPowertrainId: true,
+        variantPrice: true,
+        csdPrice: true,              // 🆕 include CSD price
+        updatedDate: true,
       },
     });
   }
@@ -34,19 +39,18 @@ export class VariantsRepo {
     return prisma.tblvariants.findFirst({
       where: { variantId: id },
       select: {
-        variantId: true, variantName: true, modelId: true,
-        modelPowertrainId: true, variantPrice: true, updatedDate: true,
+        variantId: true,
+        variantName: true,
+        modelId: true,
+        modelPowertrainId: true,
+        variantPrice: true,
+        csdPrice: true,              // 🆕 include CSD price
+        updatedDate: true,
       },
     });
   }
 
-  /** Compute price bands per model from ALL variants' string prices.
-   *  - Uses price parsing (₹ .. lakh/cr) → rupees
-   *  - Aggregates min/max across variants
-   *  - Applies 'snapApproxINR' (e.g., 4.99L → 5.00L)
-   */
-
-
+  /** Compute price bands per model from ALL variants' string prices. */
   async getPriceBandsByModelIds(modelIds: number[]) {
     const map = new Map<number, { min: number | null; max: number | null }>();
     if (!modelIds?.length) return map;
@@ -67,7 +71,6 @@ export class VariantsRepo {
       map.set(r.modelId, current);
     }
 
-    // Snap to clean values once per model
     for (const [modelId, band] of map.entries()) {
       map.set(modelId, {
         min: snapApproxINR(band.min),
@@ -78,7 +81,7 @@ export class VariantsRepo {
     return map;
   }
 
-   async listByModelId(modelId: number) {
+  async listByModelId(modelId: number) {
     return prisma.tblvariants.findMany({
       where: { modelId },
       orderBy: [{ updatedDate: 'desc' }, { variantId: 'asc' }],
@@ -88,12 +91,16 @@ export class VariantsRepo {
         modelId: true,
         modelPowertrainId: true,
         variantPrice: true,
+        csdPrice: true,              // 🆕 include CSD price
+         vfmValue: true,               // 🆕
+        vfmRank: true,                // 🆕
+        variantRecommendation: true,  // 🆕
         updatedDate: true,
       },
     });
   }
 
-  /** Fetch variants by IDs (kept narrow select for consistency) */
+  /** Fetch variants by IDs */
   async findByIds(ids: number[]) {
     if (!ids?.length) return [];
     return prisma.tblvariants.findMany({
@@ -105,12 +112,13 @@ export class VariantsRepo {
         modelId: true,
         modelPowertrainId: true,
         variantPrice: true,
+        csdPrice: true,              // 🆕 include CSD price
+          vfmValue: true,               // 🆕
+        vfmRank: true,                // 🆕
+        variantRecommendation: true,  // 🆕
         updatedDate: true,
       },
     });
   }
 
 }
-
-
-

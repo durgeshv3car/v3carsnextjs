@@ -6,14 +6,22 @@ import {
   bodyTypeQueryDto,
   priceQueryDto,
   homeLatestNewsDto,
-  homeLatestReviewsDto,
   homeLatestVideosDto,
   homeLatestVariantExplainedDto,
+  homeHeroBannersDto,
+  homeLatestReviewsDto
 } from './home.dto.js';
 
 const svc = new HomeService();
 
 export class HomeController {
+
+  async heroBanners(req: Request, res: Response) {
+    const q = homeHeroBannersDto.parse(req.query);
+    const rows = await svc.heroBanners(q);
+    res.json({ success: true, rows });
+  }
+
   async upcoming(req: Request, res: Response) {
     const q = upcomingQueryDto.parse(req.query);
     const data = await svc.upcoming(q);
@@ -64,4 +72,6 @@ export class HomeController {
     const rows = await svc.latestVariantExplained(q);
     res.json({ success: true, rows });
   }
+
 }
+  

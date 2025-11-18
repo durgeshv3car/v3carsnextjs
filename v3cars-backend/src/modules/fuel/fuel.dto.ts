@@ -11,6 +11,7 @@ export const fuelLatestQueryDto = z.object({
   path: ['cityId'],
 });
 
+
 export const fuelHistoryQueryDto = z.object({
   fuelType: fuelTypeDto,
   stateId: z.coerce.number().int().positive().optional(),
@@ -21,6 +22,8 @@ export const fuelHistoryQueryDto = z.object({
   message: 'cityId or districtId or stateId is required',
   path: ['cityId'],
 });
+
+
 export const fuelStatesListQueryDto = z.object({
   fuelType: fuelTypeDto,
   q: z.string().trim().min(1).optional(),
@@ -28,6 +31,7 @@ export const fuelStatesListQueryDto = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50).optional(),
   sortBy: z.enum(['name_asc', 'price_desc', 'price_asc']).optional(),
 });
+ 
 
 export const fuelCitiesListQueryDto = z.object({
   fuelType: fuelTypeDto,
@@ -38,6 +42,7 @@ export const fuelCitiesListQueryDto = z.object({
   sortBy: z.enum(['name_asc', 'price_desc', 'price_asc']).optional(),
   popular: z.coerce.number().int().refine(v => v === 0 || v === 1, { message: 'popular must be 0 or 1' }).optional(),
 });
+
 
 export const fuelHistoryCombinedQueryDto = z.object({
   stateId: z.coerce.number().int().positive().optional(),
@@ -53,6 +58,8 @@ export const fuelMetrosQueryDto = z.object({
   fuelType: fuelTypeDto.optional(),
   days: z.coerce.number().int().min(1).max(90).optional(), // NEW: last N days (default handled in service)
 });
+
+
 export const fuelMonthlyTrendsQueryDto = z.object({
   fuelType: fuelTypeDto,
   districtId: z.coerce.number().int().positive().optional(),
@@ -62,3 +69,18 @@ export const fuelMonthlyTrendsQueryDto = z.object({
   message: 'Either districtId or cityId is required',
   path: ['districtId'],
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

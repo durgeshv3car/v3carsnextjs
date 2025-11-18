@@ -4,6 +4,7 @@ import { HomeController } from './home.controller.js';
 const r = Router();
 const c = new HomeController();
 
+r.get('/hero-banners', (req, res) => c.heroBanners(req, res));
 r.get('/upcoming-cars', (req, res) => c.upcoming(req, res));
 r.get('/quick-look', (req, res) => c.quickLook(req, res));
 r.get('/search-by-body-type', (req, res) => c.byBodyType(req, res));

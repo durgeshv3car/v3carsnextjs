@@ -6,6 +6,7 @@ import { withCache, cacheKey } from '../../../lib/cache.js';
 const repo = new PowertrainsRepo();
 
 export class PowertrainsService {
+
   async findByIds(ids: number[]) {
     const uniq = Array.from(new Set((ids || []).filter((x) => typeof x === 'number'))).sort((a, b) => a - b);
     if (!uniq.length) return [];
@@ -16,10 +17,13 @@ export class PowertrainsService {
     return withCache(key, async () => repo.findByIds(uniq), ttlMs);
   }
 
+
   /**
    * Legacy helper that returns powertrain ids for simple filters (fuel/transmission/modelId).
    * Kept for backwards compatibility with callers that expect only these params.
    */
+  
+  
   async findIdsByFilters(opts: { fuelType?: string; transmissionType?: string; modelId?: number }) {
     const key = cacheKey({
       ns: 'powertrains:idsByFilters',
@@ -28,7 +32,7 @@ export class PowertrainsService {
       transmissionType: opts.transmissionType ?? undefined,
       modelId: opts.modelId ?? undefined,
     });
-    const ttlMs = 30 * 60 * 1000;
+    const ttlMs = 30 * 60 * 1000; 
 
     return withCache(key, async () => repo.findIdsByFilters(opts), ttlMs);
   }
@@ -40,6 +44,7 @@ export class PowertrainsService {
 
     return withCache(key, async () => repo.findModelIdsByFuel(opts), ttlMs);
   }
+
 
   /**
    * 🆕 Distinct modelIds for combined powertrain/spec filters
@@ -54,6 +59,8 @@ export class PowertrainsService {
    * Returns an array of unique modelIds that match ANY of the provided filters combined.
    * Results are cached.
    */
+
+
   async findModelIdsByFilters(opts: {
     fuelType?: string;
     transmissionType?: string;
@@ -129,4 +136,56 @@ export class PowertrainsService {
     return new Map(entries);
   }
 
+
+    async listForModel(modelId: number) {
+    const key = cacheKey({ ns: 'powertrains:listForModel', v: 1, modelId });
+    const ttlMs = 30 * 60 * 1000;
+    return withCache(key, async () => {
+      const rows = await repo.listForModel(modelId);
+      return rows.map(r => {
+        const speed = r.transmissionSpeed ? `${r.transmissionSpeed}-speed` : null;
+        const trans = [speed, r.transmissionSubType || r.transmissionType].filter(Boolean).join(' ');
+        return {
+          id: r.modelPowertrainId,
+          label: r.powerTrain || [r.fuelType, trans].filter(Boolean).join(' with '),
+          fuelType: r.fuelType ?? null,
+          transmissionType: r.transmissionType ?? null,
+        };
+      });
+    }, ttlMs);
+  }
+
+  /** Detailed single powertrain (cached) */
+  async getOneWithSpecs(modelPowertrainId: number) {
+    const key = cacheKey({ ns: 'powertrains:getOneWithSpecs', v: 1, id: modelPowertrainId });
+    const ttlMs = 30 * 60 * 1000;
+    return withCache(key, async () => repo.getOneWithSpecs(modelPowertrainId), ttlMs);
+  }
+
+
+    async getWarrantyByModelIds(modelIds: number[]) {
+    const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
+    if (!ids.length) return new Map<number, { years: number | null; km: string | null }>();
+
+    const key = cacheKey({ ns: 'powertrains:warrantyByModelIds', v: 1, ids });
+    const ttlMs = 30 * 60 * 1000;
+
+    const entries = await withCache<[number, { years: number | null; km: string | null }][]>(
+      key,
+      async () => {
+        const map = await repo.getWarrantyByModelIds(ids);
+        return Array.from(map.entries());
+      },
+      ttlMs
+    );
+
+    return new Map<number, { years: number | null; km: string | null }>(entries);
+  }
+
+ 
+
 }
+
+
+
+

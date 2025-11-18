@@ -40,6 +40,7 @@ export function getRedis(): any | null {
   return client;
 }
 
+
 export async function ensureRedisConnected(): Promise<boolean> {
   const r = getRedis();
   if (!r) return false;

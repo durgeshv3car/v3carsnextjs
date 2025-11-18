@@ -207,4 +207,95 @@ async getSpecsByModelIds(modelIds: number[]) {
   return map;
 }
 
+ async listForModel(modelId: number) {
+    return prisma.tblmodelpowertrains.findMany({
+      where: { modelId },
+      orderBy: [{ modelPowertrainId: 'asc' }],
+      select: {
+        modelPowertrainId: true,
+        powerTrain: true,
+        fuelType: true,
+        transmissionType: true,
+        transmissionSubType: true,
+        transmissionSpeed: true,
+      },
+    });
+  }
+
+   async getOneWithSpecs(modelPowertrainId: number) {
+    return prisma.tblmodelpowertrains.findFirst({
+      where: { modelPowertrainId },
+      select: {
+        modelPowertrainId: true,
+        modelId: true,
+        powerTrain: true,
+        fuelType: true,
+        transmissionType: true,
+        transmissionSubType: true,
+        transmissionSpeed: true,
+
+        // specs used in table
+        engineDisplacement: true,
+        cubicCapacity: true,
+        cylinders: true,
+        powerPS: true,
+        powerMinRPM: true,
+        powerMaxRPM: true,
+        torqueNM: true,
+        torqueMinRPM: true,
+        torqueMaxRPM: true,
+        kerbWeight: true,
+        claimedFE: true,
+        realWorldMileage: true,
+        powerWeight: true,
+        torqueWeight: true,
+        drivetrain: true,
+        isFourByFour: true,
+      },
+    });
+  }
+
+   async getWarrantyByModelIds(modelIds: number[]) {
+    const map = new Map<number, { years: number | null; km: string | null }>();
+    if (!modelIds?.length) return map;
+
+    // MIN(modelPowertrainId) per modelId
+    const mins = await prisma.tblmodelpowertrains.groupBy({
+      by: ['modelId'],
+      where: { modelId: { in: modelIds } },
+      _min: { modelPowertrainId: true },
+    });
+
+    const ptIds: number[] = [];
+    const midByPt = new Map<number, number>();
+    for (const g of mins) {
+      const mid = g.modelId as number;
+      const minId = g._min.modelPowertrainId as number | null;
+      if (typeof mid === 'number' && typeof minId === 'number') {
+        ptIds.push(minId);
+        midByPt.set(minId, mid);
+      }
+    }
+    if (!ptIds.length) return map;
+
+    const rows = await prisma.tblmodelpowertrains.findMany({
+      where: { modelPowertrainId: { in: ptIds } },
+      select: {
+        modelPowertrainId: true,
+        standardWarrantyKm: true,
+        standardWarrantyYear: true,
+      },
+    });
+
+    for (const r of rows) {
+      const mid = midByPt.get(r.modelPowertrainId);
+      if (!mid) continue;
+      map.set(mid, {
+        years: (r.standardWarrantyYear as unknown as number) ?? null,
+        km: (r.standardWarrantyKm as string | null) ?? null,
+      });
+    }
+    return map;
+  }
+
 }

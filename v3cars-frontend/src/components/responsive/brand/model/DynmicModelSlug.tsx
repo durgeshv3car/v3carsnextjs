@@ -92,6 +92,7 @@ function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
         handleModelState()
     }, [childSlug])
 
+
     return (
         <>
             <div className="bg-[#18181b] text-white">

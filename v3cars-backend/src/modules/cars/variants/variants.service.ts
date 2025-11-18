@@ -9,6 +9,9 @@ import { withCache, cacheKey } from '../../../lib/cache.js';
 const repo = new VariantsRepo();
 const powertrains = new PowertrainsService();
 
+
+
+
 // ---- helpers ----
 function priceInBucket(min: number | null, max: number | null, bucket?: string) {
   if (!bucket) return true;
@@ -31,12 +34,13 @@ function priceInBucket(min: number | null, max: number | null, bucket?: string) 
   if (typeof r.max === 'number' && (vMin as number) > r.max) return false;
   return true;
 }
-
+ 
 function cmp(a: number | null | undefined, b: number | null | undefined, dir: 'asc' | 'desc') {
   const an = a ?? Number.POSITIVE_INFINITY;
   const bn = b ?? Number.POSITIVE_INFINITY;
   return dir === 'asc' ? an - bn : bn - an;
 }
+
 
 export class VariantsService {
   async list(q: VariantsListQuery) {
@@ -89,11 +93,11 @@ export class VariantsService {
         priceMax,
         powertrain: pt
           ? {
-              id: v.modelPowertrainId!,
-              fuelType: pt.fuelType,
-              transmissionType: pt.transmissionType,
-              label: pt.powerTrain,
-            }
+            id: v.modelPowertrainId!,
+            fuelType: pt.fuelType,
+            transmissionType: pt.transmissionType,
+            label: pt.powerTrain,
+          }
           : null,
       };
     });
@@ -147,25 +151,25 @@ export class VariantsService {
   }
 
   // 🔥 expose price bands for Models enrichment — now cached
-async getPriceBandsByModelIds(modelIds: number[]) {
-  const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
-  if (!ids.length) return new Map<number, { min: number | null; max: number | null }>();
+  async getPriceBandsByModelIds(modelIds: number[]) {
+    const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
+    if (!ids.length) return new Map<number, { min: number | null; max: number | null }>();
 
-  const key = cacheKey({ ns: 'variants:priceBandsByModelIds', v: 1, ids });
-  const ttlMs = 30 * 60 * 1000; // 30 min
+    const key = cacheKey({ ns: 'variants:priceBandsByModelIds', v: 1, ids });
+    const ttlMs = 30 * 60 * 1000; // 30 min
 
-  // Cache me entries array store karo, wapas Map banao
-  const entries = await withCache<[number, { min: number | null; max: number | null }][]>(
-    key,
-    async () => {
-      const map = await repo.getPriceBandsByModelIds(ids); // already returns Map
-      return Array.from(map.entries());
-    },
-    ttlMs
-  );
+    // Cache me entries array store karo, wapas Map banao
+    const entries = await withCache<[number, { min: number | null; max: number | null }][]>(
+      key,
+      async () => {
+        const map = await repo.getPriceBandsByModelIds(ids); // already returns Map
+        return Array.from(map.entries());
+      },
+      ttlMs
+    );
 
-  return new Map<number, { min: number | null; max: number | null }>(entries);
-}
+    return new Map<number, { min: number | null; max: number | null }>(entries);
+  }
 
   // (optional) frequently used helpers can also be cached similarly:
   async listByModelId(modelId: number) {
@@ -181,4 +185,107 @@ async getPriceBandsByModelIds(modelIds: number[]) {
     const ttlMs = 30 * 60 * 1000;
     return withCache(key, async () => repo.findByIds(ids), ttlMs);
   }
+
+  async bestByModelId(modelId: number, filter?: { powertrainId?: number }) {
+    // pull all variants of the model
+    const all = await this.listByModelId(modelId);
+
+    // helper: Prisma Decimal -> number (or 0)
+    const toNum = (x: unknown) => (x == null ? 0 : Number(x));
+
+    // build price mins, group by powertrain
+    type V = Awaited<ReturnType<typeof this.listByModelId>>[number];
+    const byPt = new Map<number, (V & { priceMin: number | null; priceMax: number | null })[]>();
+
+    for (const v of all) {
+      if (!v.modelPowertrainId) continue;
+      if (filter?.powertrainId && v.modelPowertrainId !== filter.powertrainId) continue;
+
+      const band = extractPriceBand(v.variantPrice ?? '');
+      const priceMin = band?.min ?? null;
+      const priceMax = band?.max ?? null;
+
+      const arr = byPt.get(v.modelPowertrainId) ?? [];
+      arr.push({ ...v, priceMin, priceMax });
+      byPt.set(v.modelPowertrainId, arr);
+    }
+
+    if (!byPt.size) return [];
+
+    // choose best per powertrain:
+    // 1) lowest vfmRank (NULLs last), 2) highest vfmValue, 3) lowest priceMin
+    const rankVal = (n: number | null | undefined) =>
+      n == null ? Number.POSITIVE_INFINITY : n;
+
+    const ptIds = Array.from(byPt.keys());
+    // ✅ use typed service import instead of require (fixes TS "{}" type issue)
+    const ptMeta = ptIds.length ? await powertrains.findByIds(ptIds) : [];
+    const ptMap = new Map(ptMeta.map(p => [p.modelPowertrainId, p]));
+
+    const result: Array<{
+      powertrain: { id: number; fuelType: string | null; transmissionType: string | null; label: string | null };
+      variant: {
+        variantId: number | null;
+        name: string | null;
+        exShowroom: number | null;
+        exShowroomMax: number | null;
+        vfmValue: number | null;
+        vfmRank: number | null;
+        recommendation: string | null;
+        updatedDate: Date | null;
+      };
+    }> = [];
+
+    for (const [ptId, arr] of byPt.entries()) {
+      arr.sort((a, b) => {
+        const r = rankVal(a.vfmRank as unknown as number) - rankVal(b.vfmRank as unknown as number);
+        if (r !== 0) return r;
+        const v = toNum(b.vfmValue) - toNum(a.vfmValue); // Decimal → number
+        if (v !== 0) return v;
+        const p =
+          (a.priceMin ?? Number.POSITIVE_INFINITY) -
+          (b.priceMin ?? Number.POSITIVE_INFINITY);
+        if (p !== 0) return p;
+        return (a.variantId ?? 0) - (b.variantId ?? 0);
+      });
+
+      const best = arr[0];
+      const pt = ptMap.get(ptId);
+
+      result.push({
+        powertrain: pt
+          ? {
+            id: pt.modelPowertrainId,
+            fuelType: pt.fuelType ?? null,
+            transmissionType: pt.transmissionType ?? null,
+            label: pt.powerTrain ?? [pt.fuelType, pt.transmissionType].filter(Boolean).join(' '),
+          }
+          : { id: ptId, fuelType: null, transmissionType: null, label: null },
+        variant: {
+          variantId: best.variantId ?? null,
+          name: best.variantName ?? null,
+          exShowroom: best.priceMin ?? null,
+          exShowroomMax: best.priceMax ?? null,
+          vfmValue: (best.vfmValue == null ? null : Number(best.vfmValue)), // Decimal → number
+          vfmRank: (best.vfmRank == null ? null : Number(best.vfmRank)),
+          recommendation: best.variantRecommendation ?? null,
+          updatedDate: (best.updatedDate as Date | null) ?? null,
+        },
+      });
+    }
+
+    // stable order by fuel → transmission → price
+    result.sort((a, b) => {
+      const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '');
+      if (af !== 0) return af;
+      const at = (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '');
+      if (at !== 0) return at;
+      return (a.variant.exShowroom ?? Number.POSITIVE_INFINITY) - (b.variant.exShowroom ?? Number.POSITIVE_INFINITY);
+    });
+
+    return result;
+  }
+
+
 }
+

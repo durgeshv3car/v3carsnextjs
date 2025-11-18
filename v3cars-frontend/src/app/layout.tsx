@@ -36,6 +36,12 @@ export default function RootLayout({
   return (
 
     <html lang="en" className={roboto.className}>
+
+      <meta>
+      
+      
+      </meta>
+
       <body
         className="antialiased transition-colors"
       >

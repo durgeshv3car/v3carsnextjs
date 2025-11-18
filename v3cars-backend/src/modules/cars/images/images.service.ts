@@ -1,43 +1,82 @@
 import { ImagesRepo } from './images.repo.js';
-import { env } from '../../../config/env.js';
 // ⬇️ Cache façade
 import { withCache, cacheKey } from '../../../lib/cache.js';
 
 const repo = new ImagesRepo();
 
-/** Build absolute URL if MEDIA_BASE_URL is set; else return the name as-is */
-function buildAssetUrl(name?: string | null): string | null {
-  if (!name) return null;
-  const base = (env.MEDIA_BASE_URL || '').trim();
-  if (!base) return name;
-  const b = base.replace(/\/+$/, '');
-  const p = name.replace(/^\/+/, '');
-  return `${b}/${p}`;
+/** 🔁 Frontend will prepend base URL — return raw file path only */
+function buildAssetPath(name?: string | null): string | null {
+  return name ?? null;
 }
 
 export class ImagesService {
- async getPrimaryByModelIds(modelIds: number[]) {
-  const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
-  if (!ids.length) return new Map<number, { name: string | null; alt: string | null; url: string | null }>();
+  async getPrimaryByModelIds(modelIds: number[]) {
+    const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
+    if (!ids.length) return new Map<number, { name: string | null; alt: string | null; url: string | null }>();
 
-  const key = cacheKey({ ns: 'images:primaryByModelIds', v: 1, ids });
-  const ttlMs = 60 * 60 * 1000; // 60 min
+    const key = cacheKey({ ns: 'images:primaryByModelIds', v: 2, ids }); // bump v due to path logic change
+    const ttlMs = 60 * 60 * 1000;
 
-  const entries = await withCache<[number, { name: string | null; alt: string | null; url: string | null }][]>(
-    key,
-    async () => {
-      const raw = await repo.getPrimaryByModelIds(ids); // Map<number, row>
-      const arr: [number, { name: string | null; alt: string | null; url: string | null }][] = [];
-      for (const [modelId, r] of raw) {
-        const name = r.modelImageName ?? r.variantImageName ?? null;
-        const alt = r.modelImageAltText ?? r.variantImageAltText ?? null;
-        arr.push([modelId, { name, alt, url: buildAssetUrl(name) }]);
-      }
-      return arr;
-    },
-    ttlMs
-  );
+    const entries = await withCache<[number, { name: string | null; alt: string | null; url: string | null }][]>(
+      key,
+      async () => {
+        const raw = await repo.getPrimaryByModelIds(ids); // Map<number, row>
+        const arr: [number, { name: string | null; alt: string | null; url: string | null }][] = [];
+        for (const [modelId, r] of raw) {
+          const name = r.modelImageName ?? r.variantImageName ?? null;
+          const alt = r.modelImageAltText ?? r.variantImageAltText ?? null;
+          arr.push([modelId, { name, alt, url: buildAssetPath(name) }]);
+        }
+        return arr;
+      },
+      ttlMs
+    );
 
-  return new Map(entries);
-}
+    return new Map(entries);
+  }
+
+  /** Full gallery for a model */
+  async listAllByModelId(modelId: number) {
+    const key = cacheKey({ ns: 'images:listAllByModel', v: 2, modelId }); // bump v
+    const ttlMs = 60 * 60 * 1000;
+
+    return withCache(
+      key,
+      async () => {
+        const rows = await repo.listAllByModelId(modelId);
+        return rows.map((r) => {
+          const name = r.modelImageName ?? r.variantImageName ?? null;
+          const alt = r.modelImageAltText ?? r.variantImageAltText ?? null;
+          return {
+            id: r.imageId,
+            url: buildAssetPath(name),
+            alt,
+            isMain: !!r.isMainImage,
+            position: r.position_no ?? null,
+          };
+        });
+      },
+      ttlMs
+    );
+  }
+
+  /** Colours for a model */
+  async listColorsByModelId(modelId: number) {
+    const key = cacheKey({ ns: 'images:listColorsByModel', v: 2, modelId }); // bump v
+    const ttlMs = 60 * 60 * 1000;
+
+    return withCache(
+      key,
+      async () => {
+        const rows = await repo.listColorsByModelId(modelId);
+        return rows.map((r) => ({
+          id: r.id,
+          colorId: r.colorId ?? null,
+          name: r.fileNameAltText ?? null,
+          imageUrl: buildAssetPath(r.fileName ?? null),
+        }));
+      },
+      ttlMs
+    );
+  }
 }
