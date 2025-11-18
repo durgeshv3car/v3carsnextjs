@@ -1,11 +1,28 @@
 import type { Request, Response } from 'express';
 import { ModelsService } from './models.service.js';
-import { modelIdParamDto, modelsListQueryDto, upcomingMonthlyCountDto, topSellingMonthlyDto, modelPriceListQueryDto, modelBestVariantQueryDto, modelMsfQueryDto } from './models.dto.js';
+import {
+  modelsListQueryDto,
+  upcomingMonthlyCountDto,
+  topSellingMonthlyDto,
+  modelPriceListQueryDto,
+  modelBestVariantQueryDto,
+  modelMsfQueryDto,
+} from './models.dto.js';
 
 const svc = new ModelsService();
 
-
 export class ModelsController {
+  /** id or slug → numeric modelId resolver */
+  private async resolve(req: Request, res: Response): Promise<number | null> {
+    const raw = String(req.params.id || '');
+    const id = await svc.resolveModelId(raw);
+    if (!id) {
+      res.status(404).json({ success: false, message: 'Model not found' });
+      return null;
+    }
+    return id;
+  }
+
   async list(req: Request, res: Response) {
     const q = modelsListQueryDto.parse(req.query);
     const data = await svc.list(q as any);
@@ -13,15 +30,8 @@ export class ModelsController {
   }
 
   async getById(req: Request, res: Response) {
-    const parsed = modelIdParamDto.safeParse(req.params);
-    if (!parsed.success) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid model id',
-        issues: parsed.error.issues,
-      });
-    }
-    const { id } = parsed.data;
+    const id = await this.resolve(req, res);
+    if (!id) return;
     const data = await svc.getById(id);
     if (!data) return res.status(404).json({ success: false, message: 'Model not found' });
     res.json({ success: true, data });
@@ -37,9 +47,6 @@ export class ModelsController {
     res.json({ success: true, rows });
   }
 
-  ;
-
-  // inside class
   async topSellingMonthly(req: Request, res: Response) {
     const q = topSellingMonthlyDto.parse(req.query);
     const data = await svc.topSellingModelsByMonth({ year: q.year, month: q.month, limit: q.limit });
@@ -47,67 +54,48 @@ export class ModelsController {
   }
 
   async priceList(req: Request, res: Response) {
-    const parsedId = modelIdParamDto.safeParse(req.params);
-    if (!parsedId.success) {
-      return res.status(400).json({ success: false, message: 'Invalid model id', issues: parsedId.error.issues });
-    }
+    const id = await this.resolve(req, res);
+    if (!id) return;
     const q = modelPriceListQueryDto.parse(req.query);
-    const data = await svc.priceList(parsedId.data.id, q);
+    const data = await svc.priceList(id, q as any);
     res.json({ success: true, ...data });
   }
 
   async bestVariantToBuy(req: Request, res: Response) {
-    const parsedId = modelIdParamDto.safeParse(req.params);
-    if (!parsedId.success) {
-      return res.status(400).json({ success: false, message: 'Invalid model id', issues: parsedId.error.issues });
-    }
+    const id = await this.resolve(req, res);
+    if (!id) return;
     const q = modelBestVariantQueryDto.parse(req.query);
-    const data = await svc.bestVariantToBuy(parsedId.data.id, q as any);
+    const data = await svc.bestVariantToBuy(id, q as any);
     res.json(data);
   }
 
-
   async dimensionsCapacity(req: Request, res: Response) {
-    const parsedId = modelIdParamDto.safeParse(req.params);
-    if (!parsedId.success) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Invalid model id', issues: parsedId.error.issues });
-    }
-    const data = await svc.dimensionsCapacity(parsedId.data.id);
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const data = await svc.dimensionsCapacity(id);
     if (!data) return res.status(404).json({ success: false, message: 'Model not found' });
     res.json({ success: true, ...data });
   }
 
-
   async mileageSpecsFeatures(req: Request, res: Response) {
-    const parsedId = modelIdParamDto.safeParse(req.params);
-    if (!parsedId.success) {
-      return res.status(400).json({ success: false, message: 'Invalid model id', issues: parsedId.error.issues });
-    }
+    const id = await this.resolve(req, res);
+    if (!id) return;
     const q = modelMsfQueryDto.parse(req.query);
-    const data = await svc.mileageSpecsFeatures(parsedId.data.id, q as any);
+    const data = await svc.mileageSpecsFeatures(id, q as any);
     res.json(data);
   }
 
-
   async prosCons(req: Request, res: Response) {
-    const parsedId = modelIdParamDto.safeParse(req.params);
-    if (!parsedId.success) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Invalid model id', issues: parsedId.error.issues });
-    }
-    const data = await svc.prosCons(parsedId.data.id);
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const data = await svc.prosCons(id);
     res.json(data);
   }
 
   async compareSimilar(req: Request, res: Response) {
-    const parsedId = modelIdParamDto.safeParse(req.params);
-    if (!parsedId.success) {
-      return res.status(400).json({ success: false, message: 'Invalid model id', issues: parsedId.error.issues });
-    }
-    const data = await svc.compareSimilar(parsedId.data.id);
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const data = await svc.compareSimilar(id);
     res.json(data);
   }
 }

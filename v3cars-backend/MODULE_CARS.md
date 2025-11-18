@@ -255,12 +255,6 @@ Images: Hero image picked by priority: isMainImage DESC, position_no ASC, imageI
 MEDIA_BASE_URL: set to build absolute image URLs.
 
 
-
-
-
-
-
-
 model pages -
 
 overview  -
