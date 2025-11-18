@@ -77,6 +77,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug }) => {
             router.push(`/${type}/${slug}/images`);
         } else if (tab === "Maintenance Cost") {
             router.push(`/${type}/${slug}/maintenance-cost`);
+        } else if (tab === "Cost Of Ownership") {
+            router.push(`/${type}/${slug}/cost-of-ownership`);
         }
         else {
             router.push(`/${type}/${slug}/${toSlug(tab)}`);
@@ -190,20 +192,27 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug }) => {
                                                                                 others="Images (Interior & Exterior)"
                                                                                 description="Uncover the Tata Nexon from top to bottom with our extensive collection of high-resolution Nexon car images. This page allows you to examine every aspect of the vehicle in detail. Explore the Tata Nexon interior and its layout to discover the perfect..."
                                                                             />
-                                                                        : activeTab === "Maintenance Cost" ?
-                                                                            <CommonModelTopSection
-                                                                                title="Tata"
-                                                                                highlight="Nexon"
-                                                                                others="Maintenance Cost"
-                                                                                description="Get the estimated service cost of the Tata Nexon with a year-by-year breakup for parts labour and taxes. We show the total 10-year maintenance cost, the average yearly cost and the cost per km based on the recommended service schedule. Use the ..."
-                                                                            />
-                                                                            :
-                                                                            <CommonModelTopSection
-                                                                                title="Tata"
-                                                                                highlight="Nexon"
-                                                                                others="Dimensions"
-                                                                                description="The Tata Nexon is a B2-segment SUV which has a seating capacity of up to 5 occupants. Here we present the Tata Nexon dimensions like length, width, height and wheelbase along with fuel tank capacity, boot space, ground clearance and tyre size. You can al..."
-                                                                            />
+                                                                            : activeTab === "Maintenance Cost" ?
+                                                                                <CommonModelTopSection
+                                                                                    title="Tata"
+                                                                                    highlight="Nexon"
+                                                                                    others="Maintenance Cost"
+                                                                                    description="Get the estimated service cost of the Tata Nexon with a year-by-year breakup for parts labour and taxes. We show the total 10-year maintenance cost, the average yearly cost and the cost per km based on the recommended service schedule. Use the ..."
+                                                                                />
+                                                                                : activeTab === "Cost Of Ownership" ?
+                                                                                    <CommonModelTopSection
+                                                                                        title="Tata"
+                                                                                        highlight="Nexon"
+                                                                                        others="Cost Of Ownership"
+                                                                                        description="Calculate the total cost of ownership for the Tata Nexon in your city. We combine on-road price plus periodic maintenance cost plus running cost from real-world mileage to show a 5-year total and ₹/km. Edit years or kilometres to match your usage. ..."
+                                                                                    />
+                                                                                    :
+                                                                                    <CommonModelTopSection
+                                                                                        title="Tata"
+                                                                                        highlight="Nexon"
+                                                                                        others="Dimensions"
+                                                                                        description="The Tata Nexon is a B2-segment SUV which has a seating capacity of up to 5 occupants. Here we present the Tata Nexon dimensions like length, width, height and wheelbase along with fuel tank capacity, boot space, ground clearance and tyre size. You can al..."
+                                                                                    />
             }
 
             {/* Bottom Tabs */}

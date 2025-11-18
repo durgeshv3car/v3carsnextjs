@@ -155,11 +155,11 @@ function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
                                                                         <CompetitorsPage type={type} slug={slug} childSlug={childSlug} />
                                                                         : activeTab === "Images" ?
                                                                             <ImagesPage type={type} slug={slug} childSlug={childSlug} />
-                                                                        : activeTab === "Maintenance Cost" ?
-                                                                            <MainMaintenanceComponent type={type} slug={slug} childSlug={childSlug} />
-                                                                        : activeTab === "Cost Of Ownership" ?
-                                                                            <MainOwnershipComponent type={type} slug={slug} childSlug={childSlug} />
-                                                                            : null
+                                                                            : activeTab === "Maintenance Cost" ?
+                                                                                <MainMaintenanceComponent type={type} slug={slug} childSlug={childSlug} />
+                                                                                : activeTab === "Cost Of Ownership" ?
+                                                                                    <MainOwnershipComponent type={type} slug={slug} childSlug={childSlug} />
+                                                                                    : null
             }
         </>
     );

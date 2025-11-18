@@ -21,6 +21,14 @@ import useIsMobile from "@/hooks/useIsMobile";
 import { useGetPopularCarQuery } from "@/redux/api/carModuleApi";
 import { useGetLatestComparisonReviewsQuery } from "@/redux/api/contentModuleApi";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import CarsSelector from "./CarsSelector";
+import { OnRoadPriceTable } from "./OnRoadPriceTable";
+import { OwnershipAssumptions } from "./OwnershipAssumptions";
+import { PeriodicMaintenanceCost } from "./PeriodicMaintenanceCost";
+import { RunningCost } from "./RunningCost";
+import { TotalCostOfOwnership } from "./TotalCostOfOwnership";
+import { IncludedNotIncluded } from "./IncludedNotIncluded";
+import { EmiCalculator } from "./EmiCalculator";
 
 interface MileagePageProps {
     type: string;
@@ -66,11 +74,21 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
-                            {/* <ServiceCostTable />
+                            <CarsSelector />
 
-                            <ServiceCostSnapshot />
+                            <OnRoadPriceTable />
 
-                            <ServiceCostByYear /> */}
+                            <EmiCalculator />
+
+                            <OwnershipAssumptions />
+
+                            <PeriodicMaintenanceCost />
+
+                            <RunningCost />
+
+                            <TotalCostOfOwnership />
+
+                            <IncludedNotIncluded />
 
                             <div className="border rounded-xl h-[332px]" />
 
