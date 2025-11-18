@@ -1,3 +1,4 @@
+
 import { ModelsService } from '../cars/models/models.service.js';
 import type {
   UpcomingQuery,
@@ -6,11 +7,13 @@ import type {
   PriceQuery,
   HomeLatestNewsQuery,
 } from './home.types.js';
+
 import { NewsService } from '../news/news.service.js';
 import { ReviewsService } from '../reviews/reviews.service.js';
-import { ContentService } from '../content/content.service.js';
+import { ContentService } from '../content/content.service.js'; 
 import { CONTENT_TYPES } from '../content/content.constants.js';
 import { VideosService } from '../videos/videos.service.js';
+import { prisma } from '../../lib/prisma.js';
 
 const models = new ModelsService();
 const news = new NewsService();
@@ -18,7 +21,25 @@ const reviews = new ReviewsService();
 const content = new ContentService();
 const videos = new VideosService();
 
+
 export class HomeService {
+
+   async heroBanners(q: { limit?: number }) {
+    const limit = q.limit ?? 6;
+    const rows = await prisma.tblwebhomebanner.findMany({
+      where: { status: 2 },
+      orderBy: { bannerId: 'desc' },
+      take: limit,
+      select: {
+        bannerId: true,
+        imagePath: true,
+        imageAltTag: true,
+        redirectLink: true,
+      },
+    });
+    return rows;
+  }
+
   upcoming(q: UpcomingQuery) {
     return models.list({
       page: q.page ?? 1,
@@ -70,7 +91,7 @@ export class HomeService {
   /** Latest expert reviews (articles, type=2) */
   async latestReviews(q: { limit?: number; excludeToday?: boolean }) {
     const limit = q.limit ?? 6;
-    const excludeToday = q.excludeToday ?? false;
+    const excludeToday = q.excludeToday ?? false; 
     return reviews.latest({ limit, excludeToday });
   }
 
@@ -86,4 +107,9 @@ export class HomeService {
     const excludeToday = q.excludeToday ?? false;
     return content.latest(CONTENT_TYPES.VARIANTS_EXPLAINED, { limit, excludeToday });
   }
+
+
 }
+
+
+

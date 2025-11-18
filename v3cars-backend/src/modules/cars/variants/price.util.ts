@@ -27,6 +27,7 @@ export function extractPriceBand(raw: string): { min: number; max: number } | nu
   return { min, max };
 }
 
+
 /** Snap INR to a 'clean' auto-price:
  *  - Work in lakhs (₹1,00,000) → round to 2 decimals.
  *  - If fractional part >= 0.95, bump to next whole lakh (e.g. 4.99L → 5.00L)
@@ -39,3 +40,5 @@ export function snapApproxINR(n: number | null | undefined): number | null {
   if (frac >= 0.95) snappedLakhs = Math.ceil(inLakhs); // e.g. 4.96..4.99 → 5.00
   return Math.round(snappedLakhs * 100_000);
 }
+     
+

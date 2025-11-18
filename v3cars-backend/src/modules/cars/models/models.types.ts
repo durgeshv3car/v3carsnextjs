@@ -10,3 +10,15 @@ export interface ModelsListQuery extends CommonFilters, Pagination, SortInput {
   // note: other spec-like keys (cylinders, mileage, seating, engineDisplacement, minPrice, maxPrice)
   // are inherited from CommonFilters
 }
+
+
+export interface ModelPriceListQuery extends Pagination, SortInput {
+  fuelType?: string;
+  transmissionType?: string;
+  priceType?: 'ex' | 'onroad' | 'csd';
+  citySlug?: string; // used for on-road / csd pricing
+}
+
+export interface ModelBestVariantQuery {
+  powertrainId?: number;
+}

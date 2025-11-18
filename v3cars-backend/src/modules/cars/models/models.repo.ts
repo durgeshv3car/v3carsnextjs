@@ -167,6 +167,7 @@ export class ModelsRepo {
       prisma.tblmodels.count({ where }),
     ]);
 
+  
     return {
       rows,
       total,
@@ -174,8 +175,10 @@ export class ModelsRepo {
       pageSize: take,
       totalPages: Math.max(1, Math.ceil(total / take)),
     };
-  }
 
+
+  }                                            
+ 
   /**
    * listIgnoringPriceBucket - returns all matching models (no pagination)
    * Accepts same opts for allowedModelIds
@@ -247,6 +250,10 @@ export class ModelsRepo {
   `);
 
     return rows;
+
   }
 
 }
+  
+
+

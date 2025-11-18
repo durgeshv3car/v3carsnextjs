@@ -18,6 +18,10 @@ export interface PriceQuery extends Pagination {
   sortBy?: 'popular' | 'latest' | 'price_asc' | 'price_desc' | 'name_asc' | 'name_desc';
 }
 
+export interface HomeHeroBannersQuery {
+  limit?: number;
+}
+
 /** News widget */
 export interface HomeLatestNewsQuery {
   limit?: number;

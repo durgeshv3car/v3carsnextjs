@@ -1,9 +1,15 @@
+
+
+
+
 export type WebsiteContentSort =
   | 'latest'
   | 'id_asc'
   | 'id_desc'
   | 'title_asc'
   | 'title_desc';
+
+
 
 export interface WebsiteContentListQuery {
   moduleId: number;       // required
@@ -14,6 +20,8 @@ export interface WebsiteContentListQuery {
   sortBy?: WebsiteContentSort;
 }
 
+
+
 /** Generic row (tblwebsitecontent2) */
 export interface WebsiteContentGeneric {
   id: number;
@@ -23,6 +31,8 @@ export interface WebsiteContentGeneric {
   createdAt: string; // ISO
   updatedAt: string; // ISO
 }
+
+
 
 /** Insurance row (tblcarinsurancecontent) — FULL column-wise */
 export interface WebsiteContentInsurance {
@@ -45,6 +55,8 @@ export interface WebsiteContentInsurance {
   section10heading: string | null; section10Desc: string | null;
 }
 
+
+
 /** Authors row (tblauthor) — FULL column-wise */
 export interface WebsiteContentAuthor {
   moduleId: 6;
@@ -64,7 +76,11 @@ export interface WebsiteContentAuthor {
   imageAltText: string | null;
 }
 
+
+
 export type WebsiteContentRow =
   | WebsiteContentGeneric
   | WebsiteContentInsurance
   | WebsiteContentAuthor;
+
+

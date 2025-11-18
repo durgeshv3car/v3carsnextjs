@@ -1,3 +1,5 @@
+
+
 import { prisma } from '../../lib/prisma.js';
 import type { Prisma } from '@prisma/client';
 import type {
@@ -19,6 +21,7 @@ function buildWC2Where(q: WebsiteContentListQuery): Prisma.tblwebsitecontent2Whe
 }
 
 
+
 function buildWC2Order(sortBy?: WebsiteContentListQuery['sortBy']): Prisma.tblwebsitecontent2OrderByWithRelationInput[] {
   switch (sortBy) {
     case 'title_asc':  return [{ title: 'asc' }, { id: 'asc' }];
@@ -29,6 +32,7 @@ function buildWC2Order(sortBy?: WebsiteContentListQuery['sortBy']): Prisma.tblwe
     default:           return [{ createdAt: 'desc' }, { id: 'desc' }];
   }
 }
+
 
 
 const wc2Select = {
@@ -83,10 +87,6 @@ const insuranceSelect = {
 /* ---------- Authors (tblauthor) for moduleId=6 ---------- */
 
 
-/** IMPORTANT FIX:
- * When authorId is provided, DO NOT force status = 1.
- * Otherwise single-author fetch returns empty for inactive/NULL status authors.
- */
 
 function buildAuthorsWhere(q: WebsiteContentListQuery): Prisma.tblauthorWhereInput {
   const where: Prisma.tblauthorWhereInput = {};
@@ -113,6 +113,7 @@ function buildAuthorsWhere(q: WebsiteContentListQuery): Prisma.tblauthorWhereInp
 }
 
 
+
 const authorsSelect = {
   id: true,
   name: true,
@@ -129,6 +130,8 @@ const authorsSelect = {
   status: true,
   imageAltText: true,
 } satisfies Prisma.tblauthorSelect;
+
+
 
 export class WebsiteContentRepo {
   /** List */

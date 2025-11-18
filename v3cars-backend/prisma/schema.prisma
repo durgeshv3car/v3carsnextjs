@@ -213,6 +213,7 @@ model tblauthor {
   imageUrl           String   @db.VarChar(555)
   backgroundImageUrl String   @db.VarChar(555)
   authorBio          String   @db.Text
+  short_intro        String?  @db.Text
   facebookURL        String?  @db.VarChar(355)
   twitterURL         String?  @db.VarChar(355)
   instaURL           String?  @db.VarChar(355)
@@ -263,36 +264,40 @@ model tblbrandpricechange {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model tblbrands {
-  brandId               Int      @id @default(autoincrement()) @db.UnsignedSmallInt
-  brandName             String?  @db.VarChar(100)
-  logoPath              String?  @db.VarChar(500)
-  unquieViews           String?  @db.VarChar(100)
-  popularity            String?  @db.VarChar(3)
-  brandSlug             String?  @db.VarChar(45)
-  brandDescription      String?  @db.Text
-  bannerImage           String?  @db.VarChar(255)
-  bannerImageAltTag     String?  @db.VarChar(255)
-  isFasttag             Int      @default(0) @db.TinyInt
-  brandType             Int      @default(0) @db.TinyInt
-  displayName           String?  @db.VarChar(100)
+  brandId               Int       @id @default(autoincrement()) @db.UnsignedSmallInt
+  brandName             String?   @db.VarChar(100)
+  logoPath              String?   @db.VarChar(500)
+  unquieViews           String?   @db.VarChar(100)
+  popularity            String?   @db.VarChar(3)
+  brandSlug             String?   @db.VarChar(45)
+  brandDescription      String?   @db.Text
+  bannerImage           String?   @db.VarChar(255)
+  bannerImageAltTag     String?   @db.VarChar(255)
+  isFasttag             Int       @default(0) @db.TinyInt
+  brandType             Int       @default(0) @db.TinyInt
+  displayName           String?   @db.VarChar(100)
   roadsideAssistance    Int?
-  emailAddress          String?  @db.VarChar(100)
+  emailAddress          String?   @db.VarChar(100)
   stateId               Int?
   cityId                Int?
-  parentOrganization    String?  @db.VarChar(255)
-  products              String?  @db.VarChar(255)
-  founderName           String?  @db.VarChar(255)
-  customerService       String?  @db.VarChar(255)
-  serviceNetwork        Boolean? @default(false)
-  websiteUrl            String?  @db.VarChar(255)
-  brandKeyPeople        String?  @db.Text
-  introContent          String?  @db.Text
-  brandOrganizationName String?  @db.VarChar(255)
-  websiteName           String?  @db.VarChar(255)
-  brandTitle            String?  @db.VarChar(25)
-  iconPath              String?  @db.VarChar(100)
-  brandStatus           Int?     @default(0) @db.TinyInt
-  similarBrand          String?  @db.VarChar(300)
+  parentOrganization    String?   @db.VarChar(255)
+  products              String?   @db.VarChar(255)
+  founderName           String?   @db.VarChar(255)
+  customerService       String?   @db.VarChar(255)
+  serviceNetwork        Boolean?  @default(false)
+  websiteUrl            String?   @db.VarChar(255)
+  brandKeyPeople        String?   @db.Text
+  introContent          String?   @db.Text
+  brandOrganizationName String?   @db.VarChar(255)
+  websiteName           String?   @db.VarChar(255)
+  brandTitle            String?   @db.VarChar(25)
+  iconPath              String?   @db.VarChar(100)
+  brandStatus           Int?      @default(0) @db.TinyInt
+  similarBrand          String?   @db.VarChar(300)
+  is_deleted            Boolean?  @default(false)
+  deleted_at            DateTime? @db.DateTime(0)
+  expires_at            DateTime? @db.DateTime(0)
+  deleted_by            Int?
 
   @@index([brandName(length: 10)], map: "brandName")
   @@index([brandSlug(length: 15)], map: "brandSlug")
@@ -605,6 +610,7 @@ model tblcontentdraft {
 model tblcontents {
   id                   Int      @id @default(autoincrement())
   title                String   @db.VarChar(1000)
+  alternativeHeadline  String?  @db.VarChar(1000)
   pageUrl              String   @db.VarChar(1024)
   thumbnailUrl         String   @db.VarChar(1000)
   thumbnailAltText     String?  @db.VarChar(225)
@@ -741,7 +747,7 @@ model tblfeatureoptions {
   optionId        Int      @id @default(autoincrement())
   featureId       Int
   optionName      String   @db.VarChar(255)
-  optionPrice     Int
+  optionPrice     Decimal  @db.Decimal(10, 2)
   importanceId    Int?
   featurePriority Int?
   createdAt       DateTime @default(now()) @db.Timestamp(0)
@@ -1475,6 +1481,10 @@ model tblmodels {
   brandWebsiteModelId String?   @db.Text
   combinedModelId     String?   @db.VarChar(45)
   upcomingStatus      String?   @db.VarChar(45)
+  is_deleted          Boolean   @default(false)
+  deleted_at          DateTime? @db.DateTime(0)
+  expires_at          DateTime? @db.DateTime(0)
+  deleted_by          Int       @default(0)
 
   @@index([brandId], map: "idx_tblmodels_brandId")
   @@index([isUpcoming], map: "idx_tblmodels_isUpcoming")
@@ -1571,6 +1581,7 @@ model tblmonthlysales {
   @@index([month], map: "month")
   @@index([year], map: "year")
 }
+
 
 model tblmostavailablecars {
   id      Int     @id @default(autoincrement())
@@ -2358,11 +2369,11 @@ model tblvideos_views {
 }
 
 model tblwebhomebanner {
-  bannerId     Int    @id @default(autoincrement()) @db.MediumInt
-  imagePath    String @db.VarChar(250)
-  imageAltTag  String @db.VarChar(50)
-  redirectLink String @db.VarChar(200)
-  status       Int    @default(1) @db.TinyInt
+  bannerId     Int     @id @default(autoincrement()) @db.MediumInt
+  imagePath    String  @db.VarChar(250)
+  imageAltTag  String? @db.VarChar(100)
+  redirectLink String  @db.VarChar(200)
+  status       Int     @default(1) @db.TinyInt
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -2393,6 +2404,7 @@ model tblwebsitepages {
   @@index([pageName], map: "idx_tblwebsitepages_pageName")
   @@index([pageCategoryId], map: "pageCategoryId")
 }
+
 
 model tblwebvideos {
   videoId            Int      @id @default(autoincrement()) @db.SmallInt
@@ -2435,6 +2447,7 @@ model tblwebvideos {
   @@index([video_title], map: "idx_tblwebvideos_video_title")
 }
 
+
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model tblwhatsapplog {
   logId        Int       @id @default(autoincrement())
@@ -2457,7 +2470,7 @@ model tblimagebank {
   uploadedBy    String?   @db.VarChar(100)
   uploadTime    DateTime? @default(now()) @db.DateTime(0)
   updatedTime   DateTime? @default(now()) @db.DateTime(0)
-  isDeleted     Boolean?  @default(false)
+  isDeleted     Boolean?  @default(true)
   isLogo        Boolean?  @default(false)
   isWatermarked Boolean?  @default(false)
 }
@@ -2575,3 +2588,4 @@ enum tblfeaturesnew_displayCount {
   Front @map(" Front")
   Rear  @map(" Rear")
 }
+

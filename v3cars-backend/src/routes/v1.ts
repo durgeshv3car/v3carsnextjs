@@ -1,3 +1,5 @@
+
+
 import { Router } from 'express';
 import { carsRouter } from '../modules/cars/cars.routes.js';
 import { homeRouter } from '../modules/home/home.route.js';
@@ -12,6 +14,8 @@ import { fuelRouter } from '../modules/fuel/fuel.routes.js';
 import { websiteContentRouter } from '../modules/website-content/websiteContent.route.js';
 const v1 = Router();
 
+
+
 v1.use('/cars', carsRouter);
 v1.use('/home', homeRouter);
 v1.use('/news', newsRouter);
@@ -24,4 +28,11 @@ v1.use('/faqs', faqsRouter);
 v1.use('/fuel', fuelRouter);
 v1.use('/website-content', websiteContentRouter);
 
+
+
 export default v1;
+
+
+
+
+
