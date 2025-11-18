@@ -27,6 +27,8 @@ const rpmRange = (min?: number | null, max?: number | null) => {
 };
 
 
+
+
 function buildAssetPath(name?: string | null): string | null {
   return name ?? null;
 }
@@ -59,6 +61,16 @@ function inBucket(min: number | null, max: number | null, bucket?: keyof typeof 
 const toYmd = (d?: Date | string) => (d ? new Date(d).toISOString().slice(0, 10) : undefined);
 
 export class ModelsService {
+
+   async resolveModelId(idOrSlug: string): Promise<number | null> {
+    if (!idOrSlug) return null;
+    if (/^\d+$/.test(idOrSlug)) return Number(idOrSlug);
+    const row = await prisma.tblmodels.findFirst({
+      where: { modelSlug: idOrSlug },
+      select: { modelId: true },
+    });
+    return row?.modelId ?? null;
+  }
 
   async list(q: ModelsListQuery) {
     const fuelType = q.fuelType?.trim();
