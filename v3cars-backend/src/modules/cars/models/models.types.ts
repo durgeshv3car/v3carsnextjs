@@ -21,4 +21,7 @@ export interface ModelPriceListQuery extends Pagination, SortInput {
 
 export interface ModelBestVariantQuery {
   powertrainId?: number;
+  fuelType?: string;
+  transmissionType?: string;
+  detailed?: boolean;
 }

@@ -34,7 +34,7 @@ function priceInBucket(min: number | null, max: number | null, bucket?: string) 
   if (typeof r.max === 'number' && (vMin as number) > r.max) return false;
   return true;
 }
- 
+
 function cmp(a: number | null | undefined, b: number | null | undefined, dir: 'asc' | 'desc') {
   const an = a ?? Number.POSITIVE_INFINITY;
   const bn = b ?? Number.POSITIVE_INFINITY;
@@ -186,7 +186,10 @@ export class VariantsService {
     return withCache(key, async () => repo.findByIds(ids), ttlMs);
   }
 
-  async bestByModelId(modelId: number, filter?: { powertrainId?: number }) {
+  async bestByModelId(
+    modelId: number,
+    filter?: { powertrainId?: number; fuelType?: string; transmissionType?: string }
+  ) {
     // pull all variants of the model
     const all = await this.listByModelId(modelId);
 
@@ -218,9 +221,22 @@ export class VariantsService {
       n == null ? Number.POSITIVE_INFINITY : n;
 
     const ptIds = Array.from(byPt.keys());
-    // ✅ use typed service import instead of require (fixes TS "{}" type issue)
     const ptMeta = ptIds.length ? await powertrains.findByIds(ptIds) : [];
     const ptMap = new Map(ptMeta.map(p => [p.modelPowertrainId, p]));
+
+    // optional meta filters (case-insensitive)
+    const wantFuel = filter?.fuelType?.trim().toLowerCase();
+    const wantTrans = filter?.transmissionType?.trim().toLowerCase();
+
+    if (wantFuel || wantTrans) {
+      for (const [ptId] of Array.from(byPt.entries())) {
+        const meta = ptMap.get(ptId);
+        const fuelOk = !wantFuel || (meta?.fuelType ?? '').toLowerCase() === wantFuel;
+        const transOk = !wantTrans || (meta?.transmissionType ?? '').toLowerCase() === wantTrans;
+        if (!(fuelOk && transOk)) byPt.delete(ptId);
+      }
+      if (!byPt.size) return [];
+    }
 
     const result: Array<{
       powertrain: { id: number; fuelType: string | null; transmissionType: string | null; label: string | null };
@@ -266,8 +282,8 @@ export class VariantsService {
           name: best.variantName ?? null,
           exShowroom: best.priceMin ?? null,
           exShowroomMax: best.priceMax ?? null,
-          vfmValue: (best.vfmValue == null ? null : Number(best.vfmValue)), // Decimal → number
-          vfmRank: (best.vfmRank == null ? null : Number(best.vfmRank)),
+          vfmValue: best.vfmValue == null ? null : Number(best.vfmValue), // Decimal → number
+          vfmRank: best.vfmRank == null ? null : Number(best.vfmRank),
           recommendation: best.variantRecommendation ?? null,
           updatedDate: (best.updatedDate as Date | null) ?? null,
         },
@@ -285,7 +301,6 @@ export class VariantsService {
 
     return result;
   }
-
 
 }
 

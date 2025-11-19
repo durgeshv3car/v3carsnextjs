@@ -24,3 +24,5 @@ export const variantsListQueryDto = paginationQuery.merge(
 export const variantIdParamDto = z.object({
   id: z.coerce.number().int().positive(),
 });
+
+

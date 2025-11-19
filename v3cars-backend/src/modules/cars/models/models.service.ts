@@ -684,6 +684,7 @@ export class ModelsService {
     }, ttlMs);
   }
 
+
   async priceList(
     modelId: number,
     q: {
@@ -792,19 +793,121 @@ export class ModelsService {
     };
   }
 
-
   async bestVariantToBuy(modelId: number, q: ModelBestVariantQuery) {
-    const rows = await variantsSvc.bestByModelId(modelId, { powertrainId: q.powertrainId });
+    const detailed = !!q.detailed;
+
+    // SIMPLE: one-row-per-powertrain "best" (now with fuel/trans filters)
+    if (!detailed) {
+      const rows = await variantsSvc.bestByModelId(modelId, {
+        powertrainId: q.powertrainId,
+        fuelType: q.fuelType,
+        transmissionType: q.transmissionType,
+      });
+
+      return {
+        success: true,
+        rows,
+        total: rows.length,
+      };
+
+    }
+
+    // DETAILED: section per powertrain with all variants (apply filters here too)
+    const list = await variantsSvc.list({
+      modelId,
+      page: 1,
+      limit: 999,         // we’ll paginate on UI if needed
+      sortBy: 'price_asc' // rows sorted by price
+    });
+
+    // group by powertrain id
+    const byPt = new Map<number, typeof list.rows>();
+    for (const v of list.rows) {
+      if (!v.modelPowertrainId) continue;
+      const arr = byPt.get(v.modelPowertrainId) ?? [];
+      arr.push(v);
+      byPt.set(v.modelPowertrainId, arr);
+    }
+
+    // load powertrain meta for labeling + filtering
+    const ptIds = Array.from(byPt.keys());
+    const ptMeta = ptIds.length ? await powertrainsSvc.findByIds(ptIds) : [];
+    const ptMap = new Map(ptMeta.map(p => [p.modelPowertrainId, p]));
+
+    const wantFuel = q.fuelType?.trim().toLowerCase();
+    const wantTrans = q.transmissionType?.trim().toLowerCase();
+
+    const sections = [];
+    for (const [ptId, arr] of byPt.entries()) {
+      const meta = ptMap.get(ptId);
+
+      // 🆕 apply filters if provided
+      if (wantFuel && (meta?.fuelType ?? '').toLowerCase() !== wantFuel) continue;
+      if (wantTrans && (meta?.transmissionType ?? '').toLowerCase() !== wantTrans) continue;
+
+      // shape rows
+      const rows = arr
+        .map(v => {
+          const priceMin = v.priceMin ?? null;
+
+          // 👇 Prisma Decimal → number (or null)
+          const vfmRaw = (v as any).vfmValue;
+          const vfmNum = vfmRaw == null ? null : Number(vfmRaw);
+
+          return {
+            variantId: v.variantId ?? null,
+            name: v.variantName ?? null,
+            vfmPercent: vfmNum != null ? Math.round(vfmNum) : null, // ✅ fixed
+            price: priceMin,
+            recommendation: (v as any).variantRecommendation ?? '',
+            updatedDate: v.updatedDate ?? null,
+          };
+        })
+        .sort((a, b) => (a.price ?? Number.POSITIVE_INFINITY) - (b.price ?? Number.POSITIVE_INFINITY));
+
+      // keep section only if it has visible rows after filter
+      if (!rows.length) continue;
+
+      sections.push({
+        powertrain: meta
+          ? {
+            id: meta.modelPowertrainId,
+            fuelType: meta.fuelType ?? null,
+            transmissionType: meta.transmissionType ?? null,
+            label: meta.powerTrain ?? [meta.fuelType, meta.transmissionType].filter(Boolean).join(' '),
+          }
+          : { id: ptId, fuelType: null, transmissionType: null, label: null },
+        rows,
+      });
+    }
+
+    // sort sections stable
+    sections.sort((a, b) => {
+      const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '');
+      if (af !== 0) return af;
+      return (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '');
+    });
+
     return {
       success: true,
-      rows,
-      total: rows.length,
+      sections,
+      total: sections.reduce((n, s) => n + s.rows.length, 0),
     };
   }
 
-  async dimensionsCapacity(modelId: number) {
-    const key = cacheKey({ ns: 'model:dimensionsCapacity', v: 1, modelId });
-    const ttlMs = 30 * 60 * 1000; // 30 min
+  async dimensionsCapacity(
+    modelId: number,
+    q?: { detailed?: boolean; fuelType?: string; transmissionType?: string }
+  ) {
+    const key = cacheKey({
+      ns: 'model:dimensionsCapacity',
+      v: 2,
+      modelId,
+      detailed: q?.detailed ? 1 : 0,
+      fuelType: q?.fuelType ?? undefined,
+      transmissionType: q?.transmissionType ?? undefined,
+    });
+    const ttlMs = 30 * 60 * 1000;
 
     return withCache(key, async () => {
       const row = await prisma.tblmodels.findFirst({
@@ -820,15 +923,13 @@ export class ModelsService {
           bootSpace: true,
           tyreSize: true,
           tyreSizeTop: true,
+          seats: true,
         },
       });
-
       if (!row) return null;
 
-      // NOTE: Boot space per-fuel not available in schema; returning same value for all.
       const boot = row.bootSpace ?? null;
-
-      return {
+      const basePayload: any = {
         modelId: row.modelId,
         modelName: row.modelName ?? null,
         dimensions: {
@@ -838,16 +939,110 @@ export class ModelsService {
           wheelbase: row.wheelBase ?? null,
           groundClearance: row.groundClearance ?? null,
         },
-        bootSpace: {
-          normal: boot,
-          cng: boot,
-          hybrid: boot,
+        bootSpace: { normal: boot, cng: boot, hybrid: boot },
+        tyreSize: { base: row.tyreSize ?? null, top: row.tyreSizeTop ?? null },
+      };
+
+      if (!q?.detailed) return basePayload;
+
+      // ---------- detailed sections ----------
+      const toCm = (mm?: number | null) => (typeof mm === 'number' ? mm / 10 : null);
+      const toIn = (mm?: number | null) => (typeof mm === 'number' ? +(mm / 25.4).toFixed(2) : null);
+      const toFt = (mm?: number | null) => (typeof mm === 'number' ? +(mm / 304.8).toFixed(2) : null);
+
+      const conversions = {
+        length: { mm: row.length ?? null, cm: toCm(row.length), inches: toIn(row.length), feet: toFt(row.length) },
+        width: { mm: row.width ?? null, cm: toCm(row.width), inches: toIn(row.width), feet: toFt(row.width) },
+        height: { mm: row.height ?? null, cm: toCm(row.height), inches: toIn(row.height), feet: toFt(row.height) },
+        wheelbase: { mm: row.wheelBase ?? null, cm: toCm(row.wheelBase), inches: toIn(row.wheelBase), feet: toFt(row.wheelBase) },
+        groundClearance: { mm: row.groundClearance ?? null, cm: toCm(row.groundClearance), inches: toIn(row.groundClearance), feet: toFt(row.groundClearance) },
+      };
+
+      // Fuel tank capacity by fuel (from powertrains)
+      let tankByFuel: Record<string, number | null> = { Petrol: null, Diesel: null, CNG: null, Hybrid: null };
+      const pRows = await prisma.tblmodelpowertrains.findMany({
+        where: { modelId, fuelType: { not: null } },
+        select: { fuelType: true, fuelTankCapacity: true },
+      });
+      if (pRows.length) {
+        const map = new Map<string, number | null>();
+        pRows.forEach(r => {
+          const k = (r.fuelType || '').trim();
+          if (!k) return;
+          if (!map.has(k)) map.set(k, r.fuelTankCapacity ?? null);
+        });
+        tankByFuel = {
+          Petrol: map.get('Petrol') ?? null,
+          Diesel: map.get('Diesel') ?? null,
+          CNG: map.get('CNG') ?? null,
+          Hybrid: map.get('Hybrid') ?? null,
+        };
+      }
+
+      const capacity = {
+        bootSpace: { Petrol: boot, Diesel: boot, CNG: boot, Hybrid: boot },
+        fuelTankCapacity: tankByFuel,
+        seatingCapacity: row.seats ?? null,
+      };
+
+      // Tyre-by-variant list (filterable)
+      // 🔧 normalize fuel for equals (no 'mode' here)
+      const fuelEq = (() => {
+        const s = q?.fuelType?.trim().toLowerCase();
+        if (!s) return undefined;
+        const m: Record<string, string> = {
+          petrol: 'Petrol',
+          diesel: 'Diesel',
+          cng: 'CNG',
+          hybrid: 'Hybrid',
+          electric: 'Electric',
+        };
+        return m[s] ?? q!.fuelType!;
+      })();
+
+      const ptIds = q?.fuelType || q?.transmissionType
+        ? (
+          await prisma.tblmodelpowertrains.findMany({
+            where: {
+              modelId,
+              ...(fuelEq ? { fuelType: { equals: fuelEq } } : {}),
+              ...(q?.transmissionType
+                ? { transmissionType: { contains: q.transmissionType } } // ← removed mode
+                : {}),
+            },
+            select: { modelPowertrainId: true },
+          })
+        ).map(r => r.modelPowertrainId)
+        : undefined;
+
+      const tyreVariants = await prisma.tblvariants.findMany({
+        where: {
+          modelId,
+          ...(ptIds && ptIds.length ? { modelPowertrainId: { in: ptIds } } : {}),
         },
-        tyreSize: {
-          base: row.tyreSize ?? null,
-          top: row.tyreSizeTop ?? null,
+        select: { variantId: true, variantName: true },
+        orderBy: [{ variantName: 'asc' }],
+      });
+
+      const tyreByVariant = tyreVariants.map(v => ({
+        variantId: v.variantId,
+        variantName: v.variantName ?? null,
+        tyreSize: null,            // per-variant size not available
+        base: row.tyreSize ?? null,
+        top: row.tyreSizeTop ?? null,
+      }));
+
+      return {
+        ...basePayload,
+        conversions,
+        capacity,
+        tyreByVariant,
+        filters: {
+          fuelType: q?.fuelType ?? null,
+          transmissionType: q?.transmissionType ?? null,
         },
       };
+
     }, ttlMs);
   }
 
@@ -934,6 +1129,7 @@ export class ModelsService {
     };
   }
 
+
   async prosCons(modelId: number) {
     const key = cacheKey({ ns: 'model:prosCons', v: 1, modelId });
     const ttlMs = 30 * 60 * 1000;
@@ -980,83 +1176,74 @@ export class ModelsService {
   }
 
 
-async competitors(modelId: number) {
-  const key = cacheKey({ ns: 'model:competitors', v: 3, modelId }); // v++ after removing powertrains
-  const ttlMs = 30 * 60 * 1000;
+  async competitors(modelId: number) {
+    const key = cacheKey({ ns: 'model:competitors', v: 3, modelId }); // v++ after removing powertrains
+    const ttlMs = 30 * 60 * 1000;
 
-  return withCache(key, async () => {
-    // 1) read rival ids (comma-separated)
-    const rivalRow = await prisma.tblmodelrivals.findFirst({
-      where: { modelId },
-      select: { rivalModelIds: true },
-    });
-
-    const rivalIds = (rivalRow?.rivalModelIds || '')
-      .split(',')
-      .map(s => Number(s.trim()))
-      .filter(n => Number.isFinite(n) && n > 0);
-
-    // ✅ exclude the current model; keep rivals order & de-dup
-    const ids = Array.from(new Set(rivalIds));
-    if (!ids.length) return { success: true, items: [] };
-
-    // 2) fetch models meta
-    const models = await prisma.tblmodels.findMany({
-      where: { modelId: { in: ids } },
-      select: {
-        modelId: true,
-        modelName: true,
-        modelSlug: true,
-        brandId: true,
-      },
-    });
-    if (!models.length) return { success: true, items: [] };
-
-    // 3) hydrate price bands + primary image + specs summary (PS/Nm/KMPL)
-    const modelIds = models.map(m => m.modelId);
-    const [priceBands, imageMap, specsMap] = await Promise.all([
-      variantsSvc.getPriceBandsByModelIds(modelIds),
-      imagesSvc.getPrimaryByModelIds(modelIds),
-      powertrainsSvc.getSpecsByModelIds(modelIds), // { powerPS, torqueNM, mileageKMPL, ... }
-    ]);
-
-    // 4) maintain rivalIds order in output
-    const order = new Map(ids.map((v, i) => [v, i]));
-    const items = models
-      .sort((a, b) => (order.get(a.modelId)! - order.get(b.modelId)!))
-      .map(m => {
-        const band = priceBands.get(m.modelId) ?? { min: null, max: null };
-        const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
-        const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
-
-        return {
-          modelId: m.modelId,
-          name: m.modelName ?? null,
-          slug: m.modelSlug ?? null,
-          image: img,
-          priceRange: { min: band.min, max: band.max }, // rupees
-          // quick spec summary
-          powerPS: specs.powerPS ?? null,
-          torqueNM: specs.torqueNM ?? null,
-          mileageKMPL: specs.mileageKMPL ?? null,
-        };
+    return withCache(key, async () => {
+      // 1) read rival ids (comma-separated)
+      const rivalRow = await prisma.tblmodelrivals.findFirst({
+        where: { modelId },
+        select: { rivalModelIds: true },
       });
 
-    return { success: true, items };
-  }, ttlMs);
-}
+      const rivalIds = (rivalRow?.rivalModelIds || '')
+        .split(',')
+        .map(s => Number(s.trim()))
+        .filter(n => Number.isFinite(n) && n > 0);
+
+      // ✅ exclude the current model; keep rivals order & de-dup
+      const ids = Array.from(new Set(rivalIds));
+      if (!ids.length) return { success: true, items: [] };
+
+      // 2) fetch models meta
+      const models = await prisma.tblmodels.findMany({
+        where: { modelId: { in: ids } },
+        select: {
+          modelId: true,
+          modelName: true,
+          modelSlug: true,
+          brandId: true,
+        },
+      });
+      if (!models.length) return { success: true, items: [] };
+
+      // 3) hydrate price bands + primary image + specs summary (PS/Nm/KMPL)
+      const modelIds = models.map(m => m.modelId);
+      const [priceBands, imageMap, specsMap] = await Promise.all([
+        variantsSvc.getPriceBandsByModelIds(modelIds),
+        imagesSvc.getPrimaryByModelIds(modelIds),
+        powertrainsSvc.getSpecsByModelIds(modelIds), // { powerPS, torqueNM, mileageKMPL, ... }
+      ]);
+
+      // 4) maintain rivalIds order in output
+      const order = new Map(ids.map((v, i) => [v, i]));
+      const items = models
+        .sort((a, b) => (order.get(a.modelId)! - order.get(b.modelId)!))
+        .map(m => {
+          const band = priceBands.get(m.modelId) ?? { min: null, max: null };
+          const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
+          const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+
+          return {
+            modelId: m.modelId,
+            name: m.modelName ?? null,
+            slug: m.modelSlug ?? null,
+            image: img,
+            priceRange: { min: band.min, max: band.max }, // rupees
+            // quick spec summary
+            powerPS: specs.powerPS ?? null,
+            torqueNM: specs.torqueNM ?? null,
+            mileageKMPL: specs.mileageKMPL ?? null,
+          };
+        });
+
+      return { success: true, items };
+    }, ttlMs);
+  }
+
 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
