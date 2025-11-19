@@ -979,74 +979,72 @@ export class ModelsService {
     }, ttlMs);
   }
 
-  async compareSimilar(modelId: number) {
-    const key = cacheKey({ ns: 'model:compareSimilar', v: 2, modelId }); // v bump after shape change
-    const ttlMs = 30 * 60 * 1000;
 
-    return withCache(key, async () => {
-      // 1) read rival ids
-      const rivalRow = await prisma.tblmodelrivals.findFirst({
-        where: { modelId },
-        select: { rivalModelIds: true },
+async competitors(modelId: number) {
+  const key = cacheKey({ ns: 'model:competitors', v: 3, modelId }); // v++ after removing powertrains
+  const ttlMs = 30 * 60 * 1000;
+
+  return withCache(key, async () => {
+    // 1) read rival ids (comma-separated)
+    const rivalRow = await prisma.tblmodelrivals.findFirst({
+      where: { modelId },
+      select: { rivalModelIds: true },
+    });
+
+    const rivalIds = (rivalRow?.rivalModelIds || '')
+      .split(',')
+      .map(s => Number(s.trim()))
+      .filter(n => Number.isFinite(n) && n > 0);
+
+    // ✅ exclude the current model; keep rivals order & de-dup
+    const ids = Array.from(new Set(rivalIds));
+    if (!ids.length) return { success: true, items: [] };
+
+    // 2) fetch models meta
+    const models = await prisma.tblmodels.findMany({
+      where: { modelId: { in: ids } },
+      select: {
+        modelId: true,
+        modelName: true,
+        modelSlug: true,
+        brandId: true,
+      },
+    });
+    if (!models.length) return { success: true, items: [] };
+
+    // 3) hydrate price bands + primary image + specs summary (PS/Nm/KMPL)
+    const modelIds = models.map(m => m.modelId);
+    const [priceBands, imageMap, specsMap] = await Promise.all([
+      variantsSvc.getPriceBandsByModelIds(modelIds),
+      imagesSvc.getPrimaryByModelIds(modelIds),
+      powertrainsSvc.getSpecsByModelIds(modelIds), // { powerPS, torqueNM, mileageKMPL, ... }
+    ]);
+
+    // 4) maintain rivalIds order in output
+    const order = new Map(ids.map((v, i) => [v, i]));
+    const items = models
+      .sort((a, b) => (order.get(a.modelId)! - order.get(b.modelId)!))
+      .map(m => {
+        const band = priceBands.get(m.modelId) ?? { min: null, max: null };
+        const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
+        const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+
+        return {
+          modelId: m.modelId,
+          name: m.modelName ?? null,
+          slug: m.modelSlug ?? null,
+          image: img,
+          priceRange: { min: band.min, max: band.max }, // rupees
+          // quick spec summary
+          powerPS: specs.powerPS ?? null,
+          torqueNM: specs.torqueNM ?? null,
+          mileageKMPL: specs.mileageKMPL ?? null,
+        };
       });
 
-      const rivalIds = (rivalRow?.rivalModelIds || '')
-        .split(',')
-        .map(s => Number(s.trim()))
-        .filter(n => Number.isFinite(n) && n > 0);
-
-      // de-dup & keep current model first
-      const ids = Array.from(new Set([modelId, ...rivalIds]));
-
-      // 2) fetch models meta
-      const models = await prisma.tblmodels.findMany({
-        where: { modelId: { in: ids } },
-        select: {
-          modelId: true, modelName: true, modelSlug: true, brandId: true,
-          length: true, width: true, height: true, wheelBase: true,
-          groundClearance: true, safetyRating: true,
-        },
-      });
-      if (!models.length) return { success: true, items: [] };
-
-      // 3) hydrate price bands, primary image, warranty
-      const modelIds = models.map(m => m.modelId);
-      const [priceBands, imageMap, warrantyMap] = await Promise.all([
-        variantsSvc.getPriceBandsByModelIds(modelIds),
-        imagesSvc.getPrimaryByModelIds(modelIds),
-        powertrainsSvc.getWarrantyByModelIds(modelIds),
-      ]);
-
-      // 4) shape items only (no rows)
-      const idOrder = new Map(ids.map((v, i) => [v, i]));
-      const items = models
-        .sort((a, b) => (idOrder.get(a.modelId)! - idOrder.get(b.modelId)!))
-        .map(m => {
-          const band = priceBands.get(m.modelId) ?? { min: null, max: null };
-          const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
-          const warr = warrantyMap.get(m.modelId) ?? { years: null, km: null };
-
-          return {
-            modelId: m.modelId,
-            name: m.modelName ?? null,
-            slug: m.modelSlug ?? null,
-            image: img,
-            priceRange: { min: band.min, max: band.max }, // rupees
-            specs: {
-              length: m.length ?? null,
-              width: m.width ?? null,
-              height: m.height ?? null,
-              wheelbase: m.wheelBase ?? null,
-              groundClearance: m.groundClearance ?? null,
-              safetyRating: m.safetyRating ?? null,
-              standardWarranty: warr, // { years, km }
-            },
-          };
-        });
-
-      return { success: true, items };
-    }, ttlMs);
-  }
+    return { success: true, items };
+  }, ttlMs);
+}
 
 }
 

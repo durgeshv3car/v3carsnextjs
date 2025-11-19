@@ -282,14 +282,13 @@ Mileage, specs & features:
 Pros & cons:
 /v1/cars/models/444/pros-cons
 
-Comparison with similar:
-/v1/cars/models/444/comparison-similar
+competitors:
+/v1/cars/models/444/competitors
 
 Using slug (e.g., grand-vitara)
 
 Model basics:
 /v1/cars/models/grand-vitara
-
 
 Price list:
 /v1/cars/models/grand-vitara/price-list
@@ -311,7 +310,7 @@ Mileage, specs & features:
 Pros & cons:
 /v1/cars/models/grand-vitara/pros-cons
 
-Comparison with similar:
-/v1/cars/models/grand-vitara/comparison-similar
+competitors:
+/v1/cars/models/grand-vitara/competitors
 
 
