@@ -1,75 +1,114 @@
 'use client'
 
-import React, { useState } from "react";
+import { useGetMileageSpecsFeaturesQuery } from "@/redux/api/carModuleApi";
+import React, { useEffect, useState } from "react";
 
 interface SpecsListTableProps {
-    model: string
+    model: string;
+    slug: string;
 }
 
-const SpecsListTable: React.FC<SpecsListTableProps> = ({ model }) => {
-    const [selectedVariant, setSelectedVariant] = useState(
-        "1.2L Turbo Petrol with 6-speed MT"
+export interface PowertrainOption {
+    id: number;
+    label: string;
+    fuelType: string;
+    transmissionType: string;
+
+}
+export interface HeaderInfo {
+    powertrainLabel: string;
+    fuelType: string;
+    transmission: string;
+}
+
+export interface SpecRow {
+    label: string;
+    value: string;
+}
+
+export interface SpecSection {
+    group: string;
+    rows: SpecRow[];
+}
+
+export interface CarSpecification {
+    options: PowertrainOption[];
+    selectedPowertrainId: number;
+    header: HeaderInfo;
+    sections: SpecSection[];
+}
+
+const SpecsListTable: React.FC<SpecsListTableProps> = ({ model, slug }) => {
+    const [powertrain, setPowertrain] = useState<number | null>(null);
+    const [activeTab, setActiveTab] = useState("");
+    const { data, isLoading } = useGetMileageSpecsFeaturesQuery(
+        {
+            model_slug: slug,
+            powertrainId: powertrain ?? undefined,
+        },
+        { skip: !slug }
     );
 
-    const specs = [
-        { category: "Engine & Transmission", label: "Engine Type", value: "Turbo" },
-        { category: "Fuel & Performance", label: "Engine Displacement", value: "1.2L" },
-        { category: "Mileage", label: "Cubic Capacity", value: "1199cc" },
-        { category: "Features", label: "Cylinders", value: "3" },
-        { category: "Safety", label: "Max. Power", value: "120PS @ 5500rpm" },
-        { category: "ADAS", label: "Max. Torque", value: "170Nm @ 1750 - 4000rpm" },
-        { category: "Infotainment", label: "Transmission", value: "6-speed MT" },
-        { category: "Functional", label: "Kerb Weight", value: "1240kg" },
-        { category: "Style", label: "Power : Weight", value: "96.77PS/tonne" },
-        { category: "Style", label: "Torque : Weight", value: "137.10Nm/tonne" },
-    ];
+    const carSpecs = data as CarSpecification;
+
+    useEffect(() => {
+        if (carSpecs?.sections?.[0]?.group) {
+            setActiveTab(carSpecs.sections[0].group);
+        }
+    }, [carSpecs]);
 
     return (
         <div>
-            {/* Header */}
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg">
-                    {model}{" "}
-                    <span className="font-semibold hidden md:block">Mileage, Specs & Features</span>
-                </h2>
 
-                {/* Variant Dropdown */}
-                <div className="relative">
-                    <select
-                        value={selectedVariant}
-                        onChange={(e) => setSelectedVariant(e.target.value)}
-                        className="appearance-none text-sm border border-gray-300 rounded-md py-2 pl-3 pr-8 bg-white font-medium focus:outline-none focus:ring-1 focus:ring-[#2E2E2E] dark:bg-[#171717] dark:border-[#2E2E2E]"
-                    >
-                        <option>1.2L Turbo Petrol with 6-speed MT</option>
-                        <option>1.2L Turbo Petrol with 6-speed AMT</option>
-                        <option>1.5L Diesel with 6-speed MT</option>
-                    </select>
-                </div>
+            {/* Powertrain Dropdown */}
+            <div className="flex justify-between items-center mb-3">
+                <h2 className="text-xl">{model} <span className="font-semibold">Mileage, Specs & Features</span></h2>
+                <select
+                    className="border p-3 rounded-lg"
+                    onChange={(e) => setPowertrain(Number(e.target.value))}
+                >
+                    {carSpecs && carSpecs.options.map((opt) => (
+                        <option key={opt.id} value={opt.id}>
+                            {opt.label}
+                        </option>
+                    ))}
+                </select>
             </div>
 
-            {/* Specs Table */}
-            <div className="border border-gray-200 rounded-md overflow-hidden text-sm dark:border-[#2E2E2E]">
-                <div className="grid grid-cols-3 bg-gray-50 font-semibold border-b border-gray-200 dark:bg-[#171717] dark:border-[#2E2E2E]">
-                    <div className="p-4">Category</div>
-                    <div className="p-4">Specification</div>
-                    <div className="p-4">Details</div>
+            <div className="flex border rounded-lg overflow-hidden">
+                {/* LEFT TABS */}
+                <div className="w-1/5 bg-gray-100 border-r divide-y">
+                    {carSpecs && carSpecs?.sections.map((sec) => (
+                        <button
+                            key={sec.group}
+                            onClick={() => setActiveTab(sec.group)}
+                            className={`w-full text-left p-4 text-sm font-medium 
+                                ${activeTab === sec.group ? "bg-[#484848] text-white" : ""}
+                            `}
+                        >
+                            {sec.group}
+                        </button>
+                    ))}
                 </div>
 
-                {specs.map((item, index) => (
-                    <div
-                        key={index}
-                        className={`grid grid-cols-3 border-b border-gray-100 ${index % 2 === 0 ? "bg-white dark:bg-[#171717] dark:border-[#2E2E2E]" : "bg-gray-100 dark:bg-[#2E2E2E] dark:border-[#2E2E2E]"
-                            }`}
-                    >
-                        <div className="p-4 font-medium border-r border-gray-100 dark:border-[#2E2E2E]">
-                            {item.category}
-                        </div>
-                        <div className="p-4 border-r border-gray-100 dark:border-[#2E2E2E]">
-                            {item.label}
-                        </div>
-                        <div className="p-4">{item.value}</div>
-                    </div>
-                ))}
+                {/* RIGHT TABLE */}
+                <div className="w-4/5">
+                    <table className="w-full text-sm">
+                        <tbody>
+                            {carSpecs && carSpecs?.sections
+                                .find((s) => s.group === activeTab)
+                                ?.rows.map((row, i) => (
+                                    <tr key={i} className="border-b">
+                                        <td className="p-4 w-1/2 font-medium border-r">
+                                            {row.label}
+                                        </td>
+                                        <td className="p-4">{row.value}</td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     );

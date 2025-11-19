@@ -1,40 +1,60 @@
 'use client'
 
+import { useGetModelProsConsQuery } from "@/redux/api/carModuleApi";
 import Link from "next/link";
 import React from "react";
 
 interface ModelProsConsProps {
-    model: string
+    model: string;
+    slug: string;
 }
 
-const ModelProsCons: React.FC<ModelProsConsProps> = ({ model }) => {
-    const pros = [
-        "Improved Road Presence And Best-In-Class Ground Clearance",
-        "More Safety Features Now Offered As Standard",
-        "Base Model Doesn’t Skimp On Features",
-        "Wide Range Of Powertrain Options",
-        "Good Set Of Features In Top Variants",
-    ];
+export interface ProsConsItem {
+    id: number;
+    heading: string;
+    desc: string;
+    addedDate: string;
+}
 
-    const cons = [
-        "Low And Mid Variants Lack A Few Must-Have Features",
-        "Lower Variant Gets 5-Speed Manual Transmission",
-        "Missing features like 360-degree camera, side thorax and curtain airbags",
-        "Confusing Variant Lineup",
-    ];
+export interface TotalCount {
+    pros: number;
+    cons: number;
+}
+
+export interface ProsConsResponse {
+    success: boolean;
+    modelId: number;
+    total: TotalCount;
+    pros: ProsConsItem[];
+    cons: ProsConsItem[];
+}
+
+const ModelProsCons: React.FC<ModelProsConsProps> = ({ model, slug }) => {
+
+    const { data: modelProsConsData, isLoading } = useGetModelProsConsQuery({
+        model_slug: slug
+    });
+
+    const prosConsData = modelProsConsData as ProsConsResponse | undefined;
+
+    const pros = prosConsData?.pros || [];
+    const cons = prosConsData?.cons || [];
+
+    console.log(prosConsData);
+
 
     return (
         <div>
-            {/* Header */}
+
             <h2 className="text-lg mb-4">
                 Should You Buy the {model}?{" "}
                 <span className="font-semibold">Pros & Cons</span>
             </h2>
 
-            {/* Pros & Cons Grid */}
-            <div className="bg-white rounded-xl rounded-b-none border border-gray-200 border-b-0 p-2 dark:bg-[#171717] dark:border-[#2E2E2E]">
+            <div className="bg-white rounded-xl rounded-b-none border p-2 dark:bg-[#171717]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Pros */}
+
+                    {/* PROS */}
                     <div className="border border-green-200 bg-green-50 rounded-md p-4 ">
                         <div className="flex items-center mb-4 gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-green-600">
@@ -44,19 +64,24 @@ const ModelProsCons: React.FC<ModelProsConsProps> = ({ model }) => {
                                 Nexon Advantages
                             </h3>
                         </div>
-                        <ul className="list-none space-y-6">
-                            {pros.map((item, index) => (
-                                <li key={index} className="flex items-start text-sm text-gray-700 gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 text-green-600">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                    </svg>
-                                    {item}
+
+                        <ul className="space-y-6 px-4">
+                            {pros.map((item) => (
+                                <li key={item.id} className="text-sm list-disc">
+                                    <div
+                                        className="prose prose-sm max-w-none font-semibold"
+                                        dangerouslySetInnerHTML={{ __html: item.heading }}
+                                    />
+                                    <div
+                                        className="prose prose-sm max-w-none"
+                                        dangerouslySetInnerHTML={{ __html: item.desc }}
+                                    />
                                 </li>
                             ))}
                         </ul>
                     </div>
 
-                    {/* Cons */}
+                    {/* CONS */}
                     <div className="border border-red-200 bg-red-50 rounded-md p-4">
                         <div className="flex items-center mb-4 gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-red-600">
@@ -66,32 +91,35 @@ const ModelProsCons: React.FC<ModelProsConsProps> = ({ model }) => {
                                 Nexon Disadvantages
                             </h3>
                         </div>
-                        <ul className="list-none space-y-4">
-                            {cons.map((item, index) => (
-                                <li key={index} className="flex items-start text-sm text-gray-700 gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-red-600">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                    </svg>
-                                    {item}
+
+                        <ul className="px-4 space-y-6">
+                            {cons.map((item) => (
+                                <li key={item.id} className="text-sm list-disc">
+                                    <div
+                                        className="prose prose-sm max-w-none font-semibold"
+                                        dangerouslySetInnerHTML={{ __html: item.heading }}
+                                    />
+                                    <div
+                                        className="prose prose-sm max-w-none"
+                                        dangerouslySetInnerHTML={{ __html: item.desc }}
+                                    />
                                 </li>
                             ))}
                         </ul>
                     </div>
+
                 </div>
             </div>
 
-            {/* Footer */}
-            <div className=" bg-[#F2F5F9] text-center border-t border-gray-200 rounded-b-xl dark:bg-[#171717] dark:border-[#2E2E2E]">
-                <p className="text-sm py-3 flex items-center justify-center">
-                    <span className="font-semibold hidden md:block">Pros & Cons Explained — </span>
-                    <Link href="#" className="font-medium hover:underline flex items-center justify-center">
-                        View Complete Tata Nexon Assessment
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                        </svg>
+            {/* FOOTER */}
+            <div className="bg-[#F2F5F9] text-center border-t rounded-b-xl dark:bg-[#171717]">
+                <p className="text-sm py-3">
+                    <Link href="#" className="font-medium hover:underline">
+                        View Complete Assessment →
                     </Link>
                 </p>
             </div>
+
         </div>
     );
 };

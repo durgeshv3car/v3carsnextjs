@@ -1,206 +1,144 @@
-import Link from "next/link";
+'use client'
+
+import { useGetModelComparisonSimilarQuery } from "@/redux/api/carModuleApi";
+import { IMAGE_URL } from "@/utils/constant";
 import React from "react";
 
-interface Car {
-    name: string;
-    price: string;
-    image: string;
-    specs: {
-        length: string;
-        width: string;
-        height: string;
-        wheelbase: string;
-        groundClearance: string;
-        safety: string;
-        service: string;
-        warranty: string;
-    };
+interface ModelComparisonSimilarCarsProps {
+    model: string;
+    slug: string;
 }
 
-const ModelComparisonSimilarCars: React.FC = () => {
-    const cars: Car[] = [
-        {
-            name: "Tata Nexon",
-            price: "Rs.7.32 - 14.05 Lakh*",
-            image:
-                "/model/tata.png",
-            specs: {
-                length: "3995mm",
-                width: "1804mm",
-                height: "1620mm",
-                wheelbase: "2498mm",
-                groundClearance: "208mm",
-                safety: "5 Star",
-                service: "Nationwide",
-                warranty: "3 years/1,00,000km",
-            },
-        },
-        {
-            name: "Mahindra XUV 3XO",
-            price: "Rs.7.28 - 14.40 Lakh*",
-            image:
-                "/model/tata.png",
-            specs: {
-                length: "3990mm",
-                width: "1821mm",
-                height: "1647mm",
-                wheelbase: "2600mm",
-                groundClearance: "201mm",
-                safety: "5 Star",
-                service: "Nationwide",
-                warranty: "3 years/unlimited km",
-            },
-        },
-        {
-            name: "Hyundai Venue",
-            price: "Rs.7.26 - 12.46 Lakh*",
-            image:
-                "/model/tata.png",
-            specs: {
-                length: "3995mm",
-                width: "1770mm",
-                height: "1617mm",
-                wheelbase: "2500mm",
-                groundClearance: "190mm",
-                safety: "-",
-                service: "Nationwide",
-                warranty: "3 years/unlimited km",
-            },
-        },
-        {
-            name: "Maruti Brezza",
-            price: "Rs.8.26 - 13.01 Lakh*",
-            image:
-                "/model/tata.png",
-            specs: {
-                length: "3995mm",
-                width: "1790mm",
-                height: "1685mm",
-                wheelbase: "2500mm",
-                groundClearance: "200mm",
-                safety: "4 Star",
-                service: "Nationwide",
-                warranty: "Tata Nexon",
-            },
-        },
-        {
-            name: "Maruti Fronx",
-            price: "Rs.6.85 - 11.98 Lakh*",
-            image:
-                "/model/tata.png",
-            specs: {
-                length: "3995mm",
-                width: "1765mm",
-                height: "1550mm",
-                wheelbase: "2520mm",
-                groundClearance: "190mm",
-                safety: "-",
-                service: "Nationwide",
-                warranty: "Tata Nexon",
-            },
-        },
-        {
-            name: "Kia Sonet",
-            price: "Rs.7.30 - 14.0 Lakh*",
-            image:
-                "/model/tata.png",
-            specs: {
-                length: "3995mm",
-                width: "1790mm",
-                height: "1642mm",
-                wheelbase: "2500mm",
-                groundClearance: "205mm",
-                safety: "-",
-                service: "Limited",
-                warranty: "3 years/unlimited km",
-            },
-        },
+export interface CarImage {
+    name: string;
+    alt: string;
+    url: string;
+}
+
+export interface PriceRange {
+    min: number;
+    max: number;
+}
+
+export interface StandardWarranty {
+    years: string;
+    km: string;
+}
+
+export interface CarSpecs {
+    length: number;
+    width: number;
+    height: number;
+    wheelbase: number;
+    groundClearance: number;
+    safetyRating: string;
+    standardWarranty: StandardWarranty;
+}
+
+export interface CarModelDetails {
+    modelId: number;
+    name: string;
+    slug: string;
+    image: CarImage;
+    priceRange: PriceRange;
+    specs: CarSpecs;
+}
+
+function convertToLakhFormat(range: string) {
+  const [minStr, maxStr] = range.replace(/₹/g, "").split(" - ");
+
+  const min = parseInt(minStr.replace(/,/g, ""));
+  const max = parseInt(maxStr.replace(/,/g, ""));
+
+  const minLakh = (min / 100000).toFixed(2);
+  const maxLakh = (max / 100000).toFixed(2);
+
+  return `Rs.${minLakh} - ${maxLakh} Lakh*`;
+}
+
+export default function ModelComparisonSimilarCars({ model, slug }: ModelComparisonSimilarCarsProps) {
+
+    const { data: modelComparisonSimilarData } =
+        useGetModelComparisonSimilarQuery({ model_slug: slug });
+
+    const similarCars: CarModelDetails[] = modelComparisonSimilarData?.items ?? [];
+
+    if (!similarCars.length) return <p>No Data</p>;
+
+    // Cars for UI
+    const cars = similarCars.map(car => ({
+        name: car.name,
+        price: `₹${car.priceRange.min.toLocaleString()} - ₹${car.priceRange.max.toLocaleString()}`,
+        image: car.image.url,
+        specs: car.specs
+    }));
+
+    const specsList: { label: string; key: keyof CarSpecs }[] = [
+        { label: "Length", key: "length" },
+        { label: "Width", key: "width" },
+        { label: "Height", key: "height" },
+        { label: "Wheelbase", key: "wheelbase" },
+        { label: "Ground Clearance", key: "groundClearance" },
+        { label: "Safety Rating", key: "safetyRating" },
+        { label: "Standard Warranty", key: "standardWarranty" }
     ];
 
-    const attributes = [
-        "Length",
-        "Width",
-        "Height",
-        "Wheelbase",
-        "Ground Clearance",
-        "Safety Rating",
-        "Service Network",
-        "Standard Warranty",
-    ];
+    const specs = specsList.map(spec => ({
+        label: spec.label,
+        values: cars.map(car => {
+            const s = car.specs;
+
+            if (spec.key === "standardWarranty") {
+                return `${s.standardWarranty.years} yr / ${s.standardWarranty.km} km`;
+            }
+
+            return s[spec.key];
+        })
+    }));
 
     return (
         <div>
-            {/* Header */}
-            <h2 className="text-lg font-semibold mb-4">
-                Tata Nexon{" "}
-                <span className="">Comparison With Similar Cars</span>
+            <h2 className="text-xl mb-4">
+                {model} <span className="font-semibold">Comparison With Similar Cars</span>
             </h2>
 
-            {/* Top Row: Images */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 overflow-x-auto dark:bg-[#171717] dark:border-[#2E2E2E]">
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4 min-w-[700px]">
-                    {cars.map((car, index) => (
-                        <div key={index} className="text-center">
-                            <img
-                                src={car.image}
-                                alt={car.name}
-                                className="w-full h-24 object-cover rounded-md mb-2"
-                            />
-                            <h3 className="text-sm font-semibold">{car.name}</h3>
-                            <p className="text-xs font-medium">{car.price}</p>
+            <div className="flex w-full bg-white rounded-xl overflow-hidden">
+                {/* FIXED COLUMN */}
+                <div className="sticky left-0 z-20 bg-white shadow-md pb-4">
+                    <div className="w-56 flex flex-col p-2">
+                        <img src={`${IMAGE_URL}/media/model-imgs/${cars[0].image}`} className="object-cover rounded-xl" />
+                        <p className="text-sm mt-4">{cars[0].name}</p>
+                        <p className="font-semibold text-md">{convertToLakhFormat(cars[0].price)}</p>
+                    </div>
+
+                    {specs.map((row, i) => (
+                        <div key={i} className="pt-4 w-56 bg-white">
+                            <p className="text-xs h-6 bg-[#F7F7F7] flex items-center pl-3">{row.label}</p>
+                            <p className="text-gray-700 text-sm mt-4 pl-3">{row.values[0]}</p>
                         </div>
                     ))}
                 </div>
 
-                {/* Table */}
-                <div className="min-w-[700px] border-t border-gray-200 dark:border-[#2E2E2E]">
-                    {attributes.map((attr, index) => (
-                        <div
-                            key={index}
-                            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 text-sm border-b border-gray-100 py-4 dark:border-[#2E2E2E]"
-                        >
-                            <div className="font-medium">{attr}</div>
-                            {cars.map((car, i) => {
-                                const value =
-                                    attr === "Length"
-                                        ? car.specs.length
-                                        : attr === "Width"
-                                            ? car.specs.width
-                                            : attr === "Height"
-                                                ? car.specs.height
-                                                : attr === "Wheelbase"
-                                                    ? car.specs.wheelbase
-                                                    : attr === "Ground Clearance"
-                                                        ? car.specs.groundClearance
-                                                        : attr === "Safety Rating"
-                                                            ? car.specs.safety
-                                                            : attr === "Service Network"
-                                                                ? car.specs.service
-                                                                : attr === "Standard Warranty"
-                                                                    ? car.specs.warranty
-                                                                    : "";
-                                return (
-                                    <div key={i} className="text-sm">
-                                        {value}
-                                    </div>
-                                );
-                            })}
+                {/* SCROLLABLE OTHER COLUMNS */}
+                <div className="overflow-x-auto flex scrollbar-hide pb-4">
+                    {cars.slice(1).map((car, index) => (
+                        <div key={index} className="w-56">
+                            <div className="w-56 flex flex-col p-2">
+                                <img src={`${IMAGE_URL}/media/model-imgs/${car.image}`} className="object-cover rounded-xl" />
+                                <p className="text-sm mt-4">{car.name}</p>
+                                <p className="font-semibold text-md">{convertToLakhFormat(cars[0].price)}</p>
+                            </div>
+
+                            {specs.map((row, i) => (
+                                <div key={i} className="pt-4 w-56 text-center">
+                                    <p className="text-xs h-6 bg-[#F7F7F7] flex items-center"></p>
+                                    <p className="text-gray-700 text-sm mt-4">{row.values[index + 1]}</p>
+                                </div>
+                            ))}
                         </div>
                     ))}
-                </div>
-
-                {/* Footer */}
-                <div className="text-center mt-4">
-                    <p className="text-sm">
-                        Still Confused? Compare Tata Nexon with Rivals on{" "}
-                        <Link href="#" className="font-medium hover:underline">
-                            Specs, Mileage & Price &gt;
-                        </Link>
-                    </p>
                 </div>
             </div>
         </div>
     );
-};
-
-export default ModelComparisonSimilarCars;
+}

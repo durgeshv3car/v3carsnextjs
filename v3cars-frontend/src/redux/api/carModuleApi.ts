@@ -1,3 +1,7 @@
+import { ModelSpecificationResponse } from "@/components/responsive/brand/model/overview/DimensionsTable";
+import { ProsConsResponse } from "@/components/responsive/brand/model/overview/ModelProsCons";
+import { CarData } from "@/components/responsive/brand/model/overview/Overview";
+import { HeaderInfo, SpecSection } from "@/components/responsive/brand/model/overview/SpecsListTable";
 import { BASE_URL } from "@/utils/constant";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -15,12 +19,30 @@ interface BrandByIdResponse {
     data: CarBrandDetail | null;
 }
 
+interface CarModelResponse {
+    success: boolean;
+    data: CarData | null;
+}
+
 interface GetModelsArgs {
     brandId: number
 }
 
 interface GetVariantArgs {
     modelId: number
+}
+
+interface ModelComparisonSimilarResponse {
+    success: boolean;
+    items: [];
+}
+
+export interface MileageSpecsFeaturesResponse {
+    success: boolean;
+    options: [];
+    selectedPowertrainId: number;
+    header: HeaderInfo;
+    sections: SpecSection[];
 }
 
 // API definition
@@ -122,6 +144,36 @@ export const carModuleApi = createApi({
         getBrandsById: builder.query<BrandByIdResponse, { brandId: number }>({
             query: ({ brandId }) => `/cars/brands/${brandId}`,
         }),
+
+
+        // Models Query
+
+        getModelDetails: builder.query<CarModelResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}`,
+        }),
+        getModelDetailByFuelType: builder.query<Response, { model_slug: string, fuelType: string }>({
+            query: ({ model_slug, fuelType }) => `/cars/models/${model_slug}/price-list?fuelType=${fuelType}`,
+        }),
+        getBestVariantToBuy: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/best-variant-to-buy`,
+        }),
+        getDimensionsCapacity: builder.query<ModelSpecificationResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/dimensions-capacity`,
+        }),
+        getMileageSpecsFeatures: builder.query<MileageSpecsFeaturesResponse, { model_slug: string, powertrainId?: number }>({
+            query: ({ model_slug, powertrainId }: { model_slug: string; powertrainId?: number }) => {
+                const url = `/cars/models/${model_slug}/mileage-specs-features`;
+                return powertrainId
+                    ? `${url}?powertrainId=${powertrainId}`
+                    : url;
+            }
+        }),
+        getModelProsCons: builder.query<ProsConsResponse, { model_slug: string, }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/pros-cons`,
+        }),
+        getModelComparisonSimilar: builder.query<ModelComparisonSimilarResponse, { model_slug: string, }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/comparison-similar`,
+        }),
     }),
 });
 
@@ -141,45 +193,46 @@ export const {
     useGetAdvanceSearchDataQuery,
     useGetDiscontinuedModelQuery,
     useGetBrandsByIdQuery,
+    useGetModelDetailsQuery,
+    useGetModelDetailByFuelTypeQuery,
+    useGetBestVariantToBuyQuery,
+    useGetDimensionsCapacityQuery,
+    useGetMileageSpecsFeaturesQuery,
+    useGetModelProsConsQuery,
+    useGetModelComparisonSimilarQuery,
 } = carModuleApi;
 
 
 
-
-
-
-
-
-
 interface CarBrandDetail {
-  brandId: number;
-  brandName: string;
-  logoPath: string;
-  unquieViews: number | null;
-  popularity: string;
-  brandSlug: string;
-  brandDescription: string;
-  bannerImage: string;
-  bannerImageAltTag: string;
-  isFasttag: number;
-  brandType: number;
-  displayName: string;
-  roadsideAssistance: number;
-  emailAddress: string;
-  stateId: number;
-  cityId: number;
-  parentOrganization: string;
-  products: string;
-  founderName: string;
-  customerService: string;
-  serviceNetwork: boolean;
-  websiteUrl: string;
-  brandKeyPeople: string;
-  introContent: string; // HTML content
-  brandOrganizationName: string;
-  websiteName: string;
-  brandTitle: string;
-  iconPath: string;
-  brandStatus: number;
-  similarBrand: string;
+    brandId: number;
+    brandName: string;
+    logoPath: string;
+    unquieViews: number | null;
+    popularity: string;
+    brandSlug: string;
+    brandDescription: string;
+    bannerImage: string;
+    bannerImageAltTag: string;
+    isFasttag: number;
+    brandType: number;
+    displayName: string;
+    roadsideAssistance: number;
+    emailAddress: string;
+    stateId: number;
+    cityId: number;
+    parentOrganization: string;
+    products: string;
+    founderName: string;
+    customerService: string;
+    serviceNetwork: boolean;
+    websiteUrl: string;
+    brandKeyPeople: string;
+    introContent: string; // HTML content
+    brandOrganizationName: string;
+    websiteName: string;
+    brandTitle: string;
+    iconPath: string;
+    brandStatus: number;
+    similarBrand: string;
 }

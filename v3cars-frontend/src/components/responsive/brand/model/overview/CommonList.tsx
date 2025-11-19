@@ -8,10 +8,14 @@ import DimensionsTable from "./DimensionsTable";
 interface PriceListProps {
     model: string;
     title: string;
-    desc: string
+    desc: string;
+    data: [] | null;
+    fuelTypes?: string[];
+    fuelType?: string;
+    setFuelType?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CommonList: React.FC<PriceListProps> = ({ model, title, desc }) => {
+const CommonList: React.FC<PriceListProps> = ({ model, title, desc, data, fuelType, fuelTypes, setFuelType }) => {
 
     return (
         <div>
@@ -44,11 +48,11 @@ const CommonList: React.FC<PriceListProps> = ({ model, title, desc }) => {
 
             {
                 title === "Price List" ?
-                    <PriceListTable />
+                    <PriceListTable data={data} setFuelType={setFuelType} fuelType={fuelType} fuelTypes={fuelTypes} />
                     : title === "Variant To Buy" ?
-                        <VariantTable />
+                        <VariantTable data={data} />
                         : 
-                        <DimensionsTable />
+                        <DimensionsTable model={model} data={data} />
             }
 
         </div>

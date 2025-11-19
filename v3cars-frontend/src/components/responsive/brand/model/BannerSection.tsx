@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ModelTab, setActiveTab } from "@/redux/slices/carModelSlice"; // ✅ import your tab slice action here
-import Overview from "./overview/Overview";
+import Overview, { CarData } from "./overview/Overview";
 import CommonModelTopSection from "@/components/common/ModelCards/CommonModelTopSection";
 
 interface BannerSectionProps {
     type: string;
     slug: string;
+    modelDetails: CarData | null;
 }
 
 function toSlug(name: string) {
@@ -34,7 +35,7 @@ const tabs = [
     "Compare",
 ] as const;
 
-const BannerSection: React.FC<BannerSectionProps> = ({ type, slug }) => {
+const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails }) => {
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -89,7 +90,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug }) => {
         <div className="space-y-10">
             {
                 activeTab === "Overview" ?
-                    <Overview city={selectedCity.cityName} />
+                    <Overview city={selectedCity.cityName} modelDetails={modelDetails} />
                     : activeTab === "Price" ?
                         <CommonModelTopSection
                             title="Tata"

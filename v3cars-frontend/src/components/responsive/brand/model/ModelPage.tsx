@@ -31,6 +31,10 @@ import VariantExplained from "./sidebar/VariantExplained";
 import EMICalculator from "./sidebar/EMICalculator";
 import CostOfOwnership from "./sidebar/CostOfOwnership";
 import Marquee from "@/components/ui/Marquee";
+import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetMileageSpecsFeaturesQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "./overview/Overview";
+import { useState } from "react";
+import { BootSpace, Dimensions, TyreSize } from "./overview/DimensionsTable";
 
 const data = [
     {
@@ -55,11 +59,27 @@ interface ModelPageProps {
     slug: string;
 }
 
+interface finalSpecsArray {
+    title: string;
+    data: Dimensions | BootSpace | TyreSize;
+}
+
 export default function ModelPage({ type, slug }: ModelPageProps) {
+    const [fuelType, setFuelType] = useState<string>("petrol")
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelDetailByFuelTypeData } = useGetModelDetailByFuelTypeQuery({ model_slug: slug, fuelType: fuelType }, { skip: !slug });
+    const { data: bestVariantToBuyData } = useGetBestVariantToBuyQuery({ model_slug: slug }, { skip: !slug });
+    const { data: dimensionsCapacityData } = useGetDimensionsCapacityQuery({ model_slug: slug }, { skip: !slug });
     const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: latestVideosData } = useGetLatestVideosQuery()
 
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const modelDetailByFuelType = modelDetailByFuelTypeData?.rows ?? [];
+    const bestVariantToBuy = bestVariantToBuyData?.rows ?? [];
+    const dimensionsCapacity = dimensionsCapacityData
+        ? [dimensionsCapacityData]
+        : null;
     const latestCarNews = latestCarNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const latestVideos = latestVideosData?.rows ?? []
@@ -113,7 +133,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                 <div className="lg:px-8 px-4 shadow-md">
                     {/* Banner content on top */}
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -133,25 +153,40 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             />
 
                             <CommonList
-                                model="Tata Nexon"
+                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 title="Price List"
-                                desc="The Tata Nexon SUV is available with 7 engine-transmission combinations. The ex-showroom prices of the 2025 Nexon start from ₹7.32 lakh for the Smart variant (Base Model) with the 1.2L turbo petrol engine and 5-speed MT. The range tops out at ₹14.05 lakh."
+                                desc={
+                                    modelDetails
+                                        ? `The ${modelDetails.model.brand.name} ${modelDetails.model.name} ${modelDetails.model.bodyType} is available with multiple engine and transmission combinations. The ex-showroom prices of the ${modelDetails.model.name} start from ₹${(
+                                            (modelDetails.priceRange.exShowroom.min ?? 0) / 100000
+                                        ).toFixed(2)} lakh. The top-end variant is priced at ₹${(
+                                            (modelDetails.priceRange.exShowroom.max ?? 0) / 100000
+                                        ).toFixed(2)} lakh (ex-showroom).`
+                                        : ""
+                                }
+                                fuelTypes={modelDetails?.availableWith.fuels}
+                                data={modelDetailByFuelType}
+                                fuelType={fuelType}
+                                setFuelType={setFuelType}
                             />
 
                             <CommonList
-                                model="Best Tata Nexon"
+                                model={`Best ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 title="Variant To Buy"
                                 desc="See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"
+                                data={bestVariantToBuy}
                             />
 
                             <CommonList
-                                model="Tata Nexon"
+                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 title="Dimensions & Capacity"
                                 desc="The 2025 Nexon is 3995mm long, 1804mm wide and 1620mm tall. Bigger exterior dimensions give a car a stronger road presence. The Nexon has a 2498mm long wheelbase. A long wheelbase makes the car more stable at high speeds and gives better legroom in the back"
+                                data={dimensionsCapacity as [] | null}
                             />
 
                             <SpecsListTable
-                                model="Tata Nexon"
+                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <ModelExpertReview
@@ -159,16 +194,18 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             />
 
                             <ModelProsCons
-                                model="Tata Nexon"
+                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <ModelComparisonSimilarCars
-                            // model="Tata Nexon"
+                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
                             />
 
                             {isMobile ? <MobileLatestCarNews
