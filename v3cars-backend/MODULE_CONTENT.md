@@ -138,3 +138,31 @@ EV reviews:
 
 EV videos (videos module):
 /v1/videos/latest?limit=10&fuelType=Electric
+
+
+
+model wise data -
+
+Today
+
+/v1/content/reviews/by-model/444/today
+
+Latest
+
+/v1/content/reviews/by-model/444/latest?limit=15&excludeToday=1
+
+
+Trending
+
+/v1/content/reviews/by-model/444/trendling?limit=9
+
+Top
+
+/v1/content/reviews/by-model/444/top?limit=9
+
+Popular
+
+/v1/content/reviews/by-model/444/popular?limit=9
+
+
+

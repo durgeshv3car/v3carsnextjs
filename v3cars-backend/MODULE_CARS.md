@@ -42,7 +42,6 @@ List
 
 GET /v1/cars/models
 
-
 Query params (summary)
 
 q — search in modelName/modelSlug
@@ -267,7 +266,7 @@ Price list:
 /v1/cars/models/444/price-list
 /v1/cars/models/444/price-list?cityId=6
 /v1/cars/models/444/price-list?fuelType=petrol
-/v1/cars/models/444/price-list?cityId=6&fuelType=automatic&expandVariantId=987&isLoan=1
+/v1/cars/models/444/price-list?cityId=6&fuelType=automatic&expandVariantId=987&isLoan=1&transmissionType=automatic
 
 Best variant to buy:
 /v1/cars/models/444/best-variant-to-buy
@@ -283,8 +282,8 @@ Mileage, specs & features:
 Pros & cons:
 /v1/cars/models/444/pros-cons
 
-Comparison with similar:
-/v1/cars/models/444/comparison-similar
+competitors:
+/v1/cars/models/444/competitors
 
 Using slug (e.g., grand-vitara)
 
@@ -311,6 +310,7 @@ Mileage, specs & features:
 Pros & cons:
 /v1/cars/models/grand-vitara/pros-cons
 
-Comparison with similar:
-/v1/cars/models/grand-vitara/comparison-similar
+competitors:
+/v1/cars/models/grand-vitara/competitors
+
 

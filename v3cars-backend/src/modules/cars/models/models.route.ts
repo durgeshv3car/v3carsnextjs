@@ -16,7 +16,7 @@ r.get('/models/:id/best-variant-to-buy', setCache(1800, 120), (req, res) => c.be
 r.get('/models/:id/dimensions-capacity', setCache(1800, 120), (req, res) => c.dimensionsCapacity(req, res));
 r.get('/models/:id/mileage-specs-features', setCache(1800, 120), (req, res) => c.mileageSpecsFeatures(req, res));
 r.get('/models/:id/pros-cons', setCache(1800, 120), (req, res) => c.prosCons(req, res));
-r.get('/models/:id/comparison-similar', setCache(1800, 120), (req, res) => c.compareSimilar(req, res));
+r.get('/models/:id/competitors', setCache(1800, 120), (req, res) => c.competitors(req, res));
 r.get('/models/:id', setCache(600, 120), (req, res) => c.getById(req, res));
 
 

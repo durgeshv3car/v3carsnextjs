@@ -7,6 +7,8 @@ interface PriceListTableProps {
     fuelTypes?: string[];
     fuelType?: string;
     setFuelType?: React.Dispatch<React.SetStateAction<string>>;
+    transmissionType?: string;
+    setTransmissionType?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface Powertrain {
@@ -26,7 +28,7 @@ export interface Variant {
     updatedDate: string;
 }
 
-const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuelType, fuelTypes }) => {
+const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuelType, fuelTypes, transmissionType, setTransmissionType }) => {
     const [showAll, setShowAll] = useState(false);
 
     return (
@@ -53,9 +55,9 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuel
 
                     {/* Static Transmission Buttons */}
                     <button
-                        onClick={() => setFuelType?.("manual")}
+                        onClick={() => setTransmissionType?.("manual")}
                         className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs dark:bg-[#171717] 
-                                dark:border-[#2E2E2E] hover:bg-gray-200 ${fuelType === "manual" ? "bg-[#B3B3B3]" : "bg-white"}`
+                                dark:border-[#2E2E2E] hover:bg-gray-200 ${transmissionType === "manual" ? "bg-[#B3B3B3]" : "bg-white"}`
                         }
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
@@ -64,9 +66,9 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuel
                         Manual
                     </button>
                     <button
-                        onClick={() => setFuelType?.("automatic")}
+                        onClick={() => setTransmissionType?.("automatic")}
                         className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs dark:bg-[#171717] 
-                                dark:border-[#2E2E2E] hover:bg-gray-200 ${fuelType === "automatic" ? "bg-[#B3B3B3]" : "bg-white"}`
+                                dark:border-[#2E2E2E] hover:bg-gray-200 ${transmissionType === "automatic" ? "bg-[#B3B3B3]" : "bg-white"}`
                         }
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">

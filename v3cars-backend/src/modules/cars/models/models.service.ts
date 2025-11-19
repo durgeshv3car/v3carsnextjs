@@ -62,7 +62,7 @@ const toYmd = (d?: Date | string) => (d ? new Date(d).toISOString().slice(0, 10)
 
 export class ModelsService {
 
-   async resolveModelId(idOrSlug: string): Promise<number | null> {
+  async resolveModelId(idOrSlug: string): Promise<number | null> {
     if (!idOrSlug) return null;
     if (/^\d+$/.test(idOrSlug)) return Number(idOrSlug);
     const row = await prisma.tblmodels.findFirst({
@@ -683,35 +683,49 @@ export class ModelsService {
       return { rows, total: rows.length };
     }, ttlMs);
   }
+
   async priceList(
     modelId: number,
-    q: { cityId?: number; expandVariantId?: number; isLoan?: boolean; fuelType?: string }
+    q: {
+      cityId?: number;
+      expandVariantId?: number;
+      isLoan?: boolean;
+      fuelType?: string;
+      transmissionType?: string; // 🆕 separate gearbox filter
+    }
   ) {
-    // --- normalize UI filter ---
-    const tag = (q.fuelType || '').trim().toLowerCase();
-    const isGearManual = tag === 'manual';
-    const isGearAuto = tag === 'automatic';
+    // --- normalize filters ---
+    const ft = (q.fuelType || '').trim().toLowerCase();
+    const tr = (q.transmissionType || '').trim().toLowerCase();
+
     const fuelNorm =
-      tag === 'petrol' ? 'Petrol' :
-        tag === 'diesel' ? 'Diesel' :
-          tag === 'cng' ? 'CNG' :
-            tag === 'hybrid' ? 'Hybrid' :
-              tag === 'electric' ? 'Electric' :
+      ft === 'petrol' ? 'Petrol' :
+        ft === 'diesel' ? 'Diesel' :
+          ft === 'cng' ? 'CNG' :
+            ft === 'hybrid' ? 'Hybrid' :
+              ft === 'electric' ? 'Electric' :
                 undefined;
 
-    // --- fetch variants from VariantsService (DB filters where safe) ---
+    const isManual = tr === 'manual';
+    const isAutomatic = tr === 'automatic';
+
+    // ⚠️ Only pass transmissionType to DB when it's an unambiguous single code.
+    // "manual" → MT (safe). "automatic" spans AT/AMT/DCT/CVT/e-CVT → post-filter in memory.
+    const dbTransmissionType = isManual ? 'MT' : undefined;
+
+    // --- fetch variants (DB filters where safe) ---
     const variants = await variantsSvc.list({
       modelId,
       page: 1,
       limit: 100,
       sortBy: 'price_asc',
-      // only pass fuelType to DB if it's a real fuel and not gearbox filter
       fuelType: fuelNorm,
-      // do NOT pass transmissionType here for "automatic" bucket — it's multi-type; we will post-filter
-      transmissionType: isGearManual ? 'MT' : undefined, // manual can safely map to MT
+      transmissionType: dbTransmissionType,
     });
 
-    // --- build rows + optional breakdown ---
+    const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+
+    // --- map to rows + compute optional on-road breakdown ---
     let rows = (variants.rows || []).map(v => {
       const bandMin = v.priceMin ?? null;
       const bandMax = v.priceMax ?? null;
@@ -741,21 +755,30 @@ export class ModelsService {
       return base;
     });
 
-    // --- UI post-filter for gearbox buckets (and robust fuel contains) ---
-    if (isGearAuto || isGearManual) {
-      const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'e-CVT', 'Automatic'];
+    // --- apply transmission filter (in-memory) ---
+    if (isManual || isAutomatic) {
       rows = rows.filter(r => {
-        const t = r.powertrain?.transmissionType || '';
-        const T = String(t).toUpperCase();
-        if (isGearManual) return T.includes('MT') && !autoTokens.some(tok => T.includes(tok));
-        // automatic bucket = anything that is not pure MT
-        return autoTokens.some(tok => T.includes(tok));
+        const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
+        if (isManual) {
+          // keep pure MT (and avoid anything that contains auto codes)
+          const isMt = raw.includes('MT');
+          const hasAuto = autoTokens.some(tok => raw.includes(tok));
+          return isMt && !hasAuto;
+        }
+        // automatic bucket = AT / AMT / DCT / CVT / e-CVT / "AUTOMATIC"
+        return autoTokens.some(tok => raw.includes(tok));
       });
-    } else if (fuelNorm) {
-      rows = rows.filter(r => {
-        const f = r.powertrain?.fuelType || '';
-        return String(f).toLowerCase().includes(fuelNorm.toLowerCase());
-      });
+    } else if (tr) {
+      // fallback: if a specific code like "DCT" or "CVT" is ever sent directly
+      const needle = tr.toUpperCase();
+      rows = rows.filter(r => (r.powertrain?.transmissionType || '').toString().toUpperCase().includes(needle));
+    }
+
+    // --- (fuelNorm already applied at DB level; keep a defensive contains check) ---
+    if (fuelNorm) {
+      rows = rows.filter(r =>
+        (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase())
+      );
     }
 
     return {
@@ -764,8 +787,8 @@ export class ModelsService {
       rows,
       page: variants.page,
       pageSize: variants.pageSize,
-      total: rows.length,            // total after UI filter
-      totalPages: 1,                  // since we cap to 100; paginate later if needed
+      total: rows.length,   // after in-memory filter
+      totalPages: 1,
     };
   }
 
@@ -956,74 +979,72 @@ export class ModelsService {
     }, ttlMs);
   }
 
-  async compareSimilar(modelId: number) {
-    const key = cacheKey({ ns: 'model:compareSimilar', v: 2, modelId }); // v bump after shape change
-    const ttlMs = 30 * 60 * 1000;
 
-    return withCache(key, async () => {
-      // 1) read rival ids
-      const rivalRow = await prisma.tblmodelrivals.findFirst({
-        where: { modelId },
-        select: { rivalModelIds: true },
+async competitors(modelId: number) {
+  const key = cacheKey({ ns: 'model:competitors', v: 3, modelId }); // v++ after removing powertrains
+  const ttlMs = 30 * 60 * 1000;
+
+  return withCache(key, async () => {
+    // 1) read rival ids (comma-separated)
+    const rivalRow = await prisma.tblmodelrivals.findFirst({
+      where: { modelId },
+      select: { rivalModelIds: true },
+    });
+
+    const rivalIds = (rivalRow?.rivalModelIds || '')
+      .split(',')
+      .map(s => Number(s.trim()))
+      .filter(n => Number.isFinite(n) && n > 0);
+
+    // ✅ exclude the current model; keep rivals order & de-dup
+    const ids = Array.from(new Set(rivalIds));
+    if (!ids.length) return { success: true, items: [] };
+
+    // 2) fetch models meta
+    const models = await prisma.tblmodels.findMany({
+      where: { modelId: { in: ids } },
+      select: {
+        modelId: true,
+        modelName: true,
+        modelSlug: true,
+        brandId: true,
+      },
+    });
+    if (!models.length) return { success: true, items: [] };
+
+    // 3) hydrate price bands + primary image + specs summary (PS/Nm/KMPL)
+    const modelIds = models.map(m => m.modelId);
+    const [priceBands, imageMap, specsMap] = await Promise.all([
+      variantsSvc.getPriceBandsByModelIds(modelIds),
+      imagesSvc.getPrimaryByModelIds(modelIds),
+      powertrainsSvc.getSpecsByModelIds(modelIds), // { powerPS, torqueNM, mileageKMPL, ... }
+    ]);
+
+    // 4) maintain rivalIds order in output
+    const order = new Map(ids.map((v, i) => [v, i]));
+    const items = models
+      .sort((a, b) => (order.get(a.modelId)! - order.get(b.modelId)!))
+      .map(m => {
+        const band = priceBands.get(m.modelId) ?? { min: null, max: null };
+        const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
+        const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+
+        return {
+          modelId: m.modelId,
+          name: m.modelName ?? null,
+          slug: m.modelSlug ?? null,
+          image: img,
+          priceRange: { min: band.min, max: band.max }, // rupees
+          // quick spec summary
+          powerPS: specs.powerPS ?? null,
+          torqueNM: specs.torqueNM ?? null,
+          mileageKMPL: specs.mileageKMPL ?? null,
+        };
       });
 
-      const rivalIds = (rivalRow?.rivalModelIds || '')
-        .split(',')
-        .map(s => Number(s.trim()))
-        .filter(n => Number.isFinite(n) && n > 0);
-
-      // de-dup & keep current model first
-      const ids = Array.from(new Set([modelId, ...rivalIds]));
-
-      // 2) fetch models meta
-      const models = await prisma.tblmodels.findMany({
-        where: { modelId: { in: ids } },
-        select: {
-          modelId: true, modelName: true, modelSlug: true, brandId: true,
-          length: true, width: true, height: true, wheelBase: true,
-          groundClearance: true, safetyRating: true,
-        },
-      });
-      if (!models.length) return { success: true, items: [] };
-
-      // 3) hydrate price bands, primary image, warranty
-      const modelIds = models.map(m => m.modelId);
-      const [priceBands, imageMap, warrantyMap] = await Promise.all([
-        variantsSvc.getPriceBandsByModelIds(modelIds),
-        imagesSvc.getPrimaryByModelIds(modelIds),
-        powertrainsSvc.getWarrantyByModelIds(modelIds),
-      ]);
-
-      // 4) shape items only (no rows)
-      const idOrder = new Map(ids.map((v, i) => [v, i]));
-      const items = models
-        .sort((a, b) => (idOrder.get(a.modelId)! - idOrder.get(b.modelId)!))
-        .map(m => {
-          const band = priceBands.get(m.modelId) ?? { min: null, max: null };
-          const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
-          const warr = warrantyMap.get(m.modelId) ?? { years: null, km: null };
-
-          return {
-            modelId: m.modelId,
-            name: m.modelName ?? null,
-            slug: m.modelSlug ?? null,
-            image: img,
-            priceRange: { min: band.min, max: band.max }, // rupees
-            specs: {
-              length: m.length ?? null,
-              width: m.width ?? null,
-              height: m.height ?? null,
-              wheelbase: m.wheelBase ?? null,
-              groundClearance: m.groundClearance ?? null,
-              safetyRating: m.safetyRating ?? null,
-              standardWarranty: warr, // { years, km }
-            },
-          };
-        });
-
-      return { success: true, items };
-    }, ttlMs);
-  }
+    return { success: true, items };
+  }, ttlMs);
+}
 
 }
 

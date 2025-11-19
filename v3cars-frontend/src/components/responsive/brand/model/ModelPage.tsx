@@ -31,7 +31,7 @@ import VariantExplained from "./sidebar/VariantExplained";
 import EMICalculator from "./sidebar/EMICalculator";
 import CostOfOwnership from "./sidebar/CostOfOwnership";
 import Marquee from "@/components/ui/Marquee";
-import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetMileageSpecsFeaturesQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "./overview/Overview";
 import { useState } from "react";
 import { BootSpace, Dimensions, TyreSize } from "./overview/DimensionsTable";
@@ -66,13 +66,17 @@ interface finalSpecsArray {
 
 export default function ModelPage({ type, slug }: ModelPageProps) {
     const [fuelType, setFuelType] = useState<string>("petrol")
+    const [transmissionType, setTransmissionType] = useState<string>("")
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
-    const { data: modelDetailByFuelTypeData } = useGetModelDetailByFuelTypeQuery({ model_slug: slug, fuelType: fuelType }, { skip: !slug });
+    const { data: modelDetailByFuelTypeData } = useGetModelDetailByFuelTypeQuery({ model_slug: slug, fuelType: fuelType, transmissionType: transmissionType ?? undefined }, { skip: !slug });
     const { data: bestVariantToBuyData } = useGetBestVariantToBuyQuery({ model_slug: slug }, { skip: !slug });
     const { data: dimensionsCapacityData } = useGetDimensionsCapacityQuery({ model_slug: slug }, { skip: !slug });
     const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: latestVideosData } = useGetLatestVideosQuery()
+
+    console.log(transmissionType);
+    
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelDetailByFuelType = modelDetailByFuelTypeData?.rows ?? [];
@@ -168,6 +172,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                                 data={modelDetailByFuelType}
                                 fuelType={fuelType}
                                 setFuelType={setFuelType}
+                                transmissionType={transmissionType}
+                                setTransmissionType={setTransmissionType}
                             />
 
                             <CommonList
@@ -198,14 +204,15 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                                 slug={slug}
                             />
 
-                            <ModelComparisonSimilarCars
+                            {/* <ModelComparisonSimilarCars
                                 model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 slug={slug}
-                            />
+                            /> */}
 
                             <CommonViewOfferCard
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 desc={`The ${modelDetails?.model?.name} competes with popular models including`}
+                                slug={slug}
                             />
 
                             {isMobile ? <MobileLatestCarNews

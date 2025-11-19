@@ -61,7 +61,7 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model, slug }) => {
         <div>
 
             {/* Powertrain Dropdown */}
-            <div className="flex justify-between items-center mb-3">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-3 gap-3">
                 <h2 className="text-xl">{model} <span className="font-semibold">Mileage, Specs & Features</span></h2>
                 <select
                     className="border p-3 rounded-lg"
@@ -77,7 +77,7 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model, slug }) => {
 
             <div className="flex border rounded-lg overflow-hidden">
                 {/* LEFT TABS */}
-                <div className="w-1/5 bg-gray-100 border-r divide-y">
+                <div className="w-1/2 md:w-1/5 bg-gray-100 border-r divide-y">
                     {carSpecs && carSpecs?.sections.map((sec) => (
                         <button
                             key={sec.group}

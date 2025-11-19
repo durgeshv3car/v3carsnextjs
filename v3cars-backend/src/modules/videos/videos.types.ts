@@ -14,6 +14,19 @@ export interface VideosListQuery {
   authorId?: number;
 }
 
+
 export interface LatestVideosQuery extends VideosListQuery {
   excludeToday?: boolean;
 }
+
+
+
+
+
+
+
+
+
+
+
+

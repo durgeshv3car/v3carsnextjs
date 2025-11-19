@@ -13,9 +13,11 @@ interface PriceListProps {
     fuelTypes?: string[];
     fuelType?: string;
     setFuelType?: React.Dispatch<React.SetStateAction<string>>;
+    transmissionType?: string;
+    setTransmissionType?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CommonList: React.FC<PriceListProps> = ({ model, title, desc, data, fuelType, fuelTypes, setFuelType }) => {
+const CommonList: React.FC<PriceListProps> = ({ model, title, desc, data, fuelType, fuelTypes, setFuelType, transmissionType, setTransmissionType }) => {
 
     return (
         <div>
@@ -48,10 +50,10 @@ const CommonList: React.FC<PriceListProps> = ({ model, title, desc, data, fuelTy
 
             {
                 title === "Price List" ?
-                    <PriceListTable data={data} setFuelType={setFuelType} fuelType={fuelType} fuelTypes={fuelTypes} />
+                    <PriceListTable data={data} setFuelType={setFuelType} fuelType={fuelType} fuelTypes={fuelTypes} transmissionType={transmissionType} setTransmissionType={setTransmissionType} />
                     : title === "Variant To Buy" ?
                         <VariantTable data={data} />
-                        : 
+                        :
                         <DimensionsTable model={model} data={data} />
             }
 

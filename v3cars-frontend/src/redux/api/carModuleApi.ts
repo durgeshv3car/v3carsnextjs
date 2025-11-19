@@ -32,7 +32,7 @@ interface GetVariantArgs {
     modelId: number
 }
 
-interface ModelComparisonSimilarResponse {
+interface ModelCompetitorsQueryResponse {
     success: boolean;
     items: [];
 }
@@ -151,8 +151,13 @@ export const carModuleApi = createApi({
         getModelDetails: builder.query<CarModelResponse, { model_slug: string }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}`,
         }),
-        getModelDetailByFuelType: builder.query<Response, { model_slug: string, fuelType: string }>({
-            query: ({ model_slug, fuelType }) => `/cars/models/${model_slug}/price-list?fuelType=${fuelType}`,
+        getModelDetailByFuelType: builder.query<Response, { model_slug: string, fuelType?: string, transmissionType?: string }>({
+             query: ({ model_slug, fuelType, transmissionType }: { model_slug: string; fuelType?: string, transmissionType?: string }) => {
+                const url = `/cars/models/${model_slug}/price-list?fuelType=${fuelType}`;
+                return fuelType && transmissionType 
+                    ? `${url}&transmissionType=${transmissionType}`
+                    : url;
+            }
         }),
         getBestVariantToBuy: builder.query<Response, { model_slug: string }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}/best-variant-to-buy`,
@@ -171,8 +176,8 @@ export const carModuleApi = createApi({
         getModelProsCons: builder.query<ProsConsResponse, { model_slug: string, }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}/pros-cons`,
         }),
-        getModelComparisonSimilar: builder.query<ModelComparisonSimilarResponse, { model_slug: string, }>({
-            query: ({ model_slug }) => `/cars/models/${model_slug}/comparison-similar`,
+        getModelCompetitors: builder.query<ModelCompetitorsQueryResponse, { model_slug: string, }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/competitors`,
         }),
     }),
 });
@@ -199,7 +204,7 @@ export const {
     useGetDimensionsCapacityQuery,
     useGetMileageSpecsFeaturesQuery,
     useGetModelProsConsQuery,
-    useGetModelComparisonSimilarQuery,
+    useGetModelCompetitorsQuery,
 } = carModuleApi;
 
 
