@@ -258,43 +258,59 @@ MEDIA_BASE_URL: set to build absolute image URLs.
 model pages -
 
 overview  -
+Using numeric id (e.g., 444)
 
-price list -
+Model basics:
+/v1/cars/models/444
 
-Fuel tabs
+Price list:
+/v1/cars/models/444/price-list
+/v1/cars/models/444/price-list?cityId=6
+/v1/cars/models/444/price-list?fuelType=petrol
+/v1/cars/models/444/price-list?cityId=6&fuelType=automatic&expandVariantId=987&isLoan=1
 
-/v1/cars/models/{MODEL_ID}/price-list?fuelType=petrol
+Best variant to buy:
+/v1/cars/models/444/best-variant-to-buy
+/v1/cars/models/444/best-variant-to-buy?powertrainId=123
 
-/v1/cars/models/{MODEL_ID}/price-list?fuelType=diesel
+Dimensions & capacity:
+/v1/cars/models/444/dimensions-capacity
 
-/v1/cars/models/{MODEL_ID}/price-list?fuelType=cng
+Mileage, specs & features:
+/v1/cars/models/444/mileage-specs-features
+/v1/cars/models/444/mileage-specs-features?powertrainId=123
 
-/v1/cars/models/{MODEL_ID}/price-list?fuelType=hybrid
+Pros & cons:
+/v1/cars/models/444/pros-cons
 
-/v1/cars/models/{MODEL_ID}/price-list?fuelType=electric
+Comparison with similar:
+/v1/cars/models/444/comparison-similar
 
-Gearbox tabs
+Using slug (e.g., grand-vitara)
 
+Model basics:
+/v1/cars/models/grand-vitara
 
+Price list:
+/v1/cars/models/grand-vitara/price-list
+/v1/cars/models/grand-vitara/price-list?cityId=6
+/v1/cars/models/grand-vitara/price-list?fuelType=diesel
+/v1/cars/models/grand-vitara/price-list?cityId=6&fuelType=manual&expandVariantId=987&isLoan=1
 
-/v1/cars/models/{MODEL_ID}/price-list?fuelType=manual
+Best variant to buy:
+/v1/cars/models/grand-vitara/best-variant-to-buy
+/v1/cars/models/grand-vitara/best-variant-to-buy?powertrainId=123
 
-/v1/cars/models/{MODEL_ID}/price-list?fuelType=automatic
+Dimensions & capacity:
+/v1/cars/models/grand-vitara/dimensions-capacity
 
-City + on-road calc (min price base)
+Mileage, specs & features:
+/v1/cars/models/grand-vitara/mileage-specs-features
+/v1/cars/models/grand-vitara/mileage-specs-features?powertrainId=123
 
-/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}
+Pros & cons:
+/v1/cars/models/grand-vitara/pros-cons
 
-/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}&fuelType=petrol
-
-/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}&fuelType=automatic
-
-Breakdown for a single variant (accordion open)
-
-/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}&expandVariantId={VARIANT_ID}
-
-/v1/cars/models/{MODEL_ID}/price-list?cityId={CITY_ID}&fuelType=diesel&expandVariantId={VARIANT_ID}
-
-Loan scenario (adds hypothecation)
-
+Comparison with similar:
+/v1/cars/models/grand-vitara/comparison-similar
 
