@@ -92,10 +92,10 @@ export class ModelsController {
     res.json(data);
   }
 
- async competitors(req: Request, res: Response) {
-  const id = await this.resolve(req, res);
-  if (!id) return;
-  const data = await svc.competitors(id);
-  res.json(data);
-}
+  async competitors(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const data = await svc.competitors(id);
+    res.json(data);
+  }
 }
