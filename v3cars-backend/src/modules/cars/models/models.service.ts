@@ -62,7 +62,7 @@ const toYmd = (d?: Date | string) => (d ? new Date(d).toISOString().slice(0, 10)
 
 export class ModelsService {
 
-   async resolveModelId(idOrSlug: string): Promise<number | null> {
+  async resolveModelId(idOrSlug: string): Promise<number | null> {
     if (!idOrSlug) return null;
     if (/^\d+$/.test(idOrSlug)) return Number(idOrSlug);
     const row = await prisma.tblmodels.findFirst({
@@ -683,35 +683,49 @@ export class ModelsService {
       return { rows, total: rows.length };
     }, ttlMs);
   }
+
   async priceList(
     modelId: number,
-    q: { cityId?: number; expandVariantId?: number; isLoan?: boolean; fuelType?: string }
+    q: {
+      cityId?: number;
+      expandVariantId?: number;
+      isLoan?: boolean;
+      fuelType?: string;
+      transmissionType?: string; // 🆕 separate gearbox filter
+    }
   ) {
-    // --- normalize UI filter ---
-    const tag = (q.fuelType || '').trim().toLowerCase();
-    const isGearManual = tag === 'manual';
-    const isGearAuto = tag === 'automatic';
+    // --- normalize filters ---
+    const ft = (q.fuelType || '').trim().toLowerCase();
+    const tr = (q.transmissionType || '').trim().toLowerCase();
+
     const fuelNorm =
-      tag === 'petrol' ? 'Petrol' :
-        tag === 'diesel' ? 'Diesel' :
-          tag === 'cng' ? 'CNG' :
-            tag === 'hybrid' ? 'Hybrid' :
-              tag === 'electric' ? 'Electric' :
+      ft === 'petrol' ? 'Petrol' :
+        ft === 'diesel' ? 'Diesel' :
+          ft === 'cng' ? 'CNG' :
+            ft === 'hybrid' ? 'Hybrid' :
+              ft === 'electric' ? 'Electric' :
                 undefined;
 
-    // --- fetch variants from VariantsService (DB filters where safe) ---
+    const isManual = tr === 'manual';
+    const isAutomatic = tr === 'automatic';
+
+    // ⚠️ Only pass transmissionType to DB when it's an unambiguous single code.
+    // "manual" → MT (safe). "automatic" spans AT/AMT/DCT/CVT/e-CVT → post-filter in memory.
+    const dbTransmissionType = isManual ? 'MT' : undefined;
+
+    // --- fetch variants (DB filters where safe) ---
     const variants = await variantsSvc.list({
       modelId,
       page: 1,
       limit: 100,
       sortBy: 'price_asc',
-      // only pass fuelType to DB if it's a real fuel and not gearbox filter
       fuelType: fuelNorm,
-      // do NOT pass transmissionType here for "automatic" bucket — it's multi-type; we will post-filter
-      transmissionType: isGearManual ? 'MT' : undefined, // manual can safely map to MT
+      transmissionType: dbTransmissionType,
     });
 
-    // --- build rows + optional breakdown ---
+    const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+
+    // --- map to rows + compute optional on-road breakdown ---
     let rows = (variants.rows || []).map(v => {
       const bandMin = v.priceMin ?? null;
       const bandMax = v.priceMax ?? null;
@@ -741,21 +755,30 @@ export class ModelsService {
       return base;
     });
 
-    // --- UI post-filter for gearbox buckets (and robust fuel contains) ---
-    if (isGearAuto || isGearManual) {
-      const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'e-CVT', 'Automatic'];
+    // --- apply transmission filter (in-memory) ---
+    if (isManual || isAutomatic) {
       rows = rows.filter(r => {
-        const t = r.powertrain?.transmissionType || '';
-        const T = String(t).toUpperCase();
-        if (isGearManual) return T.includes('MT') && !autoTokens.some(tok => T.includes(tok));
-        // automatic bucket = anything that is not pure MT
-        return autoTokens.some(tok => T.includes(tok));
+        const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
+        if (isManual) {
+          // keep pure MT (and avoid anything that contains auto codes)
+          const isMt = raw.includes('MT');
+          const hasAuto = autoTokens.some(tok => raw.includes(tok));
+          return isMt && !hasAuto;
+        }
+        // automatic bucket = AT / AMT / DCT / CVT / e-CVT / "AUTOMATIC"
+        return autoTokens.some(tok => raw.includes(tok));
       });
-    } else if (fuelNorm) {
-      rows = rows.filter(r => {
-        const f = r.powertrain?.fuelType || '';
-        return String(f).toLowerCase().includes(fuelNorm.toLowerCase());
-      });
+    } else if (tr) {
+      // fallback: if a specific code like "DCT" or "CVT" is ever sent directly
+      const needle = tr.toUpperCase();
+      rows = rows.filter(r => (r.powertrain?.transmissionType || '').toString().toUpperCase().includes(needle));
+    }
+
+    // --- (fuelNorm already applied at DB level; keep a defensive contains check) ---
+    if (fuelNorm) {
+      rows = rows.filter(r =>
+        (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase())
+      );
     }
 
     return {
@@ -764,8 +787,8 @@ export class ModelsService {
       rows,
       page: variants.page,
       pageSize: variants.pageSize,
-      total: rows.length,            // total after UI filter
-      totalPages: 1,                  // since we cap to 100; paginate later if needed
+      total: rows.length,   // after in-memory filter
+      totalPages: 1,
     };
   }
 
