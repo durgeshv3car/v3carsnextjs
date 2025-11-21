@@ -78,3 +78,16 @@ export const modelDimensionsQueryDto = z.object({
   fuelType: z.string().trim().max(50).optional(),
   transmissionType: z.string().trim().max(50).optional(),
 });
+
+export const modelFuelEfficiencyQueryDto = z.object({
+  fuelType: z.string().trim().max(50).optional(),
+  transmissionType: z.string().trim().max(50).optional(),
+});
+
+export const modelCsdVsOnroadQueryDto = z.object({
+  cityId: z.coerce.number().int().positive(),
+  fuelType: z.string().trim().max(50).optional(),
+  transmissionType: z.string().trim().max(50).optional(),
+  expandVariantId: z.coerce.number().int().positive().optional(),
+  isLoan: z.union([z.literal('1'), z.literal('0')]).transform(v => v === '1').optional(),
+});
