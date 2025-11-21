@@ -109,6 +109,12 @@ export const contentModuleApi = createApi({
         getPopularComparisons: builder.query<Response, void>({
             query: () => `/comparisons/popular?limit=15`,
         }),
+        
+        // Model Page Content Api
+        
+        getModelLatestNews: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/content/news/by-model/${model_slug}/latest?limit=15&excludeToday=1`,
+        }),
     }),
 });
 
@@ -143,4 +149,5 @@ export const {
     useGetTopVariantExplainedQuery,
     useGetPopularVariantExplainedQuery,
     useGetPopularComparisonsQuery,
+    useGetModelLatestNewsQuery,
 } = contentModuleApi;

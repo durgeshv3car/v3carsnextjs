@@ -21,10 +21,14 @@ import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
-import Link from "next/link";
+import { useGetModelDetailsQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
+import { CarData } from "../overview/Overview";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useState } from "react";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 
 interface PriceListPageProps {
     type: string;
@@ -76,14 +80,25 @@ const variants = [
 ];
 
 function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
-
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const [fuelType, setFuelType] = useState("")
+    const [transmissionType, setTransmissionType] = useState("")
+    const [variantId, setVariantId] = useState<number | null>(null)
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: priceListDetailsData } =
+        useGetPriceListDetailsQuery(
+            { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType, variantId: variantId ? Number(variantId) : undefined },
+            { skip: !slug }
+        );
 
-    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const latestVideos = latestVideosData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const priceListDetails = priceListDetailsData?.rows ?? []
 
     const isMobile = useIsMobile()
 
@@ -110,7 +125,7 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -121,17 +136,24 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
                             <OnRoadPriceTable
-                                title={"Tata Nexon On-Road Price in Gurugram, Haryana"}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} On-Road Price in ${selectedCity.cityName}`}
                                 desc={"See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"}
-                                data={variants}
+                                data={priceListDetails}
                                 slug={slug}
+                                setFuelType={setFuelType}
+                                setTransmissionType={setTransmissionType}
+                                setVariantId={setVariantId}
+                                transmissionType={transmissionType}
+                                fuelType={fuelType}
+                                fuelTypes={modelDetails?.availableWith.fuels}
                             />
 
-                            <div className="border rounded-xl h-[332px]" />
+                            <CommonSellUsedCarComponent />
 
                             <CommonViewOfferCard
                                 title="Tata Nexon"
                                 desc="The Nexon competes with popular models including"
+                                slug={slug}
                             />
 
                             <CommonUsedCarCard
@@ -151,14 +173,14 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             {isMobile ? <MobileLatestCarNews
                                 title="Tata Nexon Latest News"
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
                                     title="Tata Nexon Latest News"
                                     view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
                             }
@@ -166,7 +188,7 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             <CommonVideos
                                 title="Tata Nexon Latest Videos"
                                 view="Nexon Videos"
-                                videoList={latestVideos}
+                                videoList={modelReviewsVideos}
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
@@ -193,6 +215,7 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
 
                             <BrochureCard
                                 title="Tata Nexon"
+                                url={undefined}
                             />
 
                             <CSDPriceList

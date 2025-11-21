@@ -7,7 +7,7 @@ import { useState } from "react";
 
 interface OverviewProps {
     city: string;
-    modelDetails: CarData | null;
+    modelDetails?: CarData | null;
 }
 
 // Interfaces (same as your provided ones)

@@ -119,13 +119,13 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                                 className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg h-auto snap-start shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
                             >
                                 {/* Thumbnail with Play Icon */}
-                                <div className="relative h-[225px] w-full rounded overflow-hidden group cursor-pointer">
+                                <div className="relative h-[190px] w-full rounded overflow-hidden group cursor-pointer">
                                     <Image
                                         src={`${IMAGE_URL}${video.thumbnail.url}`}
                                         alt={video.thumbnail.alt || video.title}
                                         fill
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
-                                        className="object-cover rounded"
+                                        className="rounded"
                                         priority={false} 
                                     />
 

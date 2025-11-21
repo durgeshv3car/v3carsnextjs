@@ -49,7 +49,7 @@ function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
                 dispatch(setActiveTab("CSD Price"));
             }
             if (childSlug === "mileage") {
-                dispatch(setActiveTab("Mileage, Specs & Features"));
+                dispatch(setActiveTab("Mileage"));
             }
             if (childSlug === "news") {
                 dispatch(setActiveTab("News"));
@@ -134,7 +134,7 @@ function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
                             <DimensionsPage type={type} slug={slug} childSlug={childSlug} />
                             : activeTab === "CSD Price" ?
                                 <CSDPricePage type={type} slug={slug} childSlug={childSlug} />
-                                : activeTab === "Mileage, Specs & Features" ?
+                                : activeTab === "Mileage" ?
                                     <MileagePage type={type} slug={slug} childSlug={childSlug} />
                                     : activeTab === "News" ?
                                         <NewsPage type={type} slug={slug} childSlug={childSlug} />

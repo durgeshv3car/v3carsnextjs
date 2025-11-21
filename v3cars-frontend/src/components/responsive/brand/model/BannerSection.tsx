@@ -1,18 +1,17 @@
 'use client';
 
 import { RootState } from "@/redux/store";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ModelTab, setActiveTab } from "@/redux/slices/carModelSlice"; // ✅ import your tab slice action here
+import { ModelTab, setActiveTab } from "@/redux/slices/carModelSlice";
 import Overview, { CarData } from "./overview/Overview";
 import CommonModelTopSection from "@/components/common/ModelCards/CommonModelTopSection";
 
 interface BannerSectionProps {
     type: string;
     slug: string;
-    modelDetails: CarData | null;
+    modelDetails?: CarData | null;
 }
 
 function toSlug(name: string) {
@@ -30,17 +29,19 @@ const tabs = [
     "Price",
     "Variants",
     "Dimensions",
-    "Mileage, Specs & Features",
+    "Mileage",
     "Reviews",
     "Compare",
 ] as const;
+
+const currentYear = new Date().getFullYear();
 
 const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails }) => {
     const dispatch = useDispatch();
     const router = useRouter();
 
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
-    const activeTab = useSelector((state: RootState) => state.carModelSlice.activeTab); // ✅ fixed missing parenthesis
+    const activeTab = useSelector((state: RootState) => state.carModelSlice.activeTab);
 
     function handleModelTab(tab: ModelTab) {
         dispatch(setActiveTab(tab));
@@ -54,7 +55,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
             router.push(`/${type}/${slug}/dimensions`);
         } else if (tab === "CSD Price") {
             router.push(`/${type}/${slug}/csd-price`);
-        } else if (tab === "Mileage, Specs & Features") {
+        } else if (tab === "Mileage") {
             router.push(`/${type}/${slug}/mileage`);
         } else if (tab === "News") {
             router.push(`/${type}/${slug}/news`);
@@ -93,33 +94,29 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                     <Overview city={selectedCity.cityName} modelDetails={modelDetails} />
                     : activeTab === "Price" ?
                         <CommonModelTopSection
-                            title="Tata"
-                            highlight="Nexon"
+                            title={`${modelDetails?.model?.brand?.name}`}
+                            highlight={`${modelDetails?.model?.name}`}
                             others="Price List"
-                            description="The Tata Nexon SUV is available with 7 engine-transmission combinations. 
-                            The ex-showroom prices of the 2025 Nexon start from ₹7.32 lakh for the Smart variant (Base Model)
-                            with the 1.2L turbo petrol engine and 5-speed MT. The range tops out at ₹14.05 ..."
+                            description={`The ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} ${modelDetails?.model?.bodyType} is available with 7 engine-transmission combinations. The ex-showroom prices of the ${currentYear} ${modelDetails?.model?.name} start from ${modelDetails?.priceRange?.exShowroom?.min} for the Smart variant (Base Model) with the 1.2L turbo petrol engine and 5-speed MT. The range tops out at ${modelDetails?.priceRange?.exShowroom?.max}.`}
                         />
                         : activeTab === "Variants" ?
                             <CommonModelTopSection
-                                title="Tata"
-                                highlight="Nexon"
-                                others="Price List"
-                                description="The Tata Nexon SUV is available with 7 engine-transmission combinations. 
-                            The ex-showroom prices of the 2025 Nexon start from ₹7.32 lakh for the Smart variant (Base Model)
-                            with the 1.2L turbo petrol engine and 5-speed MT. The range tops out at ₹14.05 ..."
+                                title={`${modelDetails?.model?.brand?.name}`}
+                                highlight={`${modelDetails?.model?.name}`}
+                                others="Variants List And Prices"
+                                description={`The ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} ${modelDetails?.model?.bodyType} is available with 5 powertrain combinations. Here is the comprehensive ${modelDetails?.model?.name} variant list with all variants' prices. See the complete variant wise ex-showroom price list of the ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} in India. Variants are grouped by powertrain.`}
                             />
                             : activeTab === "CSD Price" ?
                                 <CommonModelTopSection
                                     title="Tata"
                                     highlight="Nexon"
                                     others="CSD Price"
-                                    description="This page lists the CSD price of the Tata Nexon for all variants and compares it with the civilian ex-showroom and estimated on-road price to show how much you save with CSD. We also map eligibility by rank / pay level (Officers, JCOs, NCOs & ORs) so...."
+                                    description="This page lists the CSD price of the Tata Nexon for all variants and compares it with the civilian ex-showroom and estimated on-road price to show how much you save with CSD. We also map eligibility by rank / pay level (Officers, JCOs, NCOs & ORs)."
                                 />
-                                : activeTab === "Mileage, Specs & Features" ?
+                                : activeTab === "Mileage" ?
                                     <CommonModelTopSection
-                                        title="Tata"
-                                        highlight="Nexon"
+                                        title={`${modelDetails?.model?.brand?.name}`}
+                                        highlight={`${modelDetails?.model?.name}`}
                                         others="Mileage"
                                         description="Tata Nexon mileage is 17.01kmpl to 24.08kmpl. The mileage of Nexon Petrol is 17.01kmpl to 17.44kmpl. The mileage of Nexon Diesel is 23.30kmpl to 24.08kmpl. This page empowers you with all the information you need to understand the Nexon's real-world ...."
                                     />
@@ -209,8 +206,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                                                                     />
                                                                                     :
                                                                                     <CommonModelTopSection
-                                                                                        title="Tata"
-                                                                                        highlight="Nexon"
+                                                                                        title={`${modelDetails?.model?.brand?.name}`}
+                                                                                        highlight={`${modelDetails?.model?.name}`}
                                                                                         others="Dimensions"
                                                                                         description="The Tata Nexon is a B2-segment SUV which has a seating capacity of up to 5 occupants. Here we present the Tata Nexon dimensions like length, width, height and wheelbase along with fuel tank capacity, boot space, ground clearance and tyre size. You can al..."
                                                                                     />

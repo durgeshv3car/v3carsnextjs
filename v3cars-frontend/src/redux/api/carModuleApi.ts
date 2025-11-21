@@ -1,7 +1,9 @@
+import { ModelDimensionsResponse } from "@/components/responsive/brand/model/dimensions/DimensionsPage";
 import { ModelSpecificationResponse } from "@/components/responsive/brand/model/overview/DimensionsTable";
 import { ProsConsResponse } from "@/components/responsive/brand/model/overview/ModelProsCons";
 import { CarData } from "@/components/responsive/brand/model/overview/Overview";
 import { HeaderInfo, SpecSection } from "@/components/responsive/brand/model/overview/SpecsListTable";
+import { PriceListDetailsResponse } from "@/components/responsive/brand/model/price/OnRoadPriceTable";
 import { BASE_URL } from "@/utils/constant";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -151,20 +153,51 @@ export const carModuleApi = createApi({
         getModelDetails: builder.query<CarModelResponse, { model_slug: string }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}`,
         }),
-        getModelDetailByFuelType: builder.query<Response, { model_slug: string, fuelType?: string, transmissionType?: string }>({
-             query: ({ model_slug, fuelType, transmissionType }: { model_slug: string; fuelType?: string, transmissionType?: string }) => {
-                const url = `/cars/models/${model_slug}/price-list?fuelType=${fuelType}`;
-                return fuelType && transmissionType 
+        getModelDetailByFuelType: builder.query<Response, { model_slug: string, cityId: number, fuelType?: string, transmissionType?: string }>({
+            query: ({ model_slug, cityId, fuelType, transmissionType }: { model_slug: string; cityId: number; fuelType?: string, transmissionType?: string }) => {
+                const url = `/cars/models/${model_slug}/price-list?cityId=${cityId}&fuelType=${fuelType}`;
+                return fuelType && transmissionType
                     ? `${url}&transmissionType=${transmissionType}`
                     : url;
             }
         }),
-        getBestVariantToBuy: builder.query<Response, { model_slug: string }>({
-            query: ({ model_slug }) => `/cars/models/${model_slug}/best-variant-to-buy`,
+
+        getBestVariantToBuy: builder.query<Response, { model_slug: string, fuelType?: string, transmissionType?: string }>({
+            query: ({ model_slug, fuelType, transmissionType }: { model_slug: string; fuelType?: string, transmissionType?: string }) => {
+                const url = `/cars/models/${model_slug}/best-variant-to-buy`;
+
+                const params: string[] = [];
+
+                if (fuelType !== undefined && fuelType !== null && fuelType !== "") {
+                    params.push(`fuelType=${fuelType}`);
+                }
+
+                if (transmissionType !== undefined && transmissionType !== null && transmissionType !== "") {
+                    params.push(`transmissionType=${transmissionType}`);
+                }
+
+                return params.length ? `${url}?${params.join("&")}` : url;
+            }
         }),
-        getDimensionsCapacity: builder.query<ModelSpecificationResponse, { model_slug: string }>({
-            query: ({ model_slug }) => `/cars/models/${model_slug}/dimensions-capacity`,
+
+        getDimensionsCapacity: builder.query<ModelDimensionsResponse, { model_slug: string; fuelType?: string; transmissionType?: string }>({
+            query: ({ model_slug, fuelType, transmissionType }) => {
+                const url = `/cars/models/${model_slug}/dimensions-capacity`;
+
+                const params: string[] = [];
+
+                if (fuelType) params.push(`fuelType=${fuelType}`);
+                if (transmissionType) params.push(`transmissionType=${transmissionType}`);
+
+                if (params.length > 0) {
+                    params.push("detailed=1");
+                    return `${url}?${params.join("&")}`;
+                }
+
+                return url;
+            }
         }),
+
         getMileageSpecsFeatures: builder.query<MileageSpecsFeaturesResponse, { model_slug: string, powertrainId?: number }>({
             query: ({ model_slug, powertrainId }: { model_slug: string; powertrainId?: number }) => {
                 const url = `/cars/models/${model_slug}/mileage-specs-features`;
@@ -173,11 +206,47 @@ export const carModuleApi = createApi({
                     : url;
             }
         }),
+
         getModelProsCons: builder.query<ProsConsResponse, { model_slug: string, }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}/pros-cons`,
         }),
+
         getModelCompetitors: builder.query<ModelCompetitorsQueryResponse, { model_slug: string, }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}/competitors`,
+        }),
+
+        getPriceListDetails: builder.query<PriceListDetailsResponse, { model_slug: string, cityId: number, fuelType?: string, variantId?: number, transmissionType?: string }>({
+            query: ({
+                model_slug,
+                cityId,
+                fuelType,
+                variantId,
+                transmissionType
+            }: {
+                model_slug: string,
+                cityId: number,
+                fuelType?: string,
+                variantId?: number,
+                transmissionType?: string
+            }) => {
+                const url = `/cars/models/${model_slug}/price-list?cityId=${cityId}`;
+
+                const params: string[] = [];
+
+                if (fuelType !== undefined && fuelType !== null && fuelType !== "") {
+                    params.push(`fuelType=${fuelType}`);
+                }
+
+                if (variantId !== undefined && variantId !== null) {
+                    params.push(`expandVariantId=${variantId}`);
+                }
+
+                if (transmissionType !== undefined && transmissionType !== null && transmissionType !== "") {
+                    params.push(`transmissionType=${transmissionType}`);
+                }
+
+                return params.length ? `${url}&${params.join("&")}` : url;
+            }
         }),
     }),
 });
@@ -205,6 +274,7 @@ export const {
     useGetMileageSpecsFeaturesQuery,
     useGetModelProsConsQuery,
     useGetModelCompetitorsQuery,
+    useGetPriceListDetailsQuery,
 } = carModuleApi;
 
 

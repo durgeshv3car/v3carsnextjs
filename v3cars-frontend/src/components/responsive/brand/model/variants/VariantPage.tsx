@@ -21,11 +21,14 @@ import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetLatestVideosQuery, useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import Link from "next/link";
 import VariantTable from "./VariantTable";
+import { useGetBestVariantToBuyQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "../overview/Overview";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 
 interface VariantPageProps {
     type: string;
@@ -34,14 +37,17 @@ interface VariantPageProps {
 }
 
 function VariantPage({ type, slug, childSlug }: VariantPageProps) {
-
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: bestVariantToBuyData } = useGetBestVariantToBuyQuery({ model_slug: slug, fuelType: "petrol" }, { skip: !slug });
 
-    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const bestVariantToBuy = bestVariantToBuyData?.rows ?? [];
+    const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const latestVideos = latestVideosData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
 
     const isMobile = useIsMobile()
 
@@ -68,7 +74,7 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -78,17 +84,21 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
-                            <VariantTable />
+                            <VariantTable
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={bestVariantToBuy}
+                            />
 
-                            <div className="border rounded-xl h-[332px]" />
+                            <CommonSellUsedCarComponent />
 
                             <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
+                                slug={slug}
                             />
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -102,29 +112,32 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
                             </div>
 
                             {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
                             }
 
                             <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
 
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs} viewAllLink="#"
+                            />
 
                             <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
@@ -145,7 +158,8 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
                             </div>
 
                             <BrochureCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList

@@ -14,12 +14,11 @@ import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferC
 import useIsMobile from "@/hooks/useIsMobile";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonVideos from "@/components/common/CommonVideos";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import BrochureCard from "./sidebar/BrochureCard";
 import CSDPriceList from "./sidebar/CSDPriceList";
 import LatestOffersDiscounts from "./sidebar/LatestOffersDiscounts";
@@ -34,7 +33,8 @@ import Marquee from "@/components/ui/Marquee";
 import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "./overview/Overview";
 import { useState } from "react";
-import { BootSpace, Dimensions, TyreSize } from "./overview/DimensionsTable";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const data = [
     {
@@ -59,24 +59,21 @@ interface ModelPageProps {
     slug: string;
 }
 
-interface finalSpecsArray {
-    title: string;
-    data: Dimensions | BootSpace | TyreSize;
-}
-
 export default function ModelPage({ type, slug }: ModelPageProps) {
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const [fuelType, setFuelType] = useState<string>("petrol")
     const [transmissionType, setTransmissionType] = useState<string>("")
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
-    const { data: modelDetailByFuelTypeData } = useGetModelDetailByFuelTypeQuery({ model_slug: slug, fuelType: fuelType, transmissionType: transmissionType ?? undefined }, { skip: !slug });
+    const { data: modelDetailByFuelTypeData } =
+        useGetModelDetailByFuelTypeQuery(
+            { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType ?? undefined },
+            { skip: !slug }
+        );
     const { data: bestVariantToBuyData } = useGetBestVariantToBuyQuery({ model_slug: slug }, { skip: !slug });
     const { data: dimensionsCapacityData } = useGetDimensionsCapacityQuery({ model_slug: slug }, { skip: !slug });
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: latestVideosData } = useGetLatestVideosQuery()
-
-    console.log(transmissionType);
-    
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelDetailByFuelType = modelDetailByFuelTypeData?.rows ?? [];
@@ -84,9 +81,9 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const dimensionsCapacity = dimensionsCapacityData
         ? [dimensionsCapacityData]
         : null;
-    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const latestVideos = latestVideosData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const isMobile = useIsMobile()
 
     return (
@@ -216,24 +213,24 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             />
 
                             {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
                             }
 
                             <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
@@ -257,6 +254,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
                             <BrochureCard
                                 title="Tata Nexon"
+                                url={modelDetails?.brochure.url ?? undefined}
                             />
 
                             <CSDPriceList
