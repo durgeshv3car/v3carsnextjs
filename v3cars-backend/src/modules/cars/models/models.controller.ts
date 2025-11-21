@@ -7,13 +7,15 @@ import {
   modelPriceListQueryDto,
   modelBestVariantQueryDto,
   modelMsfQueryDto,
+  modelIdParamDto,
+  modelDimensionsQueryDto,
 } from './models.dto.js';
 
 const svc = new ModelsService();
 
 export class ModelsController {
   /** id or slug → numeric modelId resolver */
-  private async resolve(req: Request, res: Response): Promise<number | null> {
+ private async resolve(req: Request, res: Response): Promise<number | null> {
     const raw = String(req.params.id || '');
     const id = await svc.resolveModelId(raw);
     if (!id) {
@@ -47,12 +49,14 @@ export class ModelsController {
     res.json({ success: true, rows });
   }
 
+
   async topSellingMonthly(req: Request, res: Response) {
     const q = topSellingMonthlyDto.parse(req.query);
     const data = await svc.topSellingModelsByMonth({ year: q.year, month: q.month, limit: q.limit });
     res.json({ success: true, ...data });
   }
 
+  
   async priceList(req: Request, res: Response) {
     const id = await this.resolve(req, res);
     if (!id) return;
@@ -60,6 +64,7 @@ export class ModelsController {
     const data = await svc.priceList(id, q as any);
     res.json({ success: true, ...data });
   }
+
 
   async bestVariantToBuy(req: Request, res: Response) {
     const id = await this.resolve(req, res);
@@ -69,13 +74,16 @@ export class ModelsController {
     res.json(data);
   }
 
+
   async dimensionsCapacity(req: Request, res: Response) {
     const id = await this.resolve(req, res);
     if (!id) return;
-    const data = await svc.dimensionsCapacity(id);
+    const q = modelDimensionsQueryDto.parse(req.query);
+    const data = await svc.dimensionsCapacity(id, q as any);
     if (!data) return res.status(404).json({ success: false, message: 'Model not found' });
     res.json({ success: true, ...data });
   }
+
 
   async mileageSpecsFeatures(req: Request, res: Response) {
     const id = await this.resolve(req, res);
@@ -98,4 +106,6 @@ export class ModelsController {
     const data = await svc.competitors(id);
     res.json(data);
   }
+
+  
 }

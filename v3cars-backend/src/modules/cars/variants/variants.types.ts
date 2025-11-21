@@ -13,3 +13,5 @@ export interface VariantsListQuery extends Pagination, SortInput {
   transmissionType?: string;  // e.g., "MT", "AT", "AMT", "DCT", etc.
 }
 
+
+

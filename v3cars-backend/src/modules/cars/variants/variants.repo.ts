@@ -30,6 +30,9 @@ export class VariantsRepo {
         modelPowertrainId: true,
         variantPrice: true,
         csdPrice: true,              // 🆕 include CSD price
+        vfmValue: true,
+        vfmRank: true,
+        variantRecommendation: true,
         updatedDate: true,
       },
     });
@@ -45,6 +48,9 @@ export class VariantsRepo {
         modelPowertrainId: true,
         variantPrice: true,
         csdPrice: true,              // 🆕 include CSD price
+        vfmValue: true,
+        vfmRank: true,
+        variantRecommendation: true,
         updatedDate: true,
       },
     });
@@ -92,7 +98,7 @@ export class VariantsRepo {
         modelPowertrainId: true,
         variantPrice: true,
         csdPrice: true,              // 🆕 include CSD price
-         vfmValue: true,               // 🆕
+        vfmValue: true,               // 🆕
         vfmRank: true,                // 🆕
         variantRecommendation: true,  // 🆕
         updatedDate: true,
@@ -113,7 +119,7 @@ export class VariantsRepo {
         modelPowertrainId: true,
         variantPrice: true,
         csdPrice: true,              // 🆕 include CSD price
-          vfmValue: true,               // 🆕
+        vfmValue: true,               // 🆕
         vfmRank: true,                // 🆕
         variantRecommendation: true,  // 🆕
         updatedDate: true,

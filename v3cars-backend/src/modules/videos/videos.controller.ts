@@ -2,11 +2,23 @@ import type { Request, Response } from 'express';
 import { VideosService } from './videos.service.js';
 import { limitDto, latestDto } from './videos.dto.js';
 import { videoTypeFromParam } from './videos.constants.js';
+import { prisma } from '../../lib/prisma.js';
 
 const svc = new VideosService();
 
 export class VideosController {
-  // global/type-scoped (unchanged)
+  // -------- helpers --------
+  private async resolveModelId(idOrSlug: string): Promise<number | null> {
+    if (!idOrSlug) return null;
+    if (/^\d+$/.test(idOrSlug)) return Number(idOrSlug);
+    const row = await prisma.tblmodels.findFirst({
+      where: { modelSlug: idOrSlug },
+      select: { modelId: true },
+    });
+    return row?.modelId ?? null;
+  }
+
+  // -------- global/type-scoped (unchanged) --------
   async latestGlobal(req: Request, res: Response) {
     const q = latestDto.parse(req.query);
     const rows = await svc.latestGlobal({ limit: q.limit, excludeToday: q.excludeToday });
@@ -42,39 +54,48 @@ export class VideosController {
     res.json({ success: true, rows });
   }
 
-  // ✅ model-scoped (LEFT JOIN tbltagging)
+  // -------- model-scoped (ID or SLUG) --------
   async modelToday(req: Request, res: Response) {
     const type = videoTypeFromParam(req.params.type);
-    const modelId = Number(req.params.modelId);
-    const data = await svc.todayByModel(type, modelId);
+    const id = await this.resolveModelId(req.params.modelIdOrSlug);
+    if (!id) return res.status(404).json({ success: false, message: 'Model not found' });
+    const data = await svc.todayByModel(type, id);
     if (!data) return res.status(204).end();
     res.json({ success: true, data });
   }
+
   async modelLatest(req: Request, res: Response) {
     const type = videoTypeFromParam(req.params.type);
-    const modelId = Number(req.params.modelId);
+    const id = await this.resolveModelId(req.params.modelIdOrSlug);
+    if (!id) return res.status(404).json({ success: false, message: 'Model not found' });
     const q = latestDto.parse(req.query);
-    const rows = await svc.latestByModel(type, modelId, { limit: q.limit, excludeToday: q.excludeToday });
+    const rows = await svc.latestByModel(type, id, { limit: q.limit, excludeToday: q.excludeToday });
     res.json({ success: true, rows });
   }
+
   async modelTrending(req: Request, res: Response) {
     const type = videoTypeFromParam(req.params.type);
-    const modelId = Number(req.params.modelId);
+    const id = await this.resolveModelId(req.params.modelIdOrSlug);
+    if (!id) return res.status(404).json({ success: false, message: 'Model not found' });
     const q = limitDto.parse(req.query);
-    const rows = await svc.trendingByModel(type, modelId, { limit: q.limit });
+    const rows = await svc.trendingByModel(type, id, { limit: q.limit });
     res.json({ success: true, rows });
   }
+
   async modelTop(req: Request, res: Response) {
     const type = videoTypeFromParam(req.params.type);
-    const modelId = Number(req.params.modelId);
+    const id = await this.resolveModelId(req.params.modelIdOrSlug);
+    if (!id) return res.status(404).json({ success: false, message: 'Model not found' });
     const q = limitDto.parse(req.query);
-    const rows = await svc.topByModel(type, modelId, { limit: q.limit });
+    const rows = await svc.topByModel(type, id, { limit: q.limit });
     res.json({ success: true, rows });
   }
+
   async modelPopular(req: Request, res: Response) {
-    const modelId = Number(req.params.modelId);
+    const id = await this.resolveModelId(req.params.modelIdOrSlug);
+    if (!id) return res.status(404).json({ success: false, message: 'Model not found' });
     const q = limitDto.parse(req.query);
-    const rows = await svc.popularByModel(modelId, { limit: q.limit });
+    const rows = await svc.popularByModel(id, { limit: q.limit });
     res.json({ success: true, rows });
   }
 }

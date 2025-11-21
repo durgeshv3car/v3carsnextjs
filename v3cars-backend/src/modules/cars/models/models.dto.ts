@@ -54,9 +54,27 @@ export const modelPriceListQueryDto = paginationQuery.merge(
 
 export const modelBestVariantQueryDto = z.object({
   powertrainId: z.coerce.number().int().positive().optional(),
+  fuelType: z.string().trim().max(100).optional(),
+  transmissionType: z.string().trim().max(100).optional(),
+  detailed: z
+    .union([z.literal('1'), z.literal('0'), z.literal('true'), z.literal('false')])
+    .transform(v => v === '1' || v === 'true')
+    .optional(),
 });
+
 
 export const modelMsfQueryDto = z.object({
   /** optional: pick a specific powertrain row */
   powertrainId: z.coerce.number().int().positive().optional(),
+});
+
+export const modelDimensionsQueryDto = z.object({
+  /** when true => return ALL sections (conversions, capacity, tyre-by-variant) */
+  detailed: z
+    .union([z.literal('1'), z.literal('true'), z.literal('0'), z.literal('false')])
+    .optional()
+    .transform(v => (v === '1' || v === 'true') ? true : (v === '0' || v === 'false') ? false : undefined),
+  /** filters for the tyre-by-variant table (used only when detailed=true) */
+  fuelType: z.string().trim().max(50).optional(),
+  transmissionType: z.string().trim().max(50).optional(),
 });
