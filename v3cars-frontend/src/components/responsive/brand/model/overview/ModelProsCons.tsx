@@ -40,9 +40,6 @@ const ModelProsCons: React.FC<ModelProsConsProps> = ({ model, slug }) => {
     const pros = prosConsData?.pros || [];
     const cons = prosConsData?.cons || [];
 
-    console.log(prosConsData);
-
-
     return (
         <div>
 

@@ -115,6 +115,9 @@ export const contentModuleApi = createApi({
         getModelLatestNews: builder.query<Response, { model_slug: string }>({
             query: ({ model_slug }) => `/content/news/by-model/${model_slug}/latest?limit=15&excludeToday=1`,
         }),
+        getModelTopNews: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/content/news/by-model/${model_slug}/top?limit=50&excludeToday=1`,
+        }),
     }),
 });
 
@@ -150,4 +153,5 @@ export const {
     useGetPopularVariantExplainedQuery,
     useGetPopularComparisonsQuery,
     useGetModelLatestNewsQuery,
+    useGetModelTopNewsQuery,
 } = contentModuleApi;

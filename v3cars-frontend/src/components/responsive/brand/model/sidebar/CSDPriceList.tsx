@@ -1,12 +1,16 @@
 'use client'
 
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface CSDPriceListProps {
-    title: string
+    title: string;
+    slug: string;
+    type: string;
 }
 
-const CSDPriceList: React.FC<CSDPriceListProps> = ({ title }) => {
+const CSDPriceList: React.FC<CSDPriceListProps> = ({ title, slug, type }) => {
+    const router = useRouter()
     return (
         <div className="border border-gray-200 rounded-xl bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
             {/* Header */}
@@ -35,7 +39,7 @@ const CSDPriceList: React.FC<CSDPriceListProps> = ({ title }) => {
                 {/* Button */}
                 <button
                     className="w-full border border-black rounded-lg py-2 text-sm font-medium bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition mt-4 dark:bg-[#171717] dark:border-[#2E2E2E]"
-                    onClick={() => alert('Downloading Nexon Brochure...')}
+                    onClick={() => { router.push(`/${type}/${slug}/csd-price`) }}
                 >
                     View {title} CSD Price
                 </button>

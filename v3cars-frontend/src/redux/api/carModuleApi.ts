@@ -248,6 +248,10 @@ export const carModuleApi = createApi({
                 return params.length ? `${url}&${params.join("&")}` : url;
             }
         }),
+
+        getModelFuelEfficiency: builder.query<Response, { model_slug: string, fuelType?: string, transmissionType?: string }>({
+            query: ({ model_slug, fuelType, transmissionType }) => `/cars/models/${model_slug}/fuel-efficiency?fuelType=${fuelType}&transmissionType=${transmissionType}`,
+        }),
     }),
 });
 
@@ -275,6 +279,7 @@ export const {
     useGetModelProsConsQuery,
     useGetModelCompetitorsQuery,
     useGetPriceListDetailsQuery,
+    useGetModelFuelEfficiencyQuery,
 } = carModuleApi;
 
 

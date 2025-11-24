@@ -25,8 +25,9 @@ import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/red
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import { useGetLatestVideosQuery, useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import FuelEfficiencyTable from "./FuelEfficiencyTable";
-import { useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelFuelEfficiencyQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 
 interface MileagePageProps {
     type: string;
@@ -123,7 +124,10 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
-                            <FuelEfficiencyTable />
+                            <FuelEfficiencyTable
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
+                            />
 
                             <CommonVideos
                                 title="Latest Mileage Videos"
@@ -131,7 +135,7 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
                                 videoList={modelReviewsVideos}
                             />
 
-                            <div className="border rounded-xl h-[332px]" />
+                            <CommonSellUsedCarComponent />
 
                             <CommonViewOfferCard
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
@@ -201,16 +205,21 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <BrochureCard
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
                                 url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">

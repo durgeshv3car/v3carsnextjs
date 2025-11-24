@@ -145,11 +145,11 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
                             <LatestUpdates
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <CommonModelCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 data={data}
                             />
 
@@ -193,7 +193,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             />
 
                             <ModelExpertReview
-                                model="Tata Nexon"
+                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <ModelProsCons
@@ -235,7 +235,11 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
                             <CommonComparisonModelCard data={popularComparisons} />
 
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
 
                         </div>
 
@@ -253,20 +257,25 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             </div>
 
                             <BrochureCard
-                                title="Tata Nexon"
-                                url={modelDetails?.brochure.url ?? undefined}
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <CostOfOwnership
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -280,11 +289,11 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -298,23 +307,23 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             </div>
 
                             <OtherCars
-                                title="Other Tata Nexon"
+                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <OtherCars
-                                title="Upcoming Tata Nexon"
+                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

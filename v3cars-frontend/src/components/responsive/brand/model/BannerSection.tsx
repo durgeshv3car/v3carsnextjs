@@ -2,7 +2,7 @@
 
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ModelTab, setActiveTab } from "@/redux/slices/carModelSlice";
 import Overview, { CarData } from "./overview/Overview";
@@ -32,11 +32,24 @@ const tabs = [
     "Mileage",
     "Reviews",
     "Compare",
+    "News",
+    "Pros Cons",
+    "Monthly Sales",
+    "Offers Discounts",
+    "Videos",
+    "Colors",
+    "Competitors",
+    "Images",
+    "Maintenance Cost",
+    "Cost Of Ownership",
+    "Specifications Features",
+    "CSD Price"
 ] as const;
 
 const currentYear = new Date().getFullYear();
 
 const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails }) => {
+    const [dropDownTab, setDropDownTab] = useState(false)
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -214,7 +227,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
             }
 
             {/* Bottom Tabs */}
-            <div className="flex gap-10 font-medium overflow-x-auto scrollbar-hide">
+            <div className="flex md:hidden gap-10 font-medium overflow-x-auto scrollbar-hide">
                 {tabs.map((tab) => (
                     <button
                         key={tab}
@@ -227,6 +240,55 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                         {tab}
                     </button>
                 ))}
+            </div>
+
+            <div className="hidden md:flex gap-10 font-medium overflow-x-auto md:overflow-visible scrollbar-hide">
+                {tabs.slice(0, 6).map((tab) => (
+                    <button
+                        key={tab}
+                        onClick={() => handleModelTab(tab)}
+                        className={`${tab === activeTab
+                            ? "border-b-4 border-yellow-400"
+                            : "hover:text-yellow-400 text-gray-400"
+                            } pb-2 border-b-4 border-transparent hover:border-yellow-400 transition whitespace-nowrap`}
+                    >
+                        {tab}
+                    </button>
+                ))}
+
+                <div className="relative inline-block">
+                    <button
+                        onClick={() => setDropDownTab(!dropDownTab)}
+                        className={`pb-2 border-b-4 border-transparent hover:border-yellow-400 transition whitespace-nowrap flex items-center gap-2 text-gray-400`}
+                    >
+                        Others
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`size-4 transform transition-transform duration-300 ${dropDownTab ? "rotate-180" : "rotate-0"}`}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </button>
+
+                    {/* Dropdown Box */}
+                    {dropDownTab && (
+                        <div className="absolute left-0 w-56 bg-white dark:bg-[#292929] shadow-lg border rounded-md z-50 dark:border-[#2e2e2e] overflow-hidden">
+                            <ul className="text-sm">
+                                {
+                                    tabs && tabs.slice(6).map((item, index) => (
+                                        <li
+                                            key={index}
+                                            className={`${item === activeTab
+                                                ? "text-yellow-400"
+                                                : "hover:text-yellow-400 text-gray-400"
+                                                } p-3 hover:bg-gray-100 cursor-pointer dark:hover:bg-[#2e2e2e]`}
+                                            onClick={() => handleModelTab(item)}
+                                        >
+                                            {item}
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

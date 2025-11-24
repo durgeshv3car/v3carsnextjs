@@ -151,13 +151,13 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             <CommonSellUsedCarComponent />
 
                             <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
                                 slug={slug}
                             />
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -171,29 +171,33 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
                                 data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
                                     newsList={modelLatestNews}
                                     link={"/news"}
                                 />
                             }
 
                             <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
                                 videoList={modelReviewsVideos}
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
 
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
 
                             <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
@@ -214,16 +218,21 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             <BrochureCard
-                                title="Tata Nexon"
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
                                 url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -237,11 +246,11 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -255,23 +264,23 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             <OtherCars
-                                title="Other Tata Nexon"
+                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <OtherCars
-                                title="Upcoming Tata Nexon"
+                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>
