@@ -19,12 +19,13 @@ const imagesSvc = new ImagesService();
 
 const onroadSvc = new OnRoadService();
 
-const join = (...parts: (string | null | undefined)[]) => parts.filter(Boolean).join(' ');
+
 const rpmRange = (min?: number | null, max?: number | null) => {
   if (min && max && min !== max) return `${min} - ${max}rpm`;
   if (min || max) return `${min ?? max}rpm`;
   return null;
 };
+
 
 
 
@@ -685,7 +686,7 @@ export class ModelsService {
   }
 
 
-  async priceList(
+ async priceList(
     modelId: number,
     q: {
       cityId?: number;
@@ -693,207 +694,220 @@ export class ModelsService {
       isLoan?: boolean;
       fuelType?: string;
       transmissionType?: string; // 🆕 separate gearbox filter
+      priceType?: 'ex' | 'onroad' | 'csd';
+      citySlug?: string;
+      sortBy?: 'price_asc' | 'price_desc' | 'latest' | 'name_asc' | 'name_desc';
+      page?: number;
+      limit?: number;
     }
   ) {
-    // --- normalize filters ---
-    const ft = (q.fuelType || '').trim().toLowerCase();
-    const tr = (q.transmissionType || '').trim().toLowerCase();
+    // build a stable cache key from normalized inputs
+    const ftRaw = (q.fuelType || '').trim().toLowerCase();
+    const trRaw = (q.transmissionType || '').trim().toLowerCase();
 
-    const fuelNorm =
-      ft === 'petrol' ? 'Petrol' :
-        ft === 'diesel' ? 'Diesel' :
-          ft === 'cng' ? 'CNG' :
-            ft === 'hybrid' ? 'Hybrid' :
-              ft === 'electric' ? 'Electric' :
-                undefined;
-
-    const isManual = tr === 'manual';
-    const isAutomatic = tr === 'automatic';
-
-    // ⚠️ Only pass transmissionType to DB when it's an unambiguous single code.
-    // "manual" → MT (safe). "automatic" spans AT/AMT/DCT/CVT/e-CVT → post-filter in memory.
-    const dbTransmissionType = isManual ? 'MT' : undefined;
-
-    // --- fetch variants (DB filters where safe) ---
-    const variants = await variantsSvc.list({
+    const key = cacheKey({
+      ns: 'models:priceList',
+      v: 2,
       modelId,
-      page: 1,
-      limit: 100,
-      sortBy: 'price_asc',
-      fuelType: fuelNorm,
-      transmissionType: dbTransmissionType,
+      fuelType: ftRaw || undefined,
+      transmissionType: trRaw || undefined,
+      priceType: q.priceType ?? 'ex',
+      cityId: q.cityId ?? undefined,
+      citySlug: q.citySlug ?? undefined,
+      expandVariantId: q.expandVariantId ?? undefined,
+      isLoan: q.isLoan ? 1 : 0,
+      sortBy: q.sortBy ?? 'price_asc',
+      page: q.page ?? 1,
+      limit: q.limit ?? 100,
     });
+    const ttlMs = 30 * 60 * 1000;
 
-    const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+    return withCache(key, async () => {
+      // --- original implementation (unchanged) ---
+      const ft = ftRaw;
+      const tr = trRaw;
 
-    // --- map to rows + compute optional on-road breakdown ---
-    let rows = (variants.rows || []).map(v => {
-      const bandMin = v.priceMin ?? null;
-      const bandMax = v.priceMax ?? null;
+      const fuelNorm =
+        ft === 'petrol' ? 'Petrol' :
+          ft === 'diesel' ? 'Diesel' :
+            ft === 'cng' ? 'CNG' :
+              ft === 'hybrid' ? 'Hybrid' :
+                ft === 'electric' ? 'Electric' :
+                  undefined;
 
-      const onRoad =
-        q.cityId && typeof bandMin === 'number'
-          ? onroadSvc.quote({ exShowroom: bandMin, cityId: q.cityId, isLoan: q.isLoan }).total
-          : null;
+      const isManual = tr === 'manual';
+      const isAutomatic = tr === 'automatic';
 
-      const base: any = {
-        variantId: v.variantId ?? null,
-        name: v.variantName ?? null,
-        powertrain: v.powertrain ?? null,
-        exShowroom: bandMin,
-        exShowroomMax: bandMax,
-        onRoad,
-        updatedDate: v.updatedDate ?? null,
-      };
+      const dbTransmissionType = isManual ? 'MT' : undefined;
 
-      if (q.expandVariantId && v.variantId === q.expandVariantId && typeof bandMin === 'number') {
-        base.breakdown = onroadSvc.quote({
+      const variants = await variantsSvc.list({
+        modelId,
+        page: 1,
+        limit: 100,
+        sortBy: 'price_asc',
+        fuelType: fuelNorm,
+        transmissionType: dbTransmissionType,
+      });
+
+      const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+
+      let rows = (variants.rows || []).map(v => {
+        const bandMin = v.priceMin ?? null;
+        const bandMax = v.priceMax ?? null;
+
+        const onRoad =
+          q.cityId && typeof bandMin === 'number'
+            ? onroadSvc.quote({ exShowroom: bandMin, cityId: q.cityId, isLoan: q.isLoan }).total
+            : null;
+
+        const base: any = {
+          variantId: v.variantId ?? null,
+          name: v.variantName ?? null,
+          powertrain: v.powertrain ?? null,
           exShowroom: bandMin,
-          cityId: q.cityId,
-          isLoan: q.isLoan,
-        });
-      }
-      return base;
-    });
+          exShowroomMax: bandMax,
+          onRoad,
+          updatedDate: v.updatedDate ?? null,
+        };
 
-    // --- apply transmission filter (in-memory) ---
-    if (isManual || isAutomatic) {
-      rows = rows.filter(r => {
-        const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
-        if (isManual) {
-          // keep pure MT (and avoid anything that contains auto codes)
-          const isMt = raw.includes('MT');
-          const hasAuto = autoTokens.some(tok => raw.includes(tok));
-          return isMt && !hasAuto;
+        if (q.expandVariantId && v.variantId === q.expandVariantId && typeof bandMin === 'number') {
+          base.breakdown = onroadSvc.quote({
+            exShowroom: bandMin,
+            cityId: q.cityId,
+            isLoan: q.isLoan,
+          });
         }
-        // automatic bucket = AT / AMT / DCT / CVT / e-CVT / "AUTOMATIC"
-        return autoTokens.some(tok => raw.includes(tok));
+        return base;
       });
-    } else if (tr) {
-      // fallback: if a specific code like "DCT" or "CVT" is ever sent directly
-      const needle = tr.toUpperCase();
-      rows = rows.filter(r => (r.powertrain?.transmissionType || '').toString().toUpperCase().includes(needle));
-    }
 
-    // --- (fuelNorm already applied at DB level; keep a defensive contains check) ---
-    if (fuelNorm) {
-      rows = rows.filter(r =>
-        (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase())
-      );
-    }
+      if (isManual || isAutomatic) {
+        rows = rows.filter(r => {
+          const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
+          if (isManual) {
+            const isMt = raw.includes('MT');
+            const hasAuto = autoTokens.some(tok => raw.includes(tok));
+            return isMt && !hasAuto;
+          }
+          return autoTokens.some(tok => raw.includes(tok));
+        });
+      } else if (tr) {
+        const needle = tr.toUpperCase();
+        rows = rows.filter(r => (r.powertrain?.transmissionType || '').toString().toUpperCase().includes(needle));
+      }
 
-    return {
-      modelId,
-      cityId: q.cityId ?? null,
-      rows,
-      page: variants.page,
-      pageSize: variants.pageSize,
-      total: rows.length,   // after in-memory filter
-      totalPages: 1,
-    };
-  }
-
-  async bestVariantToBuy(modelId: number, q: ModelBestVariantQuery) {
-    const detailed = !!q.detailed;
-
-    // SIMPLE: one-row-per-powertrain "best" (now with fuel/trans filters)
-    if (!detailed) {
-      const rows = await variantsSvc.bestByModelId(modelId, {
-        powertrainId: q.powertrainId,
-        fuelType: q.fuelType,
-        transmissionType: q.transmissionType,
-      });
+      if (fuelNorm) {
+        rows = rows.filter(r =>
+          (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase())
+        );
+      }
 
       return {
-        success: true,
+        modelId,
+        cityId: q.cityId ?? null,
         rows,
+        page: variants.page,
+        pageSize: variants.pageSize,
         total: rows.length,
+        totalPages: 1,
       };
-
-    }
-
-    // DETAILED: section per powertrain with all variants (apply filters here too)
-    const list = await variantsSvc.list({
-      modelId,
-      page: 1,
-      limit: 999,         // we’ll paginate on UI if needed
-      sortBy: 'price_asc' // rows sorted by price
-    });
-
-    // group by powertrain id
-    const byPt = new Map<number, typeof list.rows>();
-    for (const v of list.rows) {
-      if (!v.modelPowertrainId) continue;
-      const arr = byPt.get(v.modelPowertrainId) ?? [];
-      arr.push(v);
-      byPt.set(v.modelPowertrainId, arr);
-    }
-
-    // load powertrain meta for labeling + filtering
-    const ptIds = Array.from(byPt.keys());
-    const ptMeta = ptIds.length ? await powertrainsSvc.findByIds(ptIds) : [];
-    const ptMap = new Map(ptMeta.map(p => [p.modelPowertrainId, p]));
-
-    const wantFuel = q.fuelType?.trim().toLowerCase();
-    const wantTrans = q.transmissionType?.trim().toLowerCase();
-
-    const sections = [];
-    for (const [ptId, arr] of byPt.entries()) {
-      const meta = ptMap.get(ptId);
-
-      // 🆕 apply filters if provided
-      if (wantFuel && (meta?.fuelType ?? '').toLowerCase() !== wantFuel) continue;
-      if (wantTrans && (meta?.transmissionType ?? '').toLowerCase() !== wantTrans) continue;
-
-      // shape rows
-      const rows = arr
-        .map(v => {
-          const priceMin = v.priceMin ?? null;
-
-          // 👇 Prisma Decimal → number (or null)
-          const vfmRaw = (v as any).vfmValue;
-          const vfmNum = vfmRaw == null ? null : Number(vfmRaw);
-
-          return {
-            variantId: v.variantId ?? null,
-            name: v.variantName ?? null,
-            vfmPercent: vfmNum != null ? Math.round(vfmNum) : null, // ✅ fixed
-            price: priceMin,
-            recommendation: (v as any).variantRecommendation ?? '',
-            updatedDate: v.updatedDate ?? null,
-          };
-        })
-        .sort((a, b) => (a.price ?? Number.POSITIVE_INFINITY) - (b.price ?? Number.POSITIVE_INFINITY));
-
-      // keep section only if it has visible rows after filter
-      if (!rows.length) continue;
-
-      sections.push({
-        powertrain: meta
-          ? {
-            id: meta.modelPowertrainId,
-            fuelType: meta.fuelType ?? null,
-            transmissionType: meta.transmissionType ?? null,
-            label: meta.powerTrain ?? [meta.fuelType, meta.transmissionType].filter(Boolean).join(' '),
-          }
-          : { id: ptId, fuelType: null, transmissionType: null, label: null },
-        rows,
-      });
-    }
-
-    // sort sections stable
-    sections.sort((a, b) => {
-      const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '');
-      if (af !== 0) return af;
-      return (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '');
-    });
-
-    return {
-      success: true,
-      sections,
-      total: sections.reduce((n, s) => n + s.rows.length, 0),
-    };
+    }, ttlMs);
   }
+
+  
+  // --- bestVariantToBuy (cached) ---
+  async bestVariantToBuy(modelId: number, q: ModelBestVariantQuery) {
+    const key = cacheKey({
+      ns: 'models:bestVariantToBuy',
+      v: 2,
+      modelId,
+      detailed: q.detailed ? 1 : 0,
+      powertrainId: q.powertrainId ?? undefined,
+      fuelType: q.fuelType ?? undefined,
+      transmissionType: q.transmissionType ?? undefined,
+    });
+    const ttlMs = 30 * 60 * 1000;
+
+    return withCache(key, async () => {
+      const detailed = !!q.detailed;
+
+      if (!detailed) {
+        const rows = await variantsSvc.bestByModelId(modelId, {
+          powertrainId: q.powertrainId,
+          fuelType: q.fuelType,
+          transmissionType: q.transmissionType,
+        });
+        return { success: true, rows, total: rows.length };
+      }
+
+      const list = await variantsSvc.list({
+        modelId,
+        page: 1,
+        limit: 999,
+        sortBy: 'price_asc'
+      });
+
+      const byPt = new Map<number, typeof list.rows>();
+      for (const v of list.rows) {
+        if (!v.modelPowertrainId) continue;
+        const arr = byPt.get(v.modelPowertrainId) ?? [];
+        arr.push(v);
+        byPt.set(v.modelPowertrainId, arr);
+      }
+
+      const ptIds = Array.from(byPt.keys());
+      const ptMeta = ptIds.length ? await powertrainsSvc.findByIds(ptIds) : [];
+      const ptMap = new Map(ptMeta.map(p => [p.modelPowertrainId, p]));
+
+      const wantFuel = q.fuelType?.trim().toLowerCase();
+      const wantTrans = q.transmissionType?.trim().toLowerCase();
+
+      const sections: any[] = [];
+      for (const [ptId, arr] of byPt.entries()) {
+        const meta = ptMap.get(ptId);
+        if (wantFuel && (meta?.fuelType ?? '').toLowerCase() !== wantFuel) continue;
+        if (wantTrans && (meta?.transmissionType ?? '').toLowerCase() !== wantTrans) continue;
+
+        const rows = arr
+          .map(v => {
+            const priceMin = v.priceMin ?? null;
+            const vfmRaw = (v as any).vfmValue;
+            const vfmNum = vfmRaw == null ? null : Number(vfmRaw);
+            return {
+              variantId: v.variantId ?? null,
+              name: v.variantName ?? null,
+              vfmPercent: vfmNum != null ? Math.round(vfmNum) : null,
+              price: priceMin,
+              recommendation: (v as any).variantRecommendation ?? '',
+              updatedDate: v.updatedDate ?? null,
+            };
+          })
+          .sort((a, b) => (a.price ?? Number.POSITIVE_INFINITY) - (b.price ?? Number.POSITIVE_INFINITY));
+
+        if (!rows.length) continue;
+
+        sections.push({
+          powertrain: meta
+            ? {
+              id: meta.modelPowertrainId,
+              fuelType: meta.fuelType ?? null,
+              transmissionType: meta.transmissionType ?? null,
+              label: meta.powerTrain ?? [meta.fuelType, meta.transmissionType].filter(Boolean).join(' '),
+            }
+            : { id: ptId, fuelType: null, transmissionType: null, label: null },
+          rows,
+        });
+      }
+
+      sections.sort((a, b) => {
+        const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '');
+        if (af !== 0) return af;
+        return (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '');
+      });
+
+      return { success: true, sections, total: sections.reduce((n, s) => n + s.rows.length, 0) };
+    }, ttlMs);
+  }
+
 
   async dimensionsCapacity(
     modelId: number,
@@ -907,9 +921,12 @@ export class ModelsService {
       fuelType: q?.fuelType ?? undefined,
       transmissionType: q?.transmissionType ?? undefined,
     });
+
+
     const ttlMs = 30 * 60 * 1000;
 
     return withCache(key, async () => {
+
       const row = await prisma.tblmodels.findFirst({
         where: { modelId },
         select: {
@@ -926,6 +943,7 @@ export class ModelsService {
           seats: true,
         },
       });
+
       if (!row) return null;
 
       const boot = row.bootSpace ?? null;
@@ -1046,88 +1064,98 @@ export class ModelsService {
     }, ttlMs);
   }
 
+
+  // --- mileageSpecsFeatures (cached) ---
   async mileageSpecsFeatures(modelId: number, q: { powertrainId?: number }) {
-    // options for top-right dropdown
-    const options = await powertrainsSvc.listForModel(modelId);
-    if (!options.length) {
-      return { success: true, options: [], selectedPowertrainId: null, sections: [] };
-    }
+    const key = cacheKey({
+      ns: 'models:mileageSpecsFeatures',
+      v: 1,
+      modelId,
+      powertrainId: q.powertrainId ?? undefined,
+    });
+    const ttlMs = 30 * 60 * 1000;
 
-    const selectedId = q.powertrainId && options.some(o => o.id === q.powertrainId)
-      ? q.powertrainId
-      : options[0].id;
+    return withCache(key, async () => {
+      const options = await powertrainsSvc.listForModel(modelId);
+      if (!options.length) {
+        return { success: true, options: [], selectedPowertrainId: null, sections: [] };
+      }
 
-    const pt = await powertrainsSvc.getOneWithSpecs(selectedId);
-    if (!pt) {
-      return { success: true, options, selectedPowertrainId: selectedId, sections: [] };
-    }
+      const selectedId = q.powertrainId && options.some(o => o.id === q.powertrainId)
+        ? q.powertrainId
+        : options[0].id;
 
-    const speed = pt.transmissionSpeed ? `${pt.transmissionSpeed}-speed` : null;
-    const trans = join(speed, pt.transmissionSubType || pt.transmissionType);
+      const pt = await powertrainsSvc.getOneWithSpecs(selectedId);
+      if (!pt) {
+        return { success: true, options, selectedPowertrainId: selectedId, sections: [] };
+      }
 
-    const powerStr =
-      pt.powerPS ? `${pt.powerPS}PS${pt.powerMinRPM || pt.powerMaxRPM ? ` @ ${rpmRange(pt.powerMinRPM || null, pt.powerMaxRPM || null)}` : ''}` : null;
+      const speed = pt.transmissionSpeed ? `${pt.transmissionSpeed}-speed` : null;
+      const trans = [speed, pt.transmissionSubType || pt.transmissionType].filter(Boolean).join(' ');
+      const powerStr =
+        pt.powerPS ? `${pt.powerPS}PS${pt.powerMinRPM || pt.powerMaxRPM ? ` @ ${rpmRange(pt.powerMinRPM || null, pt.powerMaxRPM || null)}` : ''}` : null;
+      const torqueStr =
+        pt.torqueNM ? `${pt.torqueNM}Nm${pt.torqueMinRPM || pt.torqueMaxRPM ? ` @ ${rpmRange(pt.torqueMinRPM || null, pt.torqueMaxRPM || null)}` : ''}` : null;
 
-    const torqueStr =
-      pt.torqueNM ? `${pt.torqueNM}Nm${pt.torqueMinRPM || pt.torqueMaxRPM ? ` @ ${rpmRange(pt.torqueMinRPM || null, pt.torqueMaxRPM || null)}` : ''}` : null;
+      const sections = [
+        {
+          group: 'Engine & Transmission',
+          rows: [
+            { label: 'Engine Type', value: (pt.powerTrain?.toLowerCase().includes('turbo') ? 'Turbo' : (pt.powerTrain ?? null)) ?? null },
+            { label: 'Transmission', value: trans || null },
+          ],
+        },
+        {
+          group: 'Fuel & Performance',
+          rows: [
+            { label: 'Engine Displacement', value: pt.engineDisplacement != null ? `${Number(pt.engineDisplacement)}L` : null },
+          ],
+        },
+        {
+          group: 'Mileage',
+          rows: [
+            { label: 'Cubic Capacity', value: pt.cubicCapacity != null ? `${pt.cubicCapacity}cc` : null },
+            { label: 'Claimed Mileage', value: pt.claimedFE != null ? `${Number(pt.claimedFE)} kmpl` : null },
+            { label: 'Real-world Mileage', value: pt.realWorldMileage != null ? `${Number(pt.realWorldMileage)} kmpl` : null },
+          ],
+        },
+        {
+          group: 'Features',
+          rows: [
+            { label: 'Cylinders', value: pt.cylinders ?? null },
+            { label: 'Max. Power', value: powerStr },
+            { label: 'Max. Torque', value: torqueStr },
+          ],
+        },
+        {
+          group: 'Functional',
+          rows: [
+            { label: 'Kerb Weight', value: pt.kerbWeight != null ? `${pt.kerbWeight}kg` : null },
+          ],
+        },
+        {
+          group: 'Style',
+          rows: [
+            { label: 'Power : Weight', value: pt.powerWeight != null ? `${Number(pt.powerWeight)}PS/tonne` : null },
+            { label: 'Torque : Weight', value: pt.torqueWeight != null ? `${Number(pt.torqueWeight)}Nm/tonne` : null },
+          ],
+        },
+      ];
 
-    const sections = [
-      {
-        group: 'Engine & Transmission',
-        rows: [
-          { label: 'Engine Type', value: (pt.powerTrain?.toLowerCase().includes('turbo') ? 'Turbo' : (pt.powerTrain ?? null)) ?? null },
-          { label: 'Transmission', value: trans || null },
-        ],
-      },
-      {
-        group: 'Fuel & Performance',
-        rows: [
-          { label: 'Engine Displacement', value: pt.engineDisplacement != null ? `${Number(pt.engineDisplacement)}L` : null },
-        ],
-      },
-      {
-        group: 'Mileage',
-        rows: [
-          { label: 'Cubic Capacity', value: pt.cubicCapacity != null ? `${pt.cubicCapacity}cc` : null },
-          { label: 'Claimed Mileage', value: pt.claimedFE != null ? `${Number(pt.claimedFE)} kmpl` : null },
-          { label: 'Real-world Mileage', value: pt.realWorldMileage != null ? `${Number(pt.realWorldMileage)} kmpl` : null },
-        ],
-      },
-      {
-        group: 'Features',
-        rows: [
-          { label: 'Cylinders', value: pt.cylinders ?? null },
-          { label: 'Max. Power', value: powerStr },
-          { label: 'Max. Torque', value: torqueStr },
-        ],
-      },
-      {
-        group: 'Functional',
-        rows: [
-          { label: 'Kerb Weight', value: pt.kerbWeight != null ? `${pt.kerbWeight}kg` : null },
-        ],
-      },
-      {
-        group: 'Style',
-        rows: [
-          { label: 'Power : Weight', value: pt.powerWeight != null ? `${Number(pt.powerWeight)}PS/tonne` : null },
-          { label: 'Torque : Weight', value: pt.torqueWeight != null ? `${Number(pt.torqueWeight)}Nm/tonne` : null },
-        ],
-      },
-    ];
-
-    return {
-      success: true,
-      options,                    // dropdown list [{id,label,fuelType,transmissionType}]
-      selectedPowertrainId: selectedId,
-      header: {
-        powertrainLabel: pt.powerTrain ?? join(pt.fuelType ?? '', trans),
-        fuelType: pt.fuelType ?? null,
-        transmission: trans || null,
-      },
-      sections,
-    };
+      return {
+        success: true,
+        options,
+        selectedPowertrainId: selectedId,
+        header: {
+          powertrainLabel: pt.powerTrain ?? [pt.fuelType ?? '', trans].filter(Boolean).join(' '),
+          fuelType: pt.fuelType ?? null,
+          transmission: trans || null,
+        },
+        sections,
+      };
+    }, ttlMs);
   }
+
 
 
   async prosCons(modelId: number) {
@@ -1242,10 +1270,261 @@ export class ModelsService {
     }, ttlMs);
   }
 
+  // --- fuelEfficiency (cached) ---
+  // replace the existing fuelEfficiency(...) with this version
+
+  async fuelEfficiency(
+    modelId: number,
+    q?: { fuelType?: string; transmissionType?: string }
+  ) {
+    const fuelQ = q?.fuelType?.trim() || undefined;
+    const transQ = q?.transmissionType?.trim() || undefined;
+
+    // cache key includes filters
+    const key = cacheKey({
+      ns: 'model:fuelEfficiency',
+      v: 2,
+      modelId,
+      fuelType: fuelQ ?? undefined,
+      transmissionType: transQ ?? undefined,
+    });
+    const ttlMs = 30 * 60 * 1000; // 30 min
+
+    return withCache(key, async () => {
+      // 1) all variants for the model (we’ll show FE per variant row)
+      const variants = await variantsSvc.listByModelId(modelId);
+      if (!variants.length) return { success: true, rows: [] };
+
+      // 2) powertrain meta used for FE + labels
+      const ptIds = Array.from(
+        new Set(
+          variants.map(v => v.modelPowertrainId).filter((x): x is number => typeof x === 'number')
+        )
+      );
+      const pts = ptIds.length ? await powertrainsSvc.findByIds(ptIds) : [];
+      const ptMap = new Map(pts.map(p => [p.modelPowertrainId, p]));
+
+      // helpers for filters
+      const wantFuel = fuelQ?.toLowerCase();
+      const wantTrans = transQ?.toLowerCase();
+
+      const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+
+      const transPass = (raw?: string | null) => {
+        if (!wantTrans) return true;
+        const s = (raw || '').toUpperCase();
+
+        if (wantTrans === 'manual') {
+          const isMt = s.includes('MT') || s.includes('MANUAL');
+          const hasAuto = autoTokens.some(tok => s.includes(tok));
+          return isMt && !hasAuto;
+        }
+        if (wantTrans === 'automatic') {
+          return autoTokens.some(tok => s.includes(tok));
+        }
+        // fallback: substring contains for specific codes like 'DCT', 'CVT'
+        return s.includes(wantTrans.toUpperCase());
+      };
+
+      // 3) shape rows (and apply filters)
+      const rows = variants
+        .map(v => {
+          const pt = v.modelPowertrainId ? ptMap.get(v.modelPowertrainId) : undefined;
+
+          // fuel filter (case-insensitive)
+          if (wantFuel && (pt?.fuelType || '').toLowerCase() !== wantFuel) return null;
+          // transmission filter
+          if (!transPass(pt?.transmissionType ?? null)) return null;
+
+          const label =
+            (pt?.powerTrain && pt.powerTrain.trim().length > 0)
+              ? pt.powerTrain
+              : [pt?.fuelType, pt?.transmissionType].filter(Boolean).join(' ');
+
+          return {
+            variantId: v.variantId ?? null,
+            variantName: v.variantName ?? null,
+            powertrain: {
+              id: v.modelPowertrainId ?? null,
+              label: label || null,
+              fuelType: pt?.fuelType ?? null,
+              transmissionType: pt?.transmissionType ?? null,
+            },
+            // FE columns (numbers when present, else null)
+            claimedFE: pt?.claimedFE != null ? Number(pt.claimedFE as any) : null,
+            realWorldMileage: pt?.realWorldMileage != null ? Number(pt.realWorldMileage as any) : null,
+            cityMileage: pt?.cityMileage ?? null,        // DB has strings like "17.40kmpl"
+            highwayMileage: pt?.highwayMileage ?? null,  // strings
+            // optional source links
+            sources: {
+              realWorld: pt?.realWorldUrl ?? null,
+              city: pt?.cityUrl ?? null,
+              highway: pt?.highwayUrl ?? null,
+            },
+            updatedDate: v.updatedDate ?? null,
+          };
+        })
+        .filter(Boolean) as Array<{
+          variantId: number | null;
+          variantName: string | null;
+          powertrain: {
+            id: number | null;
+            label: string | null;
+            fuelType: string | null;
+            transmissionType: string | null;
+          };
+          claimedFE: number | null;
+          realWorldMileage: number | null;
+          cityMileage: string | null;
+          highwayMileage: string | null;
+          sources: { realWorld: string | null; city: string | null; highway: string | null };
+          updatedDate: Date | null;
+        }>;
+
+      // 4) stable sort: by fuel → transmission → variant name
+      rows.sort((a, b) => {
+        const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '', undefined, { sensitivity: 'base' });
+        if (af !== 0) return af;
+        const at = (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '', undefined, { sensitivity: 'base' });
+        if (at !== 0) return at;
+        return (a.variantName ?? '').localeCompare(b.variantName ?? '', undefined, { sensitivity: 'base' });
+      });
+
+      return { success: true, rows };
+    }, ttlMs);
+  }
+
+  // --- REPLACE ENTIRE FUNCTION ---
+  async csdVsOnroad(
+    modelId: number,
+    q: { cityId: number; fuelType?: string; transmissionType?: string; expandVariantId?: number; isLoan?: boolean }
+  ) {
+    const ft = q.fuelType?.trim();
+    const tr = q.transmissionType?.trim();
+    const expandId = q.expandVariantId;
+
+    const key = cacheKey({
+      ns: 'model:csdVsOnroad',
+      v: 4, // 🔼 bump: fix transmission filtering (manual/automatic) and remove DB transmission pre-filter
+      modelId,
+      cityId: q.cityId,
+      fuelType: ft ?? undefined,
+      transmissionType: tr ?? undefined,
+      expandVariantId: expandId ?? undefined,
+      isLoan: q.isLoan ? 1 : 0,
+    });
+    const ttlMs = 30 * 60 * 1000;
+
+    return withCache(key, async () => {
+      const trLower = (tr || '').toLowerCase();
+      const isManual = trLower === 'manual';
+      const isAutomatic = trLower === 'automatic';
+
+      // ✅ Only pass fuelType to DB; do NOT pre-filter by transmission to avoid missing "Manual" vs "MT" etc.
+      const variants = await variantsSvc.list({
+        modelId,
+        page: 1,
+        limit: 500,
+        sortBy: 'price_asc',
+        fuelType: ft,
+        // transmissionType: (removed)
+      });
+
+      const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+
+      const wantFuel = (ft || '').toLowerCase();
+
+      const transPass = (raw?: string | null) => {
+        if (!trLower) return true;
+        const s = (raw || '').toUpperCase();
+
+        if (isManual) {
+          const isMt = s.includes('MT') || s.includes('MANUAL');
+          const hasAuto = autoTokens.some(tok => s.includes(tok));
+          return isMt && !hasAuto;
+        }
+        if (isAutomatic) {
+          return autoTokens.some(tok => s.includes(tok));
+        }
+        // Specific gearbox tokens like 'CVT', 'DCT'
+        return s.includes(trLower.toUpperCase());
+      };
+
+      // Fuel + transmission filter in-memory (more tolerant than DB codes)
+      let rows = variants.rows.filter(v => {
+        const fuelOk = !wantFuel || (v.powertrain?.fuelType || '').toLowerCase() === wantFuel;
+        const transOk = transPass(v.powertrain?.transmissionType ?? null);
+        return fuelOk && transOk;
+      });
+
+      // 👉 Compute on-road for EVERY row; detailed breakup only for expandVariantId
+      const shaped = rows.map(v => {
+        const exMin = v.priceMin ?? null;
+
+        const csdRaw = (v as any).csdPrice as unknown;
+        const csdPrice =
+          csdRaw == null ? null : typeof csdRaw === 'number' ? csdRaw : Number(csdRaw as any);
+
+        const baseBreakdown =
+          typeof exMin === 'number'
+            ? onroadSvc.quote({ exShowroom: exMin, cityId: q.cityId, isLoan: !!q.isLoan })
+            : null;
+
+        const shouldExpand = expandId && v.variantId === expandId;
+
+        const label =
+          v.powertrain?.label ||
+          [v.powertrain?.fuelType, v.powertrain?.transmissionType].filter(Boolean).join(' ');
+
+        return {
+          variantId: v.variantId ?? null,
+          variantName: v.variantName ?? null,
+          powertrain: {
+            id: v.modelPowertrainId ?? null,
+            label: label || null,
+            fuelType: v.powertrain?.fuelType ?? null,
+            transmissionType: v.powertrain?.transmissionType ?? null,
+          },
+          prices: {
+            csd: csdPrice,
+            exShowroom: exMin,
+            onRoad: baseBreakdown ? baseBreakdown.total : null, // ✅ always filled when exMin present
+          },
+          onRoadBreakup: shouldExpand && baseBreakdown
+            ? {
+              csdPrice: csdPrice,
+              roadTax: baseBreakdown.roadTax ?? null,
+              registration: baseBreakdown.registrationCharges ?? null,
+              fastag: baseBreakdown.fastag ?? null,
+              hypothecation: baseBreakdown.hypothecationEndorsement ?? null,
+              roadSafetyCess: baseBreakdown.roadSafetyCess ?? null,
+              otherCharges: baseBreakdown.otherCharges ?? null,
+              insurance: baseBreakdown.insurance ?? null,
+              total: baseBreakdown.total ?? null,
+              cityId: q.cityId,
+            }
+            : null,
+          updatedDate: v.updatedDate ?? null,
+        };
+      });
+
+      // Stable sort
+      shaped.sort((a, b) => {
+        const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '', undefined, { sensitivity: 'base' });
+        if (af !== 0) return af;
+        const at = (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '', undefined, { sensitivity: 'base' });
+        if (at !== 0) return at;
+        return (a.variantName ?? '').localeCompare(b.variantName ?? '', undefined, { sensitivity: 'base' });
+      });
+
+      return {
+        modelId,
+        cityId: q.cityId,
+        filters: { fuelType: ft ?? null, transmissionType: tr ?? null, expandVariantId: expandId ?? null, isLoan: !!q.isLoan },
+        rows: shaped,
+        total: shaped.length,
+      };
+    }, ttlMs);
+  }
 
 }
-
-
-
-
-

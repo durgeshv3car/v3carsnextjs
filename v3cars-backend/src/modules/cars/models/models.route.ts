@@ -18,6 +18,9 @@ r.get('/models/:id/mileage-specs-features', setCache(1800, 120), (req, res) => c
 r.get('/models/:id/pros-cons', setCache(1800, 120), (req, res) => c.prosCons(req, res));
 r.get('/models/:id/competitors', setCache(1800, 120), (req, res) => c.competitors(req, res));
 r.get('/models/:id', setCache(600, 120), (req, res) => c.getById(req, res));
+r.get('/models/:id/fuel-efficiency', setCache(1800, 120), (req, res) => c.fuelEfficiency(req, res));
+r.get('/models/:id/csd-vs-onroad', setCache(1800, 120), (req, res) => c.csdVsOnroad(req, res));
+
 
 
 export const modelsRouter = r;

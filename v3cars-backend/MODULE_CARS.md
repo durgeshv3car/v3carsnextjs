@@ -1,3 +1,6 @@
+
+
+
 Module: Cars (Brands, Models, Variants)
 
 All endpoints are under /v1/cars. Example base URL: http://localhost:3121.
@@ -127,6 +130,7 @@ Popular SUVs 10–20L:
 
 Multi-select examples
 
+
 Comma-separated (brands, body types, cylinders, seating):
 
 GET /v1/cars/models?priceBucket=BETWEEN_5_10L&page=1&limit=12&sortBy=popular
@@ -175,6 +179,7 @@ Response item (enriched)
 }
 
 
+
 Variants
 
 List
@@ -185,11 +190,9 @@ Query params
 
 modelId — recommended to scope variants
 
-q — search in variantName
+q — search in variantName    
 
 Price filters
-
-
 
 priceBucket — UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L
 
@@ -299,9 +302,12 @@ Price list:
 Best variant to buy:
 /v1/cars/models/grand-vitara/best-variant-to-buy
 /v1/cars/models/grand-vitara/best-variant-to-buy?powertrainId=123
+http://localhost:3121/v1/cars/models/444/best-variant-to-buy?detailed=true&fuelType=petrol&transmissionType=manual
 
 Dimensions & capacity:
 /v1/cars/models/grand-vitara/dimensions-capacity
+
+for detailed - detailed=1
 
 Mileage, specs & features:
 /v1/cars/models/grand-vitara/mileage-specs-features
@@ -312,5 +318,29 @@ Pros & cons:
 
 competitors:
 /v1/cars/models/grand-vitara/competitors
+
+Efficiency
+Both filters (CNG + Manual):
+/v1/cars/models/2/fuel-efficiency?fuelType=CNG&transmissionType=Manual
+
+Petrol + Automatic (any AT/AMT/CVT/DCT wording will match via contains):
+/v1/cars/models/2/fuel-efficiency?fuelType=Petrol&transmissionType=Automatic
+
+
+
+Only fuel filter:
+/v1/cars/models/2/fuel-efficiency?fuelType=Diesel
+
+Only transmission filter:
+/v1/cars/models/2/fuel-efficiency?transmissionType=MT
+
+Using a slug instead of numeric id (example slug):
+/v1/cars/models/fronx/fuel-efficiency?fuelType=CNG&transmissionType=Manual
+
+No filters (full table):
+/v1/cars/models/2/fuel-efficiency
+
+
+
 
 

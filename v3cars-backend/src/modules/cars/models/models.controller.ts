@@ -9,11 +9,14 @@ import {
   modelMsfQueryDto,
   modelIdParamDto,
   modelDimensionsQueryDto,
+  modelFuelEfficiencyQueryDto,
+  modelCsdVsOnroadQueryDto,
 } from './models.dto.js';
 
 const svc = new ModelsService();
 
 export class ModelsController {
+
   /** id or slug → numeric modelId resolver */
  private async resolve(req: Request, res: Response): Promise<number | null> {
     const raw = String(req.params.id || '');
@@ -56,7 +59,7 @@ export class ModelsController {
     res.json({ success: true, ...data });
   }
 
-  
+
   async priceList(req: Request, res: Response) {
     const id = await this.resolve(req, res);
     if (!id) return;
@@ -93,12 +96,14 @@ export class ModelsController {
     res.json(data);
   }
 
+
   async prosCons(req: Request, res: Response) {
     const id = await this.resolve(req, res);
     if (!id) return;
     const data = await svc.prosCons(id);
     res.json(data);
   }
+
 
   async competitors(req: Request, res: Response) {
     const id = await this.resolve(req, res);
@@ -107,5 +112,26 @@ export class ModelsController {
     res.json(data);
   }
 
-  
+  async fuelEfficiency(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+
+    const q = modelFuelEfficiencyQueryDto.parse(req.query);
+    const data = await svc.fuelEfficiency(id, q);
+    res.json(data);
+  }
+
+ async csdVsOnroad(req: Request, res: Response) {
+  const id = await this.resolve(req, res);
+  if (!id) return;
+
+  const q = modelCsdVsOnroadQueryDto.parse(req.query);
+  const data = await svc.csdVsOnroad(id, q);
+
+  res.json({ success: true, ...data });
 }
+
+
+
+}
+

@@ -47,6 +47,7 @@ export class VideosController {
     const rows = await svc.trending(type, { limit: q.limit });
     res.json({ success: true, rows });
   }
+  
   async top(req: Request, res: Response) {
     const type = videoTypeFromParam(req.params.type);
     const q = limitDto.parse(req.query);
@@ -99,3 +100,5 @@ export class VideosController {
     res.json({ success: true, rows });
   }
 }
+
+

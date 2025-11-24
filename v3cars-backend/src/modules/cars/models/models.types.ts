@@ -25,3 +25,17 @@ export interface ModelBestVariantQuery {
   transmissionType?: string;
   detailed?: boolean;
 }
+
+
+export interface ModelFuelEfficiencyQuery {
+  fuelType?: string;
+  transmissionType?: string;
+}
+
+export interface ModelCsdVsOnroadQuery {
+  cityId: number;
+  fuelType?: string;
+  transmissionType?: string;
+  expandVariantId?: number;
+  isLoan?: boolean;
+}
