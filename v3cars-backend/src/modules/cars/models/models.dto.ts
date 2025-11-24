@@ -91,3 +91,11 @@ export const modelCsdVsOnroadQueryDto = z.object({
   expandVariantId: z.coerce.number().int().positive().optional(),
   isLoan: z.union([z.literal('1'), z.literal('0')]).transform(v => v === '1').optional(),
 });
+
+
+export const modelOffersQueryDto = z.object({
+  cityId: z.coerce.number().int().positive().optional(),
+  expandQID: z.coerce.number().int().positive().optional(),
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/).optional(),
+  months: z.coerce.number().int().min(1).max(24).default(12).optional(),
+});

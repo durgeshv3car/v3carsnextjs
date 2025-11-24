@@ -280,7 +280,7 @@ Dimensions & capacity:
 
 Mileage, specs & features:
 /v1/cars/models/444/mileage-specs-features
-/v1/cars/models/444/mileage-specs-features?powertrainId=123
+/v1/cars/models/444/mileage-specs-features?powertrainId=123 
 
 Pros & cons:
 /v1/cars/models/444/pros-cons
@@ -327,7 +327,6 @@ Petrol + Automatic (any AT/AMT/CVT/DCT wording will match via contains):
 /v1/cars/models/2/fuel-efficiency?fuelType=Petrol&transmissionType=Automatic
 
 
-
 Only fuel filter:
 /v1/cars/models/2/fuel-efficiency?fuelType=Diesel
 
@@ -339,6 +338,12 @@ Using a slug instead of numeric id (example slug):
 
 No filters (full table):
 /v1/cars/models/2/fuel-efficiency
+
+
+offer-disscounts -
+
+http://localhost:3121/v1/cars/models/grand-vitara/offers-discounts?months=12&expandQID=938
+
 
 
 
