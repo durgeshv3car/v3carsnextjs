@@ -1,5 +1,5 @@
 // src/modules/cars/models/models.service.ts
-import type { ModelBestVariantQuery, ModelPriceListQuery, ModelsListQuery } from './models.types.js';
+import type { ModelBestVariantQuery, ModelsListQuery } from './models.types.js';
 import { ModelsRepo } from './models.repo.js';
 import { BrandsService } from '../brands/brands.service.js';
 import { VariantsService } from '../variants/variants.service.js';
@@ -686,7 +686,7 @@ export class ModelsService {
   }
 
 
- async priceList(
+  async priceList(
     modelId: number,
     q: {
       cityId?: number;
@@ -813,7 +813,7 @@ export class ModelsService {
     }, ttlMs);
   }
 
-  
+
   // --- bestVariantToBuy (cached) ---
   async bestVariantToBuy(modelId: number, q: ModelBestVariantQuery) {
     const key = cacheKey({
@@ -1526,5 +1526,89 @@ export class ModelsService {
       };
     }, ttlMs);
   }
+
+async offersDiscounts(
+  modelId: number,
+  q?: { months?: number; cityId?: number; expandQID?: number }
+) {
+  const months = Math.max(1, Math.min(q?.months ?? 12, 24)); // default 12, clamp 1..24
+  const key = cacheKey({
+    ns: 'model:offersDiscounts',
+    v: 4, // 🔼 bump: expandQID behavior
+    modelId,
+    months,
+    cityId: q?.cityId ?? undefined,
+    expandQID: q?.expandQID ?? undefined,
+  });
+  const ttlMs = 30 * 60 * 1000;
+
+  return withCache(key, async () => {
+    // 1) latest active offer for this model
+    const offer = await prisma.tbloffers.findFirst({
+      where: { modelId, offerStatus: 2, expireDateTime: { gte: new Date() } },
+      orderBy: [{ addedDateTime: 'desc' }],
+      select: {
+        offerId: true,
+        modelId: true,
+        title: true,
+        imageFile: true,
+        imageAltText: true,
+        addedDateTime: true,
+        expireDateTime: true,
+      },
+    });
+
+    if (!offer) {
+      return { success: true, modelId, rows: [], total: 0 };
+    }
+
+    // 2) window start is months back FROM NOW; filter is on tbloffercontent.addedDateTime
+    const fromDate = new Date();
+    fromDate.setMonth(fromDate.getMonth() - months);
+
+    // 3) fetch content rows for this offerId within the window
+    const content = await prisma.tbloffercontent.findMany({
+      where: {
+        modelId: offer.offerId, // NOTE: in tbloffercontent, modelId stores offerId
+        addedDateTime: { gte: fromDate },
+      },
+      orderBy: [{ qid: 'desc' }],
+      select: {
+        qid: true,
+        quesText: true,
+        ansText: true,
+        sequence: true,
+        addedDateTime: true,
+      },
+    });
+
+    const rows = content.map(c => {
+      const isExpanded = q?.expandQID != null && Number(q.expandQID) === c.qid;
+      const hasAns = !!(c.ansText && c.ansText.trim().length > 0);
+      return {
+        id: c.qid,
+        quesText: c.quesText ?? null,
+        hasAnswer: hasAns,
+        ansHtml: isExpanded ? (c.ansText ?? null) : null,
+        sequence: c.sequence ?? null,
+        addedDate: c.addedDateTime ?? null,
+      };
+    });
+
+    return {
+      success: true,
+      modelId,
+      offer: {
+        id: offer.offerId,
+        title: offer.title ?? null,
+        image: { url: offer.imageFile ?? null, alt: offer.imageAltText ?? null },
+        addedDate: offer.addedDateTime ?? null,
+        expireDate: offer.expireDateTime ?? null,
+      },
+      rows,
+      total: rows.length,
+    };
+  }, ttlMs);
+}
 
 }

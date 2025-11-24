@@ -20,6 +20,7 @@ r.get('/models/:id/competitors', setCache(1800, 120), (req, res) => c.competitor
 r.get('/models/:id', setCache(600, 120), (req, res) => c.getById(req, res));
 r.get('/models/:id/fuel-efficiency', setCache(1800, 120), (req, res) => c.fuelEfficiency(req, res));
 r.get('/models/:id/csd-vs-onroad', setCache(1800, 120), (req, res) => c.csdVsOnroad(req, res));
+r.get('/models/:id/offers-discounts', setCache(1800, 120), (req, res) => c.offersDiscounts(req, res));
 
 
 

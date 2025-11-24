@@ -7,11 +7,13 @@ import {
   modelPriceListQueryDto,
   modelBestVariantQueryDto,
   modelMsfQueryDto,
-  modelIdParamDto,
+  modelOffersQueryDto,
   modelDimensionsQueryDto,
   modelFuelEfficiencyQueryDto,
   modelCsdVsOnroadQueryDto,
 } from './models.dto.js';
+
+
 
 const svc = new ModelsService();
 
@@ -121,15 +123,24 @@ export class ModelsController {
     res.json(data);
   }
 
- async csdVsOnroad(req: Request, res: Response) {
-  const id = await this.resolve(req, res);
-  if (!id) return;
+  async csdVsOnroad(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
 
-  const q = modelCsdVsOnroadQueryDto.parse(req.query);
-  const data = await svc.csdVsOnroad(id, q);
+    const q = modelCsdVsOnroadQueryDto.parse(req.query);
+    const data = await svc.csdVsOnroad(id, q);
 
-  res.json({ success: true, ...data });
-}
+    res.json({ success: true, ...data });
+  }
+
+  async offersDiscounts(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+
+    const q = modelOffersQueryDto.parse(req.query);
+    const data = await svc.offersDiscounts(id, q as any);
+    res.json(data);
+  }
 
 
 
