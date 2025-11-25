@@ -9,7 +9,6 @@ import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard"
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
-import OnRoadPriceTable from "@/components/responsive/brand/model/price/OnRoadPriceTable";
 import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
 import CSDPriceList from "@/components/responsive/brand/model/sidebar/CSDPriceList";
@@ -22,9 +21,7 @@ import VariantExplained from "@/components/responsive/brand/model/sidebar/Varian
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery, useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
-import Link from "next/link";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import VariantTable from "./VariantTable";
 import { useGetBestVariantToBuyQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
@@ -50,6 +47,8 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
 
     const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>

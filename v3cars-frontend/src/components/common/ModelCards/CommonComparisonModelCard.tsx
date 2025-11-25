@@ -109,7 +109,7 @@ const CommonComparisonModelCard = ({ data }: MostPopularCarComparisonProps) => {
 
                                 {/* VS Circle */}
                                 <div className="absolute left-1/2 top-[20%] -translate-x-1/2 -translate-y-1/2 z-10">
-                                    <div className="w-16 h-16 bg-black text-yellow-400 font-bold text-lg rounded-full flex items-center justify-center border-2 border-yellow-400 shadow-md">
+                                    <div className="w-16 h-16 bg-black text-primary font-bold text-lg rounded-full flex items-center justify-center border-2 border-primary shadow-md">
                                         VS
                                     </div>
                                 </div>
@@ -161,7 +161,7 @@ const CommonComparisonModelCard = ({ data }: MostPopularCarComparisonProps) => {
                             </div>
 
                             <button
-                                className="bg-yellow-400 hover:bg-yellow-500 w-full py-3 rounded-b-xl text-black font-semibold text-sm"
+                                className="bg-primary hover:bg-primary-hover w-full py-3 rounded-b-xl text-black font-semibold text-sm"
                                 onClick={() => { router.push(`/compare/${comparison.url}`) }}
                             >
                                 Compare Now

@@ -1,5 +1,4 @@
 import { ModelDimensionsResponse } from "@/components/responsive/brand/model/dimensions/DimensionsPage";
-import { ModelSpecificationResponse } from "@/components/responsive/brand/model/overview/DimensionsTable";
 import { ProsConsResponse } from "@/components/responsive/brand/model/overview/ModelProsCons";
 import { CarData } from "@/components/responsive/brand/model/overview/Overview";
 import { HeaderInfo, SpecSection } from "@/components/responsive/brand/model/overview/SpecsListTable";
@@ -252,6 +251,26 @@ export const carModuleApi = createApi({
         getModelFuelEfficiency: builder.query<Response, { model_slug: string, fuelType?: string, transmissionType?: string }>({
             query: ({ model_slug, fuelType, transmissionType }) => `/cars/models/${model_slug}/fuel-efficiency?fuelType=${fuelType}&transmissionType=${transmissionType}`,
         }),
+
+        getModelOfferDiscount: builder.query<Response, { model_slug: string, expandQID?: number }>({
+            query: ({
+                model_slug,
+                expandQID
+            }: {
+                model_slug: string,
+                expandQID: number,
+            }) => {
+                const url = `/cars/models/${model_slug}/offers-discounts?months=13`;
+
+                const params: string[] = [];
+
+                if (expandQID !== undefined && expandQID !== null) {
+                    params.push(`expandQID=${expandQID}`);
+                }
+
+                return params.length ? `${url}&${params.join("&")}` : url;
+            }
+        }),
     }),
 });
 
@@ -280,6 +299,7 @@ export const {
     useGetModelCompetitorsQuery,
     useGetPriceListDetailsQuery,
     useGetModelFuelEfficiencyQuery,
+    useGetModelOfferDiscountQuery,
 } = carModuleApi;
 
 

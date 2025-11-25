@@ -23,7 +23,7 @@ const HiringBanner: React.FC = () => {
           <h2 className="text-xl font-semibold">
             WE ARE
           </h2>
-          <h1 className="text-2xl md:text-5xl font-bold text-yellow-400">
+          <h1 className="text-2xl md:text-5xl font-bold text-primary">
             HIRING
           </h1>
           <p className="mt-2 text-start">

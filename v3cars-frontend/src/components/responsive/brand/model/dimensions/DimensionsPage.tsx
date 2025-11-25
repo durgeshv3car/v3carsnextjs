@@ -122,6 +122,8 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
 
     const isMobile = useIsMobile()
 
+    console.log(childSlug);
+
     return (
         <>
             <div className="relative">

@@ -4,16 +4,11 @@ import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonVideos from "@/components/common/CommonVideos";
 import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
-import CommonSellingCarCard from "@/components/common/ModelCards/CommonSellingCarCard";
 import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard";
-import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
-import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
-import CSDPriceList from "@/components/responsive/brand/model/sidebar/CSDPriceList";
 import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalculator";
-import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
@@ -31,57 +26,6 @@ interface MileagePageProps {
     childSlug: string;
 }
 
-const variants = [
-    {
-        name: "Nexon Pure Plus",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹7.32 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹7,31,800" },
-            { label: "Road Tax", value: "₹35,561" },
-            { label: "Registration Charges", value: "₹600" },
-            { label: "FASTag", value: "₹600" },
-            { label: "Hypothecation Endorsement", value: "₹1,500" },
-            { label: "Road Safety Cess", value: "₹1,317" },
-            { label: "Other Charges", value: "₹400" },
-            { label: "Insurance", value: "₹59,575" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Pure Plus S",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Road Tax", value: "₹36,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Creative",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-];
-
-const competitors = [
-    { name: "Hyundai Venue", href: "#" },
-    { name: "Maruti Arena Brezza", href: "#" },
-    { name: "Mahindra XUV 3XO", href: "#" },
-    { name: "Kia Sonet", href: "#" },
-    { name: "Nissan Magnite", href: "#" },
-    { name: "Renault Kiger", href: "#" },
-];
 
 function ReviewsPage({ type, slug, childSlug }: MileagePageProps) {
 
@@ -94,6 +38,8 @@ function ReviewsPage({ type, slug, childSlug }: MileagePageProps) {
     const latestVideos = latestVideosData?.rows ?? []
 
     const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>
@@ -132,10 +78,10 @@ function ReviewsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <div className="border rounded-xl h-[332px]" />
 
-                            <CommonViewOfferCard
+                            {/* <CommonViewOfferCard
                                 title="Tata Nexon"
                                 desc="The Nexon competes with popular models including"
-                            />
+                            /> */}
 
                             <CommonUsedCarCard
                                 title="Tata Nexon"
@@ -194,7 +140,7 @@ function ReviewsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <BrochureCard
+                            {/* <BrochureCard
                                 title="Tata Nexon"
                             />
 
@@ -204,7 +150,7 @@ function ReviewsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <LatestOffersDiscounts
                                 title="Toyota Urban Cruiser Hyryder"
-                            />
+                            /> */}
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img

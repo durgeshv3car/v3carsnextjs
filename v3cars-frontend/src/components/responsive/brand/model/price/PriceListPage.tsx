@@ -36,49 +36,6 @@ interface PriceListPageProps {
     childSlug: string;
 }
 
-const variants = [
-    {
-        name: "Nexon Pure Plus",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹7.32 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹7,31,800" },
-            { label: "Road Tax", value: "₹35,561" },
-            { label: "Registration Charges", value: "₹600" },
-            { label: "FASTag", value: "₹600" },
-            { label: "Hypothecation Endorsement", value: "₹1,500" },
-            { label: "Road Safety Cess", value: "₹1,317" },
-            { label: "Other Charges", value: "₹400" },
-            { label: "Insurance", value: "₹59,575" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Pure Plus S",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Road Tax", value: "₹36,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Creative",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-];
-
 function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
     const [fuelType, setFuelType] = useState("")
     const [transmissionType, setTransmissionType] = useState("")
@@ -101,6 +58,8 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
     const priceListDetails = priceListDetailsData?.rows ?? []
 
     const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>

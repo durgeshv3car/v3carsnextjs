@@ -56,7 +56,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ sortBy, setSortBy, data, co
                 <div className='space-y-2'>
                     <h2 className="text-2xl font-bold">Your Search Result</h2>
                     <p>
-                        <span className='bg-[#171717] rounded-md text-yellow-400 font-semibold px-2 p-1'>{count}</span>{" "}
+                        <span className='bg-[#171717] rounded-md text-primary font-semibold px-2 p-1'>{count}</span>{" "}
                         Cars in India With Search Options
                     </p>
                 </div>

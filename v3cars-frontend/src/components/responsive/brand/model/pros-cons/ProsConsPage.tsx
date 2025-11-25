@@ -35,55 +35,12 @@ interface MileagePageProps {
     childSlug: string;
 }
 
-const variants = [
-    {
-        name: "Nexon Pure Plus",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹7.32 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹7,31,800" },
-            { label: "Road Tax", value: "₹35,561" },
-            { label: "Registration Charges", value: "₹600" },
-            { label: "FASTag", value: "₹600" },
-            { label: "Hypothecation Endorsement", value: "₹1,500" },
-            { label: "Road Safety Cess", value: "₹1,317" },
-            { label: "Other Charges", value: "₹400" },
-            { label: "Insurance", value: "₹59,575" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Pure Plus S",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Road Tax", value: "₹36,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Creative",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-];
-
 function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelProsConsData, isLoading } = useGetModelProsConsQuery({
+    const { data: modelProsConsData } = useGetModelProsConsQuery({
         model_slug: slug
     });
 
@@ -98,6 +55,8 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
     const cons = prosConsData?.cons || [];
 
     const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>
@@ -122,7 +81,7 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>

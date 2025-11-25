@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+'use client'
 
 interface MileageRow {
     variant: string;
@@ -10,7 +10,6 @@ interface MileageRow {
 }
 
 const EngineMileageSpecsTable: React.FC = () => {
-    const [selectedVariant, setSelectedVariant] = useState("1.2L Turbo Petrol with 6-speed MT");
 
     const mileageData: MileageRow[] = [
         {

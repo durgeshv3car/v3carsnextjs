@@ -1,12 +1,10 @@
 'use client'
 
-import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonVideos from "@/components/common/CommonVideos";
 import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard";
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
-import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
 import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
@@ -18,12 +16,8 @@ import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import useIsMobile from "@/hooks/useIsMobile";
-import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery, useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
-import EngineSpecs from "./EngineSpecs";
-import EngineMileageSpecsTable from "./EngineMileageSpecsTable";
+import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import { useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import SpecsListTable from "../overview/SpecsListTable";
@@ -39,16 +33,18 @@ interface MileagePageProps {
 function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
 
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
-    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
+    // const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
 
-    const modelLatestNews = modelLatestNewsData?.rows ?? [];
+    // const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
 
-    const isMobile = useIsMobile()
+    // const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>
@@ -73,7 +69,7 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -85,7 +81,7 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                         <div className="w-auto lg:max-w-[74%] space-y-10">
 
                             <div className="space-y-3">
-                                <h2 className="text-2xl font-semibold">Tata Nexon Engine Specs & Performance</h2>
+                                <h2 className="text-2xl font-semibold">{modelDetails?.model?.brand?.name} {modelDetails?.model?.name} Engine Specs & Performance</h2>
                                 <p className="text-gray-400 text-sm">In September 2025, the total sales figure of Nexon was 22,573 units, which is a 37.96 percent MoM growth. In September 2025, the total sales figure of Tata cars was 22,573 units. Want to compare monthly sales figures for all Tata models? Click here to compare all Tata car sales.</p>
                                 <SpecsListTable
                                     model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
@@ -95,7 +91,7 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <div className="p-6 bg-white dark:bg-[#171717] dark:border-[#2e2e2e] rounded-2xl shadow-sm border">
-                                <h2 className="text-xl font-semibold mb-2">Tata Nexon Features</h2>
+                                <h2 className="text-xl font-semibold mb-2">{modelDetails?.model?.brand?.name} {modelDetails?.model?.name} Features</h2>
                                 <p className="text-gray-400 text-sm leading-relaxed">
                                     Sell used car from the comfort of your home. Get free car assessment, quick payment disbursal and free RC transfer.
                                     Book car inspection right now to find out how much payment you can get for selling it today.

@@ -157,7 +157,7 @@ const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
                 <div className="text-center mt-4">
                     <button
                         onClick={() => setShowAll(true)}
-                        className="px-6 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition"
+                        className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition"
                     >
                         View All States Diesel Prices
                     </button>

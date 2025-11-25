@@ -87,7 +87,7 @@ const Footer: React.FC = () => {
               <ul className="text-sm">
                 {items.map((item, index) => (
                   <React.Fragment key={index}>
-                    <li className="group flex gap-2 items-center py-3 hover:text-yellow-400 w-fit">
+                    <li className="group flex gap-2 items-center py-3 hover:text-primary w-fit">
                       {/* normal image */}
                       <Image
                         src="/common/v3icon.svg"
@@ -122,7 +122,7 @@ const Footer: React.FC = () => {
               <ul className="text-sm">
                 {tools.map((tool, index) => (
                   <React.Fragment key={index}>
-                    <li className="group flex gap-2 items-center py-3 w-fit hover:text-yellow-400">
+                    <li className="group flex gap-2 items-center py-3 w-fit hover:text-primary">
                       {/* normal image */}
                       <Image
                         src="/common/v3icon.svg"
@@ -161,7 +161,7 @@ const Footer: React.FC = () => {
               <input
                 type="email"
                 placeholder="Enter your email address"
-                className="w-full border border-[#262629] bg-white dark:bg-black focus:border-yellow-400 focus:outline-none rounded-xl p-4"
+                className="w-full border border-[#262629] bg-white dark:bg-black focus:border-primary focus:outline-none rounded-xl p-4"
               />
               <button className="w-full bg-black text-white py-4 rounded-xl">
                 Subscribe
@@ -245,7 +245,7 @@ const Footer: React.FC = () => {
           </div>
         </section>
 
-        <div className="bg-yellow-400 text-sm py-6 text-center px-6 lg:px-10">
+        <div className="bg-primary text-sm py-6 text-center px-6 lg:px-10">
           <div className="w-full lg:app-container mx-auto flex flex-col md:flex-row justify-between items-center">
             <span className="text-black">Copyright {currentYear} V3Cars</span>
             <div className="text-black">

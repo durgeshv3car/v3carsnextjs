@@ -230,7 +230,7 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
                                 </h2>
                                 <p className="text-center text-gray-500 flex items-center justify-center gap-2">
                                     <span>OTP has been sent to</span>
-                                    <span className="text-yellow-600 font-semibold">
+                                    <span className="text-primary font-semibold">
                                         {formData.email}
                                     </span>
                                     <TbEdit
@@ -261,7 +261,7 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
                                     ) : (
                                         <button
                                             onClick={resendOtp}
-                                            className="text-yellow-600 font-medium"
+                                            className="text-primary font-medium"
                                         >
                                             Resend OTP
                                         </button>
@@ -270,7 +270,7 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
 
                                 <div className="flex justify-center items-center">
                                     <button
-                                        className="w-[50%] bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-md text-sm"
+                                        className="w-[50%] bg-primary hover:bg-primary-hover text-black font-semibold py-3 rounded-md text-sm"
                                         onClick={() => setStep("details")}
                                     >
                                         Verify
@@ -344,7 +344,7 @@ const HelpModel = ({ showHelpModel, onClose }: HelpModelProps) => {
                                 <div className="space-y-4">
                                     <div className="flex justify-center items-center">
                                         <button
-                                            className="w-[50%] bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-md text-sm"
+                                            className="w-[50%] bg-primary hover:bg-primary-hover text-black font-semibold py-3 rounded-md text-sm"
                                             onClick={() => setStep("otp")}
                                         >
                                             Verify Your Number

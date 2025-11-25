@@ -1,26 +1,17 @@
 'use client'
 
-import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+
 import CommonVideos from "@/components/common/CommonVideos";
-import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard";
-import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
-import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
-import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
-import CSDPriceList from "@/components/responsive/brand/model/sidebar/CSDPriceList";
 import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalculator";
-import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 import ModelColours from "./ModelColours";
 import VariantsColorTable from "./VariantsColorTable";
@@ -32,16 +23,11 @@ interface MileagePageProps {
 }
 
 function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
-
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
-    const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: latestVideosData } = useGetLatestVideosQuery()
 
-    const latestCarNews = latestCarNewsData?.rows ?? [];
-    const popularComparisons = popularComparisonsData?.rows ?? [];
     const latestVideos = latestVideosData?.rows ?? []
 
-    const isMobile = useIsMobile()
+    console.log(childSlug);
 
     return (
         <>
@@ -88,10 +74,10 @@ function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <div className="border rounded-xl h-[332px]" />
 
-                            <CommonViewOfferCard
+                            {/* <CommonViewOfferCard
                                 title="Tata Nexon"
                                 desc="The Nexon competes with popular models including"
-                            />
+                            /> */}
 
                             <CommonUsedCarCard
                                 title="Tata Nexon"
@@ -148,17 +134,17 @@ function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <BrochureCard
+                            {/* <BrochureCard
                                 title="Tata Nexon"
-                            />
+                            /> */}
 
-                            <CSDPriceList
+                            {/* <CSDPriceList
                                 title="Toyota Urban Cruiser Hyryder"
-                            />
+                            /> */}
 
-                            <LatestOffersDiscounts
+                            {/* <LatestOffersDiscounts
                                 title="Toyota Urban Cruiser Hyryder"
-                            />
+                            /> */}
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img

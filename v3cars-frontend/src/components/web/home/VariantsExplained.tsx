@@ -106,7 +106,7 @@ const VariantsExplained: React.FC = () => {
                         <h2 className="text-lg font-medium">Variants Explained</h2>
                         <Link
                             href="#"
-                            className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                            className="text-primary font-medium text-sm hover:underline flex gap-2 items-center"
                         >
                             View All Variants Explained
                             <svg

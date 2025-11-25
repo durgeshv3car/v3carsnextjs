@@ -82,7 +82,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                                 <h2 className="text-xl font-semibold text-center">OTP Verification</h2>
 
                                 <p className="text-sm text-gray-500 text-center flex items-center justify-center gap-1">
-                                    OTP has been sent to <span className="text-yellow-400 font-medium">{email}</span>
+                                    OTP has been sent to <span className="text-primary font-medium">{email}</span>
                                     <TbEdit onClick={() => setStep("login")} size={16} className="cursor-pointer" />
                                 </p>
                             </div>
@@ -111,16 +111,16 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
 
                                 <p className="text-center text-xs text-gray-600">
                                     {timer > 0 ? `Resend OTP in ${timer} sec` : (
-                                        <button onClick={resendOtp} className="text-yellow-600 font-medium">Resend OTP</button>
+                                        <button onClick={resendOtp} className="text-primary font-medium">Resend OTP</button>
                                     )}
                                 </p>
 
-                                <button className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black font-medium py-3 rounded-md text-sm">
+                                <button className="w-full bg-primary hover:bg-primary-hover transition text-black font-medium py-3 rounded-md text-sm">
                                     Login
                                 </button>
 
                                 <p className="text-center text-xs text-gray-500">
-                                    Don&apos;t have an account? <span className="text-yellow-600 font-medium cursor-pointer" onClick={() => setStep("signup")}>Sign Up</span>
+                                    Don&apos;t have an account? <span className="text-primary font-medium cursor-pointer" onClick={() => setStep("signup")}>Sign Up</span>
                                 </p>
                             </div>
                         </div>
@@ -179,7 +179,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                                 </div>
 
                                 <button
-                                    className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black font-medium py-3 rounded-md text-sm mb-3"
+                                    className="w-full bg-primary hover:bg-primary-hover transition text-black font-medium py-3 rounded-md text-sm mb-3"
                                     onClick={() => setStep("otp")}
                                 >
                                     Login with OTP
@@ -187,7 +187,7 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
 
                                 <p className="text-center text-xs text-gray-500">
                                     Don&apos;t have an account?{" "}
-                                    <span className="text-yellow-600 font-medium cursor-pointer" onClick={() => setStep("signup")}>
+                                    <span className="text-primary font-medium cursor-pointer" onClick={() => setStep("signup")}>
                                         Sign Up
                                     </span>
                                 </p>
@@ -228,13 +228,13 @@ const MobileLoginModal = ({ onClose }: MobileLoginModalProps) => {
                                     />
                                 </div>
 
-                                <button className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black font-medium py-3 rounded-md text-sm mb-3">
+                                <button className="w-full bg-primary hover:bg-primary-hover transition text-black font-medium py-3 rounded-md text-sm mb-3">
                                     Sign Up
                                 </button>
 
                                 <p className="text-center text-xs text-gray-500">
                                     Already have an account?{" "}
-                                    <span className="text-yellow-600 font-medium cursor-pointer" onClick={() => setStep("login")}>
+                                    <span className="text-primary font-medium cursor-pointer" onClick={() => setStep("login")}>
                                         Login
                                     </span>
                                 </p>

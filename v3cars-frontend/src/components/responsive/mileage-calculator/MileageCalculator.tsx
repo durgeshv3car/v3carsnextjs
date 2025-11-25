@@ -62,7 +62,7 @@ function UnitToggle<T extends string>({
           <button
             key={opt.key}
             onClick={() => onChange(opt.key)}
-            className={`px-3 h-8 rounded-full text-sm font-medium transition ${active ? 'bg-yellow-400 text-black' : 'text-neutral-600 dark:hover:bg-black'
+            className={`px-3 h-8 rounded-full text-sm font-medium transition ${active ? 'bg-primary text-black' : 'text-neutral-600 dark:hover:bg-black'
               }`}
             type="button"
           >
@@ -223,7 +223,7 @@ export default function MileageCalculator() {
         <div className="grid lg:grid-cols-2 gap-5">
           {/* LEFT CARD */}
           <div className="rounded-xl border dark:border-[#2E2E2E] bg-white dark:bg-[#171717] shadow-sm overflow-hidden">
-            <div className="bg-black text-yellow-400 px-5 py-4 text-lg md:text-xl font-semibold tracking-wide">
+            <div className="bg-black text-primary px-5 py-4 text-lg md:text-xl font-semibold tracking-wide">
               Mileage: {mileage.toFixed(2)} {distanceUnit}/{fuelUnit === 'ltr' ? 'L' : 'Gal'}
             </div>
 
@@ -301,7 +301,7 @@ export default function MileageCalculator() {
 
               <button
                 onClick={handleReset}
-                className="w-full h-11 rounded-lg bg-yellow-400 text-black font-semibold flex items-center justify-center gap-2 hover:brightness-95 active:translate-y-[1px]"
+                className="w-full h-11 rounded-lg bg-primary text-black font-semibold flex items-center justify-center gap-2 hover:brightness-95 active:translate-y-[1px]"
               >
                 <IoReload className="text-lg" />
                 RESET

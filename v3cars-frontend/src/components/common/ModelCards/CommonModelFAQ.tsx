@@ -20,7 +20,7 @@ const CommonModelFAQ: React.FC<CommonModelFAQProps> = ({ title, faqs, viewAllLin
 
             <div className="border border-gray-200 rounded-xl overflow-hidden bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
                 <div className="flex border-b px-4 gap-6 dark:border-[#2E2E2E]">
-                    <button className="py-3 text-sm font-semibold border-b-[3px] border-yellow-400">
+                    <button className="py-3 text-sm font-semibold border-b-[3px] border-primary">
                         FAQs
                     </button>
                     <button className="py-3 text-sm">
@@ -61,7 +61,7 @@ const CommonModelFAQ: React.FC<CommonModelFAQProps> = ({ title, faqs, viewAllLin
                     <div className="px-4 py-3">
                         <a
                             href={viewAllLink}
-                            className="text-sm font-semibold text-yellow-500 hover:underline"
+                            className="text-sm font-semibold text-primary hover:underline"
                         >
                             View All Questions About Tata Nexon
                         </a>

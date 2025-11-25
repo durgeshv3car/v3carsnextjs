@@ -8,8 +8,6 @@ import CommonList from "./overview/CommonList";
 import SpecsListTable from "./overview/SpecsListTable";
 import ModelExpertReview from "./overview/ModelExpertReview";
 import ModelProsCons from "./overview/ModelProsCons";
-import ModelComparisonSimilarCars from "./overview/ModelComparisonSimilarCars";
-import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import useIsMobile from "@/hooks/useIsMobile";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
@@ -92,12 +90,12 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                 <div className="px-4 xl:px-10">
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
-                        <span className="text-yellow-500">›</span>
+                        <span className="text-primary">›</span>
                         <Link href={`/${type}`} className="hover:underline">
                             {type}
                         </Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary">
                             {slug}
                         </span>
                     </div>

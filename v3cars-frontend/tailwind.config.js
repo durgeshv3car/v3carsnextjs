@@ -15,6 +15,13 @@ export default {
           '100%': { transform: 'translateY(0)' },
         },
       },
+      colors: {
+        primary: {
+          DEFAULT: "#facc15",
+          hover: "#eab308",
+          light: "#fef08a",
+        },
+      },
     }
 
   },

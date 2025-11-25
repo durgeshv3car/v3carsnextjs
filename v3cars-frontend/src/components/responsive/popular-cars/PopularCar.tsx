@@ -56,7 +56,7 @@ const PopularCar = () => {
             {/* Rank + Image */}
             <div className="flex items-center gap-2">
               {/* Rank */}
-              <div className="bg-black dark:bg-[#171717] text-yellow-400 w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
+              <div className="bg-black dark:bg-[#171717] text-primary w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
                 <span className="text-4xl sm:text-6xl lg:text-8xl font-bold">
                   {car.rank.toString().padStart(2, '0')}
                 </span>
@@ -146,7 +146,7 @@ const PopularCar = () => {
 
               {/* CTA Button */}
               <div className="pt-2">
-                <button className="bg-yellow-400 text-black font-semibold py-2 rounded w-full hover:bg-yellow-500 transition">
+                <button className="bg-primary text-black font-semibold py-2 rounded w-full hover:bg-primary-hover transition">
                   Check Details
                 </button>
               </div>
@@ -179,7 +179,7 @@ const PopularCar = () => {
             {/* Rank + Image */}
             <div className="flex items-center gap-2">
               {/* Rank */}
-              <div className="bg-black dark:bg-[#171717] text-yellow-400 w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
+              <div className="bg-black dark:bg-[#171717] text-primary w-[120px] sm:w-[80px] lg:min-w-[144px] rounded-md h-[192px] flex flex-col items-center justify-center text-center">
                 <span className="text-4xl sm:text-6xl lg:text-8xl font-bold">
                   {car.rank.toString().padStart(2, '0')}
                 </span>
@@ -269,7 +269,7 @@ const PopularCar = () => {
 
               {/* CTA Button */}
               <div className="pt-2">
-                <button className="bg-yellow-400 text-black font-semibold py-2 rounded w-full hover:bg-yellow-500 transition">
+                <button className="bg-primary text-black font-semibold py-2 rounded w-full hover:bg-primary-hover transition">
                   Check Details
                 </button>
               </div>

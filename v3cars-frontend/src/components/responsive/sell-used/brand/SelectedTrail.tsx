@@ -43,7 +43,7 @@ function CongratsRedirect({
     <div className="px-4 pb-5">
       <button
         type="button"
-        className="w-full rounded-lg bg-yellow-400 text-black font-semibold py-3 hover:bg-yellow-300 transition"
+        className="w-full rounded-lg bg-primary text-black font-semibold py-3 hover:bg-primary-light transition"
       >
         Congratulation
       </button>

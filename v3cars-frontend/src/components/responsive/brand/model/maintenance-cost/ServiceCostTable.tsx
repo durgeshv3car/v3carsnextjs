@@ -1,5 +1,6 @@
+'use client'
+
 import Link from "next/link";
-import React, { useState } from "react";
 
 interface MileageRow {
     variant: string;
@@ -11,7 +12,6 @@ interface MileageRow {
 }
 
 const ServiceCostTable: React.FC = () => {
-    const [selectedVariant, setSelectedVariant] = useState("1.2L Turbo Petrol with 6-speed MT");
 
     const mileageData: MileageRow[] = [
         {

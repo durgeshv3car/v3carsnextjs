@@ -142,15 +142,15 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                         />
                                         : activeTab === "Pros Cons" ?
                                             <CommonModelTopSection
-                                                title="Tata"
-                                                highlight="Nexon"
+                                                title={`${modelDetails?.model?.brand?.name}`}
+                                                highlight={`${modelDetails?.model?.name}`}
                                                 others="Pros & Cons"
                                                 description="Check out pros and cons about the Tata Nexon that are worth highlighting for a potential buyer. Here are some of the highlights of the benefits of buying the Tata Nexon. We'll also list out the Nexon drawbacks to help you make an informed buying deci..."
                                             />
                                             : activeTab === "Offers Discounts" ?
                                                 <CommonModelTopSection
-                                                    title="Tata"
-                                                    highlight="Nexon"
+                                                    title={`${modelDetails?.model?.brand?.name}`}
+                                                    highlight={`${modelDetails?.model?.name}`}
                                                     others="Offers Discounts"
                                                     description="Tata Nexon comparison review to compare price, specs, dimensions & features to know which is value for money car..."
                                                 />
@@ -170,15 +170,15 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                                         />
                                                         : activeTab === "Specifications Features" ?
                                                             <CommonModelTopSection
-                                                                title="Tata"
-                                                                highlight="Nexon"
+                                                                title={`${modelDetails?.model?.brand?.name}`}
+                                                                highlight={`${modelDetails?.model?.name}`}
                                                                 others="Specifications & Features "
                                                                 description="The Tata Nexon is available with multiple engine options: a 1.2L turbo petrol, a 1.2L CNG and a 1.5L turbo diesel. Nexon's 1.2L turbo petrol engine is available with a 6-speed MT Manual, a 6-speed AMT Automatic, a 5-speed MT Manual and a 7-speed DCT"
                                                             />
                                                             : activeTab === "Videos" ?
                                                                 <CommonModelTopSection
-                                                                    title="Tata"
-                                                                    highlight="Nexon"
+                                                                    title={`${modelDetails?.model?.brand?.name}`}
+                                                                    highlight={`${modelDetails?.model?.name}`}
                                                                     others="Videos"
                                                                     description="The Tata Nexon is available with multiple engine options: a 1.2L turbo petrol, a 1.2L CNG and a 1.5L turbo diesel. Nexon's 1.2L turbo petrol engine is available with a 6-speed MT Manual, a 6-speed AMT Automatic, a 5-speed MT MTata Nexon Videos page brings together all our expert video content in one place — including detailed reviews, variant explanation and model comparisons. Watch V3Cars’ in-depth Hindi videos covering the Nexon’s exterior, interior, features, performananual and a 7-speed DCT"
                                                                 />
@@ -233,9 +233,9 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                         key={tab}
                         onClick={() => handleModelTab(tab)}
                         className={`${tab === activeTab
-                            ? "border-b-4 border-yellow-400"
-                            : "hover:text-yellow-400 text-gray-400"
-                            } pb-2 border-b-4 border-transparent hover:border-yellow-400 transition whitespace-nowrap`}
+                            ? "border-b-4 border-primary"
+                            : "hover:text-primary text-gray-400"
+                            } pb-2 border-b-4 border-transparent hover:border-primary transition whitespace-nowrap`}
                     >
                         {tab}
                     </button>
@@ -248,9 +248,9 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                         key={tab}
                         onClick={() => handleModelTab(tab)}
                         className={`${tab === activeTab
-                            ? "border-b-4 border-yellow-400"
-                            : "hover:text-yellow-400 text-gray-400"
-                            } pb-2 border-b-4 border-transparent hover:border-yellow-400 transition whitespace-nowrap`}
+                            ? "border-b-4 border-primary"
+                            : "hover:text-primary text-gray-400"
+                            } pb-2 border-b-4 border-transparent hover:border-primary transition whitespace-nowrap`}
                     >
                         {tab}
                     </button>
@@ -259,7 +259,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                 <div className="relative inline-block">
                     <button
                         onClick={() => setDropDownTab(!dropDownTab)}
-                        className={`pb-2 border-b-4 border-transparent hover:border-yellow-400 transition whitespace-nowrap flex items-center gap-2 text-gray-400`}
+                        className={`pb-2 border-b-4 border-transparent hover:border-primary transition whitespace-nowrap flex items-center gap-2 text-gray-400`}
                     >
                         Others
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`size-4 transform transition-transform duration-300 ${dropDownTab ? "rotate-180" : "rotate-0"}`}>
@@ -276,8 +276,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                         <li
                                             key={index}
                                             className={`${item === activeTab
-                                                ? "text-yellow-400"
-                                                : "hover:text-yellow-400 text-gray-400"
+                                                ? "text-primary"
+                                                : "hover:text-primary text-gray-400"
                                                 } p-3 hover:bg-gray-100 cursor-pointer dark:hover:bg-[#2e2e2e]`}
                                             onClick={() => handleModelTab(item)}
                                         >

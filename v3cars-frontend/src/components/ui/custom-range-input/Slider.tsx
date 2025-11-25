@@ -22,18 +22,18 @@ const Slider = () => {
 
   return (
     <div className="w-full">
-      <div className="text-center text-yellow-500 font-semibold text-sm mb-2">
+      <div className="text-center text-primary font-semibold text-sm mb-2">
         Rs. {minPrice} Lakh - {maxPrice === 100 ? '1 Crore' : `${maxPrice} Lakh`}
       </div>
 
       {/* Slider container */}
       <div className="relative w-full h-5">
         {/* Full background line */}
-        <div className="absolute top-1/2 left-0 right-0 h-[6px] bg-yellow-200 rounded-full -translate-y-1/2 z-0" />
+        <div className="absolute top-1/2 left-0 right-0 h-[6px] bg-primary-light rounded-full -translate-y-1/2 z-0" />
 
         {/* Active range bar */}
         <div
-          className="absolute h-[2px] bg-yellow-400 rounded-full z-10"
+          className="absolute h-[2px] bg-primary rounded-full z-10"
           style={{
             left: `${(minPrice / maxVal) * 100}%`,
             width: `${((maxPrice - minPrice) / maxVal) * 100}%`,

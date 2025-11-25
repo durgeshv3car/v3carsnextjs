@@ -69,43 +69,43 @@ const FilterModel: React.FC<FilterModelProps> = ({ showFilter, setShowFilter, sh
                         <ul className="text-sm">
                             <li
                                 onClick={() => { setShowFilter("Range") }}
-                                className={`p-4 ${showFilter === "Range" || showFilter === "Filter" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                className={`p-4 ${showFilter === "Range" || showFilter === "Filter" ? "bg-primary-light text-black font-semibold" : ""}`}
                             >
                                 Price Range
                             </li>
                             <li
                                 onClick={() => { setShowFilter("Brand") }}
-                                className={`p-4 ${showFilter === "Brand" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                className={`p-4 ${showFilter === "Brand" ? "bg-primary-light text-black font-semibold" : ""}`}
                             >
                                 Brand
                             </li>
                             <li
                                 onClick={() => { setShowFilter("Fuel") }}
-                                className={`p-4 ${showFilter === "Fuel" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                className={`p-4 ${showFilter === "Fuel" ? "bg-primary-light text-black font-semibold" : ""}`}
                             >
                                 Fuel Type
                             </li>
                             <li
                                 onClick={() => { setShowFilter("Body") }}
-                                className={`p-4 ${showFilter === "Body" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                className={`p-4 ${showFilter === "Body" ? "bg-primary-light text-black font-semibold" : ""}`}
                             >
                                 Body Type
                             </li>
                             <li
                                 onClick={() => { setShowFilter("Transmission") }}
-                                className={`p-4 ${showFilter === "Transmission" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                className={`p-4 ${showFilter === "Transmission" ? "bg-primary-light text-black font-semibold" : ""}`}
                             >
                                 Transmission
                             </li>
                             <li
                                 onClick={() => { setShowFilter("Mileage") }}
-                                className={`p-4 ${showFilter === "Mileage" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                className={`p-4 ${showFilter === "Mileage" ? "bg-primary-light text-black font-semibold" : ""}`}
                             >
                                 Mileage
                             </li>
                             <li
                                 onClick={() => { setShowOthers(!showOthers) }}
-                                className={`p-4 flex justify-between items-center ${showOthers ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                className={`p-4 flex justify-between items-center ${showOthers ? "bg-primary-light text-black font-semibold" : ""}`}
                             >
                                 Others
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`size-4 transition-all duration-300 ${showOthers ? "rotate-180" : "rotate-0"}`}>
@@ -116,21 +116,21 @@ const FilterModel: React.FC<FilterModelProps> = ({ showFilter, setShowFilter, sh
                                 showOthers && (
                                     <div className='bg-slate-100 dark:bg-[#171717] divide-y-[1px] dark:divide-[#2E2E2E]'>
                                         <div
-                                            className={`p-4 ${showFilter === "cylinders" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                            className={`p-4 ${showFilter === "cylinders" ? "bg-primary-light text-black font-semibold" : ""}`}
                                             onClick={() => { setShowFilter("cylinders") }}
                                         >
                                             Cylinders
                                         </div>
 
                                         <div
-                                            className={`p-4 ${showFilter === "seating" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                            className={`p-4 ${showFilter === "seating" ? "bg-primary-light text-black font-semibold" : ""}`}
                                             onClick={() => { setShowFilter("seating") }}
                                         >
                                             Seating Capacity
                                         </div>
 
                                         <div
-                                            className={`p-4 ${showFilter === "engine" ? "bg-yellow-300 text-black font-semibold" : ""}`}
+                                            className={`p-4 ${showFilter === "engine" ? "bg-primary-light text-black font-semibold" : ""}`}
                                             onClick={() => { setShowFilter("engine") }}
                                         >
                                             Engine Displacement
@@ -208,7 +208,7 @@ const FilterModel: React.FC<FilterModelProps> = ({ showFilter, setShowFilter, sh
                             setShowOthers(false)
                             setShowFilter("")
                         }}
-                        className="w-full bg-yellow-400 text-black rounded-lg py-3 font-semibold"
+                        className="w-full bg-primary text-black rounded-lg py-3 font-semibold"
                     >
                         Apply
                     </button>

@@ -17,7 +17,7 @@ const NewCarsDropdown = () => {
           <Link
             href={item.href}
             key={idx}
-            className="group flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#27272a] cursor-pointer border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0 hover:text-yellow-400"
+            className="group flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#27272a] cursor-pointer border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0 hover:text-primary"
           >
             <Image
               src="/common/v3icon.svg"

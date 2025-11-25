@@ -103,7 +103,7 @@ const FuelEfficiencyTable: React.FC<FuelEfficiencyTableProps> = ({ title, slug }
           </thead>
 
           <tbody>
-            {data.map((variant, index) => (
+            {data.map((variant) => (
               <tr
                 key={variant.variantId}
                 className="border-t border-gray-200 dark:border-[#2e2e2e] hover:bg-gray-50 transition dark:hover:bg-[#2e2e2e]"

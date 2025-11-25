@@ -62,7 +62,7 @@ const CarGridCard: React.FC<CarGridCardProps> = ({ car }) => {
       <div className="flex flex-col justify-between items-center h-full flex-grow p-2">
         <h3 className="text-2xl font-semibold">{modelName}</h3>
         <p className="">₹{(priceMin / 100000).toFixed(2)} - ₹{(priceMax / 100000).toFixed(2)} Lakh*</p>
-        <p className="text-xs text-yellow-500">*Ex-Showroom Price</p>
+        <p className="text-xs text-primary">*Ex-Showroom Price</p>
         <div className="flex items-center justify-between gap-8 text-xs border-t dark:border-[#2E2E2E] w-full pt-3 px-3">
           <span className="flex flex-col items-center justify-center gap-2">
             <IoSpeedometerOutline size={20} />
@@ -91,8 +91,8 @@ const CarGridCard: React.FC<CarGridCardProps> = ({ car }) => {
           </span>
         </div>
         <div className="flex items-center gap-2 w-full justify-between">
-          <button className="bg-yellow-400 text-black text-sm w-full font-medium h-10 rounded-md">View Details</button>
-          <button className="bg-yellow-400 text-black text-sm w-full font-medium h-10 rounded-md">Get On Road Price</button>
+          <button className="bg-primary text-black text-sm w-full font-medium h-10 rounded-md">View Details</button>
+          <button className="bg-primary text-black text-sm w-full font-medium h-10 rounded-md">Get On Road Price</button>
         </div>
       </div>
     </div>

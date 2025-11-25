@@ -100,7 +100,7 @@ export default function BrandSection({ brands }: BrandSectionProps) {
 
             <button
               onClick={handleAllBrands}
-              className="flex items-center justify-center gap-2 hover:underline rounded-2xl border dark:border-[#2E2E2E] ring-1 ring-black/10 hover:shadow-md transition bg-white text-yellow-500 text-sm"
+              className="flex items-center justify-center gap-2 hover:underline rounded-2xl border dark:border-[#2E2E2E] ring-1 ring-black/10 hover:shadow-md transition bg-white text-primary text-sm"
             >
               View All Brand
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">

@@ -254,7 +254,7 @@ const FilterSection: React.FC = () => {
                                             key={index}
                                             onClick={() => setFuelType(fuel)}
                                             className={`w-full px-4 py-2 rounded-full ${fuelType === fuel
-                                                ? "bg-yellow-400 text-black font-medium"
+                                                ? "bg-primary text-black font-medium"
                                                 : "bg-gray-200 dark:bg-[#2E2E2E]"
                                                 }`}
                                         >
@@ -368,7 +368,7 @@ const FilterSection: React.FC = () => {
                         </div>
 
                         {/* Button */}
-                        <button className="col-span-2 bg-yellow-400 text-black font-semibold py-3 text-lg rounded-lg hover:bg-yellow-500 transition">
+                        <button className="col-span-2 bg-primary text-black font-semibold py-3 text-lg rounded-lg hover:bg-primary-hover transition">
                             Get On Road Price
                         </button>
                     </div>

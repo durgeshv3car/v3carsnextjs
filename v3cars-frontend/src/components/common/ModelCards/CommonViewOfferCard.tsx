@@ -190,7 +190,7 @@ const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc, 
                                 </p>
                             </div>
                             <button
-                                className="p-3 text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-yellow-400"
+                                className="p-3 text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-primary"
                                 onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
                             >
                                 View {car.modelName} Offers

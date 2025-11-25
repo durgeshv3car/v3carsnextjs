@@ -1,122 +1,72 @@
 "use client";
-import { useState } from "react";
 
-interface Offer {
-    type: string;
-    discount: string;
-    notes?: string;
+import { useGetModelOfferDiscountQuery } from "@/redux/api/carModuleApi";
+import { useEffect, useState } from "react";
+
+export interface FAQItem {
+    id: number;
+    quesText: string;
+    hasAnswer: boolean;
+    ansHtml: string | null; // HTML
+    sequence: number;
+    addedDate: string; // ISO date string
 }
 
-interface Section {
-    title: string;
-    offers: Offer[];
-    total: string;
-    note?: string;
+interface OffersAccordionProps {
+    slug: string
 }
 
-const sections: Section[] = [
-    {
-        title: "NEXON (Excluding Smart Plus & Smart Plus S)",
-        offers: [
-            { type: "Cash Discount", discount: "₹25,000" },
-            { type: "Exchange/ Scrappage Bonus", discount: "₹15,000" },
-            { type: "Corporate Discount (Power of 1.2)", discount: "₹7,000", notes: "You can only select one, if more criteria apply." },
-            { type: "Corporate Discount (EMP&A/ CPC)", discount: "₹10,000" },
-        ],
-        total: "₹50,000",
-        note: "Max possible discounts"
-    },
-    {
-        title: "NEXON CNG (Excluding Smart Plus & Smart Plus S)",
-        offers: [
-            { type: "Cash Discount", discount: "₹25,000" },
-            { type: "Exchange/ Scrappage Bonus", discount: "₹15,000" },
-            { type: "Corporate Discount (Power of 1.2)", discount: "₹7,000", notes: "You can only select one, if more criteria apply." },
-            { type: "Corporate Discount (EMP&A/ CPC)", discount: "₹10,000" },
-        ],
-        total: "₹50,000",
-        note: "Max possible discounts"
-    },
-    {
-        title: "NEXON EV (Excluding Smart Plus & Smart Plus S)",
-        offers: [
-            { type: "Cash Discount", discount: "₹25,000" },
-            { type: "Exchange/ Scrappage Bonus", discount: "₹15,000" },
-            { type: "Corporate Discount (Power of 1.2)", discount: "₹7,000", notes: "You can only select one, if more criteria apply." },
-            { type: "Corporate Discount (EMP&A/ CPC)", discount: "₹10,000" },
-        ],
-        total: "₹50,000",
-        note: "Max possible discounts"
-    },
-];
-
-export default function OffersAccordion() {
+export default function OffersAccordion({ slug }: OffersAccordionProps) {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
+    const [offerId, setOfferId] = useState<number | null>(null);
+    const { data: modelOfferDiscountData } = useGetModelOfferDiscountQuery({ model_slug: slug, expandQID: offerId ?? undefined }, { skip: !slug })
 
-    const toggle = (index: number) => {
-        setOpenIndex(openIndex === index ? null : index);
-    };
+    const modelOfferDiscount: FAQItem[] = modelOfferDiscountData?.rows ?? []
+
+    useEffect(() => {
+        if (modelOfferDiscount.length > 0 && openIndex === 0) {
+            setOfferId(modelOfferDiscount[0].id)
+        }
+    }, [modelOfferDiscount])
 
     return (
         <div className="border bg-white dark:bg-[#171717] dark:border-[#2e2e2e] rounded-xl overflow-hidden">
-            {sections.map((section, index) => (
+            {modelOfferDiscount && modelOfferDiscount.map((section, index) => (
                 <div
                     key={index}
                     className="border-b dark:border-[#2e2e2e] overflow-hidden"
                 >
                     <button
-                        onClick={() => toggle(index)}
-                        className="w-full flex justify-between items-center px-4 py-3 transition-all"
+                        onClick={() => {
+                            setOpenIndex(openIndex === index ? null : index);
+                            setOfferId(section.id);
+                        }}
+                        className="w-full flex justify-between items-center p-5 transition-all"
                     >
-                        <span className="text-sm">{section.title}</span>
+                        <span className="text-sm">{section.quesText}</span>
                         <span className="text-xl">
-                            {openIndex === index ? "−" : "+"}
+                            {
+                                openIndex === index ?
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
+                                    </svg>
+                                    :
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                            }
                         </span>
                     </button>
 
                     {openIndex === index && (
-                        <div className="px-4 py-2 bg-white dark:bg-[#171717] animate-fadeIn">
-                            <div className="overflow-x-auto border dark:border-[#2e2e2e] rounded-xl">
-                                <table className="w-full text-sm">
-                                    <thead>
-                                        <tr className="bg-gray-50 dark:bg-[#292929]">
-                                            <th className="border-b border-r border-gray-300 dark:border-[#2e2e2e] px-3 py-2 text-left">
-                                                Discount Type
-                                            </th>
-                                            <th className="border-b border-r border-gray-300 dark:border-[#2e2e2e] px-3 py-2 text-left">
-                                                Discount
-                                            </th>
-                                            <th className="border-b border-gray-300 dark:border-[#2e2e2e] px-3 py-2 text-left">
-                                                Notes (if applicable)
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {section.offers.map((offer, i) => (
-                                            <tr key={i}>
-                                                <td className="border-b border-r border-gray-300 dark:border-[#2e2e2e] px-3 py-2">
-                                                    {offer.type}
-                                                </td>
-                                                <td className="border-b border-r border-gray-300 dark:border-[#2e2e2e] px-3 py-2">
-                                                    {offer.discount}
-                                                </td>
-                                                <td className="border-b border-gray-300 dark:border-[#2e2e2e] px-3 py-2 text-xs">
-                                                    {offer.notes || "-"}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        <tr className="bg-gray-50 dark:bg-[#292929] font-semibold">
-                                            <td className="border-r border-gray-300 dark:border-[#2e2e2e] px-3 py-2">Total</td>
-                                            <td className="border-r border-gray-300 dark:border-[#2e2e2e] px-3 py-2">
-                                                {section.total}
-                                            </td>
-                                            <td className="px-3 py-2 text-xs">
-                                                {section.note || ""}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div className="offer-html-wrapper px-4 py-2 bg-white dark:bg-[#171717] border-t w-full dark:border-[#2e2e2e]">
+                            {modelOfferDiscount?.map((offer, i) => (
+                                <div
+                                    key={i}
+                                    className="w-full"
+                                    dangerouslySetInnerHTML={{ __html: offer.ansHtml ?? "" }}
+                                />
+                            ))}
                         </div>
                     )}
                 </div>

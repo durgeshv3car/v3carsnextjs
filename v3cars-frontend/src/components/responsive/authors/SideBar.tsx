@@ -72,7 +72,7 @@ function SideBar() {
         <div className="w-full rounded-xl bg-white dark:bg-[#171717] p-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
                 V3Cars Author
-                <p className="h-[3px] bg-yellow-400 w-[65px] mt-1"></p>
+                <p className="h-[3px] bg-primary w-[65px] mt-1"></p>
             </h2>
 
             <div className="flex flex-col gap-3">

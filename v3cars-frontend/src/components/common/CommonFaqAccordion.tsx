@@ -27,7 +27,7 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
 
   return (
     <div className='mb-5'>
-      <h2 className="text-center text-2xl mb-6 text-gray-900 dark:text-gray-100">
+      <h2 className="text-center text-2xl mb-6">
         Frequently Asked <span className="font-bold">Questions</span> (FAQ)
       </h2>
 
@@ -47,7 +47,7 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
               ].join(' ')}
             >
               <div className="flex items-center gap-3">
-                <div className="bg-yellow-400 text-black font-bold w-7 h-7 flex items-center justify-center rounded-full text-sm">
+                <div className="bg-primary text-black font-bold w-7 h-7 flex items-center justify-center rounded-full text-sm">
                   Q
                 </div>
                 <p className="text-sm sm:text-base text-gray-900 dark:text-gray-100">
@@ -61,7 +61,7 @@ const CommonFaqAccordion: React.FC<CommonFaqAccordionProps> = ({ faqData }) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className={`size-4 text-gray-700 dark:text-gray-200 transition-transform duration-500 ${openIndex === index ? 'rotate-180' : 'rotate-0'
+                className={`size-4 transition-transform duration-500 ${openIndex === index ? 'rotate-180' : 'rotate-0'
                   }`}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />

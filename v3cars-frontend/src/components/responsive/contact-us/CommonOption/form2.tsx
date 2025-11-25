@@ -118,7 +118,7 @@ function FormSecond({ formData, setFormData, onClose }: FormOneProps) {
             <div className="flex justify-center items-center mt-4">
                 <button
                     onClick={onClose}
-                    className="w-[50%] bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-md text-sm"
+                    className="w-[50%] bg-primary hover:bg-primary-hover text-black font-semibold py-3 rounded-md text-sm"
                 >
                     Next
                 </button>

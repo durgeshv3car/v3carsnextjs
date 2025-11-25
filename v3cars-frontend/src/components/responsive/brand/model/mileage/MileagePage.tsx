@@ -9,7 +9,6 @@ import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard"
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
-import OnRoadPriceTable from "@/components/responsive/brand/model/price/OnRoadPriceTable";
 import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
 import CSDPriceList from "@/components/responsive/brand/model/sidebar/CSDPriceList";
@@ -22,10 +21,9 @@ import VariantExplained from "@/components/responsive/brand/model/sidebar/Varian
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery, useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import FuelEfficiencyTable from "./FuelEfficiencyTable";
-import { useGetModelDetailsQuery, useGetModelFuelEfficiencyQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 
@@ -34,49 +32,6 @@ interface MileagePageProps {
     slug: string;
     childSlug: string;
 }
-
-const variants = [
-    {
-        name: "Nexon Pure Plus",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹7.32 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹7,31,800" },
-            { label: "Road Tax", value: "₹35,561" },
-            { label: "Registration Charges", value: "₹600" },
-            { label: "FASTag", value: "₹600" },
-            { label: "Hypothecation Endorsement", value: "₹1,500" },
-            { label: "Road Safety Cess", value: "₹1,317" },
-            { label: "Other Charges", value: "₹400" },
-            { label: "Insurance", value: "₹59,575" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Pure Plus S",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Road Tax", value: "₹36,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Creative",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-];
 
 function MileagePage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
@@ -90,6 +45,8 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
 
     const isMobile = useIsMobile()
+
+    console.log(childSlug);    
 
     return (
         <>

@@ -17,7 +17,7 @@ export default function CarsSelector() {
 
             <div className="bg-white shadow rounded-xl p-6 border border-gray-200">
                 <div className="flex items-center gap-4 mb-4">
-                    <span className="h-6 w-[4px] bg-yellow-400 rounded-lg"></span>
+                    <span className="h-6 w-[4px] bg-primary rounded-lg"></span>
                     <FaCar size={28} />
                     <h2 className="text-xl font-semibold">Step 1: Select Your Car</h2>
                 </div>

@@ -43,6 +43,8 @@ interface MobileLatestCarNewsProps {
 const MobileLatestCarNews: React.FC<MobileLatestCarNewsProps> = ({ title, view, data, link }) => {
     const chunkedNews = chunkArray(data, 5)
 
+    console.log(view);
+
     return (
         <section >
             <div className="space-y-4">
@@ -51,7 +53,7 @@ const MobileLatestCarNews: React.FC<MobileLatestCarNewsProps> = ({ title, view, 
                     <h2 className="font-semibold text-lg">{title}</h2>
                     <Link
                         href={link}
-                        className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-2"
+                        className="text-sm text-primary font-medium hover:underline flex items-center gap-2"
                     >
                         View All
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">

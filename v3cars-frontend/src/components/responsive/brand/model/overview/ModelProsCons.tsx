@@ -31,7 +31,7 @@ export interface ProsConsResponse {
 
 const ModelProsCons: React.FC<ModelProsConsProps> = ({ model, slug }) => {
 
-    const { data: modelProsConsData, isLoading } = useGetModelProsConsQuery({
+    const { data: modelProsConsData } = useGetModelProsConsQuery({
         model_slug: slug
     });
 

@@ -70,7 +70,7 @@ const CommonLatestCarNews: React.FC<CommonLatestCarNewsProps> = ({ data }) => {
                     <h2 className="text-lg font-medium">Latest Car News</h2>
                     <Link
                         href="#"
-                        className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                        className="text-primary font-medium text-sm hover:underline flex gap-2 items-center"
                     >
                         View All Latest Car News
                         <svg

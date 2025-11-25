@@ -68,7 +68,7 @@ export default function TopCarBrands() {
                         <h2 className="text-lg font-medium">Top Car Brands</h2>
                         <Link
                             href="/brands"
-                            className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                            className="text-primary font-medium text-sm hover:underline flex gap-2 items-center"
                         >
                             View All Car Brands
                             <svg
@@ -206,7 +206,7 @@ export default function TopCarBrands() {
                         </p>
                         <div>
                             <button 
-                            className="bg-yellow-400 text-black font-medium text-sm px-16 cursor-pointer py-2 rounded-full hover:bg-yellow-500 transition"
+                            className="bg-primary text-black font-medium text-sm px-16 cursor-pointer py-2 rounded-full hover:bg-primary-hover transition"
                             onClick={()=>{router.push('/about-us')}}
                             >
                                 Read More About V3Cars

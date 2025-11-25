@@ -16,7 +16,7 @@ function WorkWithUs() {
                             and be part of the journey to simplify car buying for India.
                         </p>
                     </div>
-                    <button className="bg-yellow-400 rounded-full px-6 py-2 font-semibold text-sm w-fit text-black">Apply as Volunteer</button>
+                    <button className="bg-primary rounded-full px-6 py-2 font-semibold text-sm w-fit text-black">Apply as Volunteer</button>
                 </div>
                 <div className="bg-[#171717] rounded-3xl p-10 shadow-sm flex flex-col justify-between gap-10">
                     <div>
@@ -27,7 +27,7 @@ function WorkWithUs() {
                             and analysis — while working with a team that values logic, facts, and clarity.
                         </p>
                     </div>
-                    <button className="bg-yellow-400 rounded-full px-6 py-2 font-semibold text-sm w-fit text-black">Apply as Intern</button>
+                    <button className="bg-primary rounded-full px-6 py-2 font-semibold text-sm w-fit text-black">Apply as Intern</button>
                 </div>
                 <div className="bg-[#171717] rounded-3xl p-10 shadow-sm flex flex-col justify-between gap-10">
                     <div>
@@ -38,7 +38,7 @@ function WorkWithUs() {
                             reach out when the perfect opportunity comes along.
                         </p>
                     </div>
-                    <button className="bg-yellow-400 rounded-full px-6 py-2 font-semibold text-sm w-fit text-black">Register Here</button>
+                    <button className="bg-primary rounded-full px-6 py-2 font-semibold text-sm w-fit text-black">Register Here</button>
                 </div>
             </div>
         </>

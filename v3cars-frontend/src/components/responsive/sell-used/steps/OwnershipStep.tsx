@@ -74,7 +74,7 @@ export default function OwnershipStep() {
                                             "relative rounded-xl border grid gap-3 px-4 py-7 bg-white dark:bg-[#171717] transition place-items-center",
                                             active
                                                 ? "ring-2 ring-yellow-400 border-transparent shadow-md"
-                                                : "border-[#2E2E2E] hover:border-yellow-400/90"
+                                                : "border-[#2E2E2E] hover:border-primary/90"
                                         )}
                                     >
                                         {/* Overlapped one-row triangle (/_\) using same image */}

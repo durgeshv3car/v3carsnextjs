@@ -30,7 +30,7 @@ export default function ReviewContant({ title }: ReviewContantProps) {
                             alt="Tata Nexon 1.5L Diesel"
                             className="rounded-xl w-full shadow-md"
                         />
-                        <div className="bg-yellow-400 w-max px-5 py-2 rounded-md text-sm font-semibold text-gray-900 mt-2">
+                        <div className="bg-primary w-max px-5 py-2 rounded-md text-sm font-semibold text-gray-900 mt-2">
                             1.5L Diesel-MT City, Hwy Mileage Test
                         </div>
                     </div>
@@ -168,7 +168,7 @@ export default function ReviewContant({ title }: ReviewContantProps) {
                         alt="Tata Nexon 1.5L Diesel"
                         className="rounded-xl w-full shadow-md"
                     />
-                    <div className="bg-yellow-400 w-max px-5 py-2 rounded-md text-sm font-semibold text-gray-900 mt-2">
+                    <div className="bg-primary w-max px-5 py-2 rounded-md text-sm font-semibold text-gray-900 mt-2">
                         1.5L Diesel-MT City, Hwy Mileage Test
                     </div>
                 </div>

@@ -99,7 +99,7 @@ const CurrentOffersCard: React.FC<CurrentOffersCardProps> = ({ data }) => {
                             ₹{(car.priceMin / 100000).toFixed(2)} - {(car.priceMax / 100000).toFixed(2)} Lakh*
                         </p>
 
-                        <button className="w-full flex justify-between items-center px-4 py-3 text-sm font-semibold bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 transition">
+                        <button className="w-full flex justify-between items-center px-4 py-3 text-sm font-semibold bg-primary text-black rounded-lg hover:bg-primary-hover transition">
                             View Current Offers
                             <FaArrowRight />
                         </button>

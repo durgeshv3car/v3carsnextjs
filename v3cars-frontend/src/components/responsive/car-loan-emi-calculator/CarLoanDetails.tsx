@@ -145,7 +145,7 @@ export default function CarLoanRepaymentDetails({ principal, annualInterestRate,
             <tr className="border-b dark:border-[#2E2E2E] text-center">
               <th className="bg-gray-100 dark:bg-transparent px-3 py-2 font-semibold min-w-[100px]">Year</th>
               <th className="bg-lime-500 text-white px-3 py-2 font-semibold min-w-[150px]">Principal (A)</th>
-              <th className="bg-yellow-400 px-3 py-2 font-semibold min-w-[150px]">Interest (B)</th>
+              <th className="bg-primary px-3 py-2 font-semibold min-w-[150px]">Interest (B)</th>
               <th className="bg-gray-100 dark:bg-transparent px-3 py-2 font-semibold min-w-[150px]">Total Payment (A + B)</th>
               <th className="bg-rose-600 text-white px-3 py-2 font-semibold min-w-[150px]">Balance</th>
               <th className="bg-gray-100 dark:bg-transparent px-3 py-2 font-semibold min-w-[150px]">Loan Paid To Date</th>

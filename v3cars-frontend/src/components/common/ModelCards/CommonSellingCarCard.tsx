@@ -1,19 +1,9 @@
 'use client'
 
 import { useGetCarByBodyTypeQuery } from '@/redux/api/homeModuleApi'
-import { setBodyTypeIds } from '@/redux/slices/advanceSearchSlice'
-import { RootState } from '@/redux/store'
-import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
-import { BiTachometer } from 'react-icons/bi'
-import { FaArrowRight } from 'react-icons/fa'
-import { IoMdStarOutline } from 'react-icons/io'
-import { PiEngine } from 'react-icons/pi'
-import { useDispatch, useSelector } from 'react-redux'
-
-type CarBodyTab = 1 | 3 | 4 | 7;
 
 interface CarProps {
     modelId: number;
@@ -45,27 +35,17 @@ interface CarProps {
     imageUrl: string;
 }
 
-const tabNames: Record<CarBodyTab, string> = {
-    1: "Hatchback",
-    3: "SUV",
-    4: "Sedan",
-    7: "MUV",
-};
-
 interface CommonSellingCarCardProps {
     title: string;
 }
 
 const CommonSellingCarCard: React.FC<CommonSellingCarCardProps> = ({ title }) => {
-    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
-    const [carBodyTab, setCarBodyTab] = useState<CarBodyTab>(3);
-    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 15, page: 1 });
+    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: 3, limit: 15, page: 1 });
     const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
     const router = useRouter()
-    const dispatch = useDispatch();
 
     const handleScroll = () => {
         const container = scrollRef.current;
@@ -93,14 +73,6 @@ const CommonSellingCarCard: React.FC<CommonSellingCarCardProps> = ({ title }) =>
         container.addEventListener('scroll', handleScroll);
         return () => container.removeEventListener('scroll', handleScroll);
     }, []);
-
-    function handleBodyType() {
-        if (!carBodyTab) {
-            return alert("Something Went Wrong. Please Try Again")
-        }
-        dispatch(setBodyTypeIds([carBodyTab]));
-        router.push("/search/new-cars");
-    }
 
     return (
         <div className="space-y-3 mt-4">
@@ -140,7 +112,7 @@ const CommonSellingCarCard: React.FC<CommonSellingCarCardProps> = ({ title }) =>
                         className="bg-white  rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-auto flex-shrink-0 flex flex-col p-2 space-y-4 dark:bg-[#171717]"
                     >
                         <div className='flex items-center gap-2'>
-                            <div className='bg-yellow-400 rounded-lg px-2 py-1 font-semibold text-black'>
+                            <div className='bg-primary rounded-lg px-2 py-1 font-semibold text-black'>
                                 #{index + 1}
                             </div>
                             <h2 className='text-lg'>Hyundai <span className='font-semibold'>Creta</span></h2>
@@ -164,7 +136,7 @@ const CommonSellingCarCard: React.FC<CommonSellingCarCardProps> = ({ title }) =>
                         </div>
 
                         <button
-                            className="p-3 text-sm w-full flex justify-center items-center text-black cursor-pointer rounded-lg bg-yellow-400"
+                            className="p-3 text-sm w-full flex justify-center items-center text-black cursor-pointer rounded-lg bg-primary"
                             onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
                         >
                             View Sales Trend

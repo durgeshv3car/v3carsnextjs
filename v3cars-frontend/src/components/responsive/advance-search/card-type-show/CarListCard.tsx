@@ -64,7 +64,7 @@ const CarListCard: React.FC<CarListCardProps> = ({ car }) => {
                 <div className="space-y-3 text-center lg:text-left">
                     <h3 className="text-2xl font-semibold">{modelName}</h3>
                     <p className="">₹{(priceMin / 100000).toFixed(2)} - ₹{(priceMax / 100000).toFixed(2)} Lakh*</p>
-                    <p className="text-xs text-yellow-300">*Ex-Showroom Price</p>
+                    <p className="text-xs text-primary">*Ex-Showroom Price</p>
                 </div>
                 <div className="mt-2 flex flex-col lg:flex-row gap-4 justify-between border-t dark:border-[#2E2E2E] h-full flex-grow py-3 lg:py-0">
                     <div className="flex items-center justify-evenly lg:justify-normal gap-8 text-xs">
@@ -95,10 +95,10 @@ const CarListCard: React.FC<CarListCardProps> = ({ car }) => {
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button className="bg-yellow-400 text-black text-sm font-medium w-full lg:w-[150px] h-10 rounded-md">
+                        <button className="bg-primary text-black text-sm font-medium w-full lg:w-[150px] h-10 rounded-md">
                             View Details
                         </button>
-                        <button className="bg-yellow-400 text-black text-sm font-medium w-full lg:w-[150px] h-10 rounded-md">
+                        <button className="bg-primary text-black text-sm font-medium w-full lg:w-[150px] h-10 rounded-md">
                             Get On Road Price
                         </button>
                     </div>

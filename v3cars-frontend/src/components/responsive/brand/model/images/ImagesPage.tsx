@@ -1,25 +1,16 @@
 'use client'
 
-import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
-import CommonReviewCard from "@/components/common/CommonReviewCard";
 import CommonVideos from "@/components/common/CommonVideos";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard";
-import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
-import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
-import CSDPriceList from "@/components/responsive/brand/model/sidebar/CSDPriceList";
 import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalculator";
-import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularCarQuery } from "@/redux/api/carModuleApi";
-import { useGetLatestComparisonReviewsQuery } from "@/redux/api/contentModuleApi";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 import ImageDisplay from "./ImageDisplay";
 import CarGallery from "./CarGallery";
@@ -34,6 +25,8 @@ function ImagesPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: latestVideosData } = useGetLatestVideosQuery()
 
     const latestVideos = latestVideosData?.rows ?? []
+
+    console.log(childSlug);
 
     return (
         <>
@@ -74,10 +67,10 @@ function ImagesPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <div className="border rounded-xl h-[332px]" />
 
-                            <CommonViewOfferCard
+                            {/* <CommonViewOfferCard
                                 title="Tata Nexon"
                                 desc="The Nexon competes with popular models including"
-                            />
+                            /> */}
 
                             <CommonUsedCarCard
                                 title="Tata Nexon"
@@ -134,7 +127,7 @@ function ImagesPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <BrochureCard
+                            {/* <BrochureCard
                                 title="Tata Nexon"
                             />
 
@@ -144,7 +137,7 @@ function ImagesPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <LatestOffersDiscounts
                                 title="Toyota Urban Cruiser Hyryder"
-                            />
+                            /> */}
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img

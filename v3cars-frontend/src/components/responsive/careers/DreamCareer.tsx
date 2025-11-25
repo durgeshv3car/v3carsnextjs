@@ -14,7 +14,7 @@ const DreamCareer: React.FC = () => {
                     </h3>
                     <h1 className="text-3xl md:text-4xl lg:text-5xl/tight font-bold">
                         Your Bridge to a <br className="hidden md:block" />
-                        <span className="text-[#FFCC00] font-bold">Dream Career.</span>
+                        <span className="text-primary font-bold">Dream Career.</span>
                     </h1>
                     <p className="mt-4 leading-relaxed text-gray-600 dark:text-gray-300">
                         We follow a flat organizational structure, where every team member
@@ -41,7 +41,7 @@ const DreamCareer: React.FC = () => {
             {/* Bottom 3 Boxes */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
                 <div className="bg-[#171717] rounded-tl-none rounded-xl p-6 shadow-sm">
-                    <h3 className="text-lg font-bold mb-3 text-yellow-400">WHAT?</h3>
+                    <h3 className="text-lg font-bold mb-3 text-primary">WHAT?</h3>
                     <p className="leading-loose text-white">
                         We are helping car buyers objectively select the most suitable car
                         down to the variant and engine-transmission combo based on their
@@ -49,7 +49,7 @@ const DreamCareer: React.FC = () => {
                     </p>
                 </div>
                 <div className="bg-[#171717] rounded-tl-none rounded-xl p-6 shadow-sm">
-                    <h3 className="text-lg font-bold mb-3 text-yellow-400">WHY?</h3>
+                    <h3 className="text-lg font-bold mb-3 text-primary">WHY?</h3>
                     <p className="leading-loose text-white">
                         Car buying can be stressful. Too many cars. Too many variants. A lot
                         of engine-transmission combos. And far too much misinformation. We
@@ -57,7 +57,7 @@ const DreamCareer: React.FC = () => {
                     </p>
                 </div>
                 <div className="bg-[#171717] rounded-tl-none rounded-xl p-6 shadow-sm">
-                    <h3 className="text-lg font-bold mb-3 text-yellow-400">HOW?</h3>
+                    <h3 className="text-lg font-bold mb-3 text-primary">HOW?</h3>
                     <p className="leading-loose text-white">
                         We are using data to build a car recommendation engine, which will
                         objectively suggest the most suitable car to suit the buyer’s budget

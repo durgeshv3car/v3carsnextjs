@@ -48,7 +48,6 @@ const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTab
                         {conversionsData &&
                             Object.entries(conversionsData).map(([key, value], index) => {
                                 const label = key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
-                                const isLast = index === Object.entries(conversionsData).length - 1;
 
                                 return (
                                     <tr

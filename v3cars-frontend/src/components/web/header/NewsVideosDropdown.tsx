@@ -48,7 +48,7 @@ const NewsVideosDropdown = () => {
                     {sections.map((section, index) => (
                         <div key={index} className="w-[30%] ">
                             {/* Yellow Section Header */}
-                            <div className="bg-[#FFE167] px-4 py-2 rounded-[10px] font-medium text-[15px] text-gray-900 mb-3  border-b-[3px] border-yellow-500">
+                            <div className="bg-primary-light px-4 py-2 rounded-[10px] font-medium text-[15px] text-gray-900 mb-3  border-b-[3px] border-primary">
                                 <div className="flex items-center justify-between">
                                     {section.title}
                                     <IoArrowForwardOutline size={18} />
@@ -61,7 +61,7 @@ const NewsVideosDropdown = () => {
                                 {section.links.map((text, i) => (
                                     <li
                                         key={i}
-                                        className="group flex items-center gap-2 cursor-pointer py-2 border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0 w-fit hover:text-yellow-400"
+                                        className="group flex items-center gap-2 cursor-pointer py-2 border-b border-gray-200 dark:border-[#2E2E2E] last:border-b-0 w-fit hover:text-primary"
                                     >
                                         <Image
                                             src="/common/v3icon.svg"

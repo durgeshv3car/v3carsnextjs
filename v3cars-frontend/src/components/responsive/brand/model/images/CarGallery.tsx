@@ -43,7 +43,7 @@ export default function CarGallery() {
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`px-4 py-2 rounded-lg font-semibold transition-all ${activeTab === tab
-                            ? "bg-yellow-400 text-black"
+                            ? "bg-primary text-black"
                             : "border dark:border-[#2e2e2e] hover:bg-gray-100 dark:hover:bg-[#2e2e2e]"
                             }`}
                     >

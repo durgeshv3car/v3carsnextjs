@@ -72,6 +72,12 @@ export const videosModuleApi = createApi({
         getModelReviewsVideos: builder.query<Response, { model_slug: string }>({
             query: ({ model_slug }) => `/videos/model/${model_slug}/reviews/latest?excludeToday=0`,
         }),
+        getModelVariantExplainedVideos: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/videos/model/${model_slug}/variant-explained/latest?limit=15`,
+        }),
+        getModelPopularVideos: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `videos/model/${model_slug}/popular?limit=12`,
+        }),
     }),
 });
 
@@ -95,4 +101,6 @@ export const {
     useGetTrendingVariantExplainedVideosQuery,
     useGetTopVariantExplainedVideosQuery,
     useGetModelReviewsVideosQuery,
+    useGetModelVariantExplainedVideosQuery,
+    useGetModelPopularVideosQuery,
 } = videosModuleApi;

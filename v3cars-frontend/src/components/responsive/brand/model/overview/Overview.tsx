@@ -161,7 +161,7 @@ function Overview({ city, modelDetails }: OverviewProps) {
                         <div className="flex justify-between items-end">
                             <h1 className="text-4xl font-bold">
                                 {modelDetails?.model?.brand?.name}{" "}
-                                <span className="text-yellow-400">
+                                <span className="text-primary">
                                     {modelDetails?.model?.name || "-"}
                                 </span>
                             </h1>
@@ -216,7 +216,7 @@ function Overview({ city, modelDetails }: OverviewProps) {
                                 {modelDetails?.availableWith?.fuels?.map((fuel) => (
                                     <button
                                         key={fuel}
-                                        className="flex items-center gap-1 border-2 border-yellow-400 bg-white dark:bg-[#171717] p-2 rounded-md text-xs transition"
+                                        className="flex items-center gap-1 border-2 border-primary bg-white dark:bg-[#171717] p-2 rounded-md text-xs transition"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -246,7 +246,7 @@ function Overview({ city, modelDetails }: OverviewProps) {
                     </div>
 
                     {/* CTA Button */}
-                    <button className="bg-yellow-400 hover:bg-yellow-500 transition text-black font-semibold px-6 py-2 rounded-md w-full">
+                    <button className="bg-primary hover:bg-primary-hover transition text-black font-semibold px-6 py-2 rounded-md w-full">
                         View {modelDetails?.model?.name} Latest Offers
                     </button>
                 </div>

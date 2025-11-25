@@ -107,7 +107,7 @@ const EngineSpecs: React.FC = () => {
                                                 Find the exact dimensions of Kia Seltos in feet, inches, centimeters,
                                                 and millimeters!
                                             </p>
-                                            <button className="bg-yellow-400 text-black px-5 w-full py-2 rounded-full shadow hover:bg-yellow-500 transition">
+                                            <button className="bg-primary text-black px-5 w-full py-2 rounded-full shadow hover:bg-primary-hover transition">
                                                 Click Here To Explore All The Details
                                             </button>
                                         </div>

@@ -16,8 +16,8 @@ function MainAuthorDetailsComponent() {
                         <Link href="/authors" className="font-medium hover:underline">
                             Authors
                         </Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary">
                             Authors Details
                         </span>
                     </div>
