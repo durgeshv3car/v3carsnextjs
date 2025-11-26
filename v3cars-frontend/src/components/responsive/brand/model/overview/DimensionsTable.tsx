@@ -80,13 +80,13 @@ const DimensionsTable: React.FC<DimensionsTableProps> = ({ model, data }) => {
                             <td className="p-6 border-r dark:border-[#2e2e2e] w-1/2 font-semibold">Boot Space</td>
                             <td className="p-6 text-center">
                                 <div className="flex flex-wrap gap-3 justify-center">
-                                    <span className="bg-gray-100 border px-2 py-1 rounded text-xs font-medium">
+                                    <span className="bg-gray-100 dark:bg-[#2e2e2e] dark:border-[#2e2e2e] border px-2 py-1 rounded text-xs font-medium">
                                         Normal: {item?.bootSpace.normal} L
                                     </span>
-                                    <span className="bg-gray-100 border px-2 py-1 rounded text-xs font-medium">
+                                    <span className="bg-gray-100 dark:bg-[#2e2e2e] dark:border-[#2e2e2e] border px-2 py-1 rounded text-xs font-medium">
                                         CNG: {item?.bootSpace.cng} L
                                     </span>
-                                    <span className="bg-gray-100 border px-2 py-1 rounded text-xs font-medium">
+                                    <span className="bg-gray-100 dark:bg-[#2e2e2e] dark:border-[#2e2e2e] border px-2 py-1 rounded text-xs font-medium">
                                         Hybrid: {item?.bootSpace.hybrid} L
                                     </span>
                                 </div>
@@ -97,10 +97,10 @@ const DimensionsTable: React.FC<DimensionsTableProps> = ({ model, data }) => {
                             <td className="p-6 border-r dark:border-[#2e2e2e] w-1/2 font-semibold">Tyre Size</td>
                             <td className="p-6 ">
                                 <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                                    <span className="bg-gray-100 border px-2 py-1 rounded text-xs font-medium">
+                                    <span className="bg-gray-100 dark:bg-[#2e2e2e] dark:border-[#2e2e2e] border px-2 py-1 rounded text-xs font-medium">
                                         Base: {item?.tyreSize.base}
                                     </span>
-                                    <span className="bg-gray-100 border px-2 py-1 rounded text-xs font-medium">
+                                    <span className="bg-gray-100 dark:bg-[#2e2e2e] dark:border-[#2e2e2e] border px-2 py-1 rounded text-xs font-medium">
                                         Top: {item?.tyreSize.top}
                                     </span>
                                 </div>

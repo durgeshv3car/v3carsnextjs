@@ -26,7 +26,7 @@ const DimensionsTyreSizeTable = ({ title, tyreSize, tyreByVariantData, fuelType,
             </p>
 
             <div className="border border-b-0 rounded-xl dark:border-[#2e2e2e] bg-white dark:bg-[#171717] overflow-hidden">
-                <div className="flex flex-wrap items-center gap-3 p-2">
+                <div className="flex flex-wrap items-center gap-3 p-2 border-b dark:border-[#2e2e2e]">
 
                     {/* Fuel Buttons */}
                     <div className="flex flex-wrap gap-2">
@@ -34,8 +34,8 @@ const DimensionsTyreSizeTable = ({ title, tyreSize, tyreByVariantData, fuelType,
                             <button
                                 key={option}
                                 onClick={() => setFuelType(option.toLowerCase())}
-                                className={`px-4 py-1.5 text-sm rounded-md border transition-all ${fuelType === option.toLowerCase()
-                                    ? "bg-slate-50 dark:border-[#2E2E2E] dark:bg-[#171717]"
+                                className={`px-4 py-2 text-sm rounded-md border transition-all ${fuelType === option.toLowerCase()
+                                    ? "bg-primary text-black dark:border-[#2e2e2e]"
                                     : "bg-white dark:bg-[#2E2E2E] dark:border-[#292929] hover:bg-gray-200 dark:hover:bg-[#292929]"
                                     }`}
                             >
@@ -50,8 +50,8 @@ const DimensionsTyreSizeTable = ({ title, tyreSize, tyreByVariantData, fuelType,
                             <button
                                 key={option}
                                 onClick={() => setTransmission(option.toLowerCase())}
-                                className={`px-4 py-1.5 text-sm rounded-md border transition-all ${transmission === option.toLowerCase()
-                                    ? "bg-slate-50 dark:border-[#2E2E2E] dark:bg-[#171717]"
+                                className={`px-4 py-2 text-sm rounded-md border transition-all ${transmission === option.toLowerCase()
+                                    ? "bg-primary text-black dark:border-[#2e2e2e]"
                                     : "bg-white dark:bg-[#2E2E2E] dark:border-[#292929] hover:bg-gray-200 dark:hover:bg-[#292929]"
                                     }`}
                             >

@@ -106,8 +106,8 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                             <button
                                 key={fuel}
                                 onClick={() => setFuelType?.(fuel.toLowerCase() ?? "petrol")}
-                                className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs dark:bg-[#171717] 
-                                dark:border-[#2E2E2E] hover:bg-gray-200 ${fuel.toLowerCase() === fuelType ? "bg-[#B3B3B3]" : "bg-white"}`
+                                className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs 
+                                dark:border-[#2E2E2E] ${fuel.toLowerCase() === fuelType ? "bg-primary text-black" : "bg-white dark:bg-[#171717] hover:bg-gray-200"}`
                                 }
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
@@ -120,8 +120,8 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                         {/* Static Transmission Buttons */}
                         <button
                             onClick={() => setTransmissionType?.("manual")}
-                            className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs dark:bg-[#171717] 
-                                dark:border-[#2E2E2E] hover:bg-gray-200 ${transmissionType === "manual" ? "bg-[#B3B3B3]" : "bg-white"}`
+                            className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs
+                                dark:border-[#2E2E2E] ${transmissionType === "manual" ? "bg-primary text-black" : "bg-white dark:bg-[#171717] hover:bg-gray-200"}`
                             }
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
@@ -131,8 +131,8 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                         </button>
                         <button
                             onClick={() => setTransmissionType?.("automatic")}
-                            className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs dark:bg-[#171717] 
-                                dark:border-[#2E2E2E] hover:bg-gray-200 ${transmissionType === "automatic" ? "bg-[#B3B3B3]" : "bg-white"}`
+                            className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs 
+                                dark:border-[#2E2E2E] ${transmissionType === "automatic" ? "bg-primary text-black" : "bg-white dark:bg-[#171717] hover:bg-gray-200"}`
                             }
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
@@ -183,11 +183,11 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
 
                             {/* Expanded Section */}
                             {variant.details.length > 0 && (
-                                <div className="text-sm border rounded-xl overflow-hidden dark:border-[#2E2E2E]">
+                                <div className="text-sm border rounded-xl overflow-hidden dark:border-[#2E2E2E] pl-1 bg-primary">
                                     {variant.details.map((d, i) => (
                                         <div
                                             key={i}
-                                            className="flex justify-between px-4 py-3 border-b last:border-none bg-gray-50 dark:bg-[#171717] dark:border-[#2E2E2E]"
+                                            className="flex justify-between p-5 border-b last:border-none bg-gray-50 dark:bg-[#171717] dark:border-[#2E2E2E]"
                                         >
                                             <span>{d.label}</span>
                                             <span className="font-medium">{d.value}</span>

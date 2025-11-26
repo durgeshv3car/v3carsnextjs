@@ -48,7 +48,7 @@ const ModelProsCons: React.FC<ModelProsConsProps> = ({ model, slug }) => {
                 <span className="font-semibold">Pros & Cons</span>
             </h2>
 
-            <div className="bg-white rounded-xl rounded-b-none border p-2 dark:bg-[#171717]">
+            <div className="bg-white rounded-xl rounded-b-none border dark:border-[#2e2e2e] p-2 dark:bg-[#171717]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                     {/* PROS */}
@@ -109,7 +109,7 @@ const ModelProsCons: React.FC<ModelProsConsProps> = ({ model, slug }) => {
             </div>
 
             {/* FOOTER */}
-            <div className="bg-[#F2F5F9] text-center border-t rounded-b-xl dark:bg-[#171717]">
+            <div className="bg-[#F2F5F9] text-center border-t dark:border-[#2e2e2e] rounded-b-xl dark:bg-[#171717]">
                 <p className="text-sm py-3">
                     <Link href="#" className="font-medium hover:underline">
                         View Complete Assessment →

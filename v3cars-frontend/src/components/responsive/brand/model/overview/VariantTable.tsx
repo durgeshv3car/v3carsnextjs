@@ -56,7 +56,7 @@ const VariantTable: React.FC<VariantTableProps> = ({ data }) => {
                     {variants.map((v, idx) => (
                         <tr
                             key={idx}
-                            className={`text-sm border-b border-gray-100 ${idx % 2 === 0
+                            className={`text-sm border-b dark:border-[#2e2e2e] ${idx % 2 === 0
                                 ? "bg-white dark:bg-[#171717]"
                                 : "bg-gray-50 dark:bg-[#2E2E2E]"
                                 }`}

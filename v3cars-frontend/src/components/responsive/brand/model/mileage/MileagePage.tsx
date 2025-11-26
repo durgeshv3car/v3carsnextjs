@@ -46,7 +46,7 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
 
     const isMobile = useIsMobile()
 
-    console.log(childSlug);    
+    console.log(childSlug);
 
     return (
         <>
@@ -81,10 +81,20 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
-                            <FuelEfficiencyTable
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                slug={slug}
-                            />
+
+                            <div>
+                                <FuelEfficiencyTable
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    slug={slug}
+                                />
+
+                                <button className="p-4 bg-[#F2F5F9] dark:bg-[#2e2e2e] w-full rounded-b-xl text-sm underline flex items-center gap-2 justify-center">
+                                    Find the Tata Nexon's Engine Type, Engine Displacement, Cubic Capacity (CC), Cylinders, Kerb Weight and more.
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </button>
+                            </div>
 
                             <CommonVideos
                                 title="Latest Mileage Videos"

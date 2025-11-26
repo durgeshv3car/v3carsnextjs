@@ -38,7 +38,8 @@ const VariantTable: React.FC<VariantTableProps> = ({ title, data }) => {
             variant: item.variant.name,
             vfm: item.variant.vfmValue,
             price: item.variant.exShowroom,
-            recommendation: item.variant.recommendation
+            recommendation: item.variant.recommendation,
+            transmissionType: item.powertrain.transmissionType
         }));
     };
 
@@ -52,13 +53,18 @@ const VariantTable: React.FC<VariantTableProps> = ({ title, data }) => {
     );
 
     // ✅ Render Table Component
-    const renderTable = (title: string, rows: { variant: string; vfm: number; price: number; recommendation: string }[]) => (
+    const renderTable = (title: string, rows: { variant: string; vfm: number; price: number; recommendation: string, transmissionType: string }[]) => (
         <div className="bg-gray-50 dark:bg-[#171717] ">
             <div className="bg-[#F2F2F2] text-center font-semibold py-5 border-b dark:bg-[#171717] dark:border-[#2E2E2E]">
                 {title}
+                {
+                    rows[0].transmissionType === "Manual" && (
+                        <p className="mt-4">BUYING RECOMMENDATION</p>
+                    )
+                }
             </div>
-            <table className="w-full text-sm">
-                <thead className="border-b bg-white font-semibold dark:border-[#2E2E2E]">
+            <table className="w-full text-sm border-b dark:border-[#2e2e2e]">
+                <thead className="border-b bg-white dark:bg-[#2e2e2e] font-semibold dark:border-[#2E2E2E]">
                     <tr>
                         <th className="p-5 border-r dark:border-[#2E2E2E]">Variant</th>
                         <th className="p-5 border-r dark:border-[#2E2E2E]">VFM %</th>
@@ -94,7 +100,7 @@ const VariantTable: React.FC<VariantTableProps> = ({ title, data }) => {
                 for money and ownership experience.
             </p>
 
-            <div className="border rounded-xl overflow-hidden dark:border-[#2E2E2E]">
+            <div className="border border-b-0 rounded-xl overflow-hidden dark:border-[#2E2E2E]">
                 {manualVariants.length > 0 && renderTable(`${title} Petrol Manual`, manualVariants)}
                 {dctVariants.length > 0 && renderTable(`${title} Petrol Automatic`, dctVariants)}
             </div>

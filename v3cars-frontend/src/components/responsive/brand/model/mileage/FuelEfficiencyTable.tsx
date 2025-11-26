@@ -90,11 +90,11 @@ const FuelEfficiencyTable: React.FC<FuelEfficiencyTableProps> = ({ title, slug }
         </select>
       </div>
 
-      <div className="overflow-x-auto border rounded-xl dark:border-[#2e2e2e] scrollbar-hide">
+      <div className="overflow-x-auto bg-white dark:bg-[#171717] border rounded-t-xl dark:border-[#2e2e2e] scrollbar-hide">
         <table className="w-full border-collapse text-sm text-left">
           <thead>
             <tr className="bg-[#DEE2E6] dark:bg-[#292929] border-b border-gray-200 dark:border-[#2e2e2e]">
-              <th className="p-4 font-semibold border-r dark:border-[#2e2e2e] min-w-[250px]">Variants</th>
+              <th className="p-4 font-semibold border-r dark:border-[#2e2e2e] min-w-[250px]">Powertrain</th>
               <th className="p-4 font-semibold border-r dark:border-[#2e2e2e] min-w-[250px]">Claimed FE</th>
               <th className="p-4 font-semibold border-r dark:border-[#2e2e2e] min-w-[250px]">Real World Mileage</th>
               <th className="p-4 font-semibold border-r dark:border-[#2e2e2e] min-w-[250px]">Mileage In City</th>

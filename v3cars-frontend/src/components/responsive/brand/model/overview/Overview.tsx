@@ -4,6 +4,8 @@ import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { CiImageOn } from "react-icons/ci";
+import { IoColorPaletteOutline } from "react-icons/io5";
 
 interface OverviewProps {
     city: string;
@@ -120,18 +122,20 @@ function Overview({ city, modelDetails }: OverviewProps) {
                     />
 
                     <div className="flex justify-between items-center mt-2">
-                        <span className="flex gap-1 items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
-                                className="size-5">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                    d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
-                            </svg>
-                            <span className="text-xs">Colours</span>
-                        </span>
+                        <div className="flex items-center gap-4">
+                            <span className="flex gap-1 items-center">
+                                <IoColorPaletteOutline size={24} className=" -rotate-90" />
+                                <span className="text-xs">Colours</span>
+                            </span>
+
+                            <span className="flex gap-1 items-center">
+                                <CiImageOn size={24} />
+                                <span className="text-xs">Image</span>
+                            </span>
+                        </div>
 
                         <div className="flex gap-2">
-                            <span onClick={handlePrev} className="bg-white rounded-full p-2 hover:bg-slate-100 cursor-pointer">
+                            <span onClick={handlePrev} className="bg-white dark:bg-[#171717] rounded-full p-2 hover:bg-slate-100 cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
                                     className="size-4">
@@ -140,7 +144,7 @@ function Overview({ city, modelDetails }: OverviewProps) {
                                 </svg>
                             </span>
 
-                            <span onClick={handleNext} className="bg-white rounded-full p-2 hover:bg-slate-100 cursor-pointer">
+                            <span onClick={handleNext} className="bg-white dark:bg-[#171717] rounded-full p-2 hover:bg-slate-100 cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
                                     className="size-4">
@@ -237,7 +241,7 @@ function Overview({ city, modelDetails }: OverviewProps) {
                         ].map((spec) => (
                             <div
                                 key={spec.label}
-                                className="border border-gray-200 dark:border-[#2E2E2E] rounded-xl shadow-sm w-28 text-center py-3"
+                                className="border border-r-0 dark:border-[#2E2E2E] rounded-xl w-28 text-center py-3"
                             >
                                 <p className="text-xs text-gray-400">{spec.label}</p>
                                 <p className="font-semibold mt-1">{spec.value || "-"}</p>

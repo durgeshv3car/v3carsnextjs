@@ -109,7 +109,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                         <CommonModelTopSection
                             title={`${modelDetails?.model?.brand?.name}`}
                             highlight={`${modelDetails?.model?.name}`}
-                            others="Price List"
+                            others={`Price in ${selectedCity.cityName}`}
                             description={`The ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} ${modelDetails?.model?.bodyType} is available with 7 engine-transmission combinations. The ex-showroom prices of the ${currentYear} ${modelDetails?.model?.name} start from ${modelDetails?.priceRange?.exShowroom?.min} for the Smart variant (Base Model) with the 1.2L turbo petrol engine and 5-speed MT. The range tops out at ${modelDetails?.priceRange?.exShowroom?.max}.`}
                         />
                         : activeTab === "Variants" ?
@@ -249,8 +249,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                         onClick={() => handleModelTab(tab)}
                         className={`${tab === activeTab
                             ? "border-b-4 border-primary"
-                            : "hover:text-primary text-gray-400"
-                            } pb-2 border-b-4 border-transparent hover:border-primary transition whitespace-nowrap`}
+                            : "hover:text-primary text-gray-400 hover:border-b-4 hover:border-primary"
+                            } pb-2 transition whitespace-nowrap`}
                     >
                         {tab}
                     </button>
