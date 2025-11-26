@@ -48,8 +48,6 @@ Popular videos (global):
 
 by author add authorId params
 
-
-
 Model-scoped by slug (ID or slug both work)
 
 Replace {slug} with an actual model slug, e.g. fronx, baleno, punch, etc.

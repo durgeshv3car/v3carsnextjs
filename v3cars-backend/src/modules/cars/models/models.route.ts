@@ -21,7 +21,8 @@ r.get('/models/:id', setCache(600, 120), (req, res) => c.getById(req, res));
 r.get('/models/:id/fuel-efficiency', setCache(1800, 120), (req, res) => c.fuelEfficiency(req, res));
 r.get('/models/:id/csd-vs-onroad', setCache(1800, 120), (req, res) => c.csdVsOnroad(req, res));
 r.get('/models/:id/offers-discounts', setCache(1800, 120), (req, res) => c.offersDiscounts(req, res));
-
+r.get('/models/:id/monthly-sales', setCache(1800, 120), (req, res) => c.monthlySales(req, res));
+r.get('/models/:id/upcoming-brand', setCache(1800, 120), (req, res) => c.upcomingByBrand(req, res));
 
 
 export const modelsRouter = r;

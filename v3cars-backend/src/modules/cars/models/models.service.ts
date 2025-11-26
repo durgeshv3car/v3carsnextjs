@@ -686,132 +686,164 @@ export class ModelsService {
   }
 
 
-  async priceList(
-    modelId: number,
-    q: {
-      cityId?: number;
-      expandVariantId?: number;
-      isLoan?: boolean;
-      fuelType?: string;
-      transmissionType?: string; // 🆕 separate gearbox filter
-      priceType?: 'ex' | 'onroad' | 'csd';
-      citySlug?: string;
-      sortBy?: 'price_asc' | 'price_desc' | 'latest' | 'name_asc' | 'name_desc';
-      page?: number;
-      limit?: number;
-    }
-  ) {
-    // build a stable cache key from normalized inputs
-    const ftRaw = (q.fuelType || '').trim().toLowerCase();
-    const trRaw = (q.transmissionType || '').trim().toLowerCase();
-
-    const key = cacheKey({
-      ns: 'models:priceList',
-      v: 2,
-      modelId,
-      fuelType: ftRaw || undefined,
-      transmissionType: trRaw || undefined,
-      priceType: q.priceType ?? 'ex',
-      cityId: q.cityId ?? undefined,
-      citySlug: q.citySlug ?? undefined,
-      expandVariantId: q.expandVariantId ?? undefined,
-      isLoan: q.isLoan ? 1 : 0,
-      sortBy: q.sortBy ?? 'price_asc',
-      page: q.page ?? 1,
-      limit: q.limit ?? 100,
-    });
-    const ttlMs = 30 * 60 * 1000;
-
-    return withCache(key, async () => {
-      // --- original implementation (unchanged) ---
-      const ft = ftRaw;
-      const tr = trRaw;
-
-      const fuelNorm =
-        ft === 'petrol' ? 'Petrol' :
-          ft === 'diesel' ? 'Diesel' :
-            ft === 'cng' ? 'CNG' :
-              ft === 'hybrid' ? 'Hybrid' :
-                ft === 'electric' ? 'Electric' :
-                  undefined;
-
-      const isManual = tr === 'manual';
-      const isAutomatic = tr === 'automatic';
-
-      const dbTransmissionType = isManual ? 'MT' : undefined;
-
-      const variants = await variantsSvc.list({
-        modelId,
-        page: 1,
-        limit: 100,
-        sortBy: 'price_asc',
-        fuelType: fuelNorm,
-        transmissionType: dbTransmissionType,
-      });
-
-      const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
-
-      let rows = (variants.rows || []).map(v => {
-        const bandMin = v.priceMin ?? null;
-        const bandMax = v.priceMax ?? null;
-
-        const onRoad =
-          q.cityId && typeof bandMin === 'number'
-            ? onroadSvc.quote({ exShowroom: bandMin, cityId: q.cityId, isLoan: q.isLoan }).total
-            : null;
-
-        const base: any = {
-          variantId: v.variantId ?? null,
-          name: v.variantName ?? null,
-          powertrain: v.powertrain ?? null,
-          exShowroom: bandMin,
-          exShowroomMax: bandMax,
-          onRoad,
-          updatedDate: v.updatedDate ?? null,
-        };
-
-        if (q.expandVariantId && v.variantId === q.expandVariantId && typeof bandMin === 'number') {
-          base.breakdown = onroadSvc.quote({
-            exShowroom: bandMin,
-            cityId: q.cityId,
-            isLoan: q.isLoan,
-          });
-        }
-        return base;
-      });
-
-      if (isManual || isAutomatic) {
-        rows = rows.filter(r => {
-          const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
-          if (isManual) {
-            const isMt = raw.includes('MT');
-            const hasAuto = autoTokens.some(tok => raw.includes(tok));
-            return isMt && !hasAuto;
-          }
-          return autoTokens.some(tok => raw.includes(tok));
-        });
-      } else if (tr) {
-        const needle = tr.toUpperCase();
-        rows = rows.filter(r => (r.powertrain?.transmissionType || '').toString().toUpperCase().includes(needle));
-      }
-
-      if (fuelNorm) {
-        rows = rows.filter(r =>
-          (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase())
-        );
-      }
-
-      return {
-        modelId,
-        cityId: q.cityId ?? null,
-        rows,
-        page: variants.page,
-        pageSize: variants.pageSize,
-        total: rows.length,
-        totalPages: 1,
-      };
-    }, ttlMs);
+  // src/modules/cars/models/models.service.ts
+async priceList(
+  modelId: number,
+  q: {
+    cityId?: number;
+    expandVariantId?: number;
+    isLoan?: boolean;
+    fuelType?: string;
+    transmissionType?: string;
+    priceType?: 'ex' | 'onroad' | 'csd';
+    citySlug?: string;
+    sortBy?: 'price_asc' | 'price_desc' | 'latest' | 'name_asc' | 'name_desc';
+    page?: number;
+    limit?: number;
   }
+) {
+  const ftRaw = (q.fuelType || '').trim().toLowerCase();
+  const trRaw = (q.transmissionType || '').trim().toLowerCase();
+
+  const key = cacheKey({
+    ns: 'models:priceList',
+    v: 4, // ⬅️ bump: CSD basis + CSD-aware sorting
+    modelId,
+    fuelType: ftRaw || undefined,
+    transmissionType: trRaw || undefined,
+    priceType: q.priceType ?? 'ex',
+    cityId: q.cityId ?? undefined,
+    citySlug: q.citySlug ?? undefined,
+    expandVariantId: q.expandVariantId ?? undefined,
+    isLoan: q.isLoan ? 1 : 0,
+    sortBy: q.sortBy ?? 'price_asc',
+    page: q.page ?? 1,
+    limit: q.limit ?? 100,
+  });
+  const ttlMs = 30 * 60 * 1000;
+
+  return withCache(key, async () => {
+    const ft = ftRaw;
+    const tr = trRaw;
+
+    const fuelNorm =
+      ft === 'petrol' ? 'Petrol' :
+      ft === 'diesel' ? 'Diesel' :
+      ft === 'cng' ? 'CNG' :
+      ft === 'hybrid' ? 'Hybrid' :
+      ft === 'electric' ? 'Electric' : undefined;
+
+    const isManual = tr === 'manual';
+    const isAutomatic = tr === 'automatic';
+    const dbTransmissionType = isManual ? 'MT' : undefined;
+
+    const variants = await variantsSvc.list({
+      modelId,
+      page: 1,
+      limit: 100,
+      sortBy: 'price_asc', // we'll do final sort after mapping (to support CSD basis)
+      fuelType: fuelNorm,
+      transmissionType: dbTransmissionType,
+    });
+
+    const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+
+    let rows = (variants.rows || []).map(v => {
+      const bandMin = v.priceMin ?? null;
+      const bandMax = v.priceMax ?? null;
+
+      // raw CSD (nullable)
+      const csdRaw = (v as any).csdPrice as unknown;
+      const csdPrice =
+        csdRaw == null ? null : (typeof csdRaw === 'number' ? csdRaw : Number(csdRaw as any));
+
+      // 🆕 primary price basis controlled by priceType
+      const useCsd = q.priceType === 'csd';
+      const exShowroom = useCsd ? csdPrice : bandMin;
+      const exShowroomMax = useCsd ? csdPrice : bandMax;
+
+      // on-road stays estimated from EX showroom band (unchanged)
+      const onRoad =
+        q.cityId && typeof bandMin === 'number'
+          ? onroadSvc.quote({ exShowroom: bandMin, cityId: q.cityId, isLoan: q.isLoan }).total
+          : null;
+
+      const base: any = {
+        variantId: v.variantId ?? null,
+        name: v.variantName ?? null,
+        powertrain: v.powertrain ?? null,
+        exShowroom,          // ← CSD when priceType=csd, else EX
+        exShowroomMax,       // ← same basis as above
+        csdPrice,            // (kept separately if UI needs to show chip)
+        onRoad,
+        updatedDate: v.updatedDate ?? null,
+      };
+
+      if (q.expandVariantId && v.variantId === q.expandVariantId && typeof bandMin === 'number') {
+        base.breakdown = onroadSvc.quote({
+          exShowroom: bandMin,
+          cityId: q.cityId,
+          isLoan: q.isLoan,
+        });
+      }
+      return base;
+    });
+
+    // transmission filter (manual/automatic buckets or substring)
+    if (isManual || isAutomatic) {
+      rows = rows.filter(r => {
+        const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
+        if (isManual) {
+          const isMt = raw.includes('MT');
+          const hasAuto = autoTokens.some(tok => raw.includes(tok));
+          return isMt && !hasAuto;
+        }
+        return autoTokens.some(tok => raw.includes(tok));
+      });
+    } else if (tr) {
+      const needle = tr.toUpperCase();
+      rows = rows.filter(r =>
+        (r.powertrain?.transmissionType || '').toString().toUpperCase().includes(needle)
+      );
+    }
+
+    // fuel filter
+    if (fuelNorm) {
+      rows = rows.filter(r =>
+        (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase())
+      );
+    }
+
+    // 🆕 final sort (CSD-aware for price_asc/desc)
+    const sortBy = q.sortBy || 'price_asc';
+    rows.sort((a, b) => {
+      const nameCmp = (x?: string | null, y?: string | null) =>
+        (x ?? '').localeCompare(y ?? '', undefined, { sensitivity: 'base' });
+
+      if (sortBy === 'price_asc' || sortBy === 'price_desc') {
+        const ax = a.exShowroom ?? Number.POSITIVE_INFINITY;
+        const bx = b.exShowroom ?? Number.POSITIVE_INFINITY;
+        return sortBy === 'price_asc'
+          ? (ax - bx) || nameCmp(a.name, b.name)
+          : (bx - ax) || nameCmp(a.name, b.name);
+      }
+      if (sortBy === 'name_desc') return nameCmp(b.name, a.name);
+      if (sortBy === 'name_asc') return nameCmp(a.name, b.name);
+      return nameCmp(a.name, b.name); // fallback
+    });
+
+    return {
+      modelId,
+      cityId: q.cityId ?? null,
+      rows,
+      page: 1,
+      pageSize: rows.length,
+      total: rows.length,
+      totalPages: 1,
+    };
+  }, ttlMs);
+}
+
 
 
   // --- bestVariantToBuy (cached) ---
@@ -1527,88 +1559,275 @@ export class ModelsService {
     }, ttlMs);
   }
 
-async offersDiscounts(
+  async offersDiscounts(
+    modelId: number,
+    q?: { months?: number; cityId?: number; expandQID?: number }
+  ) {
+    const months = Math.max(1, Math.min(q?.months ?? 12, 24)); // default 12, clamp 1..24
+    const key = cacheKey({
+      ns: 'model:offersDiscounts',
+      v: 4, // 🔼 bump: expandQID behavior
+      modelId,
+      months,
+      cityId: q?.cityId ?? undefined,
+      expandQID: q?.expandQID ?? undefined,
+    });
+    const ttlMs = 30 * 60 * 1000;
+
+    return withCache(key, async () => {
+      // 1) latest active offer for this model
+      const offer = await prisma.tbloffers.findFirst({
+        where: { modelId, offerStatus: 2, expireDateTime: { gte: new Date() } },
+        orderBy: [{ addedDateTime: 'desc' }],
+        select: {
+          offerId: true,
+          modelId: true,
+          title: true,
+          imageFile: true,
+          imageAltText: true,
+          addedDateTime: true,
+          expireDateTime: true,
+        },
+      });
+
+      if (!offer) {
+        return { success: true, modelId, rows: [], total: 0 };
+      }
+
+      // 2) window start is months back FROM NOW; filter is on tbloffercontent.addedDateTime
+      const fromDate = new Date();
+      fromDate.setMonth(fromDate.getMonth() - months);
+
+      // 3) fetch content rows for this offerId within the window
+      const content = await prisma.tbloffercontent.findMany({
+        where: {
+          modelId: offer.offerId, // NOTE: in tbloffercontent, modelId stores offerId
+          addedDateTime: { gte: fromDate },
+        },
+        orderBy: [{ qid: 'desc' }],
+        select: {
+          qid: true,
+          quesText: true,
+          ansText: true,
+          sequence: true,
+          addedDateTime: true,
+        },
+      });
+
+      const rows = content.map(c => {
+        const isExpanded = q?.expandQID != null && Number(q.expandQID) === c.qid;
+        const hasAns = !!(c.ansText && c.ansText.trim().length > 0);
+        return {
+          id: c.qid,
+          quesText: c.quesText ?? null,
+          hasAnswer: hasAns,
+          ansHtml: isExpanded ? (c.ansText ?? null) : null,
+          sequence: c.sequence ?? null,
+          addedDate: c.addedDateTime ?? null,
+        };
+      });
+
+      return {
+        success: true,
+        modelId,
+        offer: {
+          id: offer.offerId,
+          title: offer.title ?? null,
+          image: { url: offer.imageFile ?? null, alt: offer.imageAltText ?? null },
+          addedDate: offer.addedDateTime ?? null,
+          expireDate: offer.expireDateTime ?? null,
+        },
+        rows,
+        total: rows.length,
+      };
+    }, ttlMs);
+  }
+
+
+  async monthlySales(modelId: number, q: { months?: number }) {
+    const months = Math.max(1, Math.min(q.months ?? 6, 24));
+
+    const key = cacheKey({
+      ns: 'models:monthlySales',
+      v: 1,
+      modelId,
+      months,
+    });
+    const ttlMs = 30 * 60 * 1000; // 30 min
+
+    return withCache(key, async () => {
+      // 1) Pull the latest available month for this model
+      const latest = await prisma.tblmonthlysales.findFirst({
+        where: { modelId },
+        select: { year: true, month: true },
+        orderBy: [{ year: 'desc' }, { month: 'desc' }],
+      });
+
+      if (!latest) {
+        return { success: true, modelId, rows: [], chart: { points: [] }, total: 0, summary: null };
+      }
+
+      // 2) Get last N records (most recent first), then reverse for chart/table ascending order
+      const raw = await prisma.tblmonthlysales.findMany({
+        where: { modelId },
+        select: { year: true, month: true, numSales: true },
+        orderBy: [{ year: 'desc' }, { month: 'desc' }],
+        take: months,
+      });
+
+      // 🔧 drop rows with null month/year, then narrow to numbers
+      const cleaned = raw
+        .filter((r): r is { year: number; month: number; numSales: number | null } =>
+          r.year != null && r.month != null
+        );
+
+      if (!cleaned.length) {
+        return { success: true, modelId, rows: [], chart: { points: [] }, total: 0, summary: null };
+      }
+
+      const ordered = cleaned.slice().reverse(); // oldest -> newest
+
+      const monthLabel = (y: number, m: number) =>
+        new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric' })
+          .format(new Date(y, m - 1, 1));
+
+      const rows = ordered.map(r => ({
+        monthKey: `${r.year}-${String(r.month).padStart(2, '0')}`,
+        month: monthLabel(r.year, r.month),   // ✅ now both are numbers
+        year: r.year,
+        monthNum: r.month,
+        units: r.numSales ?? 0,
+      }));
+
+      // 4) Chart points
+      const points = rows.map(r => ({
+        key: r.monthKey,
+        label: r.month,
+        value: r.units,
+      }));
+
+      // 5) MoM summary (use last two points if exist)
+      let summary: null | {
+        month: string;
+        units: number;
+        prevMonth?: string | null;
+        prevUnits?: number | null;
+        momChangePct?: number | null; // +ve growth / -ve decline
+      } = null;
+
+      const last = rows[rows.length - 1];
+      const prev = rows.length > 1 ? rows[rows.length - 2] : undefined;
+
+      if (last) {
+        const mom =
+          prev && prev.units > 0
+            ? +(((last.units - prev.units) / prev.units) * 100).toFixed(2)
+            : null;
+
+        summary = {
+          month: last.month,
+          units: last.units,
+          prevMonth: prev?.month ?? null,
+          prevUnits: prev?.units ?? null,
+          momChangePct: mom,
+        };
+      }
+
+      return {
+        success: true,
+        modelId,
+        rows,                 // for the table
+        chart: { points },    // for the line chart
+        total: rows.length,
+        summary,              // for the intro sentence
+      };
+    }, ttlMs);
+  }
+
+
+  // ⬇️ Add this method inside ModelsService class
+async upcomingByBrand(
   modelId: number,
-  q?: { months?: number; cityId?: number; expandQID?: number }
+  opts?: { limit?: number }
 ) {
-  const months = Math.max(1, Math.min(q?.months ?? 12, 24)); // default 12, clamp 1..24
+  const limit = Math.max(1, Math.min(opts?.limit ?? 5, 50));
+
   const key = cacheKey({
-    ns: 'model:offersDiscounts',
-    v: 4, // 🔼 bump: expandQID behavior
+    ns: 'models:upcomingByBrand',
+    v: 1,
     modelId,
-    months,
-    cityId: q?.cityId ?? undefined,
-    expandQID: q?.expandQID ?? undefined,
+    limit,
   });
-  const ttlMs = 30 * 60 * 1000;
+  const ttlMs = 30 * 60 * 1000; // 30 min
 
   return withCache(key, async () => {
-    // 1) latest active offer for this model
-    const offer = await prisma.tbloffers.findFirst({
-      where: { modelId, offerStatus: 2, expireDateTime: { gte: new Date() } },
-      orderBy: [{ addedDateTime: 'desc' }],
-      select: {
-        offerId: true,
-        modelId: true,
-        title: true,
-        imageFile: true,
-        imageAltText: true,
-        addedDateTime: true,
-        expireDateTime: true,
-      },
+    // 1) find the brand for this model
+    const base = await prisma.tblmodels.findFirst({
+      where: { modelId },
+      select: { brandId: true },
     });
-
-    if (!offer) {
-      return { success: true, modelId, rows: [], total: 0 };
+    if (!base?.brandId) {
+      return { rows: [], total: 0 };
     }
 
-    // 2) window start is months back FROM NOW; filter is on tbloffercontent.addedDateTime
-    const fromDate = new Date();
-    fromDate.setMonth(fromDate.getMonth() - months);
-
-    // 3) fetch content rows for this offerId within the window
-    const content = await prisma.tbloffercontent.findMany({
+    // 2) upcoming models of the same brand (exclude current)
+    const models = await prisma.tblmodels.findMany({
       where: {
-        modelId: offer.offerId, // NOTE: in tbloffercontent, modelId stores offerId
-        addedDateTime: { gte: fromDate },
+        brandId: base.brandId,
+        isUpcoming: true,
+        modelId: { not: modelId },
       },
-      orderBy: [{ qid: 'desc' }],
       select: {
-        qid: true,
-        quesText: true,
-        ansText: true,
-        sequence: true,
-        addedDateTime: true,
+        modelId: true,
+        modelName: true,
+        modelSlug: true,
+        launchDate: true,
+        expectedBasePrice: true,
+        expectedTopPrice: true,
       },
+      orderBy: [
+        { launchDate: 'asc' },
+        { modelId: 'asc' },
+      ],
+      take: limit,
     });
+    if (!models.length) return { rows: [], total: 0 };
 
-    const rows = content.map(c => {
-      const isExpanded = q?.expandQID != null && Number(q.expandQID) === c.qid;
-      const hasAns = !!(c.ansText && c.ansText.trim().length > 0);
+    const ids = models.map(m => m.modelId);
+
+    // 3) hydrate price bands from variants + primary images
+    const [bands, imageMap] = await Promise.all([
+      variantsSvc.getPriceBandsByModelIds(ids),  // Map<modelId, {min,max}>
+      imagesSvc.getPrimaryByModelIds(ids),       // Map<modelId, {url,alt,name}>
+    ]);
+
+    // 4) shape rows (fallback to expected* when no variants)
+    const rows = models.map(m => {
+      const band = bands.get(m.modelId) ?? { min: null, max: null };
+      const priceMin =
+        (typeof band.min === 'number' ? band.min : null) ??
+        (typeof m.expectedBasePrice === 'number' ? m.expectedBasePrice : null);
+
+      const priceMax =
+        (typeof band.max === 'number' ? band.max : null) ??
+        (typeof m.expectedTopPrice === 'number' ? m.expectedTopPrice : null);
+
+      const img = imageMap.get(m.modelId) ?? { url: null, alt: null, name: null };
+
       return {
-        id: c.qid,
-        quesText: c.quesText ?? null,
-        hasAnswer: hasAns,
-        ansHtml: isExpanded ? (c.ansText ?? null) : null,
-        sequence: c.sequence ?? null,
-        addedDate: c.addedDateTime ?? null,
+        modelId: m.modelId,
+        name: m.modelName ?? null,
+        slug: m.modelSlug ?? null,
+        launchDate: m.launchDate ?? null,
+        priceRange: { min: priceMin, max: priceMax },
+        image: img,
+        imageUrl: img.url,
       };
     });
 
-    return {
-      success: true,
-      modelId,
-      offer: {
-        id: offer.offerId,
-        title: offer.title ?? null,
-        image: { url: offer.imageFile ?? null, alt: offer.imageAltText ?? null },
-        addedDate: offer.addedDateTime ?? null,
-        expireDate: offer.expireDateTime ?? null,
-      },
-      rows,
-      total: rows.length,
-    };
+    return { rows, total: rows.length };
   }, ttlMs);
 }
+
 
 }
