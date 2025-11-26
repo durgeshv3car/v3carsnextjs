@@ -1829,5 +1829,86 @@ async upcomingByBrand(
   }, ttlMs);
 }
 
+// ⬇️ add this method inside ModelsService class
+async othersOnSale(
+  modelId: number,
+  q?: { limit?: number }
+) {
+  // find current model to get brandId
+  const cur = await prisma.tblmodels.findFirst({
+    where: { modelId },
+    select: { modelId: true, brandId: true },
+  });
+  if (!cur?.brandId) {
+    return { success: true, items: [], total: 0 };
+  }
+
+  const limit = Math.max(1, Math.min(q?.limit ?? 5, 20));
+
+  const key = cacheKey({
+    ns: 'models:othersOnSale',
+    v: 1,
+    modelId,
+    brandId: cur.brandId,
+    limit,
+  });
+  const ttlMs = 30 * 60 * 1000; // 30 min
+
+  return withCache(key, async () => {
+    // same brand, on-sale, exclude current model
+    const models = await prisma.tblmodels.findMany({
+      where: {
+        brandId: cur.brandId,
+        isUpcoming: false,            // on sale
+        NOT: { modelId: cur.modelId },
+      },
+      select: {
+        modelId: true,
+        modelName: true,
+        modelSlug: true,
+        expectedBasePrice: true,
+        expectedTopPrice: true,
+        brandId: true,
+      },
+      orderBy: [{ totalViews: 'desc' }, { modelId: 'asc' }],
+      take: limit,
+    });
+
+    if (!models.length) return { success: true, items: [], total: 0 };
+
+    const ids = models.map(m => m.modelId);
+
+    // hydrate price bands + primary images
+    const [priceBands, imageMap] = await Promise.all([
+      variantsSvc.getPriceBandsByModelIds(ids),
+      imagesSvc.getPrimaryByModelIds(ids),
+    ]);
+
+    const items = models.map(m => {
+      const band = priceBands.get(m.modelId) ?? { min: null, max: null };
+      // prefer variant band; fall back to expected* if present
+      const priceMin =
+        (band.min != null ? band.min :
+         (typeof m.expectedBasePrice === 'number' && m.expectedBasePrice > 0 ? m.expectedBasePrice : null));
+      const priceMax =
+        (band.max != null ? band.max :
+         (typeof m.expectedTopPrice === 'number' && m.expectedTopPrice > 0 ? m.expectedTopPrice : null));
+
+      const img = imageMap.get(m.modelId) ?? { name: null, alt: null, url: null };
+
+      return {
+        modelId: m.modelId,
+        name: m.modelName ?? null,
+        slug: m.modelSlug ?? null,
+        image: img,
+        imageUrl: img.url,
+        priceRange: { min: priceMin, max: priceMax }, // ₹
+      };
+    });
+
+    return { success: true, items, total: items.length };
+  }, ttlMs);
+}
+
 
 }

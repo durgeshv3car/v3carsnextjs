@@ -13,6 +13,7 @@ import {
   modelCsdVsOnroadQueryDto,
   modelMonthlySalesQueryDto,
   modelUpcomingByBrandDto,
+  modelOthersQueryDto,
 } from './models.dto.js';
 
 
@@ -164,6 +165,13 @@ async upcomingByBrand(req: Request, res: Response) {
   res.json({ success: true, ...data });
 }
 
+async othersOnSale(req: Request, res: Response) {
+  const id = await this.resolve(req, res);
+  if (!id) return;
+  const q = modelOthersQueryDto.parse(req.query);
+  const data = await svc.othersOnSale(id, q as any);
+  res.json(data);
+}
 
 }
 

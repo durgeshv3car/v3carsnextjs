@@ -107,3 +107,7 @@ export const modelMonthlySalesQueryDto = z.object({
 export const modelUpcomingByBrandDto = z.object({
   limit: z.coerce.number().int().min(1).max(50).default(5).optional(),
 });
+
+export const modelOthersQueryDto = z.object({
+  limit: z.coerce.number().int().min(1).max(20).default(5).optional(),
+});
