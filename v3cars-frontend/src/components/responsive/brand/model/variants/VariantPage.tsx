@@ -23,7 +23,7 @@ import useIsMobile from "@/hooks/useIsMobile";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import VariantTable from "./VariantTable";
-import { useGetBestVariantToBuyQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetBestVariantToBuyQuery, useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 
@@ -39,12 +39,14 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
     const { data: bestVariantToBuyData } = useGetBestVariantToBuyQuery({ model_slug: slug, fuelType: "petrol" }, { skip: !slug });
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
     const bestVariantToBuy = bestVariantToBuyData?.rows ?? [];
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     const isMobile = useIsMobile()
 
@@ -190,6 +192,8 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
 
                             <OnRoadPriceinTopCities
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -203,15 +207,20 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
                             </div>
 
                             <OtherCars
-                                title="Other Tata Nexon"
+                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
-                                title="Upcoming Tata Nexon"
+                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained

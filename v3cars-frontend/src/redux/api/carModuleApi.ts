@@ -271,6 +271,10 @@ export const carModuleApi = createApi({
                 return params.length ? `${url}&${params.join("&")}` : url;
             }
         }),
+
+        getModelUpcomingBrand: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/upcoming-brand?limit=5`,
+        }),
     }),
 });
 
@@ -300,6 +304,7 @@ export const {
     useGetPriceListDetailsQuery,
     useGetModelFuelEfficiencyQuery,
     useGetModelOfferDiscountQuery,
+    useGetModelUpcomingBrandQuery,
 } = carModuleApi;
 
 

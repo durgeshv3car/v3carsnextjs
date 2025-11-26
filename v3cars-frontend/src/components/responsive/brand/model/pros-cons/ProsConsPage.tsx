@@ -24,7 +24,7 @@ import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/red
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import Advantages from "./Advantages";
 import DisAdvantages from "./DisAdvantages";
-import { useGetModelDetailsQuery, useGetModelProsConsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelProsConsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 import { ProsConsResponse } from "../overview/ModelProsCons";
@@ -43,6 +43,7 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelProsConsData } = useGetModelProsConsQuery({
         model_slug: slug
     });
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
 
     const prosConsData = modelProsConsData as ProsConsResponse | undefined;
@@ -53,6 +54,7 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
 
     const pros = prosConsData?.pros || [];
     const cons = prosConsData?.cons || [];
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     const isMobile = useIsMobile()
 
@@ -204,6 +206,8 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OnRoadPriceinTopCities
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -218,14 +222,19 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained

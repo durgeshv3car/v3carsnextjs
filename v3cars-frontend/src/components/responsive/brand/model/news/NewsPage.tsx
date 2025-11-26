@@ -25,7 +25,7 @@ import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import NewsTopStories from "./NewsTopStories";
 import LatestUpdates from "../overview/LatestUpdates";
 import { CarData } from "../overview/Overview";
-import { useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 
 interface MileagePageProps {
@@ -40,12 +40,14 @@ function NewsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelTopNewsData } = useGetModelTopNewsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelTopNews = modelTopNewsData?.rows ?? []
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     const isMobile = useIsMobile()
 
@@ -205,6 +207,8 @@ function NewsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OnRoadPriceinTopCities
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -219,14 +223,19 @@ function NewsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained

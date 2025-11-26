@@ -24,7 +24,7 @@ import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/red
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import DimensionsTable from "./DimensionsTable";
 import DimensionsTyreSizeTable from "./DimensionsTyreSizeTable";
-import { useGetDimensionsCapacityQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetDimensionsCapacityQuery, useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 import { useState } from "react";
@@ -115,10 +115,13 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
             { model_slug: slug, fuelType: fuelType || undefined, transmissionType: transmission || undefined },
             { skip: !slug }
         )
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     const isMobile = useIsMobile()
 
@@ -275,6 +278,8 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
 
                             <OnRoadPriceinTopCities
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -289,14 +294,19 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained

@@ -70,8 +70,8 @@ export interface Images {
 }
 
 export interface Colors {
-    id: string;
-    colorId: string;
+    id: number;
+    colorId: number;
     name: string;
     imageUrl: string;
 }

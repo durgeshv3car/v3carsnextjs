@@ -20,6 +20,11 @@ import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 import PriceComparison from "./PriceComparison";
+import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "../overview/Overview";
+import BrochureCard from "../sidebar/BrochureCard";
+import CSDPriceList from "../sidebar/CSDPriceList";
+import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
 
 interface PriceListPageProps {
     type: string;
@@ -75,10 +80,14 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
     const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
 
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const latestCarNews = latestCarNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const latestVideos = latestVideosData?.rows ?? []
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     console.log(childSlug);
 
@@ -190,17 +199,23 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                                 />
                             </div>
 
-                            {/* <BrochureCard
-                                title="Tata Nexon"
+                            <BrochureCard
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
-                            /> */}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
@@ -213,11 +228,13 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -231,23 +248,28 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             <OtherCars
-                                title="Other Tata Nexon"
+                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
-                                title="Upcoming Tata Nexon"
+                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

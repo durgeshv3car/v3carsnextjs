@@ -23,7 +23,7 @@ import useIsMobile from "@/hooks/useIsMobile";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import FuelEfficiencyTable from "./FuelEfficiencyTable";
-import { useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 
@@ -38,11 +38,13 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     const isMobile = useIsMobile()
 
@@ -89,7 +91,7 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
                                 />
 
                                 <button className="p-4 bg-[#F2F5F9] dark:bg-[#2e2e2e] w-full rounded-b-xl text-sm underline flex items-center gap-2 justify-center">
-                                    Find the Tata Nexon's Engine Type, Engine Displacement, Cubic Capacity (CC), Cylinders, Kerb Weight and more.
+                                    Find the Tata Nexon&apos;s Engine Type, Engine Displacement, Cubic Capacity (CC), Cylinders, Kerb Weight and more.
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                     </svg>
@@ -205,6 +207,8 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OnRoadPriceinTopCities
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -219,14 +223,19 @@ function MileagePage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained

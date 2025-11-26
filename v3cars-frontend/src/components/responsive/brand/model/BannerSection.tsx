@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ModelTab, setActiveTab } from "@/redux/slices/carModelSlice";
 import Overview, { CarData } from "./overview/Overview";
 import CommonModelTopSection from "@/components/common/ModelCards/CommonModelTopSection";
+import Link from "next/link";
 
 interface BannerSectionProps {
     type: string;
@@ -31,9 +32,9 @@ const tabs = [
     "Dimensions",
     "Mileage",
     "Reviews",
+    "Pros Cons",
     "Compare",
     "News",
-    "Pros Cons",
     "Monthly Sales",
     "Offers Discounts",
     "Videos",
@@ -243,17 +244,33 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
             </div>
 
             <div className="hidden md:flex gap-10 font-medium overflow-x-auto md:overflow-visible scrollbar-hide">
-                {tabs.slice(0, 6).map((tab) => (
-                    <button
-                        key={tab}
-                        onClick={() => handleModelTab(tab)}
-                        className={`${tab === activeTab
-                            ? "border-b-4 border-primary"
-                            : "hover:text-primary text-gray-400 hover:border-b-4 hover:border-primary"
-                            } pb-2 transition whitespace-nowrap`}
-                    >
-                        {tab}
-                    </button>
+                {tabs.slice(0, 7).map((tab) => (
+                    <div key={tab}>
+                        {
+                            activeTab === "Overview" ? (
+                                <Link
+                                    href={`#${tab}`}
+                                    className={`${tab === activeTab
+                                        ? "border-b-4 border-primary"
+                                        : "hover:text-primary text-gray-400 hover:border-b-4 hover:border-primary"
+                                        } pb-2 transition whitespace-nowrap`}
+                                >
+                                    {tab}
+                                </Link>
+
+                            ) : (
+                                <button
+                                    onClick={() => handleModelTab(tab)}
+                                    className={`${tab === activeTab
+                                        ? "border-b-4 border-primary"
+                                        : "hover:text-primary text-gray-400 hover:border-b-4 hover:border-primary"
+                                        } pb-2 transition whitespace-nowrap`}
+                                >
+                                    {tab}
+                                </button>
+                            )
+                        }
+                    </div>
                 ))}
 
                 <div className="relative inline-block">
@@ -272,7 +289,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                         <div className="absolute left-0 w-56 bg-white dark:bg-[#292929] shadow-lg border rounded-md z-50 dark:border-[#2e2e2e] overflow-hidden">
                             <ul className="text-sm">
                                 {
-                                    tabs && tabs.slice(6).map((item, index) => (
+                                    tabs && tabs.slice(7).map((item, index) => (
                                         <li
                                             key={index}
                                             className={`${item === activeTab

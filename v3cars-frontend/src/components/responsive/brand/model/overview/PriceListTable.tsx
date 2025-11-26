@@ -24,12 +24,14 @@ export interface Variant {
     powertrain: Powertrain;
     exShowroom: number;
     exShowroomMax: number;
+    csdPrice: number;
     onRoad: number | null;
     updatedDate: string;
 }
 
 const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuelType, fuelTypes, transmissionType, setTransmissionType }) => {
     const [showAll, setShowAll] = useState(false);
+    const [priceType, setPriceType] = useState("Ex-Showroom");
 
     return (
         <div>
@@ -46,9 +48,13 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuel
                                 dark:border-[#2E2E2E] ${fuel.toLowerCase() === fuelType ? "bg-primary text-black" : "bg-white dark:bg-[#171717] hover:bg-gray-200"}`
                             }
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                            </svg>
+                            {
+                                fuel.toLowerCase() === fuelType && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                )
+                            }
                             {fuel}
                         </button>
                     ))}
@@ -60,33 +66,45 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuel
                                 dark:border-[#2E2E2E] ${transmissionType === "manual" ? "bg-primary text-black" : "bg-white dark:bg-[#171717] hover:bg-gray-200"}`
                         }
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                        </svg>
+                        {
+                            transmissionType === "manual" && (
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                            )
+                        }
                         Manual
                     </button>
                     <button
                         onClick={() => setTransmissionType?.("automatic")}
                         className={`flex items-center gap-1 p-3 rounded-md border shadow text-xs
-                                dark:border-[#2E2E2E] ${transmissionType === "automatic" ? "bg-primary text-black" : "bg-white dark:bg-[#171717] hover:bg-gray-200"}`
+                            dark:border-[#2E2E2E] ${transmissionType === "automatic" ? "bg-primary text-black" : "bg-white dark:bg-[#171717] hover:bg-gray-200"}`
                         }
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                        </svg>
+                        {
+                            transmissionType === "automatic" && (
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                            )
+                        }
                         Automatic
                     </button>
 
                     {/* Price type */}
-                    <button className="ml-auto px-4 py-2 rounded-md bg-[#B3B3B3] border text-xs dark:bg-[#171717] dark:border-[#2E2E2E]">
-                        Ex-Showroom
-                    </button>
-                    <button
-                        className="px-4 py-2 rounded-md bg-gray-100 opacity-50 border border-gray-300 text-xs font-medium dark:bg-[#171717] dark:border-[#2E2E2E]"
-                        disabled
-                    >
-                        OSD
-                    </button>
+                    <div className="border rounded ml-auto flex items-center p-1 dark:border-[#2e2e2e]">
+                        {
+                            priceTypes && priceTypes.map((type, index) => (
+                                <button
+                                    key={index}
+                                    className={`p-2 text-xs ${type === priceType ? "bg-primary rounded text-black" : ""}`}
+                                    onClick={() => setPriceType(type)}
+                                >
+                                    {type}
+                                </button>
+                            ))
+                        }
+                    </div>
                 </div>
 
                 {/* Variant Table */}
@@ -98,7 +116,7 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuel
                 >
                     <div className="grid grid-cols-3 bg-gray-50 border-b border-gray-200 text-sm font-semibold dark:bg-[#171717] dark:border-[#2E2E2E] p-4">
                         <span>Variants</span>
-                        <span>Ex-Showroom Price</span>
+                        <span>{priceType} Price</span>
                         <span>On-Road Price</span>
                     </div>
 
@@ -118,7 +136,14 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuel
                             </div>
 
                             <div className="flex items-center">
-                                ₹{(v.exShowroom / 100000).toFixed(2)} Lakh
+                                {
+                                    priceType === "Ex-Showroom" ? (
+                                        <span>₹{(v.exShowroom / 100000).toFixed(2)} Lakh</span>
+                                    )
+                                        : (
+                                            <span>₹{(v.csdPrice / 100000).toFixed(2)} Lakh</span>
+                                        )
+                                }
                             </div>
 
                             <div className="flex items-center">
@@ -151,3 +176,9 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuel
 };
 
 export default PriceListTable;
+
+
+const priceTypes = [
+    "Ex-Showroom",
+    "CSD",
+]

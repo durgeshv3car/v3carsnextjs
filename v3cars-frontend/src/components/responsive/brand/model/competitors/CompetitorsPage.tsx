@@ -13,9 +13,13 @@ import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import { useGetPopularCarQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery, useGetPopularCarQuery } from "@/redux/api/carModuleApi";
 import { useGetLatestComparisonReviewsQuery } from "@/redux/api/contentModuleApi";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import { CarData } from "../overview/Overview";
+import BrochureCard from "../sidebar/BrochureCard";
+import CSDPriceList from "../sidebar/CSDPriceList";
+import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
 
 interface MileagePageProps {
     type: string;
@@ -24,13 +28,17 @@ interface MileagePageProps {
 }
 
 function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: latestVideosData } = useGetLatestVideosQuery()
     const { data: popularCarData } = useGetPopularCarQuery();
     const { data: latestComparisonReviewsData } = useGetLatestComparisonReviewsQuery();
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const latestVideos = latestVideosData?.rows ?? []
     const popularCar = popularCarData?.rows ?? []
     const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     console.log(childSlug);
 
@@ -150,17 +158,23 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            {/* <BrochureCard
-                                title="Tata Nexon"
-                            /> */}
+                            <BrochureCard
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
+                            />
 
-                            {/* <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
-                            /> */}
+                            <CSDPriceList
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
 
-                            {/* <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
-                            /> */}
+                            <LatestOffersDiscounts
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
@@ -173,11 +187,13 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -191,23 +207,28 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <OtherCars
-                                title="Other Tata Nexon"
+                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
-                                title="Upcoming Tata Nexon"
+                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

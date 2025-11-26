@@ -28,7 +28,7 @@ import VariantExplained from "./sidebar/VariantExplained";
 import EMICalculator from "./sidebar/EMICalculator";
 import CostOfOwnership from "./sidebar/CostOfOwnership";
 import Marquee from "@/components/ui/Marquee";
-import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "./overview/Overview";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -72,6 +72,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelDetailByFuelType = modelDetailByFuelTypeData?.rows ?? [];
@@ -81,7 +82,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
         : null;
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? [];
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
     const isMobile = useIsMobile()
 
     return (
@@ -151,53 +153,65 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                                 data={data}
                             />
 
-                            <CommonList
-                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                title="Price List"
-                                desc={
-                                    modelDetails
-                                        ? `The ${modelDetails.model.brand.name} ${modelDetails.model.name} ${modelDetails.model.bodyType} is available with multiple engine and transmission combinations. The ex-showroom prices of the ${modelDetails.model.name} start from ₹${(
-                                            (modelDetails.priceRange.exShowroom.min ?? 0) / 100000
-                                        ).toFixed(2)} lakh. The top-end variant is priced at ₹${(
-                                            (modelDetails.priceRange.exShowroom.max ?? 0) / 100000
-                                        ).toFixed(2)} lakh (ex-showroom).`
-                                        : ""
-                                }
-                                fuelTypes={modelDetails?.availableWith.fuels}
-                                data={modelDetailByFuelType}
-                                fuelType={fuelType}
-                                setFuelType={setFuelType}
-                                transmissionType={transmissionType}
-                                setTransmissionType={setTransmissionType}
-                            />
+                            <div id="Price">
+                                <CommonList
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    title="Price List"
+                                    desc={
+                                        modelDetails
+                                            ? `The ${modelDetails.model.brand.name} ${modelDetails.model.name} ${modelDetails.model.bodyType} is available with multiple engine and transmission combinations. The ex-showroom prices of the ${modelDetails.model.name} start from ₹${(
+                                                (modelDetails.priceRange.exShowroom.min ?? 0) / 100000
+                                            ).toFixed(2)} lakh. The top-end variant is priced at ₹${(
+                                                (modelDetails.priceRange.exShowroom.max ?? 0) / 100000
+                                            ).toFixed(2)} lakh (ex-showroom).`
+                                            : ""
+                                    }
+                                    fuelTypes={modelDetails?.availableWith.fuels}
+                                    data={modelDetailByFuelType}
+                                    fuelType={fuelType}
+                                    setFuelType={setFuelType}
+                                    transmissionType={transmissionType}
+                                    setTransmissionType={setTransmissionType}
+                                />
+                            </div>
 
-                            <CommonList
-                                model={`Best ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                title="Variant To Buy"
-                                desc="See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"
-                                data={bestVariantToBuy}
-                            />
+                            <div id="Variants">
+                                <CommonList
+                                    model={`Best ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    title="Variant To Buy"
+                                    desc="See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"
+                                    data={bestVariantToBuy}
+                                />
+                            </div>
 
-                            <CommonList
-                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                title="Dimensions & Capacity"
-                                desc="The 2025 Nexon is 3995mm long, 1804mm wide and 1620mm tall. Bigger exterior dimensions give a car a stronger road presence. The Nexon has a 2498mm long wheelbase. A long wheelbase makes the car more stable at high speeds and gives better legroom in the back"
-                                data={dimensionsCapacity as [] | null}
-                            />
+                            <div id="Dimensions">
+                                <CommonList
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    title="Dimensions & Capacity"
+                                    desc="The 2025 Nexon is 3995mm long, 1804mm wide and 1620mm tall. Bigger exterior dimensions give a car a stronger road presence. The Nexon has a 2498mm long wheelbase. A long wheelbase makes the car more stable at high speeds and gives better legroom in the back"
+                                    data={dimensionsCapacity as [] | null}
+                                />
+                            </div>
 
-                            <SpecsListTable
-                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                slug={slug}
-                            />
+                            <div id="Mileage">
+                                <SpecsListTable
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    slug={slug}
+                                />
+                            </div>
 
-                            <ModelExpertReview
-                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                            />
+                            <div id="Reviews">
+                                <ModelExpertReview
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                />
+                            </div>
 
-                            <ModelProsCons
-                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                slug={slug}
-                            />
+                            <div id="Pros Cons">
+                                <ModelProsCons
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    slug={slug}
+                                />
+                            </div>
 
                             {/* <ModelComparisonSimilarCars
                                 model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
@@ -292,6 +306,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
                             <OnRoadPriceinTopCities
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -306,14 +322,19 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained

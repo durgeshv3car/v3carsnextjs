@@ -20,6 +20,11 @@ import { RunningCost } from "./RunningCost";
 import { TotalCostOfOwnership } from "./TotalCostOfOwnership";
 import { IncludedNotIncluded } from "./IncludedNotIncluded";
 import { EmiCalculator } from "./EmiCalculator";
+import BrochureCard from "../sidebar/BrochureCard";
+import CSDPriceList from "../sidebar/CSDPriceList";
+import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
+import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "../overview/Overview";
 
 interface MileagePageProps {
     type: string;
@@ -28,9 +33,13 @@ interface MileagePageProps {
 }
 
 function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
     const latestVideos = latestVideosData?.rows ?? []
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     console.log(childSlug);
 
@@ -145,17 +154,23 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            {/* <BrochureCard
-                                title="Tata Nexon"
+                            <BrochureCard
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
-                            /> */}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
@@ -168,11 +183,13 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -186,23 +203,28 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <OtherCars
-                                title="Other Tata Nexon"
+                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
-                                title="Upcoming Tata Nexon"
+                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

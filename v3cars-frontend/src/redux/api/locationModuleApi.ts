@@ -18,6 +18,9 @@ export const locationModuleApi = createApi({
     getPopularCities: builder.query<Response, void>({
       query: () => `/locations/cities?isPopular=1&limit=24&sortBy=name_asc`,
     }),
+    getTopCities: builder.query<Response, void>({
+      query: () => `/locations/cities?isTop=1`,
+    }),
     getAllCities: builder.query<Response, { page: number; limit: number }>({
       query: ({ page, limit }) => `/locations/cities?limit=${limit}&page=${page}&sortBy=name_asc`,
     }),
@@ -45,6 +48,7 @@ export const locationModuleApi = createApi({
 // Export hook
 export const {
   useGetPopularCitiesQuery,
+  useGetTopCitiesQuery,
   useGetAllCitiesQuery,
   useGetSearchCityQuery,
   useGetCountriesQuery,

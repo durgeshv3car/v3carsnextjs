@@ -1,33 +1,34 @@
 'use client'
 
+import { IMAGE_URL } from "@/utils/constant";
 import React from "react";
 
 interface OtherCarsProps {
-    title: string
+    title: string;
+    data: Model[]
 }
 
-const cars = [
-  {
-    id: 1,
-    name: "Tata Punch",
-    price: "₹5.50 - 9.30 lakh*",
-    image: "/model/tata.png",
-  },
-  {
-    id: 2,
-    name: "Hyundai Exter",
-    price: "₹6.00 - 10.00 lakh*",
-    image: "/model/tata.png",
-  },
-  {
-    id: 3,
-    name: "Maruti Brezza",
-    price: "₹8.29 - 14.14 lakh*",
-    image: "/model/tata.png",
-  },
-];
+export interface Model {
+    modelId: number;
+    name: string;
+    slug: string;
+    launchDate: string; // ISO Date string
 
-const OtherCars: React.FC<OtherCarsProps> = ({ title }) => {
+    priceRange: {
+        min: number;
+        max: number;
+    };
+
+    image: {
+        name: string;
+        alt: string;
+        url: string;
+    };
+
+    imageUrl: string;
+}
+
+const OtherCars: React.FC<OtherCarsProps> = ({ title, data }) => {
     return (
         <div className="border border-gray-200 rounded-xl bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
             {/* Header */}
@@ -39,33 +40,35 @@ const OtherCars: React.FC<OtherCarsProps> = ({ title }) => {
 
             {/* Body */}
             <div className="flex flex-col items-center text-center">
-                {cars.map((car) => (
+                {data && data.slice(0,4).map((car, idx) => (
                     <div
-                        key={car.id}
+                        key={idx}
                         className="flex items-center border-b p-4 gap-4 w-full dark:border-[#2E2E2E]"
                     >
                         <img
-                            src={car.image}
+                            src={`${IMAGE_URL}/media/model-imgs/${car.image.url}`}
                             alt={car.name}
-                            width={102}
+                            width={130}
                             height={73}
-                            className="object-contain"
+                            className="object-contain rounded"
                         />
                         <div className="text-start">
                             <h2 className="text-lg">{car.name}</h2>
-                            <p className="font-semibold text-gray-400">{car.price}</p>
+                            <p className="font-semibold text-gray-400">
+                                ₹{`${(car.priceRange.min / 100000).toFixed(2)} - ${(car.priceRange.max / 100000).toFixed(2)}`} Lakh
+                            </p>
                         </div>
                     </div>
                 ))}
 
                 {/* Button */}
                 <div className="p-3 w-full">
-                <button
-                    className="w-full border border-black rounded-lg py-2 text-sm font-medium bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition dark:bg-[#171717] dark:border-[#2E2E2E]"
-                    onClick={() => alert('Downloading Nexon Brochure..')}
+                    <button
+                        className="w-full border border-black rounded-lg py-2 text-sm font-medium bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition dark:bg-[#171717] dark:border-[#2E2E2E]"
+                        onClick={() => alert('Downloading Nexon Brochure..')}
                     >
-                    View All {title} Cars
-                </button>
+                        View All {title} Cars
+                    </button>
                 </div>
             </div>
         </div>

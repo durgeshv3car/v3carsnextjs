@@ -1,7 +1,9 @@
 'use client'
 
+import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useSelector } from "react-redux";
 
 interface LatestOffersDiscountsProps {
      title: string;
@@ -10,6 +12,7 @@ interface LatestOffersDiscountsProps {
 }
 
 const LatestOffersDiscounts: React.FC<LatestOffersDiscountsProps> = ({ title, slug, type }) => {
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const router = useRouter()
     return (
         <div className="border border-gray-200 rounded-xl bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
@@ -24,7 +27,7 @@ const LatestOffersDiscounts: React.FC<LatestOffersDiscountsProps> = ({ title, sl
             <div className="flex flex-col items-center text-center px-4 py-4">
                 <div className="flex justify-between items-center gap-2">
                     <p className="text-sm/relaxed text-justify">
-                        Discover {title} offers and discounts in Delhi including cash discount, exchange bonus, corporate discount, loyalty bonus and low-EMI finance offers. Updated regularly with amounts, eligibility and expiry.
+                        Discover {title} offers and discounts in {selectedCity.cityName} including cash discount, exchange bonus, corporate discount, loyalty bonus and low-EMI finance offers. Updated regularly with amounts, eligibility and expiry.
                     </p>
 
                     <img

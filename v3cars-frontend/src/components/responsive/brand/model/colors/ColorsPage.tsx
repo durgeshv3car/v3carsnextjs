@@ -15,6 +15,11 @@ import Marquee from "@/components/ui/Marquee";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
 import ModelColours from "./ModelColours";
 import VariantsColorTable from "./VariantsColorTable";
+import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
+import CSDPriceList from "../sidebar/CSDPriceList";
+import BrochureCard from "../sidebar/BrochureCard";
+import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "../overview/Overview";
 
 interface MileagePageProps {
     type: string;
@@ -23,9 +28,13 @@ interface MileagePageProps {
 }
 
 function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
     const latestVideos = latestVideosData?.rows ?? []
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
 
     console.log(childSlug);
 
@@ -80,7 +89,7 @@ function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
                             /> */}
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -99,7 +108,11 @@ function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
                                 videoList={latestVideos}
                             />
 
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
 
                             {/* {isMobile ? <MobileLatestCarNews
                                 title="Tata Nexon Latest News"
@@ -134,17 +147,23 @@ function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            {/* <BrochureCard
-                                title="Tata Nexon"
-                            /> */}
+                            <BrochureCard
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
+                            />
 
-                            {/* <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
-                            /> */}
+                            <CSDPriceList
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
 
-                            {/* <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
-                            /> */}
+                            <LatestOffersDiscounts
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
@@ -157,11 +176,13 @@ function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -175,23 +196,28 @@ function ColorsPage({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <OtherCars
-                                title="Other Tata Nexon"
+                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <OtherCars
-                                title="Upcoming Tata Nexon"
+                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingBrand}
                             />
 
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>
