@@ -1,6 +1,4 @@
 
-
-
 Module: Cars (Brands, Models, Variants)
 
 All endpoints are under /v1/cars. Example base URL: http://localhost:3121.
@@ -55,7 +53,7 @@ futureOnly — 0|1 (when isUpcoming=1, keeps only launchDate >= today)
 
 brandId — numeric (single)
 
-brandIds — multi-select (comma / repeated / array style)
+brandIds — multi-select (comma / repeated / array style)  
 
 bodyTypeId — numeric (single)
 
@@ -118,7 +116,7 @@ array-style: brandIds[]=12&brandIds[]=15
 This applies to brandIds, bodyTypeIds, cylindersList, seatingList etc.
 
 Examples
- 
+
 Upcoming (closest first):
 /v1/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=10&page=1
 
@@ -178,53 +176,69 @@ Response item (enriched)
   "imageUrl": "https://cdn.example.com/grand-vitara-main.jpg"
 }
 
-
-
 Variants
 
 List
 
+
 GET /v1/cars/variants
+
 
 Query params
 
+
 modelId — recommended to scope variants
+
 
 q — search in variantName    
 
+
 Price filters
+
 
 priceBucket — UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L
 
+
 minPrice, maxPrice — numbers (₹)
+
 
 Powertrain filters
 
+
 fuelType — Petrol|Diesel|CNG|EV...
+
 
 transmissionType — MT|AT|AMT|DCT...
 
+
 Sorting — price_asc | price_desc | latest | name_asc | name_desc
 
+
 page, limit
+
 
 Examples
 
 
-
 By model: /v1/cars/variants?modelId=163&limit=10&page=1
+
 
 Search + price sort: /v1/cars/variants?modelId=101&q=delta&sortBy=price_asc&limit=10&page=1
 
+
 Fuel + Transmission: /v1/cars/variants?modelId=101&fuelType=Petrol&transmissionType=AT&limit=10&page=1
 
+
 Bucket: /v1/cars/variants?modelId=101&priceBucket=BETWEEN_10_20L&sortBy=price_asc&limit=10&page=1
+
 
 Numeric window: /v1/cars/variants?modelId=101&minPrice=700000&maxPrice=1200000&limit=10&page=1
 
 
 
 Response item
+
+
 
 {
   "variantId": 177,
@@ -242,28 +256,38 @@ Response item
 
 Notes
 
+
 Multi-select formats accepted: comma-separated (a,b,c), repeated query keys (k=a&k=b), or array-style (k[]=a&k[]=b). Validators normalize them to arrays server-side.
+
 
 Engine displacement → cubicCapacity: Frontend uses engineDisplacement keys (e.g., 1000_1500) — server maps these to the DB column tblmodelpowertrains.cubicCapacity (cc). This fixes filters which previously targeted engineDisplacement.
 
+
 Cylinders: Use 8_PLUS to indicate 8 or more cylinders.
+
 
 Seating: seating (single) or seatingList (multi).
 
+
 Price fallback: If model expected prices are 0/null, priceMin/Max come from parsed variant prices.
 
+
 Images: Hero image picked by priority: isMainImage DESC, position_no ASC, imageId ASC (model or variant image).
+
 
 MEDIA_BASE_URL: set to build absolute image URLs.
 
 
 model pages -
 
+
 overview  -
 Using numeric id (e.g., 444)
 
+
 Model basics:
 /v1/cars/models/444
+
 
 Price list:
 /v1/cars/models/444/price-list
@@ -277,6 +301,7 @@ Best variant to buy:
 
 Dimensions & capacity:
 /v1/cars/models/444/dimensions-capacity
+
 
 Mileage, specs & features:
 /v1/cars/models/444/mileage-specs-features
@@ -293,28 +318,35 @@ Using slug (e.g., grand-vitara)
 Model basics:
 /v1/cars/models/grand-vitara
 
+
 Price list:
 /v1/cars/models/grand-vitara/price-list
 /v1/cars/models/grand-vitara/price-list?cityId=6
 /v1/cars/models/grand-vitara/price-list?fuelType=diesel
 /v1/cars/models/grand-vitara/price-list?cityId=6&fuelType=manual&expandVariantId=987&isLoan=1
 
+
 Best variant to buy:
 /v1/cars/models/grand-vitara/best-variant-to-buy
 /v1/cars/models/grand-vitara/best-variant-to-buy?powertrainId=123
 http://localhost:3121/v1/cars/models/444/best-variant-to-buy?detailed=true&fuelType=petrol&transmissionType=manual
 
+
 Dimensions & capacity:
 /v1/cars/models/grand-vitara/dimensions-capacity
 
+
 for detailed - detailed=1
+
 
 Mileage, specs & features:
 /v1/cars/models/grand-vitara/mileage-specs-features
 /v1/cars/models/grand-vitara/mileage-specs-features?powertrainId=123
 
+
 Pros & cons:
 /v1/cars/models/grand-vitara/pros-cons
+
 
 competitors:
 /v1/cars/models/grand-vitara/competitors
@@ -342,10 +374,15 @@ No filters (full table):
 
 offer-disscounts -
 
-http://localhost:3121/v1/cars/models/grand-vitara/offers-discounts?months=12&expandQID=938
+/v1/cars/models/grand-vitara/offers-discounts?months=12&expandQID=938
+
+
+monthly-sales 
+
+/v1/cars/models/grand-vitara/models/:id/monthly-sales?month=6
 
 
 
+upcomping cars by model
 
-
-
+/v1/cars/models/:id/upcoming-brand?limit=5

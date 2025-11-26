@@ -152,3 +152,104 @@ src/
 - Add caching for popular lists
 - Optional rate-limiting
 - Materialize numeric price columns for DB-side ordering at scale
+
+
+
+
+
+v3cars-backend/
+├─ src/
+│  ├─ app.ts                      # express app init, middlewares (helmet, cors, pino-http), routes mount
+│  ├─ server.ts                   # http server, graceful shutdown
+│  ├─ routes/
+│  │  └─ v1.ts                    # API versioning: mounts /v1/*
+│  │
+│  ├─ config/
+│  │  ├─ env.ts                   # Zod-validated env (PORT, DATABASE_URL, CORS_ORIGIN...)
+│  │  └─ cors.ts                  # cors options (allowlist)
+│  │
+│  ├─ lib/
+│  │  ├─ prisma.ts                # PrismaClient singleton (ESM + graceful shutdown)
+│  │  └─ cache.ts                 #  LRU/Redis client + helper (get/set JSON)
+│  │
+│  ├─ middlewares/
+│  │  ├─ error.ts                 # central error handler (Zod/Prisma normalization)
+│  │  ├─ notFound.ts              # 404 handler
+│  │  └─ requestId.ts             # req.id + pino bindings
+│  │
+│  ├─ utils/
+│  │  ├─ pagination.ts            # cursor helpers (encode/decode)
+│  │  ├─ http.ts                  # sendOk, sendBadRequest, cache-control helpers
+│  │  └─ strings.ts               # slugify, toNumberSafe, etc.
+│  │
+│  ├─ modules/
+│  │  ├─ home/                    # ✅ HOMEPAGE AGGREGATOR (no direct DB; reuse other services)
+│  │  │  ├─ home.route.ts         # /v1/home/*
+│  │  │  ├─ home.controller.ts
+│  │  │  ├─ home.service.ts       # orchestrates cars/articles/tools services
+│  │  │  ├─ home.dto.ts           # optional: query schemas (locationId, limit overrides)
+│  │  │  └─ home.types.ts         # response section types
+│  │  │
+│  │  ├─ cars/
+│  │  │  ├─ cars.route.ts         # mounts /brands, /models, /variants, /lists/*
+│  │  │  ├─ cars.types.ts
+│  │  │  ├─ cars.validators.ts
+│  │  │  ├─ brands/
+│  │  │  │  ├─ brands.route.ts
+│  │  │  │  ├─ brands.controller.ts
+│  │  │  │  ├─ brands.service.ts
+│  │  │  │  ├─ brands.repo.ts
+│  │  │  │  └─ brands.dto.ts
+│  │  │  ├─ models/
+│  │  │  │  ├─ models.route.ts
+│  │  │  │  ├─ models.controller.ts
+│  │  │  │  ├─ models.service.ts
+│  │  │  │  ├─ models.repo.ts
+│  │  │  │  └─ models.dto.ts
+│  │  │  ├─ variants/
+│  │  │  │  ├─ variants.route.ts
+│  │  │  │  ├─ variants.controller.ts
+│  │  │  │  ├─ variants.service.ts
+│  │  │  │  ├─ variants.repo.ts
+│  │  │  │  └─ variants.dto.ts
+│  │  │  └─ lists/
+│  │  │     ├─ lists.route.ts        # /v1/cars/lists/popular|latest|upcoming
+│  │  │     ├─ lists.controller.ts
+│  │  │     └─ lists.service.ts      # reuses models.service (no duplicate DB logic)
+│  │  │
+│  │  ├─ articles/                   # car news / reviews
+│  │  │  ├─ articles.route.ts
+│  │  │  ├─ articles.controller.ts
+│  │  │  ├─ articles.service.ts
+│  │  │  ├─ articles.repo.ts        # tblarticles / tblnews mapping
+│  │  │  └─ articles.dto.ts
+│  │  │
+│  │  ├─ tools/                     # emi, fuel, compare, onroad
+│  │  │  ├─ tools.route.ts
+│  │  │  ├─ emi/
+│  │  │  ├─ fuel/
+│  │  │  ├─ compare/
+│  │  │  └─ onroad/
+│  │  │
+│  │  └─ search/
+│  │     ├─ search.route.ts
+│  │     ├─ search.controller.ts
+│  │     ├─ search.service.ts     # unified search across brands/models/articles
+│  │     └─ search.repo.ts
+│  │
+│  └─ typings/                    # global TS types (if needed)
+│
+├─ prisma/
+│  ├─ schema.prisma               # DB-first generated; do NOT hand edit prod enums
+│  └─ migrations/                 # (empty for DB-first; keep local experiments only)
+│
+├─ scripts/
+│  ├─ prisma-sync.ts              # runs prisma db pull && prisma generate safely
+│  └─ seed-local.ts               # optional seed for dev
+│
+├─ test/                          # integration tests (supertest) later
+│
+├─ .env.example
+├─ package.json
+├─ tsconfig.json                  # NodeNext, "moduleResolution": "NodeNext"
+└─ README.md

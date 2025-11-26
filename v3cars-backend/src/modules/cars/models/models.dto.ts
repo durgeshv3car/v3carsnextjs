@@ -49,7 +49,6 @@ export const modelPriceListQueryDto = paginationQuery.merge(
       .optional(),
   })
 
-
 );
 
 export const modelBestVariantQueryDto = z.object({
@@ -98,4 +97,13 @@ export const modelOffersQueryDto = z.object({
   expandQID: z.coerce.number().int().positive().optional(),
   month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/).optional(),
   months: z.coerce.number().int().min(1).max(24).default(12).optional(),
+});
+
+
+export const modelMonthlySalesQueryDto = z.object({
+  months: z.coerce.number().int().min(1).max(24).default(6).optional(),
+});
+
+export const modelUpcomingByBrandDto = z.object({
+  limit: z.coerce.number().int().min(1).max(50).default(5).optional(),
 });

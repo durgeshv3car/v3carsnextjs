@@ -11,6 +11,8 @@ import {
   modelDimensionsQueryDto,
   modelFuelEfficiencyQueryDto,
   modelCsdVsOnroadQueryDto,
+  modelMonthlySalesQueryDto,
+  modelUpcomingByBrandDto,
 } from './models.dto.js';
 
 
@@ -142,6 +144,25 @@ export class ModelsController {
     res.json(data);
   }
 
+  async monthlySales(req: Request, res: Response) {
+  const id = await this.resolve(req, res);
+  if (!id) return;
+
+  const q = modelMonthlySalesQueryDto.parse(req.query);
+  const data = await svc.monthlySales(id, { months: q.months ?? 6 });
+
+ 
+  res.json(data);
+}
+
+async upcomingByBrand(req: Request, res: Response) {
+  const id = await this.resolve(req, res);
+  if (!id) return;
+
+  const q = modelUpcomingByBrandDto.parse(req.query);
+  const data = await svc.upcomingByBrand(id, { limit: q.limit });
+  res.json({ success: true, ...data });
+}
 
 
 }
