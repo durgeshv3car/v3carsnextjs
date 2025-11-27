@@ -1,6 +1,5 @@
 'use client'
 
-import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
 import CommonReviewCard from "@/components/common/CommonReviewCard";
 import CommonVideos from "@/components/common/CommonVideos";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
@@ -13,13 +12,20 @@ import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery, useGetPopularCarQuery } from "@/redux/api/carModuleApi";
-import { useGetLatestComparisonReviewsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelCompetitorsQuery, useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { useGetLatestComparisonReviewsQuery, useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import { CarData } from "../overview/Overview";
 import BrochureCard from "../sidebar/BrochureCard";
 import CSDPriceList from "../sidebar/CSDPriceList";
 import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CompetitorsOffersCard from "./CompetitorsOffersCard";
+import CommonSellingCarCard from "@/components/common/ModelCards/CommonSellingCarCard";
+import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
+import useIsMobile from "@/hooks/useIsMobile";
+import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
 
 interface MileagePageProps {
     type: string;
@@ -29,16 +35,22 @@ interface MileagePageProps {
 
 function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
-    const { data: latestVideosData } = useGetLatestVideosQuery()
-    const { data: popularCarData } = useGetPopularCarQuery();
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelCompetitorsData } = useGetModelCompetitorsQuery({ model_slug: slug });
     const { data: latestComparisonReviewsData } = useGetLatestComparisonReviewsQuery();
     const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+    const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
-    const latestVideos = latestVideosData?.rows ?? []
-    const popularCar = popularCarData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelLatestNews = modelLatestNewsData?.rows ?? []
+    const modelCompetitors = modelCompetitorsData?.items ?? []
     const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
     const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
+    const popularComparisons = popularComparisonsData?.rows ?? [];
+
+    const isMobile = useIsMobile()
 
     console.log(childSlug);
 
@@ -65,7 +77,7 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -76,35 +88,22 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
 
-                            {/* <VideoReviewCard
-                                title="Tata Nexon Review Videos"
-                                videoList={latestVideos}
-                            /> */}
-
-                            {/* <ModelColours />
-
-                            <VariantsColorTable /> */}
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <CurrentOffersCard data={popularCar} />
-                            </div>
+                            <CompetitorsOffersCard
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelCompetitors.slice(0, 6)}
+                            />
 
                             <CommonReviewCard
-                                title="Tata Nexon Comparison Reviews"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Comparison Reviews`}
                                 data={latestComparisonReviews}
                                 viewAllLink="/tata-nexon-comparison-review"
                                 viewAllText="View All Tata Nexon Reviews"
                             />
 
-                            <div className="border rounded-xl h-[332px]" />
-
-                            {/* <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
-                            /> */}
+                            <CommonSellUsedCarComponent />
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -117,32 +116,38 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
-                            />
-
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
-
-                            {/* {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                            {isMobile ? <MobileLatestCarNews
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
-                            } */}
+                            }
 
-                            {/* <CommonSellingCarCard
+                            <CommonVideos
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
+                            />
+
+                            <CommonComparisonModelCard data={popularComparisons} />
+
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
+
+                            <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
-                            /> */}
+                            />
 
                         </div>
 

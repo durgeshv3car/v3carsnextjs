@@ -33,7 +33,6 @@ const tabs = [
     "Mileage",
     "Reviews",
     "Pros Cons",
-    "Compare",
     "News",
     "Monthly Sales",
     "Offers Discounts",
@@ -192,8 +191,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                                                     />
                                                                     : activeTab === "Competitors" ?
                                                                         <CommonModelTopSection
-                                                                            title="Tata"
-                                                                            highlight="Nexon"
+                                                                            title={`${modelDetails?.model?.brand?.name}`}
+                                                                            highlight={`${modelDetails?.model?.name}`}
                                                                             others="Competitors"
                                                                             description="Considering the Nexon? This page provides a comprehensive overview of its key competitors in the market. Here you'll find information about the Tata Nexon's direct rivals. Each competitor's page provides detailed information on price, engine and dime"
                                                                         />
@@ -206,8 +205,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                                                             />
                                                                             : activeTab === "Maintenance Cost" ?
                                                                                 <CommonModelTopSection
-                                                                                    title="Tata"
-                                                                                    highlight="Nexon"
+                                                                                    title={`${modelDetails?.model?.brand?.name}`}
+                                                                                    highlight={`${modelDetails?.model?.name}`}
                                                                                     others="Maintenance Cost"
                                                                                     description="Get the estimated service cost of the Tata Nexon with a year-by-year breakup for parts labour and taxes. We show the total 10-year maintenance cost, the average yearly cost and the cost per km based on the recommended service schedule. Use the ..."
                                                                                 />

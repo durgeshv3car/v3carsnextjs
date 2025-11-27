@@ -1,13 +1,10 @@
 'use client'
 
-import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonVideos from "@/components/common/CommonVideos";
 import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
-import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonSellingCarCard from "@/components/common/ModelCards/CommonSellingCarCard";
 import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard";
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
-import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
 import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
@@ -19,8 +16,7 @@ import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import useIsMobile from "@/hooks/useIsMobile";
-import { useGetModelLatestNewsQuery, useGetModelTopNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelTopNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import NewsTopStories from "./NewsTopStories";
 import LatestUpdates from "../overview/LatestUpdates";
@@ -36,20 +32,16 @@ interface MileagePageProps {
 
 function NewsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
-    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelTopNewsData } = useGetModelTopNewsQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
-    const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelTopNews = modelTopNewsData?.rows ?? []
     const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
-
-    const isMobile = useIsMobile()
 
     console.log(childSlug);
 
@@ -86,7 +78,6 @@ function NewsPage({ type, slug, childSlug }: MileagePageProps) {
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
-                            {/* <FuelEfficiencyTable /> */}
                             <LatestUpdates
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
@@ -97,12 +88,6 @@ function NewsPage({ type, slug, childSlug }: MileagePageProps) {
                                 newsList={modelTopNews}
                                 link={"/news"}
                             />
-
-                            {/* <CommonVideos
-                                title="Latest Mileage Videos"
-                                view={`${modelDetails?.model?.name} Videos`}
-                                videoList={latestVideos}
-                            /> */}
 
                             <CommonSellUsedCarComponent />
 
@@ -126,21 +111,6 @@ function NewsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            {isMobile ? <MobileLatestCarNews
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
-                                view="Latest News"
-                                data={modelLatestNews}
-                                link="/news"
-                            />
-                                :
-                                <CommonNewsUpdate
-                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
-                                    view={`${modelDetails?.model?.name} News Update`}
-                                    newsList={modelLatestNews}
-                                    link={"/news"}
-                                />
-                            }
-
                             <CommonVideos
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
                                 view={`${modelDetails?.model?.name} Videos`}
@@ -148,12 +118,6 @@ function NewsPage({ type, slug, childSlug }: MileagePageProps) {
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
-
-                            <CommonModelFAQ
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                faqs={faqs}
-                                viewAllLink="#"
-                            />
 
                             <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
@@ -256,17 +220,3 @@ function NewsPage({ type, slug, childSlug }: MileagePageProps) {
 }
 
 export default NewsPage;
-
-const faqs = [
-    {
-        question: "What is the exact on-road price of Tata Nexon?",
-        answer:
-            "The on-road price of Nexon in Delhi starts at ₹8,22,812. The on-road price is inclusive of RTO charges and insurance.",
-    },
-    { question: "What are the latest October offers available on Tata Nexon?" },
-    { question: "Which car is better Nexon or Punch?" },
-    { question: "What will the EMI or down payment for Tata Nexon?" },
-    { question: "Is Tata Nexon a 5 or 7 seater SUV?" },
-    { question: "What is the mileage of Tata Nexon?" },
-    { question: "What are the colour options available for Tata Nexon?" },
-];

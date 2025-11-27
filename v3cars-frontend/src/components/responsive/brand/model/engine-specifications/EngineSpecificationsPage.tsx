@@ -16,13 +16,16 @@ import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import SpecsListTable from "../overview/SpecsListTable";
 import FuelEfficiencyTable from "../mileage/FuelEfficiencyTable";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
+import useIsMobile from "@/hooks/useIsMobile";
 
 interface MileagePageProps {
     type: string;
@@ -35,11 +38,15 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
 
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
+    const modelLatestNews = modelLatestNewsData?.rows ?? []
+
+    const isMobile = useIsMobile()
 
     console.log(childSlug);
 
@@ -109,7 +116,7 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                             />
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -122,9 +129,24 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
+                            {isMobile ? <MobileLatestCarNews
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                view="Latest News"
+                                data={modelLatestNews}
+                                link="/news"
+                            />
+                                :
+                                <CommonNewsUpdate
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view="Nexon News Update"
+                                    newsList={modelLatestNews}
+                                    link={"/news"}
+                                />
+                            }
+
                             <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
                                 videoList={modelReviewsVideos}
                             />
 
@@ -135,25 +157,6 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                                 faqs={faqs}
                                 viewAllLink="#"
                             />
-
-                            {/* {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
-                                view="Latest News"
-                                data={latestCarNews}
-                                link="/news"
-                            />
-                                :
-                                <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
-                                    link={"/news"}
-                                />
-                            } */}
-
-                            {/* <CommonSellingCarCard
-                                title="Best Selling B2-segment SUVs in India - Sep 2025"
-                            /> */}
 
                         </div>
 
