@@ -65,16 +65,59 @@ export class ImagesRepo {
   }
 
   /** 🆕 Colour assets for a model */
-  async listColorsByModelId(modelId: number) {
-    return prisma.tblmodelcolors.findMany({
-      where: { modelId },
-      select: {
-        id: true,
-        colorId: true,
-        fileName: true,
-        fileNameAltText: true,
+ async listColorsByModelId(modelId: number) {
+  // 1) fetch color image rows for this model
+  const rows = await prisma.tblmodelcolors.findMany({
+    where: { modelId },
+    select: {
+      id: true,
+      colorId: true,
+      fileName: true,
+      fileNameAltText: true,
+    },
+    orderBy: [{ id: 'asc' }],
+  });
+
+  if (!rows.length) return rows as Array<{
+    id: number;
+    colorId: number | null;
+    fileName: string | null;
+    fileNameAltText: string | null;
+    // appended (empty) fields to keep typing compatible with service mapper
+    _colorName?: string | null;
+    _colorCode?: string | null;
+  }>;
+
+  // 2) hydrate color names/codes from tblcolors
+  const ids = Array.from(
+    new Set(rows.map(r => r.colorId).filter((n): n is number => typeof n === 'number'))
+  );
+
+  const colorMeta = ids.length
+    ? await prisma.tblcolors.findMany({
+        where: { colorId: { in: ids } },
+        select: {
+          colorId: true,
+          colorName: true,
+          colorCode: true,   // e.g. "#3B7F3C"
+        },
+      })
+    : [];
+
+  const metaById = new Map<number, { name: string | null; code: string | null }>(
+    colorMeta.map(c => [
+      c.colorId,
+      {
+        name: (c as any).colorName ?? null,
+        code: ((c as any).colorCode ?? (c as any).hexCode ?? null) as string | null,
       },
-      orderBy: [{ id: 'asc' }],
-    });
-  }
+    ])
+  );
+
+  return rows.map(r => ({
+    ...r,
+    _colorName: r.colorId != null ? metaById.get(r.colorId)?.name ?? null : null,
+    _colorCode: r.colorId != null ? metaById.get(r.colorId)?.code ?? null : null,
+  }));
+}
 }

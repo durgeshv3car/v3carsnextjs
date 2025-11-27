@@ -365,8 +365,10 @@ Only fuel filter:
 Only transmission filter:
 /v1/cars/models/2/fuel-efficiency?transmissionType=MT
 
+
 Using a slug instead of numeric id (example slug):
 /v1/cars/models/fronx/fuel-efficiency?fuelType=CNG&transmissionType=Manual
+
 
 No filters (full table):
 /v1/cars/models/2/fuel-efficiency
@@ -377,12 +379,22 @@ offer-disscounts -
 /v1/cars/models/grand-vitara/offers-discounts?months=12&expandQID=938
 
 
+
 monthly-sales 
 
 /v1/cars/models/grand-vitara/models/:id/monthly-sales?month=6
 
 
-
 upcomping cars by model
 
-/v1/cars/models/:id/upcoming-brand?limit=5
+/v1/cars/models/:id/upcoming-cars?limit=5
+
+others cars by model
+
+/v1/cars/models/:id/others-cars?limit=5
+
+
+
+
+
+

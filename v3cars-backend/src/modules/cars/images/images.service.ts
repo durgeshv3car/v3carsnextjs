@@ -61,22 +61,24 @@ export class ImagesService {
   }
 
   /** Colours for a model */
-  async listColorsByModelId(modelId: number) {
-    const key = cacheKey({ ns: 'images:listColorsByModel', v: 2, modelId }); // bump v
-    const ttlMs = 60 * 60 * 1000;
+ async listColorsByModelId(modelId: number) {
+  const key = cacheKey({ ns: 'images:listColorsByModel', v: 3, modelId }); // v++ after adding colorCode
+  const ttlMs = 60 * 60 * 1000;
 
-    return withCache(
-      key,
-      async () => {
-        const rows = await repo.listColorsByModelId(modelId);
-        return rows.map((r) => ({
-          id: r.id,
-          colorId: r.colorId ?? null,
-          name: r.fileNameAltText ?? null,
-          imageUrl: buildAssetPath(r.fileName ?? null),
-        }));
-      },
-      ttlMs
-    );
-  }
+  return withCache(
+    key,
+    async () => {
+      const rows = await repo.listColorsByModelId(modelId);
+      return rows.map((r: any) => ({
+        id: r.id,
+        colorId: r.colorId ?? null,
+        // prefer canonical color name from tblcolors; fallback to file alt text
+        name: (r._colorName ?? r.fileNameAltText) ?? null,
+        colorCode: r._colorCode ?? null,           // <-- HEX like "#AABBCC" (may be null if missing)
+        imageUrl: buildAssetPath(r.fileName ?? null),
+      }));
+    },
+    ttlMs
+  );
+}
 }
