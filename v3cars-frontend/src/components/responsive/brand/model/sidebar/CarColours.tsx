@@ -39,7 +39,7 @@ const CarColours: React.FC<CarColoursProps> = ({ title, data, type, slug }) => {
                     <img
                         src={`${IMAGE_URL}/media/model-imgs/${selectedColor?.imageUrl || data[0]?.imageUrl}`}
                         alt={selectedColor?.name}
-                        width={283}
+                        width={310}
                         height={162}
                         className="object-contain rounded-lg"
                     />
@@ -50,13 +50,14 @@ const CarColours: React.FC<CarColoursProps> = ({ title, data, type, slug }) => {
                             <button
                                 key={color.colorId}
                                 onClick={() => setSelected(color.colorId)}
+                                style={{ backgroundColor: color.colorCode }}   // ✅ BG from backend
                                 className={`
                                     w-10 h-10 rounded-full border overflow-hidden
                                     ${selected === color.colorId
                                         ? "ring-2 ring-blue-500 ring-offset-2"
                                         : "border-gray-300"
                                     }
-                                `}
+    `}
                                 title={color.name}
                             />
                         ))}

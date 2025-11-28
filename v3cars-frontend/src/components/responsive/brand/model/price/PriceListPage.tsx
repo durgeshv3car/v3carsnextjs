@@ -21,7 +21,7 @@ import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import { CarData } from "../overview/Overview";
@@ -50,14 +50,16 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
             { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType, variantId: variantId ? Number(variantId) : undefined },
             { skip: !slug }
         );
-    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const priceListDetails = priceListDetailsData?.rows ?? []
-    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? []; 
+    const modelOthersCars = modelOthersCarsData?.items ?? []; 
 
     const isMobile = useIsMobile()
 
@@ -100,7 +102,7 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} On-Road Price in ${selectedCity.cityName}`}
                                 desc={"See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"}
                                 data={priceListDetails}
-                                slug={slug}
+                                childSlug={childSlug}
                                 setFuelType={setFuelType}
                                 setTransmissionType={setTransmissionType}
                                 setVariantId={setVariantId}
@@ -228,12 +230,12 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours

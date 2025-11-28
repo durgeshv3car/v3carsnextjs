@@ -121,8 +121,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                             />
                             : activeTab === "CSD Price" ?
                                 <CommonModelTopSection
-                                    title="Tata"
-                                    highlight="Nexon"
+                                    title={`${modelDetails?.model?.brand?.name}`}
+                                    highlight={`${modelDetails?.model?.name}`}
                                     others="CSD Price"
                                     description="This page lists the CSD price of the Tata Nexon for all variants and compares it with the civilian ex-showroom and estimated on-road price to show how much you save with CSD. We also map eligibility by rank / pay level (Officers, JCOs, NCOs & ORs)."
                                 />
@@ -135,8 +135,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                     />
                                     : activeTab === "News" ?
                                         <CommonModelTopSection
-                                            title="Tata"
-                                            highlight="Nexon"
+                                            title={`${modelDetails?.model?.brand?.name}`}
+                                            highlight={`${modelDetails?.model?.name}`}
                                             others="News"
                                             description="Tata Nexon mileage is 17.01kmpl to 24.08kmpl. The mileage of Nexon Petrol is 17.01kmpl to 17.44kmpl. The mileage of Nexon Diesel is 23.30kmpl to 24.08kmpl. This page empowers you with all the information you need to understand the Nexon's real-world...."
                                         />
@@ -156,15 +156,15 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                                 />
                                                 : activeTab === "Monthly Sales" ?
                                                     <CommonModelTopSection
-                                                        title="Tata"
-                                                        highlight="Nexon"
+                                                        title={`${modelDetails?.model?.brand?.name}`}
+                                                        highlight={`${modelDetails?.model?.name}`}
                                                         others="Monthly Sales"
                                                         description="The Tata Nexon is a popular B2-segment SUV. Are you curious about how well the Tata Nexon is selling? Look no further! This page provides you with comprehensive data and insights on Tata Nexon's sales performance in India.. We'll delve into monthly s..."
                                                     />
                                                     : activeTab === "Reviews" ?
                                                         <CommonModelTopSection
-                                                            title="Tata"
-                                                            highlight="Nexon"
+                                                            title={`${modelDetails?.model?.brand?.name}`}
+                                                            highlight={`${modelDetails?.model?.name}`}
                                                             others="Reviews"
                                                             description="The Tata Nexon is a popular B2-segment SUV. Are you curious about how well the Tata Nexon is selling? Look no further! This page provides you with comprehensive data and insights on Tata Nexon's sales performance in India.. We'll delve into monthly s..."
                                                         />

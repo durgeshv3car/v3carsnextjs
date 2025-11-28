@@ -9,6 +9,7 @@ export interface PriceListItem {
     exShowroom: number;
     exShowroomMax: number;
     onRoad: number;
+    csdPrice: number;
     updatedDate: string; // ISO date string
     breakdown?: Breakdown; // optional
 }
@@ -36,7 +37,7 @@ interface OnRoadPriceTableProps {
     title: string;
     desc: string;
     data: PriceListItem[];
-    slug: string;
+    childSlug: string;
     fuelTypes?: string[];
     setVariantId?: (id: number) => void;
     fuelType?: string;
@@ -58,7 +59,7 @@ export const toLakh = (value: number): string => {
     return `₹${(value / 100000).toFixed(2)} Lakh`;
 };
 
-const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, slug, fuelTypes, fuelType, transmissionType, setVariantId, setFuelType, setTransmissionType }) => {
+const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, childSlug, fuelTypes, fuelType, transmissionType, setVariantId, setFuelType, setTransmissionType }) => {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     const normalizeData = (rows: PriceListItem[]) => {
@@ -68,6 +69,7 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
             engine: item.powertrain.label,
             exShowroom: toLakh(item.exShowroom),
             onRoad: toLakh(item.onRoad),
+            csdPrice: toLakh(item.csdPrice),
             details: item.breakdown
                 ? [
                     { label: "Ex-Showroom", value: `₹${item.breakdown.exShowroom.toLocaleString("en-IN")}` },
@@ -145,10 +147,23 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                 </div>
 
                 {/* Table Header */}
-                <div className="grid grid-cols-3 font-semibold bg-[#DEE2E6] px-4 py-3 border-b text-sm dark:bg-[#171717] dark:border-[#2E2E2E]">
-                    <span>Variants</span>
-                    <span>Ex-Showroom Price</span>
-                    <span>On-Road Price</span>
+                <div className="flex font-semibold bg-[#DEE2E6] px-4 py-3 border-b text-sm dark:bg-[#171717] dark:border-[#2E2E2E]">
+                    <span className="w-[250px]">Variants</span>
+                    {
+                        childSlug === "csd-price" && (
+                            <span className="w-[250px]">Eligibility (Rank/Pay level)</span>
+                        )
+                    }
+                    <span className="w-[250px]">
+                        {
+                            childSlug === "csd-price" ? (
+                                "CSD Price"
+                            ) : (
+                                "Ex-Showroom Price"
+                            )
+                        }
+                    </span>
+                    <span className="w-[250px]">On-Road Price</span>
                 </div>
 
                 {/* Variants */}
@@ -160,14 +175,28 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                                     setOpenIndex(openIndex === index ? null : index)
                                     setVariantId?.(variant.variantId)
                                 }}
-                                className="grid grid-cols-3 w-full text-left items-center"
+                                className="flex w-full text-left items-center"
                             >
-                                <div>
-                                    <p className="font-medium">{variant.name}</p>
+                                <div className="w-[250px]">
+                                    <p className="font-medium ">{variant.name}</p>
                                     <p className="text-xs text-gray-400">{variant.engine}</p>
                                 </div>
-                                <span className="">{variant.exShowroom}</span>
-                                <div className="flex items-center justify-between">
+                                {
+                                    childSlug === "csd-price" && (
+                                        <span className="w-[250px]">-</span>
+                                    )
+                                }
+                                <span className="w-[250px]">
+                                    {
+                                        childSlug === "csd-price" ? (
+                                            variant.csdPrice
+                                        ) : (
+                                            variant.exShowroom
+                                        )
+                                    }
+                                </span>
+
+                                <div className="w-[250px] flex items-center justify-between">
                                     <span className="">{variant.onRoad}</span>
                                     {openIndex === index ? (
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
@@ -182,7 +211,7 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                             </button>
 
                             {/* Expanded Section */}
-                            {variant.details.length > 0 && (
+                            {(variant.details.length > 0 && openIndex === index) && (
                                 <div className="text-sm border rounded-xl overflow-hidden dark:border-[#2E2E2E] pl-1 bg-primary">
                                     {variant.details.map((d, i) => (
                                         <div
@@ -201,7 +230,7 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
             </div>
 
             {
-                slug === "csd-price" && (
+                childSlug === "csd-price" && (
                     <p className="text-gray-500 mt-4 text-sm">For serving/retired defence personnel with valid CSD entitlement. Prices/eligibility depend on CSD/DGQA norms, depot/URC availability and may vary by city. Registration, insurance and handling are extra. Please confirm with your URC and dealer.</p>
                 )
             }

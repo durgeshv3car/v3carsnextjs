@@ -24,7 +24,7 @@ import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/red
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import DimensionsTable from "./DimensionsTable";
 import DimensionsTyreSizeTable from "./DimensionsTyreSizeTable";
-import { useGetDimensionsCapacityQuery, useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { useGetDimensionsCapacityQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 import { useState } from "react";
@@ -115,13 +115,15 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
             { model_slug: slug, fuelType: fuelType || undefined, transmissionType: transmission || undefined },
             { skip: !slug }
         )
-    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
-    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
+    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     const isMobile = useIsMobile()
 
@@ -294,12 +296,12 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours

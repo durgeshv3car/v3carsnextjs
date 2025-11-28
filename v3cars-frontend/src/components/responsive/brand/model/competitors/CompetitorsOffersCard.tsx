@@ -54,7 +54,7 @@ const CompetitorsOffersCard: React.FC<CompetitorsOffersCardProps> = ({ title, da
                                 <p className="font-semibold text-lg sm:text-xl">{car?.name}</p>
 
                                 <p className="font-semibold text-2xl border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] py-3">
-                                    <p className="text-xs font-medium mb-1">Starting On-Road Price</p>
+                                    <span className="text-xs font-medium mb-1">Starting On-Road Price</span> <br/>
                                     <span>₹{(car.priceRange?.min / 100000).toFixed(2)} - {(car.priceRange?.max / 100000).toFixed(2)} Lakh*</span>
                                 </p>
 

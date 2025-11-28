@@ -272,8 +272,14 @@ export const carModuleApi = createApi({
             }
         }),
 
-        getModelUpcomingBrand: builder.query<Response, { model_slug: string }>({
-            query: ({ model_slug }) => `/cars/models/${model_slug}/upcoming-brand?limit=5`,
+        getModelUpcomingCars: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/upcoming-cars?limit=5`,
+        }),
+        getModelOthersCars: builder.query<ModelCompetitorsQueryResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/others-cars?limit=5`,
+        }),
+        getModelMonthlySales: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/monthly-sales?month=6`,
         }),
     }),
 });
@@ -304,7 +310,9 @@ export const {
     useGetPriceListDetailsQuery,
     useGetModelFuelEfficiencyQuery,
     useGetModelOfferDiscountQuery,
-    useGetModelUpcomingBrandQuery,
+    useGetModelUpcomingCarsQuery,
+    useGetModelOthersCarsQuery,
+    useGetModelMonthlySalesQuery,
 } = carModuleApi;
 
 

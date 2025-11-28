@@ -15,7 +15,7 @@ import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import ServiceCostTable from "./ServiceCostTable";
 import ServiceCostSnapshot from "./ServiceCostSnapshot";
 import ServiceCostByYear from "./ServiceCostByYear";
-import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import BrochureCard from "../sidebar/BrochureCard";
 import CSDPriceList from "../sidebar/CSDPriceList";
@@ -39,14 +39,16 @@ function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
-    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
-    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelLatestNews = modelLatestNewsData?.rows ?? []
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
+    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     const isMobile = useIsMobile()
 
@@ -211,12 +213,12 @@ function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours

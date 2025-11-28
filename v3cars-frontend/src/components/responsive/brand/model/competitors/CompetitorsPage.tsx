@@ -12,7 +12,7 @@ import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import { useGetModelCompetitorsQuery, useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { useGetModelCompetitorsQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import { useGetLatestComparisonReviewsQuery, useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import { CarData } from "../overview/Overview";
@@ -39,16 +39,18 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelCompetitorsData } = useGetModelCompetitorsQuery({ model_slug: slug });
     const { data: latestComparisonReviewsData } = useGetLatestComparisonReviewsQuery();
-    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelLatestNews = modelLatestNewsData?.rows ?? []
     const modelCompetitors = modelCompetitorsData?.items ?? []
     const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
-    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
+    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     const isMobile = useIsMobile()
 
@@ -213,12 +215,12 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours

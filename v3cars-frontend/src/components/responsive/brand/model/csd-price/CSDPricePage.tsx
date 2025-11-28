@@ -16,15 +16,20 @@ import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import PriceComparison from "./PriceComparison";
-import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import BrochureCard from "../sidebar/BrochureCard";
 import CSDPriceList from "../sidebar/CSDPriceList";
 import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
+import OnRoadPriceTable from "../price/OnRoadPriceTable";
+import { useState } from "react";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 
 interface PriceListPageProps {
     type: string;
@@ -32,62 +37,32 @@ interface PriceListPageProps {
     childSlug: string;
 }
 
-// const variants = [
-//     {
-//         name: "Nexon Pure Plus",
-//         engine: "1199 cc, Petrol, Manual",
-//         exShowroom: "₹7.32 Lakh",
-//         onRoad: "₹8.34 Lakh",
-//         details: [
-//             { label: "Ex-Showroom Price", value: "₹7,31,800" },
-//             { label: "Road Tax", value: "₹35,561" },
-//             { label: "Registration Charges", value: "₹600" },
-//             { label: "FASTag", value: "₹600" },
-//             { label: "Hypothecation Endorsement", value: "₹1,500" },
-//             { label: "Road Safety Cess", value: "₹1,317" },
-//             { label: "Other Charges", value: "₹400" },
-//             { label: "Insurance", value: "₹59,575" },
-//             { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-//         ],
-//     },
-//     {
-//         name: "Nexon Pure Plus S",
-//         engine: "1199 cc, Petrol, Manual",
-//         exShowroom: "₹8.34 Lakh",
-//         onRoad: "₹8.34 Lakh",
-//         details: [
-//             { label: "Ex-Showroom Price", value: "₹8,34,000" },
-//             { label: "Road Tax", value: "₹36,000" },
-//             { label: "Insurance", value: "₹60,000" },
-//             { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-//         ],
-//     },
-//     {
-//         name: "Nexon Creative",
-//         engine: "1199 cc, Petrol, Manual",
-//         exShowroom: "₹8.34 Lakh",
-//         onRoad: "₹8.34 Lakh",
-//         details: [
-//             { label: "Ex-Showroom Price", value: "₹8,34,000" },
-//             { label: "Insurance", value: "₹60,000" },
-//             { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-//         ],
-//     },
-// ];
 
 function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
-
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const [fuelType, setFuelType] = useState("")
+    const [transmissionType, setTransmissionType] = useState("")
+    const [variantId, setVariantId] = useState<number | null>(null)
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: latestVideosData } = useGetLatestVideosQuery()
-    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: priceListDetailsData } =
+        useGetPriceListDetailsQuery(
+            { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType, variantId: variantId ? Number(variantId) : undefined },
+            { skip: !slug }
+        );
 
+
+    const priceListDetails = priceListDetailsData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
-    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const latestVideos = latestVideosData?.rows ?? []
-    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
+    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     console.log(childSlug);
 
@@ -116,7 +91,7 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -126,24 +101,31 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
-                            {/* <OnRoadPriceTable
-                                title={"Tata Nexon Verified CSD Rates & Eligibility in Haryana"}
+                            <OnRoadPriceTable
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Verified CSD Rates & Eligibility in Haryana`}
                                 desc={"See variant-wise CSD price, estimated on-road price in Haryana, your cost savings vs civilian on-road and rank/pay-level eligibility."}
-                                data={variants}
-                                slug={childSlug}
-                            /> */}
+                                data={priceListDetails}
+                                childSlug={childSlug}
+                                setFuelType={setFuelType}
+                                setTransmissionType={setTransmissionType}
+                                setVariantId={setVariantId}
+                                transmissionType={transmissionType}
+                                fuelType={fuelType}
+                                fuelTypes={modelDetails?.availableWith.fuels}
+                            />
 
                             <PriceComparison />
 
-                            <div className="border rounded-xl h-[332px]" />
+                            <CommonSellUsedCarComponent />
 
-                            {/* <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
-                            /> */}
+                            <CommonViewOfferCard
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
+                                slug={slug}
+                            />
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -157,29 +139,33 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
                             }
 
                             <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
 
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
 
                             <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
@@ -249,12 +235,12 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours

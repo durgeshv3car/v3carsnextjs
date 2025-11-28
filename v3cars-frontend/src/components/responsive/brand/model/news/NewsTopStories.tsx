@@ -6,6 +6,7 @@ import { CiCalendarDate } from 'react-icons/ci';
 import { FaUserEdit } from 'react-icons/fa';
 import DOMPurify from "dompurify";
 import { useRouter } from 'next/navigation';
+import { FiSearch } from 'react-icons/fi';
 
 interface Article {
     id: number;
@@ -38,11 +39,31 @@ const NewsTopStories: React.FC<NewsTopStoriesProps> = ({ title, desc, newsList, 
     return (
         <section className='space-y-4'>
             <div>
-                <h2 className="text-lg font-medium">{title}</h2>
+                <div className='flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4'>
+                    <h2 className="text-xl md:text-2xl">{title}</h2>
+                    <div className="w-full max-w-sm">
+                        <div className="flex items-center bg-white dark:bg-[#171717] rounded-full shadow-sm overflow-hidden border dark:border-[#2e2e2e]">
+                            <input
+                                type="text"
+                                placeholder="Tata Nexon"
+                                className="flex-1 px-4 py-2 text-sm outline-none bg-transparent"
+                            />
+
+                            {/* Search Button */}
+                            <button
+                                className="bg-gray-700 text-white w-20 h-10 flex items-center justify-center rounded-full"
+                            >
+                                <FiSearch size={16} />
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
                 <p className='text-gray-400 text-sm'>{desc}</p>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {newsList.slice(0, 9).map((item) => {
                     const cleanDescription = DOMPurify.sanitize(item.shortDescription, {
                         FORBID_ATTR: ["style"],

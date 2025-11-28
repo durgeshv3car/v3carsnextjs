@@ -5,7 +5,6 @@ import Image from "next/image";
 import React from "react";
 
 interface VideoReviewCardProps {
-    title: string;
     videoList: VideoItem[]
 }
 
@@ -26,13 +25,12 @@ interface VideoItem {
     };
 }
 
-export default function VideoReviewCard({ title, videoList }: VideoReviewCardProps) {
+export default function VideoReviewCard({ videoList }: VideoReviewCardProps) {
 
     return (
         <div className="space-y-4">
-            <h2 className="text-lg font-semibold">{title}</h2>
             <div className='grid grid-cols-3 gap-2'>
-                {videoList.slice(0,6).map((video, index) => (
+                {videoList.map((video, index) => (
                     <div
                         key={index}
                         className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"

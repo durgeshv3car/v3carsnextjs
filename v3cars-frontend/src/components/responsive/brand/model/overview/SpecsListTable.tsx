@@ -107,26 +107,6 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model, slug, childSlug 
                                     </tr>
                                 ))
                             }
-
-                            {
-                                childSlug === "engine-specifications" && (
-                                    <tr>
-                                        <td colSpan={2}>
-                                            <div className="flex justify-center items-center">
-                                                <div className="text-center py-4 w-fit">
-                                                    <p className="text-sm mb-3">
-                                                        Find the exact dimensions of Kia Seltos in feet, inches, centimeters,
-                                                        and millimeters!
-                                                    </p>
-                                                    <button className="bg-primary text-black px-5 w-full py-2 rounded-full shadow hover:bg-primary-hover transition">
-                                                        Click Here To Explore All The Details
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            }
                         </tbody>
                     </table>
                 </div>

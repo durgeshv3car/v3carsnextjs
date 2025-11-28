@@ -1,6 +1,5 @@
 'use client'
 
-import CommonVideos from "@/components/common/CommonVideos";
 import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard";
@@ -16,12 +15,16 @@ import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/
 import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetModelPopularVideosQuery, useGetModelReviewsVideosQuery, useGetModelVariantExplainedVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelVariantExplainedVideosQuery } from "@/redux/api/videosModuleApi";
 import VideoReviewCard from "./VideoReviewCard";
 import { CarData } from "../overview/Overview";
-import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
+import CommonSellingCarCard from "@/components/common/ModelCards/CommonSellingCarCard";
+import useIsMobile from "@/hooks/useIsMobile";
 
 interface MileagePageProps {
     type: string;
@@ -32,17 +35,19 @@ interface MileagePageProps {
 function VideosPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelVariantExplainedVideosData } = useGetModelVariantExplainedVideosQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelPopularVideosData } = useGetModelPopularVideosQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelVariantExplainedVideos = modelVariantExplainedVideosData?.rows ?? []
-    const modelPopularVideos = modelPopularVideosData?.rows ?? []
-    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
+    const modelOthersCars = modelOthersCarsData?.items ?? [];
+    const modelLatestNews = modelLatestNewsData?.rows ?? [];
+
+    const isMobile = useIsMobile()
 
     console.log(childSlug);
 
@@ -80,19 +85,11 @@ function VideosPage({ type, slug, childSlug }: MileagePageProps) {
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
                             <div className="space-y-2">
-                                <h2 className="text-xl">{modelDetails?.model?.brand?.name} {modelDetails?.model?.name}  ------------------</h2>
-                                <p className="text-sm text-gray-400">In September 2025, the total sales figure of Nexon was 22,573 units, which is a 37.96 percent MoM growth. In September 2025, the total sales figure of Tata cars was 22,573 units. Want to compare monthly sales figures for all Tata models? Click here to compare all Tata car sales.</p>
+                                <h2 className="text-xl">{modelDetails?.model?.brand?.name} {modelDetails?.model?.name} <span className="font-medium">Latest Videos</span></h2>
+                                <p className="text-sm text-gray-400">Watch the latest Tata Nexon videos from V3Cars, featuring expert reviews, detailed walkarounds, variant explanations, feature highlights and car comparisons (Car A vs B). These videos are designed to help you understand the Nexon better and choose the right variant with confidence</p>
                             </div>
 
                             <VideoReviewCard
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Review Videos`}
-                                videoList={modelPopularVideos}
-                            />
-
-                            <CommonComparisonModelCard data={popularComparisons} />
-
-                            <VideoReviewCard
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Variant Explained Videos`}
                                 videoList={modelVariantExplainedVideos}
                             />
 
@@ -118,11 +115,22 @@ function VideosPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <CommonVideos
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
-                                view={`${modelDetails?.model?.name} Videos`}
-                                videoList={modelReviewsVideos}
+                            {isMobile ? <MobileLatestCarNews
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                view="Latest News"
+                                data={modelLatestNews}
+                                link="/news"
                             />
+                                :
+                                <CommonNewsUpdate
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
+                                    link={"/news"}
+                                />
+                            }
+
+                            <CommonComparisonModelCard data={popularComparisons} />
 
                             <CommonModelFAQ
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
@@ -130,24 +138,9 @@ function VideosPage({ type, slug, childSlug }: MileagePageProps) {
                                 viewAllLink="#"
                             />
 
-                            {/* {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
-                                view="Latest News"
-                                data={latestCarNews}
-                                link="/news"
-                            />
-                                :
-                                <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
-                                    link={"/news"}
-                                />
-                            } */}
-
-                            {/* <CommonSellingCarCard
+                            <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
-                            /> */}
+                            />
 
                         </div>
 
@@ -213,12 +206,12 @@ function VideosPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours

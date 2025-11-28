@@ -28,7 +28,7 @@ import VariantExplained from "./sidebar/VariantExplained";
 import EMICalculator from "./sidebar/EMICalculator";
 import CostOfOwnership from "./sidebar/CostOfOwnership";
 import Marquee from "@/components/ui/Marquee";
-import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "./overview/Overview";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -72,7 +72,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelDetailByFuelType = modelDetailByFuelTypeData?.rows ?? [];
@@ -83,7 +84,12 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? [];
-    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
+    const modelOthersCars = modelOthersCarsData?.items ?? [];
+
+    console.log(modelOthersCars);
+    
+
     const isMobile = useIsMobile()
 
     return (
@@ -322,12 +328,12 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours

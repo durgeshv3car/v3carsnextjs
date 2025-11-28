@@ -18,7 +18,7 @@ import VariantExplained from "@/components/responsive/brand/model/sidebar/Varian
 import Marquee from "@/components/ui/Marquee";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
-import { useGetModelDetailsQuery, useGetModelUpcomingBrandQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import SpecsListTable from "../overview/SpecsListTable";
 import FuelEfficiencyTable from "../mileage/FuelEfficiencyTable";
@@ -26,6 +26,8 @@ import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSel
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import useIsMobile from "@/hooks/useIsMobile";
+import SpecsTechnicalDetails from "./SpecsTechnicalDetails";
+import SpecsFeatures from "./SpecsFeatures";
 
 interface MileagePageProps {
     type: string;
@@ -37,14 +39,16 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelUpcomingBrandData } = useGetModelUpcomingBrandQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
-    const modelUpcomingBrand = modelUpcomingBrandData?.rows ?? [];
     const modelLatestNews = modelLatestNewsData?.rows ?? []
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
+    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     const isMobile = useIsMobile()
 
@@ -85,26 +89,30 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                         <div className="w-auto lg:max-w-[74%] space-y-10">
 
                             <div className="space-y-3">
-                                <h2 className="text-2xl font-semibold">{modelDetails?.model?.brand?.name} {modelDetails?.model?.name} Engine Specs & Performance</h2>
-                                <p className="text-gray-400 text-sm">In September 2025, the total sales figure of Nexon was 22,573 units, which is a 37.96 percent MoM growth. In September 2025, the total sales figure of Tata cars was 22,573 units. Want to compare monthly sales figures for all Tata models? Click here to compare all Tata car sales.</p>
-                                <SpecsListTable
-                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                <h2 className="text-2xl font-semibold">{modelDetails?.model?.brand?.name} {modelDetails?.model?.name} <span className="font-medium">Engine Specs & Performance</span></h2>
+                                <p className="text-gray-400 text-sm">
+                                    {`Explore the engine specifications and performance details of the ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}, including engine type, displacement, power, torque, gearbox, and drivetrain. Use the dropdown above to select your preferred powertrain`}
+                                </p>
+
+                                <SpecsTechnicalDetails
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                     slug={slug}
                                     childSlug={childSlug}
                                 />
                             </div>
 
-                            <div className="p-6 bg-white dark:bg-[#171717] dark:border-[#2e2e2e] rounded-2xl shadow-sm border">
-                                <h2 className="text-xl font-semibold mb-2">{modelDetails?.model?.brand?.name} {modelDetails?.model?.name} Features</h2>
+                            <div>
+                                <h2 className="text-xl font-semibold mb-2">
+                                    {modelDetails?.model?.brand?.name} {modelDetails?.model?.name}
+                                    <span className="font-medium"> Features</span>
+                                </h2>
                                 <p className="text-gray-400 text-sm leading-relaxed">
-                                    Sell used car from the comfort of your home. Get free car assessment, quick payment disbursal and free RC transfer.
-                                    Book car inspection right now to find out how much payment you can get for selling it today.
+                                    Discover all the key features of the Tata Nexon, including safety, comfort, convenience, infotainment, interior and exterior style highlights. Explore variant-wise features to understand what each trim level offers and find the version that best suits your needs
                                 </p>
                             </div>
 
-                            <FuelEfficiencyTable
+                            <SpecsFeatures
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                slug={slug}
                             />
 
                             <CommonSellUsedCarComponent />
@@ -138,7 +146,7 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                                 :
                                 <CommonNewsUpdate
                                     title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
-                                    view="Nexon News Update"
+                                    view={`${modelDetails?.model?.name} News Update`}
                                     newsList={modelLatestNews}
                                     link={"/news"}
                                 />
@@ -222,12 +230,12 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <OtherCars
                                 title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
                                 title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingBrand}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours

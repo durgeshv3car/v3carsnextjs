@@ -73,6 +73,7 @@ export interface Colors {
     id: number;
     colorId: number;
     name: string;
+    colorCode: string;
     imageUrl: string;
 }
 

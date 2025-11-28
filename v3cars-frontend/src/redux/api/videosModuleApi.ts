@@ -70,13 +70,13 @@ export const videosModuleApi = createApi({
             query: () => "/videos/variant-explained/top?limit=9&excludeToday=0",
         }),
         getModelReviewsVideos: builder.query<Response, { model_slug: string }>({
-            query: ({ model_slug }) => `/videos/model/${model_slug}/reviews/latest?excludeToday=0`,
+            query: ({ model_slug }) => `/videos/model/${model_slug}/compare/latest?excludeToday=0`,
         }),
         getModelVariantExplainedVideos: builder.query<Response, { model_slug: string }>({
-            query: ({ model_slug }) => `/videos/model/${model_slug}/variant-explained/latest?limit=15`,
+            query: ({ model_slug }) => `/videos/model/${model_slug}/reviews/latest?limit=50&excludeToday=0`,
         }),
         getModelPopularVideos: builder.query<Response, { model_slug: string }>({
-            query: ({ model_slug }) => `videos/model/${model_slug}/popular?limit=12`,
+            query: ({ model_slug }) => `/videos/model/${model_slug}/popular?limit=12`,
         }),
     }),
 });
