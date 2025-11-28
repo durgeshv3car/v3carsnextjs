@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 function parseNumberList(val: unknown) {
@@ -13,6 +14,7 @@ function parseStringList(val: unknown) {
   if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(Boolean);
   return undefined;
 }
+
 
 export const paginationQuery = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -60,10 +62,29 @@ export const commonFiltersQuery = z.object({
   maxPrice: z.coerce.number().int().positive().optional(),
 });
 
-
 export const sortQuery = z.object({
   sortBy: z.enum([
      'latest','popular','price_asc','price_desc','name_asc','name_desc',
     'launch_asc'
   ]).optional(),
 });
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+

@@ -376,23 +376,47 @@ No filters (full table):
 
 offer-disscounts -
 
-/v1/cars/models/grand-vitara/offers-discounts?months=12&expandQID=938
+/v1/cars/models/<slug-or-id>/offers-discounts?months=12&expandQID=938
 
 
 
 monthly-sales 
 
-/v1/cars/models/grand-vitara/models/:id/monthly-sales?month=6
+/v1/cars/models/<slug-or-id>/monthly-sales?months=6
 
 
 upcomping cars by model
 
-/v1/cars/models/:id/upcoming-cars?limit=5
+/v1/cars/models/<slug-or-id>/upcoming-cars?limit=5
 
 others cars by model
 
-/v1/cars/models/:id/others-cars?limit=5
+/v1/cars/models/<slug-or-id>/others-cars?limit=5
 
+
+service-cost -
+
+/v1/cars/models/<slug-or-id>/service-cost
+
+colors -
+
+/v1/cars/models/<slug-or-id>/colours
+
+image gallary -
+
+All data (default):
+
+GET /v1/cars/models/<slug-or-id>/images
+
+
+Sirf exterior, first 60:
+
+GET /v1/cars/models<slug-or-id>/images?type=exterior&limit=60
+
+
+Sirf interior:
+
+GET /v1/cars/models/<slug-or-id>/images?type=interior
 
 
 

@@ -120,4 +120,33 @@ export class ImagesRepo {
     _colorCode: r.colorId != null ? metaById.get(r.colorId)?.code ?? null : null,
   }));
 }
+
+// add to existing ImagesRepo
+async listByModelIdWithTypes(modelId: number) {
+  return prisma.tblmodelvariantimages.findMany({
+    where: { modelId },
+    select: {
+      imageId: true,
+      modelId: true,
+      variantId: true,
+      modelImageName: true,
+      modelImageType: true,
+      modelImageAltText: true,
+      variantImageName: true,
+      variantImageType: true,
+      variantImageAltText: true,
+      uploadedDateTime: true,
+      is360view: true,
+      colorId: true,
+      isMainImage: true,
+      position_no: true,
+    },
+    orderBy: [
+      { isMainImage: 'desc' },
+      { position_no: 'asc' },
+      { imageId: 'asc' },
+    ],
+  });
+}
+
 }

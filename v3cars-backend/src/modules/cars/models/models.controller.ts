@@ -14,6 +14,7 @@ import {
   modelMonthlySalesQueryDto,
   modelUpcomingByBrandDto,
   modelOthersQueryDto,
+  modelImagesQueryDto
 } from './models.dto.js';
 
 
@@ -146,32 +147,56 @@ export class ModelsController {
   }
 
   async monthlySales(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+
+    const q = modelMonthlySalesQueryDto.parse(req.query);
+    const data = await svc.monthlySales(id, { months: q.months ?? 6 });
+
+
+    res.json(data);
+  }
+
+  async upcomingByBrand(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+
+    const q = modelUpcomingByBrandDto.parse(req.query);
+    const data = await svc.upcomingByBrand(id, { limit: q.limit });
+    res.json({ success: true, ...data });
+  }
+
+  async othersOnSale(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const q = modelOthersQueryDto.parse(req.query);
+    const data = await svc.othersOnSale(id, q as any);
+    res.json(data);
+  }
+
+  // inside export class ModelsController
+  async serviceCost(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const data = await svc.serviceCost(id);
+    res.json(data);
+  }
+
+  async colours(req: Request, res: Response) {
   const id = await this.resolve(req, res);
   if (!id) return;
-
-  const q = modelMonthlySalesQueryDto.parse(req.query);
-  const data = await svc.monthlySales(id, { months: q.months ?? 6 });
-
- 
+  const data = await svc.colours(id);
   res.json(data);
 }
 
-async upcomingByBrand(req: Request, res: Response) {
+async images(req: Request, res: Response) {
   const id = await this.resolve(req, res);
   if (!id) return;
-
-  const q = modelUpcomingByBrandDto.parse(req.query);
-  const data = await svc.upcomingByBrand(id, { limit: q.limit });
-  res.json({ success: true, ...data });
-}
-
-async othersOnSale(req: Request, res: Response) {
-  const id = await this.resolve(req, res);
-  if (!id) return;
-  const q = modelOthersQueryDto.parse(req.query);
-  const data = await svc.othersOnSale(id, q as any);
+  const q = modelImagesQueryDto.parse(req.query);
+  const data = await svc.gallery(id, q as any);
   res.json(data);
 }
+
 
 }
 
