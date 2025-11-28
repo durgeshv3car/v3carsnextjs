@@ -1911,4 +1911,131 @@ async othersOnSale(
 }
 
 
+async serviceCost(modelId: number) {
+  const key = cacheKey({ ns: 'model:serviceCost', v: 1, modelId });
+  const ttlMs = 30 * 60 * 1000; // 30 min
+
+  return withCache(key, async () => {
+    const row = await prisma.tblmodelpagecontent.findFirst({
+      where: { modelId },
+      select: {
+        serviceCostContent: true,
+        updateDateandTime: true,
+        addedDateandTime: true,
+      },
+    });
+
+    return {
+      success: true,
+      modelId,
+      serviceCostHtml: row?.serviceCostContent ?? null,
+      updatedDate: row?.updateDateandTime ?? row?.addedDateandTime ?? null,
+    };
+  }, ttlMs);
+}
+
+
+// inside ModelsService
+async colours(modelId: number) {
+  const key = cacheKey({ ns: 'model:colours', v: 1, modelId });
+  const ttlMs = 30 * 60 * 1000;
+
+  return withCache(key, async () => {
+    // 1) colour palette (with colorCode + image)
+    const colors = await imagesSvc.listColorsByModelId(modelId);
+    // { id, colorId, name, colorCode, imageUrl }
+
+    // 2) minimal variants list (sorted by name)
+    const variants = await prisma.tblvariants.findMany({
+      where: { modelId },
+      select: { variantId: true, variantName: true },
+      orderBy: [{ variantName: 'asc' }],
+    });
+
+    // 3) variant–colour availability mapping (best-effort: table may not exist)
+    let availability: Array<{ variantId: number; colorId: number }> = [];
+    try {
+      // expect a mapping table like: tblvariantcolors(modelId, variantId, colorId[, isAvailable])
+      const rows: any[] = await (prisma as any).tblvariantcolors.findMany({
+        where: { modelId },
+        select: { variantId: true, colorId: true, isAvailable: true },
+      });
+
+      availability = rows
+        .filter(r => r && typeof r.variantId === 'number' && typeof r.colorId === 'number' && (r.isAvailable ?? 1))
+        .map(r => ({ variantId: r.variantId, colorId: r.colorId }));
+    } catch {
+      // no mapping table — return empty availability; UI can hide matrix or show all ✗
+      availability = [];
+    }
+
+    return {
+      success: true,
+      modelId,
+      // palette for the right-side colour pills
+      colors,                // [{id,colorId,name,colorCode,imageUrl}]
+      // rows for the table’s first column
+      variants: variants.map(v => ({ id: v.variantId, name: v.variantName ?? null })),
+      // pairs -> a check mark when (variantId,colorId) exists
+      availability,          // e.g., [{variantId: 123, colorId: 45}, ...]
+      // helpful counts (optional)
+      totals: { colors: colors.length, variants: variants.length, pairs: availability.length },
+    };
+  }, ttlMs);
+}
+
+
+// add inside ModelsService
+async gallery(
+  modelId: number,
+  q?: { type?: 'all' | 'interior' | 'exterior' | 'other'; limit?: number }
+) {
+  const type = (q?.type ?? 'all') as 'all'|'interior'|'exterior'|'other';
+  const limit = Math.max(1, Math.min(q?.limit ?? 999, 2000));
+
+  const key = cacheKey({ ns: 'model:gallery', v: 1, modelId, type, limit });
+  const ttlMs = 30 * 60 * 1000;
+
+  return withCache(key, async () => {
+    const items = await imagesSvc.listGalleryByModelId(modelId);
+
+    // groups for tabs
+    const byType = {
+      interior: items.filter(i => i.type === 'interior'),
+      exterior: items.filter(i => i.type === 'exterior'),
+      other:    items.filter(i => i.type === 'other'),
+    };
+    const all = items;
+
+    // featured (hero) image + 8 thumbnails like UI
+    const featured = (all.find(i => i.isMain) ?? all[0]) || null;
+    const thumbnails = all.filter(i => i.id !== featured?.id).slice(0, 8);
+
+    // optional filter for one-tab only
+    const pick = (arr: typeof all) => arr.slice(0, limit);
+
+    return {
+      success: true,
+      modelId,
+      featured,                   // {id,url,alt,type,...}
+      thumbnails,                 // 6–8 items for strip
+      tabs: {
+        all:      { total: all.length, items: pick(all) },
+        interior: { total: byType.interior.length, items: pick(byType.interior) },
+        exterior: { total: byType.exterior.length, items: pick(byType.exterior) },
+        others:   { total: byType.other.length,    items: pick(byType.other) },
+      },
+      counts: {
+        total: all.length,
+        interior: byType.interior.length,
+        exterior: byType.exterior.length,
+        others: byType.other.length,
+      },
+    };
+  }, ttlMs);
+}
+
+
+
+
 }

@@ -111,3 +111,8 @@ export const modelUpcomingByBrandDto = z.object({
 export const modelOthersQueryDto = z.object({
   limit: z.coerce.number().int().min(1).max(20).default(5).optional(),
 });
+
+export const modelImagesQueryDto = z.object({
+  type: z.enum(['all','interior','exterior','other']).optional(),
+  limit: z.coerce.number().int().positive().max(2000).optional(),
+});
