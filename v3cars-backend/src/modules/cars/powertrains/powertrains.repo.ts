@@ -303,4 +303,16 @@ export class PowertrainsRepo {
     return map;
   }
 
+  async getServiceSchedule(modelId: number, modelPowertrainId: number) {
+    return prisma.tblperiodicmaintenancecost.findMany({
+      where: { modelId, modelPowertrainId },
+      orderBy: [{ id: 'asc' }],
+      select: {
+        id: true,
+        kmDriven: true,
+        cost: true,
+      },
+    });
+  }
+
 }

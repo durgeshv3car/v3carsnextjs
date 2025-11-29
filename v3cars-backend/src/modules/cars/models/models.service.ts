@@ -28,6 +28,8 @@ const rpmRange = (min?: number | null, max?: number | null) => {
 
 
 
+function sum(ns: number[]) { return ns.reduce((a, b) => a + b, 0); }
+
 
 
 function buildAssetPath(name?: string | null): string | null {
@@ -2036,6 +2038,103 @@ async gallery(
 }
 
 
+
+ async serviceCostpow(
+    modelId: number,
+    q?: { mpId?: number }   // modelPowertrainId
+  ) {
+    const key = cacheKey({
+      ns: 'models:serviceCost',
+      v: 1,
+      modelId,
+      mpId: q?.mpId ?? 0,
+    });
+    const ttlMs = 30 * 60 * 1000;
+
+    return withCache(key, async () => {
+      // 1) dropdown options (from powertrains)
+      const options = await powertrainsSvc.listForModel(modelId); // [{id,label,fuelType,transmissionType}]
+      if (!options.length) {
+        return {
+          success: true,
+          modelId,
+          powertrains: [],
+          selectedPowertrainId: null,
+          schedule: [],
+          snapshots: null,
+          description: null,
+        };
+      }
+
+      // 2) select PT (default: first that has schedule; else first)
+      let selectedId = q?.mpId ?? options[0].id;
+      if (!q?.mpId) {
+        for (const opt of options) {
+          const rows = await powertrainsSvc.getServiceSchedule(modelId, opt.id);
+          if (rows.length) { selectedId = opt.id; break; }
+        }
+      }
+
+      // 3) schedule rows
+      const raw = await powertrainsSvc.getServiceSchedule(modelId, selectedId);
+      const schedule = raw.map((r: any, i: number) => ({
+        year: i + 1,
+        km: r.kmDriven ?? 0,
+        cost: r.cost ?? 0,
+      }));
+
+      // 4) snapshots
+      const take = (n: number) => {
+        const slice = schedule.slice(0, n);
+        const total = sum(slice.map(x => x.cost));
+        const kms = sum(slice.map(x => x.km));
+        const perMonth = Math.round(total / (n * 12 || 1));
+        const perKm = kms > 0 ? Math.round(total / kms) : 0;
+        return { total, kms, perMonth, perKm };
+      };
+      const y3 = take(3), y5 = take(5), y7 = take(7), y10 = take(10);
+
+      // 5) names for description (lightweight selects)
+      const mdl = await prisma.tblmodels.findFirst({
+        where: { modelId },
+        select: { modelName: true, brandId: true },
+      });
+      const brand = mdl?.brandId
+        ? await prisma.tblbrands.findFirst({ where: { brandId: mdl.brandId }, select: { brandName: true } })
+        : null;
+
+      const ptLabel = options.find(o => o.id === selectedId)?.label ?? '';
+
+      const description =
+        `This summary shows how scheduled service spend grows with time for the ${brand?.brandName ?? 'Brand'} ` +
+        `${mdl?.modelName ?? 'Model'} ${ptLabel}. ` +
+        `Over the first 3 years you will spend about ₹${y3.total}. ` +
+        `That equals ₹${y3.perMonth} per month or ₹${y3.perKm}/km for the first ${y3.kms} km. ` +
+        `Across 5 years the total reaches ₹${y5.total}. ` +
+        `The average is ₹${y5.perMonth} per month or ₹${y5.perKm}/km for ${y5.kms} km. ` +
+        `Keep it for 7 years. Your tally becomes ₹${y7.total}. ` +
+        `The monthly average stays near ₹${y7.perMonth}. ` +
+        `The running average is ₹${y7.perKm}/km for ${y7.kms} km. ` +
+        `Hold the car for 10 years. You can expect a total of ₹${y10.total}. ` +
+        `The average comes to ₹${y10.perMonth} per month or ₹${y10.perKm}/km for ${y10.kms} km. ` +
+        `These figures include only scheduled jobs from the official service plan. Tyres brakes accidental work accessories or add-ons are not part of the totals.`;
+
+      return {
+        success: true,
+        modelId,
+        powertrains: options,
+        selectedPowertrainId: selectedId,
+        schedule,
+        snapshots: {
+          y3:  { total: y3.total,  perMonth: y3.perMonth,  perKm: y3.perKm,  kms: y3.kms },
+          y5:  { total: y5.total,  perMonth: y5.perMonth,  perKm: y5.perKm,  kms: y5.kms },
+          y7:  { total: y7.total,  perMonth: y7.perMonth,  perKm: y7.perKm,  kms: y7.kms },
+          y10: { total: y10.total, perMonth: y10.perMonth, perKm: y10.perKm, kms: y10.kms },
+        },
+        description,
+      };
+    }, ttlMs);
+  }
 
 
 }

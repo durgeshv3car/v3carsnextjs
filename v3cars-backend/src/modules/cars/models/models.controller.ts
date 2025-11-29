@@ -14,7 +14,8 @@ import {
   modelMonthlySalesQueryDto,
   modelUpcomingByBrandDto,
   modelOthersQueryDto,
-  modelImagesQueryDto
+  modelImagesQueryDto,
+  modelServiceCostQueryDto
 } from './models.dto.js';
 
 
@@ -197,6 +198,14 @@ async images(req: Request, res: Response) {
   res.json(data);
 }
 
+
+async serviceCostpow(req: Request, res: Response) {
+  const id = await this.resolve(req, res);
+  if (!id) return;
+  const q = modelServiceCostQueryDto.parse(req.query);
+  const data = await svc.serviceCostpow(id, q as any);
+  res.json(data);
+}
 
 }
 

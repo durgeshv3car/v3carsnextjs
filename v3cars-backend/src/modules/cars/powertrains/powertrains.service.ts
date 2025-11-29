@@ -182,7 +182,20 @@ export class PowertrainsService {
     return new Map<number, { years: number | null; km: string | null }>(entries);
   }
 
- 
+  async getServiceSchedule(modelId: number, modelPowertrainId: number) {
+    const key = cacheKey({
+      ns: 'powertrains:schedule',
+      v: 1,
+      modelId,
+      modelPowertrainId,
+    });
+    const ttlMs = 30 * 60 * 1000;
+
+    return withCache(key, async () => {
+      return repo.getServiceSchedule(modelId, modelPowertrainId);
+    }, ttlMs);
+  }
+
 
 }
 

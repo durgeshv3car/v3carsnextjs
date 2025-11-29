@@ -199,7 +199,7 @@ Price filters
 priceBucket — UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L
 
 
-minPrice, maxPrice — numbers (₹)
+minPrice, maxPrice — numbers (₹) 
 
 
 Powertrain filters
@@ -212,6 +212,7 @@ transmissionType — MT|AT|AMT|DCT...
 
 
 Sorting — price_asc | price_desc | latest | name_asc | name_desc
+
 
 
 page, limit
@@ -235,10 +236,7 @@ Bucket: /v1/cars/variants?modelId=101&priceBucket=BETWEEN_10_20L&sortBy=price_as
 Numeric window: /v1/cars/variants?modelId=101&minPrice=700000&maxPrice=1200000&limit=10&page=1
 
 
-
 Response item
-
-
 
 {
   "variantId": 177,
@@ -251,13 +249,15 @@ Response item
   "priceMax": 779000,
   "powertrain": { "id": 549, "fuelType": "Petrol", "transmissionType": "MT", "label": "1.5P MT" }
 }
-
+ 
 
 
 Notes
 
 
+
 Multi-select formats accepted: comma-separated (a,b,c), repeated query keys (k=a&k=b), or array-style (k[]=a&k[]=b). Validators normalize them to arrays server-side.
+
 
 
 Engine displacement → cubicCapacity: Frontend uses engineDisplacement keys (e.g., 1000_1500) — server maps these to the DB column tblmodelpowertrains.cubicCapacity (cc). This fixes filters which previously targeted engineDisplacement.
@@ -398,6 +398,15 @@ service-cost -
 
 /v1/cars/models/<slug-or-id>/service-cost
 
+
+Default (auto-pick first PT with schedule):
+
+GET http://localhost:3121/v1/cars/models/grand-vitara/pow-wise-service-cost
+
+Specific powertrain:
+
+GET http://localhost:3121/v1/cars/models/grand-vitara//pow-wise-service-cost?mpId=719
+
 colors -
 
 /v1/cars/models/<slug-or-id>/colours
@@ -417,6 +426,10 @@ GET /v1/cars/models<slug-or-id>/images?type=exterior&limit=60
 Sirf interior:
 
 GET /v1/cars/models/<slug-or-id>/images?type=interior
+
+
+
+
 
 
 

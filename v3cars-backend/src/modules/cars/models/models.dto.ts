@@ -104,9 +104,11 @@ export const modelMonthlySalesQueryDto = z.object({
   months: z.coerce.number().int().min(1).max(24).default(6).optional(),
 });
 
+
 export const modelUpcomingByBrandDto = z.object({
   limit: z.coerce.number().int().min(1).max(50).default(5).optional(),
 });
+
 
 export const modelOthersQueryDto = z.object({
   limit: z.coerce.number().int().min(1).max(20).default(5).optional(),
@@ -115,4 +117,8 @@ export const modelOthersQueryDto = z.object({
 export const modelImagesQueryDto = z.object({
   type: z.enum(['all','interior','exterior','other']).optional(),
   limit: z.coerce.number().int().positive().max(2000).optional(),
+});
+
+export const modelServiceCostQueryDto = z.object({
+  mpId: z.coerce.number().int().positive().optional(), // modelPowertrainId 
 });
