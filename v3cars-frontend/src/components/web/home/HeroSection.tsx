@@ -13,12 +13,6 @@ import { setBodyTypeIds, setBrandIds, setPriceBucket } from '@/redux/slices/adva
 
 // Dummy Slides
 const slides = [
-
-  {
-    image: '/images/banner-car.png',
-    title: 'Tata Altroz Racer',
-    tagline: 'More Performance,\nBig on Features',
-  },
   {
     image: '/images/banner.png',
     title: 'Tata Punch EV',
