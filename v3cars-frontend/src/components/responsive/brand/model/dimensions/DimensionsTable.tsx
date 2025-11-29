@@ -1,26 +1,25 @@
 'use client'
 
 import React from "react";
+import { Capacity, Conversions } from "./DimensionsPage";
 
-const DimensionsTable = () => {
+interface DimensionsTableProps {
+    title: string
+    conversionsData: Conversions | null;
+    capacityData: Capacity | null;
+}
+
+const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTableProps) => {
     return (
         <div>
             {/* Heading */}
-            <h2 className="text-2xl font-semibold mb-3">
-                Dimensions of Tata Nexon
-            </h2>
+            <h2 className="text-2xl mb-3">Dimensions of {title}</h2>
 
             {/* Description */}
             <p className="text-gray-400 mb-6 leading-relaxed">
-                Tata Nexon dimensions are 3995mm in length, 1804mm in width and
-                1620mm in height. A wider body normally results in better shoulder room
-                inside the car while a higher roof makes it easier to get in and out of
-                the car. 2025 Tata Nexon rides on a 2498mm wheelbase. The wheelbase is
-                the distance between the centre of the front and rear wheels. A longer
-                wheelbase usually results in better legroom. The 2025 Tata Nexon
-                features a ground clearance of 208mm. Higher ground clearance allows you
-                to navigate tall speed breakers and rough roads without damaging the
-                car’s underbody.
+                {conversionsData
+                    ? `${title} dimensions are ${conversionsData.length.mm}mm in length, ${conversionsData.width.mm}mm in width and ${conversionsData.height.mm}mm in height. A wider body normally results in better shoulder room inside the car while a higher roof makes it easier to get in and out of the car. ${new Date().getFullYear()} ${title} rides on a ${conversionsData.wheelbase.mm}mm wheelbase. The wheelbase is the distance between the centre of the front and rear wheels. A longer wheelbase usually results in better legroom. The ${new Date().getFullYear()} ${title} features a ground clearance of ${conversionsData.groundClearance.mm}mm. Higher ground clearance allows you to navigate tall speed breakers and rough roads without damaging the car's underbody.`
+                    : `${title} dimensions information is loading...`}
             </p>
 
             {/* Dimensions Table */}
@@ -28,54 +27,58 @@ const DimensionsTable = () => {
                 <table className="w-full text-left text-sm">
                     <thead className="bg-gray-100 dark:bg-[#171717]">
                         <tr>
-                            <th className="px-4 py-3 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
-                                Nexon Dimensions
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                                {title} Dimensions
                             </th>
-                            <th className="px-4 py-3 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
                                 in mm
                             </th>
-                            <th className="px-4 py-3 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
                                 in cm
                             </th>
-                            <th className="px-4 py-3 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
                                 in inches
                             </th>
-                            <th className="px-4 py-3 font-semibold">
-                                in feet
-                            </th>
+                            <th className="p-5 font-semibold">in feet</th>
                         </tr>
                     </thead>
+
+                    {/* Dynamic Rows */}
                     <tbody>
-                        {[
-                            ["Length", "3995", "399.5", "157.28", "13.10"],
-                            ["Width", "1804", "180.4", "71.02", "5.91"],
-                            ["Height", "1620", "162", "63.78", "5.31"],
-                            ["Wheelbase", "2498", "249.8", "198.35", "8.19"],
-                            ["Ground Clearance", "208", "20.8", "46", "2"],
-                        ].map(([label, mm, cm, inches, feet], i) => (
-                            <tr
-                                key={i}
-                                className={`${i % 2 === 0 ? "bg-white dark:bg-[#2E2E2E]" : ""}`}
-                            >
-                                <td className="px-4 py-2 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
-                                    {label}
-                                </td>
-                                <td className="px-4 py-2 border-r border-gray-300 dark:border-[#2E2E2E]">{mm}</td>
-                                <td className="px-4 py-2 border-r border-gray-300 dark:border-[#2E2E2E]">{cm}</td>
-                                <td className="px-4 py-2 border-r border-gray-300 dark:border-[#2E2E2E]">{inches}</td>
-                                <td className="px-4 py-2">{feet}</td>
-                            </tr>
-                        ))}
+                        {conversionsData &&
+                            Object.entries(conversionsData).map(([key, value], index) => {
+                                const label = key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
+
+                                return (
+                                    <tr
+                                        key={key}
+                                        className={`${index % 2 === 0 ? "bg-white dark:bg-[#2E2E2E]" : ""}`}
+                                    >
+                                        <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
+                                            {label}
+                                        </td>
+                                        <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                            {value.mm}
+                                        </td>
+                                        <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                            {value.cm}
+                                        </td>
+                                        <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                            {value.inches}
+                                        </td>
+                                        <td className="p-5">{value.feet}</td>
+                                    </tr>
+                                );
+                            })}
                     </tbody>
                 </table>
             </div>
 
-            {/* Description Below Table */}
+            {/* Below Table Description */}
             <p className="text-gray-400 mb-6 leading-relaxed">
-                The Tata Nexon offers a boot space of 382 litres, providing ample room
-                for your luggage. The Nexon comes with a fuel tank capacity of 44
-                litres. Please note that the Nexon maximum seating capacity is 5;
-                however, individual comfort levels may vary.
+                {capacityData
+                    ? `The ${title} offers a boot space of ${capacityData.bootSpace.Petrol} litres, providing ample room for your luggage. The ${title} comes with a fuel tank capacity of ${capacityData.fuelTankCapacity.Petrol} litres. Please note that the ${title} maximum seating capacity is ${capacityData.seatingCapacity}; however, individual comfort levels may vary.`
+                    : `${title} capacity information is loading...`}
             </p>
 
             {/* Capacity Table */}
@@ -83,42 +86,83 @@ const DimensionsTable = () => {
                 <table className="w-full text-left text-sm">
                     <thead className="bg-gray-100 dark:bg-[#171717]">
                         <tr>
-                            <th className="px-4 py-3 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
-                                Nexon Capacity
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                                {title} Capacity
                             </th>
-                            <th className="px-4 py-3 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
                                 Petrol
                             </th>
-                            <th className="px-4 py-3 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
                                 Diesel
                             </th>
-                            <th className="px-4 py-3 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
                                 CNG
                             </th>
-                            <th className="px-4 py-3">
-                                Hybrid
-                            </th>
+                            <th className="p-5 font-semibold">Hybrid</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        {[
-                            ["Boot Space", "382L", "382L", "382L", "382L"],
-                            ["Fuel Tank Capacity", "44L", "44L", "60L (app.8kg)", "44L"],
-                            ["Maximum Seating Capacity", "5", "5", "5", "5"],
-                        ].map(([label, petrol, diesel, cng, hybrid], i) => (
-                            <tr
-                                key={i}
-                                className={`${i % 2 === 0 ? "bg-white dark:bg-[#2E2E2E]" : ""}`}
-                            >
-                                <td className="px-4 py-2 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
-                                    {label}
-                                </td>
-                                <td className="px-4 py-2 border-r border-gray-300 dark:border-[#2E2E2E]">{petrol}</td>
-                                <td className="px-4 py-2 border-r border-gray-300 dark:border-[#2E2E2E]">{diesel}</td>
-                                <td className="px-4 py-2 border-r border-gray-300 dark:border-[#2E2E2E]">{cng}</td>
-                                <td className="px-4 py-2">{hybrid}</td>
-                            </tr>
-                        ))}
+                        {capacityData && (
+                            <>
+                                {/* Boot Space */}
+                                <tr className="bg-white dark:bg-[#2E2E2E]">
+                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
+                                        Boot Space
+                                    </td>
+                                    <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                        {capacityData.bootSpace.Petrol}L
+                                    </td>
+                                    <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                        {capacityData.bootSpace.Diesel}L
+                                    </td>
+                                    <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                        {capacityData.bootSpace.CNG}L
+                                    </td>
+                                    <td className="p-5">
+                                        {capacityData.bootSpace.Hybrid ?? "N/A"}L
+                                    </td>
+                                </tr>
+
+                                {/* Fuel Tank */}
+                                <tr>
+                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
+                                        Fuel Tank Capacity
+                                    </td>
+                                    <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                        {capacityData.fuelTankCapacity.Petrol}L
+                                    </td>
+                                    <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                        {capacityData.fuelTankCapacity.Diesel}L
+                                    </td>
+                                    <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
+                                        {capacityData.fuelTankCapacity.CNG}L
+                                    </td>
+                                    <td className="p-5">
+                                        {capacityData.fuelTankCapacity.Hybrid ?? "N/A"}L
+                                    </td>
+                                </tr>
+
+                                {/* Seating Capacity */}
+                                <tr className="bg-white dark:bg-[#2E2E2E]">
+                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
+                                        Seating Capacity
+                                    </td>
+                                    <td className="border-r border-gray-300 dark:border-[#2E2E2E] p-5">
+                                        {capacityData.seatingCapacity}
+                                    </td>
+                                    <td className="border-r border-gray-300 dark:border-[#2E2E2E] p-5">
+                                        {capacityData.seatingCapacity}
+                                    </td>
+                                    <td className="border-r border-gray-300 dark:border-[#2E2E2E] p-5">
+                                        {capacityData.seatingCapacity}
+                                    </td>
+                                    <td className="p-5">
+                                        {capacityData.seatingCapacity}
+                                    </td>
+                                </tr>
+                            </>
+                        )}
                     </tbody>
                 </table>
             </div>

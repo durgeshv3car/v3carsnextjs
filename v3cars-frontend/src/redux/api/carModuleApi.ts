@@ -1,3 +1,12 @@
+import { ColorsResponse } from "@/components/responsive/brand/model/colors/ModelColours";
+import { ModelDimensionsResponse } from "@/components/responsive/brand/model/dimensions/DimensionsPage";
+import { ModelImagesResponse } from "@/components/responsive/brand/model/images/ImageDisplay";
+import { ServiceCostResponse } from "@/components/responsive/brand/model/maintenance-cost/MainMaintenanceComponent";
+import { MonthlySalesResponse } from "@/components/responsive/brand/model/monthly-sales/SalesTable";
+import { ProsConsResponse } from "@/components/responsive/brand/model/overview/ModelProsCons";
+import { CarData } from "@/components/responsive/brand/model/overview/Overview";
+import { HeaderInfo, SpecSection } from "@/components/responsive/brand/model/overview/SpecsListTable";
+import { PriceListDetailsResponse } from "@/components/responsive/brand/model/price/OnRoadPriceTable";
 import { BASE_URL } from "@/utils/constant";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -15,12 +24,30 @@ interface BrandByIdResponse {
     data: CarBrandDetail | null;
 }
 
+interface CarModelResponse {
+    success: boolean;
+    data: CarData | null;
+}
+
 interface GetModelsArgs {
     brandId: number
 }
 
 interface GetVariantArgs {
     modelId: number
+}
+
+interface ModelCompetitorsQueryResponse {
+    success: boolean;
+    items: [];
+}
+
+export interface MileageSpecsFeaturesResponse {
+    success: boolean;
+    options: [];
+    selectedPowertrainId: number;
+    header: HeaderInfo;
+    sections: SpecSection[];
 }
 
 // API definition
@@ -122,6 +149,165 @@ export const carModuleApi = createApi({
         getBrandsById: builder.query<BrandByIdResponse, { brandId: number }>({
             query: ({ brandId }) => `/cars/brands/${brandId}`,
         }),
+
+
+        // Models Query
+
+        getModelDetails: builder.query<CarModelResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}`,
+        }),
+        getModelDetailByFuelType: builder.query<Response, { model_slug: string, cityId: number, fuelType?: string, transmissionType?: string }>({
+            query: ({ model_slug, cityId, fuelType, transmissionType }: { model_slug: string; cityId: number; fuelType?: string, transmissionType?: string }) => {
+                const url = `/cars/models/${model_slug}/price-list?cityId=${cityId}&fuelType=${fuelType}`;
+                return fuelType && transmissionType
+                    ? `${url}&transmissionType=${transmissionType}`
+                    : url;
+            }
+        }),
+
+        getBestVariantToBuy: builder.query<Response, { model_slug: string, fuelType?: string, transmissionType?: string }>({
+            query: ({ model_slug, fuelType, transmissionType }: { model_slug: string; fuelType?: string, transmissionType?: string }) => {
+                const url = `/cars/models/${model_slug}/best-variant-to-buy`;
+
+                const params: string[] = [];
+
+                if (fuelType !== undefined && fuelType !== null && fuelType !== "") {
+                    params.push(`fuelType=${fuelType}`);
+                }
+
+                if (transmissionType !== undefined && transmissionType !== null && transmissionType !== "") {
+                    params.push(`transmissionType=${transmissionType}`);
+                }
+
+                return params.length ? `${url}?${params.join("&")}` : url;
+            }
+        }),
+
+        getDimensionsCapacity: builder.query<ModelDimensionsResponse, { model_slug: string; fuelType?: string; transmissionType?: string }>({
+            query: ({ model_slug, fuelType, transmissionType }) => {
+                const url = `/cars/models/${model_slug}/dimensions-capacity`;
+
+                const params: string[] = [];
+
+                if (fuelType) params.push(`fuelType=${fuelType}`);
+                if (transmissionType) params.push(`transmissionType=${transmissionType}`);
+
+                if (params.length > 0) {
+                    params.push("detailed=1");
+                    return `${url}?${params.join("&")}`;
+                }
+
+                return url;
+            }
+        }),
+
+        getMileageSpecsFeatures: builder.query<MileageSpecsFeaturesResponse, { model_slug: string, powertrainId?: number }>({
+            query: ({ model_slug, powertrainId }: { model_slug: string; powertrainId?: number }) => {
+                const url = `/cars/models/${model_slug}/mileage-specs-features`;
+                return powertrainId
+                    ? `${url}?powertrainId=${powertrainId}`
+                    : url;
+            }
+        }),
+
+        getModelProsCons: builder.query<ProsConsResponse, { model_slug: string, }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/pros-cons`,
+        }),
+
+        getModelCompetitors: builder.query<ModelCompetitorsQueryResponse, { model_slug: string, }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/competitors`,
+        }),
+
+        getPriceListDetails: builder.query<PriceListDetailsResponse, { model_slug: string, cityId: number, fuelType?: string, variantId?: number, transmissionType?: string }>({
+            query: ({
+                model_slug,
+                cityId,
+                fuelType,
+                variantId,
+                transmissionType
+            }: {
+                model_slug: string,
+                cityId: number,
+                fuelType?: string,
+                variantId?: number,
+                transmissionType?: string
+            }) => {
+                const url = `/cars/models/${model_slug}/price-list?cityId=${cityId}`;
+
+                const params: string[] = [];
+
+                if (fuelType !== undefined && fuelType !== null && fuelType !== "") {
+                    params.push(`fuelType=${fuelType}`);
+                }
+
+                if (variantId !== undefined && variantId !== null) {
+                    params.push(`expandVariantId=${variantId}`);
+                }
+
+                if (transmissionType !== undefined && transmissionType !== null && transmissionType !== "") {
+                    params.push(`transmissionType=${transmissionType}`);
+                }
+
+                return params.length ? `${url}&${params.join("&")}` : url;
+            }
+        }),
+
+        getModelFuelEfficiency: builder.query<Response, { model_slug: string, fuelType?: string, transmissionType?: string }>({
+            query: ({ model_slug, fuelType, transmissionType }) => `/cars/models/${model_slug}/fuel-efficiency?fuelType=${fuelType}&transmissionType=${transmissionType}`,
+        }),
+
+        getModelOfferDiscount: builder.query<Response, { model_slug: string, expandQID?: number }>({
+            query: ({
+                model_slug,
+                expandQID
+            }: {
+                model_slug: string,
+                expandQID: number,
+            }) => {
+                const url = `/cars/models/${model_slug}/offers-discounts?months=13`;
+
+                const params: string[] = [];
+
+                if (expandQID !== undefined && expandQID !== null) {
+                    params.push(`expandQID=${expandQID}`);
+                }
+
+                return params.length ? `${url}&${params.join("&")}` : url;
+            }
+        }),
+
+        getModelUpcomingCars: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/upcoming-cars?limit=5`,
+        }),
+        getModelOthersCars: builder.query<ModelCompetitorsQueryResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/others-cars?limit=5`,
+        }),
+        getModelMonthlySales: builder.query<MonthlySalesResponse, { model_slug: string, months: number }>({
+            query: ({ model_slug, months }) => `/cars/models/${model_slug}/monthly-sales?months=${months}`,
+        }),
+        getModelColours: builder.query<ColorsResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/colours`,
+        }),
+        getModelImages: builder.query<
+            ModelImagesResponse,
+            { model_slug: string; type?: string }
+        >({
+            query: ({ model_slug, type }) => {
+                const url = `/cars/models/${model_slug}/images`;
+
+                const params: string[] = [];
+
+                if (type && type.trim() !== "") {
+                    params.push(`type=${type}`);
+                    params.push(`limit=60`);
+                }
+
+                return params.length ? `${url}?${params.join("&")}` : url;
+            }
+        }),
+        getModelServiceCost: builder.query<ServiceCostResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/service-cost`,
+        }),
     }),
 });
 
@@ -141,45 +327,55 @@ export const {
     useGetAdvanceSearchDataQuery,
     useGetDiscontinuedModelQuery,
     useGetBrandsByIdQuery,
+    useGetModelDetailsQuery,
+    useGetModelDetailByFuelTypeQuery,
+    useGetBestVariantToBuyQuery,
+    useGetDimensionsCapacityQuery,
+    useGetMileageSpecsFeaturesQuery,
+    useGetModelProsConsQuery,
+    useGetModelCompetitorsQuery,
+    useGetPriceListDetailsQuery,
+    useGetModelFuelEfficiencyQuery,
+    useGetModelOfferDiscountQuery,
+    useGetModelUpcomingCarsQuery,
+    useGetModelOthersCarsQuery,
+    useGetModelMonthlySalesQuery,
+    useGetModelColoursQuery,
+    useGetModelImagesQuery,
+    useGetModelServiceCostQuery,
 } = carModuleApi;
 
 
 
-
-
-
-
-
-
 interface CarBrandDetail {
-  brandId: number;
-  brandName: string;
-  logoPath: string;
-  unquieViews: number | null;
-  popularity: string;
-  brandSlug: string;
-  brandDescription: string;
-  bannerImage: string;
-  bannerImageAltTag: string;
-  isFasttag: number;
-  brandType: number;
-  displayName: string;
-  roadsideAssistance: number;
-  emailAddress: string;
-  stateId: number;
-  cityId: number;
-  parentOrganization: string;
-  products: string;
-  founderName: string;
-  customerService: string;
-  serviceNetwork: boolean;
-  websiteUrl: string;
-  brandKeyPeople: string;
-  introContent: string; // HTML content
-  brandOrganizationName: string;
-  websiteName: string;
-  brandTitle: string;
-  iconPath: string;
-  brandStatus: number;
-  similarBrand: string;
+    brandId: number;
+    brandName: string;
+    logoPath: string;
+    unquieViews: number | null;
+    popularity: string;
+    brandSlug: string;
+    brandDescription: string;
+    bannerImage: string;
+    bannerImageAltTag: string;
+    isFasttag: number;
+    brandType: number;
+    displayName: string;
+    roadsideAssistance: number;
+    emailAddress: string;
+    stateId: number;
+    cityId: number;
+    parentOrganization: string;
+    products: string;
+    founderName: string;
+    customerService: string;
+    serviceNetwork: boolean;
+    websiteUrl: string;
+    brandKeyPeople: string;
+    introContent: string; // HTML content
+    brandOrganizationName: string;
+    websiteName: string;
+    brandTitle: string;
+    iconPath: string;
+    brandStatus: number;
+    similarBrand: string;
 }

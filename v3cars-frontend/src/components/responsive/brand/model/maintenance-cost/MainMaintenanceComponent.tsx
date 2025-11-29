@@ -1,29 +1,33 @@
 'use client'
 
-import CurrentOffersCard from "@/components/common/CommonCards/CurrentOffersCard";
-import CommonReviewCard from "@/components/common/CommonReviewCard";
 import CommonVideos from "@/components/common/CommonVideos";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard";
-import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
-import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
-import CSDPriceList from "@/components/responsive/brand/model/sidebar/CSDPriceList";
 import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalculator";
-import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularCarQuery } from "@/redux/api/carModuleApi";
-import { useGetLatestComparisonReviewsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import ServiceCostTable from "./ServiceCostTable";
 import ServiceCostSnapshot from "./ServiceCostSnapshot";
 import ServiceCostByYear from "./ServiceCostByYear";
+import { useGetModelDetailsQuery, useGetModelServiceCostQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "../overview/Overview";
+import BrochureCard from "../sidebar/BrochureCard";
+import CSDPriceList from "../sidebar/CSDPriceList";
+import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
+import CommonSellingCarCard from "@/components/common/ModelCards/CommonSellingCarCard";
+import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
+import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import useIsMobile from "@/hooks/useIsMobile";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface MileagePageProps {
     type: string;
@@ -31,10 +35,28 @@ interface MileagePageProps {
     childSlug: string;
 }
 
-function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
-    const { data: latestVideosData } = useGetLatestVideosQuery()
+export interface ServiceCostResponse {
+    success: boolean;
+    modelId: number;
+    serviceCostHtml: string; // HTML
+}
 
-    const latestVideos = latestVideosData?.rows ?? []
+function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
+    const { data: modelServiceCostData } = useGetModelServiceCostQuery({ model_slug: slug }, { skip: !slug })
+
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const popularComparisons = popularComparisonsData?.rows ?? [];
+    const modelLatestNews = modelLatestNewsData?.rows ?? []
+    const modelServiceCost = modelServiceCostData?.serviceCostHtml ?? "";
+
+    const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>
@@ -59,7 +81,7 @@ function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -69,21 +91,27 @@ function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
+                            <div
+                                className="w-full offer-html-wrapper space-y-6"
+                                dangerouslySetInnerHTML={{ __html: modelServiceCost ?? "" }}
+                            />
+
                             <ServiceCostTable />
 
                             <ServiceCostSnapshot />
 
                             <ServiceCostByYear />
 
-                            <div className="border rounded-xl h-[332px]" />
+                            <CommonSellUsedCarComponent />
 
                             <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
+                                slug={slug}
                             />
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -96,32 +124,39 @@ function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
-                            />
-
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
-
-                            {/* {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                            {isMobile ? <MobileLatestCarNews
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
-                            } */}
+                            }
 
-                            {/* <CommonSellingCarCard
+                            <CommonVideos
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
+                            />
+
+                            <CommonComparisonModelCard data={popularComparisons} />
+
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
+
+
+                            <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
-                            /> */}
+                            />
 
                         </div>
 
@@ -138,15 +173,25 @@ function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <BrochureCard
-                                title="Tata Nexon"
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
+
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -160,11 +205,15 @@ function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -177,24 +226,20 @@ function MainMaintenanceComponent({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title="Other Tata Nexon"
-                            />
-
-                            <OtherCars
-                                title="Upcoming Tata Nexon"
-                            />
-
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

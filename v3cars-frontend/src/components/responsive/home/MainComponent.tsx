@@ -62,12 +62,16 @@ export default function MainComponent() {
           </div>
         </div>
       </div>
-      {isMobile ? <MobileLatestCarNews
-        title="Latest Car News"
-        view="Latest News"
-        data={latestCarNews}
-        link="/news"
-      />
+      {isMobile ? (
+        <div className="p-4">
+          <MobileLatestCarNews
+            title="Latest Car News"
+            view="Latest News"
+            data={latestCarNews}
+            link="/news"
+          />
+        </div>
+      )
         :
         <div className="w-full lg:app-container mx-auto py-6">
           <CommonNewsUpdate
@@ -98,13 +102,16 @@ export default function MainComponent() {
         </div>
       </div>
 
-      {isMobile ?
-        <MobileLatestCarNews
-          title="Variants Explained"
-          view="Variants Explained"
-          data={variantsExplained}
-          link="/variant-explained"
-        />
+      {isMobile ? (
+        <div className="p-4">
+          <MobileLatestCarNews
+            title="Variants Explained"
+            view="Variants Explained"
+            data={variantsExplained}
+            link="/variant-explained"
+          />
+        </div>
+      )
         :
         // <VariantsExplained />
         <div className="w-full lg:app-container mx-auto mt-6">

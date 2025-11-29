@@ -70,7 +70,7 @@ const ExpertCarReviews: React.FC<ExpertCarReviewsProps> = ({ expertCarReviews })
                         <h2 className="text-lg font-semibold lg:font-medium">Expert Car Reviews</h2>
                         <Link
                             href="#"
-                            className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                            className="text-primary font-medium text-sm hover:underline flex gap-2 items-center"
                         >
                             View All Expert Car Reviews
                             <svg

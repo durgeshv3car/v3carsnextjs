@@ -135,7 +135,7 @@ const JobListing: React.FC<JobListingProps> = ({ showJobModel, setShowJobModel }
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`px-10 py-3 rounded-full text-nowrap border transition ${activeTab === tab
-                            ? "bg-[#171717] text-yellow-400 dark:border-[#2E2E2E]"
+                            ? "bg-[#171717] text-primary dark:border-[#2E2E2E]"
                             : "bg-white dark:bg-black dark:border-[#2E2E2E] hover:bg-gray-100"
                             } font-semibold`}
                     >

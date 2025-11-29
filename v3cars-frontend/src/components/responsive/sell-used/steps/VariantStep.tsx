@@ -56,7 +56,7 @@ export default function VariantStep() {
                       onClick={() => pick(v)}
                       className={`w-full flex items-center justify-between rounded-md border px-4 py-4 text-left transition
                         ${active
-                          ? "bg-white dark:bg-[#171717] border-yellow-400 ring-1 ring-yellow-400"
+                          ? "bg-white dark:bg-[#171717] border-primary ring-1 ring-yellow-400"
                           : "bg-white/90 hover:bg-white dark:bg-[#171717] border-neutral-200 dark:border-[#2E2E2E]"}`}
                     >
                       <span className="text-[15px]">{v}</span>

@@ -44,8 +44,8 @@ export default function TermsOfUse() {
                         <Link href="/" className="hover:underline">
                             Home
                         </Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">Terms of Uses</span>
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary">Terms of Uses</span>
                     </div>
                 </div>
             </div>

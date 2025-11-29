@@ -36,7 +36,7 @@ const SellUsedCarModel = ({ openModel, setOpenModel, selectedBrand }: SellUsedCa
             {/* Close Button */}
             <button
                 onClick={() => setOpenModel(false)}
-                className="absolute top-4 right-4 bg-yellow-400 p-2 rounded-full hover:bg-yellow-500"
+                className="absolute top-4 right-4 bg-primary p-2 rounded-full hover:bg-primary-hover"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -48,7 +48,7 @@ const SellUsedCarModel = ({ openModel, setOpenModel, selectedBrand }: SellUsedCa
                 {["Brand", "Period", "Model", "Variant", "Ownership", "Odometer", "Location"].map((tab, i) => (
                     <span
                         key={i}
-                        className={`cursor-pointer text-sm font-medium ${i === 0 ? "text-yellow-500 border-b-2 border-yellow-500 pb-2" : "text-gray-600"
+                        className={`cursor-pointer text-sm font-medium ${i === 0 ? "text-primary border-b-2 border-primary pb-2" : "text-gray-600"
                             }`}
                     >
                         {tab}
@@ -81,7 +81,7 @@ const SellUsedCarModel = ({ openModel, setOpenModel, selectedBrand }: SellUsedCa
                             .map((brand, i) => (
                                 <div
                                     key={i}
-                                    className="border rounded-lg p-4 flex flex-col items-center cursor-pointer hover:border-yellow-500"
+                                    className="border rounded-lg p-4 flex flex-col items-center cursor-pointer hover:border-primary"
                                 >
                                     <img src={brand.logo} alt={brand.name} className="h-10 object-contain" />
                                     <p className="text-sm mt-2">{brand.name}</p>

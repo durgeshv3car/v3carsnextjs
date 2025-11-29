@@ -290,11 +290,11 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                             className={`flex items-center justify-center gap-2 py-3 text-sm font-medium`}
                         >
                             <span
-                                className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-gray-400'
+                                className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-primary' : 'border-gray-400'
                                     }`}
                             >
                                 <span
-                                    className={`w-2 h-2 rounded-full ${activeTab === tab ? 'bg-yellow-400' : ''
+                                    className={`w-2 h-2 rounded-full ${activeTab === tab ? 'bg-primary' : ''
                                         }`}
                                 />
                             </span>
@@ -360,7 +360,7 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                     )}
 
                     <button
-                        className="w-full font-semibold text-xs bg-yellow-400 hover:bg-yellow-500 text-black py-3 rounded-md flex items-center justify-center gap-1"
+                        className="w-full font-semibold text-xs bg-primary hover:bg-primary-hover text-black py-3 rounded-md flex items-center justify-center gap-1"
                         onClick={handleSearch}
                     >
                         <CiSearch size={16} /> SEARCH

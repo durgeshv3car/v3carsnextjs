@@ -192,7 +192,7 @@ const ApplicationModel = ({ onClose }: ApplicationModelProps) => {
                                             setStep("otp");
                                             setTimer(16);
                                         }}
-                                        className="w-[50%] bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-md text-sm disabled:opacity-50"
+                                        className="w-[50%] bg-primary hover:bg-primary-hover text-black font-semibold py-3 rounded-md text-sm disabled:opacity-50"
                                     >
                                         Verify Your Number
                                     </button>
@@ -215,7 +215,7 @@ const ApplicationModel = ({ onClose }: ApplicationModelProps) => {
 
                                 <p className="text-center text-gray-500 flex items-center justify-center gap-2">
                                     <span>OTP has been sent to</span>
-                                    <span className="text-yellow-600 font-semibold">{email}</span>
+                                    <span className="text-primary font-semibold">{email}</span>
                                     <TbEdit
                                         size={16}
                                         className="cursor-pointer text-gray-600"
@@ -248,7 +248,7 @@ const ApplicationModel = ({ onClose }: ApplicationModelProps) => {
                                     ) : (
                                         <button
                                             onClick={resendOtp}
-                                            className="text-yellow-600 font-medium"
+                                            className="text-primary font-medium"
                                         >
                                             Resend OTP
                                         </button>
@@ -257,7 +257,7 @@ const ApplicationModel = ({ onClose }: ApplicationModelProps) => {
 
                                 <div className="flex justify-center items-center">
                                     <button
-                                        className="w-[50%] bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-md text-sm"
+                                        className="w-[50%] bg-primary hover:bg-primary-hover text-black font-semibold py-3 rounded-md text-sm"
                                         onClick={() => setStep("job")}
                                     >
                                         Verify
@@ -318,7 +318,7 @@ const ApplicationModel = ({ onClose }: ApplicationModelProps) => {
                                 </div>
 
                                 <div className="flex justify-center items-center">
-                                    <button className="w-[50%] bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-md text-sm">
+                                    <button className="w-[50%] bg-primary hover:bg-primary-hover text-black font-semibold py-3 rounded-md text-sm">
                                         Submit
                                     </button>
                                 </div>

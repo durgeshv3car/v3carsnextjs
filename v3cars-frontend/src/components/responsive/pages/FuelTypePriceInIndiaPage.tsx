@@ -117,10 +117,10 @@ export default function FuelTypePriceInIndiaPage({ fuelType }: PageProps) {
 
                                     {/* ✅ Dynamic Date */}
                                     <div className="flex items-center gap-1 mt-2 text-black">
-                                        <span className="bg-yellow-400 text-xs px-2 py-0.5 rounded font-bold">{dayName}</span>
-                                        <span className="bg-yellow-400 text-xs px-2 py-0.5 rounded font-bold">{day}</span>
-                                        <span className="bg-yellow-400 text-xs px-2 py-0.5 rounded font-bold">{monthName}</span>
-                                        <span className="bg-yellow-400 text-xs px-2 py-0.5 rounded font-bold">{year}</span>
+                                        <span className="bg-primary text-xs px-2 py-0.5 rounded font-bold">{dayName}</span>
+                                        <span className="bg-primary text-xs px-2 py-0.5 rounded font-bold">{day}</span>
+                                        <span className="bg-primary text-xs px-2 py-0.5 rounded font-bold">{monthName}</span>
+                                        <span className="bg-primary text-xs px-2 py-0.5 rounded font-bold">{year}</span>
                                     </div>
                                 </div>
 
@@ -132,7 +132,7 @@ export default function FuelTypePriceInIndiaPage({ fuelType }: PageProps) {
                                             onClick={() => { handleFuelType(tab) }}
                                             className={`font-semibold px-6 py-2 transition-colors duration-200
                                                 ${capitalize(fuelType) === tab.fuel
-                                                    ? "bg-yellow-400 text-white dark:bg-yellow-500"
+                                                    ? "bg-primary text-white dark:bg-primary"
                                                     : "bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-[#2E2E2E]"
                                                 }`}
                                         >

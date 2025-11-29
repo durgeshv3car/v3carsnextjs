@@ -17,9 +17,9 @@ const HelpSection = () => {
                     <div className="max-w-md">
                         <h1 className="text-4xl/snug">
                             We’re Here To Help <br />
-                            <span className="text-yellow-400 font-bold">Just Pick An Option</span>
+                            <span className="text-primary font-bold">Just Pick An Option</span>
                         </h1>
-                        <span className="w-32 h-1 bg-yellow-400 inline-block rounded-sm"></span>
+                        <span className="w-32 h-1 bg-primary inline-block rounded-sm"></span>
                         <p className="mt-2 text-gray-500">
                             ...that best matches your query and follow the steps.
                         </p>
@@ -46,7 +46,7 @@ const HelpSection = () => {
                         >
                             <div>
                                 <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span className="w-0.5 h-5 bg-yellow-400 inline-block rounded-sm"></span>
+                                    <span className="w-0.5 h-5 bg-primary inline-block rounded-sm"></span>
                                     {item.title}
                                 </h3>
                                 <p className="text-sm text-gray-600 mt-1">{item.description}</p>

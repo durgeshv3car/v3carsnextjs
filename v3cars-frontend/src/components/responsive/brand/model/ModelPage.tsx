@@ -8,18 +8,15 @@ import CommonList from "./overview/CommonList";
 import SpecsListTable from "./overview/SpecsListTable";
 import ModelExpertReview from "./overview/ModelExpertReview";
 import ModelProsCons from "./overview/ModelProsCons";
-import ModelComparisonSimilarCars from "./overview/ModelComparisonSimilarCars";
-import SideBarAdSmall from "@/components/common/SideBarAdSmall";
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import useIsMobile from "@/hooks/useIsMobile";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonVideos from "@/components/common/CommonVideos";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import BrochureCard from "./sidebar/BrochureCard";
 import CSDPriceList from "./sidebar/CSDPriceList";
 import LatestOffersDiscounts from "./sidebar/LatestOffersDiscounts";
@@ -31,6 +28,11 @@ import VariantExplained from "./sidebar/VariantExplained";
 import EMICalculator from "./sidebar/EMICalculator";
 import CostOfOwnership from "./sidebar/CostOfOwnership";
 import Marquee from "@/components/ui/Marquee";
+import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "./overview/Overview";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const data = [
     {
@@ -56,13 +58,38 @@ interface ModelPageProps {
 }
 
 export default function ModelPage({ type, slug }: ModelPageProps) {
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
+    const [fuelType, setFuelType] = useState<string>("petrol")
+    const [transmissionType, setTransmissionType] = useState<string>("")
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelDetailByFuelTypeData } =
+        useGetModelDetailByFuelTypeQuery(
+            { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType ?? undefined },
+            { skip: !slug }
+        );
+    const { data: bestVariantToBuyData } = useGetBestVariantToBuyQuery({ model_slug: slug }, { skip: !slug });
+    const { data: dimensionsCapacityData } = useGetDimensionsCapacityQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug })
 
-    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const modelDetailByFuelType = modelDetailByFuelTypeData?.rows ?? [];
+    const bestVariantToBuy = bestVariantToBuyData?.rows ?? [];
+    const dimensionsCapacity = dimensionsCapacityData
+        ? [dimensionsCapacityData]
+        : null;
+    const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const latestVideos = latestVideosData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? [];
+    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
+    const modelOthersCars = modelOthersCarsData?.items ?? [];
+
+    console.log(modelOthersCars);
+
+
     const isMobile = useIsMobile()
 
     return (
@@ -71,12 +98,12 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                 <div className="px-4 xl:px-10">
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
-                        <span className="text-yellow-500">›</span>
+                        <span className="text-primary">›</span>
                         <Link href={`/${type}`} className="hover:underline">
                             {type}
                         </Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary">
                             {slug}
                         </span>
                     </div>
@@ -113,7 +140,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                 <div className="lg:px-8 px-4 shadow-md">
                     {/* Banner content on top */}
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -124,77 +151,119 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
                             <LatestUpdates
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <CommonModelCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 data={data}
                             />
 
-                            <CommonList
-                                model="Tata Nexon"
-                                title="Price List"
-                                desc="The Tata Nexon SUV is available with 7 engine-transmission combinations. The ex-showroom prices of the 2025 Nexon start from ₹7.32 lakh for the Smart variant (Base Model) with the 1.2L turbo petrol engine and 5-speed MT. The range tops out at ₹14.05 lakh."
-                            />
+                            <div id="Price">
+                                <CommonList
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    title="Price List"
+                                    desc={
+                                        modelDetails
+                                            ? `The ${modelDetails.model.brand.name} ${modelDetails.model.name} ${modelDetails.model.bodyType} is available with multiple engine and transmission combinations. The ex-showroom prices of the ${modelDetails.model.name} start from ₹${(
+                                                (modelDetails.priceRange.exShowroom.min ?? 0) / 100000
+                                            ).toFixed(2)} lakh. The top-end variant is priced at ₹${(
+                                                (modelDetails.priceRange.exShowroom.max ?? 0) / 100000
+                                            ).toFixed(2)} lakh (ex-showroom).`
+                                            : ""
+                                    }
+                                    fuelTypes={modelDetails?.availableWith.fuels}
+                                    data={modelDetailByFuelType}
+                                    fuelType={fuelType}
+                                    setFuelType={setFuelType}
+                                    transmissionType={transmissionType}
+                                    setTransmissionType={setTransmissionType}
+                                    type={type}
+                                    slug={slug}
+                                />
+                            </div>
 
-                            <CommonList
-                                model="Best Tata Nexon"
-                                title="Variant To Buy"
-                                desc="See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"
-                            />
+                            <div id="Variants">
+                                <CommonList
+                                    model={`Best ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    title="Variant To Buy"
+                                    desc="See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"
+                                    data={bestVariantToBuy}
+                                    type={type}
+                                    slug={slug}
+                                />
+                            </div>
 
-                            <CommonList
-                                model="Tata Nexon"
-                                title="Dimensions & Capacity"
-                                desc="The 2025 Nexon is 3995mm long, 1804mm wide and 1620mm tall. Bigger exterior dimensions give a car a stronger road presence. The Nexon has a 2498mm long wheelbase. A long wheelbase makes the car more stable at high speeds and gives better legroom in the back"
-                            />
+                            <div id="Dimensions">
+                                <CommonList
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    title="Dimensions & Capacity"
+                                    desc="The 2025 Nexon is 3995mm long, 1804mm wide and 1620mm tall. Bigger exterior dimensions give a car a stronger road presence. The Nexon has a 2498mm long wheelbase. A long wheelbase makes the car more stable at high speeds and gives better legroom in the back"
+                                    data={dimensionsCapacity as [] | null}
+                                    type={type}
+                                    slug={slug}
+                                />
+                            </div>
 
-                            <SpecsListTable
-                                model="Tata Nexon"
-                            />
+                            <div id="Mileage">
+                                <SpecsListTable
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    slug={slug}
+                                />
+                            </div>
 
-                            <ModelExpertReview
-                                model="Tata Nexon"
-                            />
+                            <div id="Reviews">
+                                <ModelExpertReview
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                />
+                            </div>
 
-                            <ModelProsCons
-                                model="Tata Nexon"
-                            />
+                            <div id="Pros Cons">
+                                <ModelProsCons
+                                    model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    slug={slug}
+                                />
+                            </div>
 
-                            <ModelComparisonSimilarCars
-                            // model="Tata Nexon"
-                            />
+                            {/* <ModelComparisonSimilarCars
+                                model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
+                            /> */}
 
                             <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
+                                slug={slug}
                             />
 
                             {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
                             }
 
                             <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
 
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
 
                         </div>
 
@@ -212,19 +281,25 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             </div>
 
                             <BrochureCard
-                                title="Tata Nexon"
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <CostOfOwnership
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -238,11 +313,15 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -256,23 +335,29 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             </div>
 
                             <OtherCars
-                                title="Other Tata Nexon"
+                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelOthersCars}
                             />
 
                             <OtherCars
-                                title="Upcoming Tata Nexon"
+                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelUpcomingCars}
                             />
 
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

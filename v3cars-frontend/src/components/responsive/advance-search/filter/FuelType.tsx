@@ -52,7 +52,7 @@ const FuelTypeFilter = ({ openSection }: FuelFilterProps) => {
                             key={type.value}
                             onClick={() => handleFuelClick(type.value)}
                             className={`flex flex-col min-w-[105px] min-h-[80px] items-center justify-center text-sm gap-1 border rounded-xl dark:border-[#2E2E2E] cursor-pointer
-                                ${selectedFuel === type.value ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-900' : ''}`}
+                                ${selectedFuel === type.value ? 'border-primary bg-primary-light text-black' : ''}`}
                         >
                             <img
                                 src={type.icon}

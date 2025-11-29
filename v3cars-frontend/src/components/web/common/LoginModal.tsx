@@ -118,7 +118,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                     setStep("otp");
                     setTimer(16);
                   }}
-                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm disabled:opacity-50"
+                  className="w-full bg-primary hover:bg-primary-hover text-black font-medium py-3 rounded-md text-sm disabled:opacity-50"
                 >
                   Login with OTP
                 </button>
@@ -146,7 +146,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   Don&apos;t have an account?{" "}
                   <span
                     onClick={() => setStep("signup")}
-                    className="text-yellow-600 cursor-pointer font-medium"
+                    className="text-primary cursor-pointer font-medium"
                   >
                     Sign Up
                   </span>
@@ -162,7 +162,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                 
                 <p className="text-center text-gray-500 flex items-center justify-center gap-2">
                   <span>OTP has been sent to</span>
-                  <span className="text-yellow-600 font-semibold">{email}</span>
+                  <span className="text-primary font-semibold">{email}</span>
                   <TbEdit
                     size={16}
                     className="cursor-pointer text-gray-600"
@@ -195,14 +195,14 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   ) : (
                     <button
                       onClick={resendOtp}
-                      className="text-yellow-600 font-medium"
+                      className="text-primary font-medium"
                     >
                       Resend OTP
                     </button>
                   )}
                 </p>
 
-                <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm">
+                <button className="w-full bg-primary hover:bg-primary-hover text-black font-medium py-3 rounded-md text-sm">
                   Login
                 </button>
 
@@ -210,7 +210,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   Don&apos;t have an account?{" "}
                   <span
                     onClick={() => setStep("signup")}
-                    className="text-yellow-600 cursor-pointer font-medium"
+                    className="text-primary cursor-pointer font-medium"
                   >
                     Sign Up
                   </span>
@@ -259,7 +259,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                   />
                 </div>
 
-                <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-3 rounded-md text-sm">
+                <button className="w-full bg-primary hover:bg-primary-hover text-black font-medium py-3 rounded-md text-sm">
                   Sign Up
                 </button>
 
@@ -283,7 +283,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
                 <p className="text-center text-xs text-gray-500">
                   Already have an account?{" "}
                   <span
-                    className="text-yellow-600 font-medium cursor-pointer"
+                    className="text-primary font-medium cursor-pointer"
                     onClick={() => setStep("login")}
                   >
                     Login

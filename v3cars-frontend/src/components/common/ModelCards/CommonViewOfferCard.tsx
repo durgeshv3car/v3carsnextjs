@@ -1,7 +1,6 @@
 'use client'
 
-import { useGetCarByBodyTypeQuery } from '@/redux/api/homeModuleApi'
-import { setBodyTypeIds } from '@/redux/slices/advanceSearchSlice'
+import { useGetModelCompetitorsQuery } from '@/redux/api/carModuleApi'
 import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -10,61 +9,68 @@ import { BiTachometer } from 'react-icons/bi'
 import { FaArrowRight } from 'react-icons/fa'
 import { IoMdStarOutline } from 'react-icons/io'
 import { PiEngine } from 'react-icons/pi'
-import { useDispatch } from 'react-redux'
-
-type CarBodyTab = 1 | 3 | 4 | 7;
-
-interface CarProps {
-    modelId: number;
-    modelName: string;
-    modelSlug: string;
-    brandId: number;
-    modelBodyTypeId: number;
-    isUpcoming: boolean;
-    launchDate: string; // ISO date string
-    totalViews: number;
-    expectedBasePrice: number;
-    expectedTopPrice: number;
-    brand: {
-        id: number;
-        name: string;
-        slug: string;
-        logo: string;
-    };
-    priceMin: number;
-    priceMax: number;
-    powerPS: number;
-    torqueNM: number;
-    mileageKMPL: number;
-    image: {
-        name: string;
-        alt: string;
-        url: string;
-    };
-    imageUrl: string;
-}
-
-const tabNames: Record<CarBodyTab, string> = {
-    1: "Hatchback",
-    3: "SUV",
-    4: "Sedan",
-    7: "MUV",
-};
 
 interface CommonViewOfferCardProps {
     title: string;
     desc: string;
+    slug: string;
 }
 
-const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc }) => {
-    const [carBodyTab, setCarBodyTab] = useState<CarBodyTab>(3);
-    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 15, page: 1 });
-    const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
+export interface CarImage {
+    name: string;
+    alt: string;
+    url: string;
+}
+
+export interface PriceRange {
+    min: number;
+    max: number;
+}
+
+export interface CarOverviewShort {
+    modelId: number;
+    name: string;
+    slug: string;
+    image: CarImage;
+    priceRange: PriceRange;
+    powerPS: number;
+    torqueNM: number;
+    mileageKMPL: number;
+}
+
+const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc, slug }) => {
+    const { data: modelComparisonSimilarData } = useGetModelCompetitorsQuery({ model_slug: slug });
+
+    const similarCars: CarOverviewShort[] = modelComparisonSimilarData?.items ?? [];
+
+    const carList = similarCars.map(car => ({
+        modelId: car.modelId,
+        modelName: car.name,
+        modelSlug: car.slug,
+        imageUrl: car.image.url,
+
+        // Engine & Mileage
+        powerPS: car.powerPS,
+        torqueNM: car.torqueNM,
+        mileageKMPL: car.mileageKMPL,
+
+        // Price
+        priceMin: car.priceRange.min,
+        priceMax: car.priceRange.max,
+
+        // Brand
+        brand: {
+            name: car.slug.split("-")[0],
+            slug: car.slug.split("-")[0]
+        },
+
+        image: car.image
+    }));
+
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
     const router = useRouter()
-    const dispatch = useDispatch();
 
     const handleScroll = () => {
         const container = scrollRef.current;
@@ -92,14 +98,6 @@ const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc }
         container.addEventListener('scroll', handleScroll);
         return () => container.removeEventListener('scroll', handleScroll);
     }, []);
-
-    function handleBodyType() {
-        if (!carBodyTab) {
-            return alert("Something Went Wrong. Please Try Again")
-        }
-        dispatch(setBodyTypeIds([carBodyTab]));
-        router.push("/search/new-cars");
-    }
 
     return (
         <div className="space-y-3 mt-4">
@@ -136,7 +134,7 @@ const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc }
 
             {/* Cars */}
             <div ref={scrollRef} className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide">
-                {carByBodyType.map((car) => (
+                {carList.map((car) => (
                     <div
                         key={car.modelId}
                         className="rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-auto flex-shrink-0 flex flex-col"
@@ -154,7 +152,7 @@ const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc }
 
                             {/* Gradient Overlay */}
                             <div className="absolute bottom-0 p-3 w-full bg-gradient-to-t from-black/90 to-transparent">
-                                <p className="text-white font-semibold">{car.brand.name}</p>
+                                <p className="text-white font-semibold uppercase">{car.brand.name}</p>
                             </div>
 
                             {/* Favorite Button */}
@@ -192,7 +190,7 @@ const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc }
                                 </p>
                             </div>
                             <button
-                                className="p-3 text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-yellow-400"
+                                className="p-3 text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-primary"
                                 onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
                             >
                                 View {car.modelName} Offers

@@ -13,8 +13,8 @@ function MainAboutUsComponent() {
                 <div className='px-4 xl:px-10'>
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary">
                             About Us
                         </span>
                     </div>
@@ -30,9 +30,9 @@ function MainAboutUsComponent() {
                     <div className="pt-[60px] md:pt-[100px] px-4">
                         <h1 className="text-3xl/tight md:text-4xl/tight">
                             India’s Most <br />
-                            <span className="text-yellow-400 font-bold">Trusted Car Guide</span>
+                            <span className="text-primary font-bold">Trusted Car Guide</span>
                         </h1>
-                        <div className="h-[3px] bg-yellow-400 w-[100px] my-3" />
+                        <div className="h-[3px] bg-primary w-[100px] my-3" />
                     </div>
                 </div>
             </div>

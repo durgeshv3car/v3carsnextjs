@@ -70,7 +70,7 @@ const PriceTrends: React.FC<PriceTrendsProps> = ({ type, city, data }) => {
                     <div key={m.month} className="border">
                         <button
                             onClick={() => toggleSection(m.month)}
-                            className={`w-full text-left bg-yellow-400 px-4 py-2 font-semibold flex justify-between items-center ${idx !== 0 ? "border-t" : ""
+                            className={`w-full text-left bg-primary px-4 py-2 font-semibold flex justify-between items-center ${idx !== 0 ? "border-t" : ""
                                 }`}
                         >
                             <span>

@@ -237,7 +237,7 @@ export default function CompareNow({
             <div className="mt-6 flex justify-center">
                 <button 
                 // onClick={()=>{router.push(`/compare/${toSlug(selectedBrands)}`)}}
-                className="bg-yellow-400 hover:bg-yellow-500 transition text-black px-8 py-3 rounded-full flex items-center gap-2 shadow-md">
+                className="bg-primary hover:bg-primary-hover transition text-black px-8 py-3 rounded-full flex items-center gap-2 shadow-md">
                     Compare Now
                     <MdCompareArrows size={24} />
                 </button>

@@ -50,8 +50,8 @@ export default function TopSection({ title, description }: TopSectionProps) {
                 <div className='px-4 xl:px-10'>
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary">
                             {path === "/latest-launched-cars" ? "Latest Cars" :
                                 path === "/popular-cars" ? "Popular Cars" :
                                     path === "/compare-cars" ? "Compare Cars" :
@@ -86,7 +86,7 @@ export default function TopSection({ title, description }: TopSectionProps) {
                         {/* Read More / Read Less — only if > 40 words */}
                         <button
                             onClick={() => setIsExpanded(!isExpanded)}
-                            className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-1"
+                            className="text-sm text-primary font-medium hover:underline flex items-center gap-1"
                         >
                             {isExpanded ? "Read Less" : "Read More"}
                             <span

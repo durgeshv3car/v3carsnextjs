@@ -1,19 +1,11 @@
 'use client'
 
 import { useGetCarByBodyTypeQuery } from '@/redux/api/homeModuleApi'
-import { setBodyTypeIds } from '@/redux/slices/advanceSearchSlice'
 import { RootState } from '@/redux/store'
-import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
-import { BiTachometer } from 'react-icons/bi'
-import { FaArrowRight } from 'react-icons/fa'
-import { IoMdStarOutline } from 'react-icons/io'
-import { PiEngine } from 'react-icons/pi'
-import { useDispatch, useSelector } from 'react-redux'
-
-type CarBodyTab = 1 | 3 | 4 | 7;
+import { useSelector } from 'react-redux'
 
 interface CarProps {
     modelId: number;
@@ -45,27 +37,18 @@ interface CarProps {
     imageUrl: string;
 }
 
-const tabNames: Record<CarBodyTab, string> = {
-    1: "Hatchback",
-    3: "SUV",
-    4: "Sedan",
-    7: "MUV",
-};
-
 interface CommonUsedCarCardProps {
     title: string;
 }
 
 const CommonUsedCarCard: React.FC<CommonUsedCarCardProps> = ({ title }) => {
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
-    const [carBodyTab, setCarBodyTab] = useState<CarBodyTab>(3);
-    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 15, page: 1 });
+    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: 3, limit: 15, page: 1 });
     const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
     const router = useRouter()
-    const dispatch = useDispatch();
 
     const handleScroll = () => {
         const container = scrollRef.current;
@@ -93,14 +76,6 @@ const CommonUsedCarCard: React.FC<CommonUsedCarCardProps> = ({ title }) => {
         container.addEventListener('scroll', handleScroll);
         return () => container.removeEventListener('scroll', handleScroll);
     }, []);
-
-    function handleBodyType() {
-        if (!carBodyTab) {
-            return alert("Something Went Wrong. Please Try Again")
-        }
-        dispatch(setBodyTypeIds([carBodyTab]));
-        router.push("/search/new-cars");
-    }
 
     return (
         <div className="space-y-3 mt-4">
@@ -165,7 +140,7 @@ const CommonUsedCarCard: React.FC<CommonUsedCarCardProps> = ({ title }) => {
                         <div className='text-center w-full'>
                             <p className=''>2020 Tata Nexon XZ Diesel</p>
                             <p className='text-xs text-gray-400'>53,063 KM | Diesel | Manual</p>
-                            <p className='text-yellow-400 text-xl font-semibold mt-2'>₹7,31,000</p>
+                            <p className='text-primary text-xl font-semibold mt-2'>₹7,31,000</p>
                             <p className='text-xs text-gray-400'>EMI starts at ₹11,997</p>
                         </div>
 

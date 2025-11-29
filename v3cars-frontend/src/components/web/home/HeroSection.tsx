@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CiFilter, CiSearch } from 'react-icons/ci';
-import { VscChevronRight } from 'react-icons/vsc';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
@@ -22,15 +20,9 @@ const slides = [
     tagline: 'More Performance,\nBig on Features',
   },
   {
-    image: 'https://images.pexels.com/photos/3311574/pexels-photo-3311574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    image: '/images/banner.png',
     title: 'Tata Punch EV',
     tagline: 'Power meets Efficiency',
-  },
-
-  {
-    image: 'https://images.pexels.com/photos/3422964/pexels-photo-3422964.jpeg',
-    title: 'Tata Nexon',
-    tagline: 'Next Level SUV',
   },
 
 ];
@@ -197,7 +189,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
 
   return (
     <>
-      <div className="relative h-[694px]">
+      <div className="relative h-[694px] mb-36">
         {/* Swiper Background */}
         <Swiper
           modules={[Pagination, Autoplay]}
@@ -226,118 +218,128 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
         </Swiper>
 
         {/* Search Box Overlay */}
-        <div className="absolute top-[125px] left-0 right-0 z-20 px-6 lg:px-10">
-          <div className="app-container mx-auto">
-            <div className="w-[403px] h-[430px] bg-gray-50 dark:bg-[#171717] rounded-xl shadow-md border border-gray-300 dark:border-[#2E2E2E] flex flex-col">
-              {/* Header */}
-              <div className="bg-gray-50 dark:bg-[#171717] px-4 py-3 flex items-center gap-2 border-b border-gray-300 dark:border-[#2E2E2E] rounded-t-xl">
-                <CiFilter size={20} />
-                <h2 className="font-semibold text-lg">
-                  SEARCH THE RIGHT CAR
-                </h2>
-              </div>
+        <div className=" absolute w-full flex justify-center -bottom-[110px] z-30">
+          <div className="w-full max-w-7xl shadow-xl rounded-2xl p-6 bg-white dark:bg-[#171717]">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold">Search The Right Car</h2>
+              <button
+                onClick={() => { router.push('/search/new-cars') }}
+                className="text-sm text-gray-400 hover:underline flex items-center gap-1"
+              >
+                Advanced Search
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            </div>
 
-              {/* Tabs */}
-              <div className="p-6 flex flex-col justify-around flex-grow">
 
-                <div className="grid grid-cols-2">
-                  {['budget', 'model'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`flex items-center justify-center gap-2 py-3 text-sm font-medium ${activeTab === tab
-                        ? 'bg-gray-200 dark:bg-black border-b-2 border-yellow-400'
-                        : 'bg-gray-100 dark:bg-[#2E2E2E]'
-                        }`}
-                    >
-                      <span
-                        className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${activeTab === tab ? 'border-yellow-400' : 'border-[#171717]'
-                          }`}
-                      >
-                        <span
-                          className={`w-2 h-2 rounded-full ${activeTab === tab ? 'bg-yellow-400' : ''
-                            }`}
-                        />
-                      </span>
-                      By {tab === 'budget' ? 'Budget' : 'Model'}
-                    </button>
-                  ))}
-                </div>
+            <div className='flex items-center mt-4 gap-4 bg-gray-100 dark:bg-[#232323] p-2 rounded-full'>
+              <div className="flex bg-white dark:bg-[#171717] rounded-full p-1 relative w-fit">
 
-                {/* Form */}
-                {activeTab === 'budget' ? (
-                  <>
-                    <div className='border-b dark:border-[#2E2E2E]'>
-                      <CustomSelect
-                        options={budgetOptions}
-                        placeholder="Select Budget"
-                        labelKey="label"
-                        valueKey="value"
-                        value={budget}
-                        onSelect={(budget) => {
-                          setBudget(budget.value)
-                        }}
-                      />
-                    </div>
-                    <div className='border-b dark:border-[#2E2E2E]'>
-                      <CustomSelect
-                        options={allVehicleTypes}
-                        placeholder="All Vehicle Types"
-                        labelKey="name"
-                        valueKey="id"
-                        value={vehicleType}
-                        onSelect={(bodyType: AllVehicleTypes) => {
-                          setVehicleType(bodyType.id)
-                        }}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className='border-b dark:border-[#2E2E2E]'>
-                      <CustomSelect
-                        groupedOptions={groupedOptions}
-                        placeholder="Select Brand"
-                        labelKey="displayName"
-                        valueKey="brandId"
-                        value={selectBrand}
-                        onSelect={(value: CarBrand) => { setSelectBrand(value.brandId) }}
-                      />
-                    </div>
-                    <div className='border-b dark:border-[#2E2E2E]'>
-                      <CustomSelect
-                        options={models}
-                        placeholder="Select Model"
-                        labelKey="modelName"
-                        valueKey="modelId"
-                        value={modelId}
-                        onSelect={(value: CarModel) => { setModelId(value.modelId) }}
-                      />
-                    </div>
-                  </>
-                )}
+                {/* Sliding Indicator */}
+                <div
+                  className={`absolute top-1 bottom-1 rounded-full bg-primary transition-all duration-300`}
+                  style={{
+                    width: "50%",
+                    transform: activeTab === "budget" ? "translateX(0%)" : "translateX(100%)",
+                  }}
+                />
 
+                {/* Tabs */}
                 <button
-                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium transition py-3 rounded-full flex items-center justify-center gap-2"
-                  onClick={handleSearch}
+                  className={`px-10 text-nowrap py-4 rounded-full text-sm font-medium relative z-10 transition-colors duration-200 ${activeTab === "budget"
+                    ? "text-black"
+                    : "text-gray-600 dark:text-gray-300"
+                    }`}
+                  onClick={() => setActiveTab("budget")}
                 >
-                  <CiSearch size={20} /> SEARCH
+                  By Budget
                 </button>
 
-                <div className="flex justify-end">
-                  <button className="flex items-center text-sm gap-1 cursor-pointer hover:underline" onClick={() => { router.push('/search/new-cars') }}>
-                    Advanced Search <VscChevronRight size={18} />
-                  </button>
-                </div>
+                <button
+                  className={`px-10 text-nowrap py-4 rounded-full text-sm font-medium relative z-10 transition-colors duration-200 ${activeTab === "model"
+                    ? "text-black"
+                    : "text-gray-600 dark:text-gray-300"
+                    }`}
+                  onClick={() => setActiveTab("model")}
+                >
+                  By Model
+                </button>
+
               </div>
+
+              {activeTab === 'budget' ? (
+                <>
+                  <div className='border-b dark:border-[#2E2E2E] py-3 rounded-xl w-full text-sm'>
+                    <CustomSelect
+                      options={budgetOptions}
+                      placeholder="Select Budget"
+                      labelKey="label"
+                      valueKey="value"
+                      value={budget}
+                      onSelect={(budget) => {
+                        setBudget(budget.value)
+                      }}
+                    />
+                  </div>
+                  <div className='border-b dark:border-[#2E2E2E] w-full text-sm py-3 rounded-xl'>
+                    <CustomSelect
+                      options={allVehicleTypes}
+                      placeholder="All Vehicle Types"
+                      labelKey="name"
+                      valueKey="id"
+                      value={vehicleType}
+                      onSelect={(bodyType: AllVehicleTypes) => {
+                        setVehicleType(bodyType.id)
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className='border-b dark:border-[#2E2E2E] w-full text-sm py-3 rounded-xl'>
+                    <CustomSelect
+                      groupedOptions={groupedOptions}
+                      placeholder="Select Brand"
+                      labelKey="displayName"
+                      valueKey="brandId"
+                      value={selectBrand}
+                      onSelect={(value: CarBrand) => { setSelectBrand(value.brandId) }}
+                    />
+                  </div>
+                  <div className='border-b dark:border-[#2E2E2E] w-full text-sm py-3 rounded-xl'>
+                    <CustomSelect
+                      options={models}
+                      placeholder="Select Model"
+                      labelKey="modelName"
+                      valueKey="modelId"
+                      value={modelId}
+                      onSelect={(value: CarModel) => { setModelId(value.modelId) }}
+                    />
+                  </div>
+                </>
+              )}
+
+              <button
+                onClick={handleSearch}
+                className="bg-primary text-black text-sm rounded-full px-10 py-4 hover:bg-primary-hover flex items-center gap-2 text-nowrap"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                Search
+              </button>
+
             </div>
           </div>
         </div>
+
       </div>
 
-      <div className='w-full lg:app-container px-6 lg:px-10 mx-auto mt-4'>
+      {/* <div className='w-full lg:app-container px-6 lg:px-10 mx-auto mt-4'>
         <div className="custom-pagination flex justify-end items-center gap-2" />
-      </div>
+      </div> */}
 
 
       <style jsx global>{`

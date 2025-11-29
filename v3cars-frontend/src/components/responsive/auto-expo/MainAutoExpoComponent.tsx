@@ -37,8 +37,8 @@ export default function MainAutoExpoComponent() {
                 <div className='px-4 xl:px-10'>
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary">
                             Auto Expo
                         </span>
                     </div>
@@ -60,7 +60,7 @@ export default function MainAutoExpoComponent() {
                                         <button
                                             key={tab.key}
                                             onClick={() => setActiveTab(tab.key)}
-                                            className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap ${activeTab === tab.key ? 'bg-yellow-400 text-black font-medium' : 'bg-slate-100 dark:bg-[#171717] border dark:border-[#2E2E2E]'
+                                            className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap ${activeTab === tab.key ? 'bg-primary text-black font-medium' : 'bg-slate-100 dark:bg-[#171717] border dark:border-[#2E2E2E]'
                                                 }`}
                                         >
                                             {tab.label}

@@ -11,8 +11,8 @@ export default function ServiceCostByYear() {
                 </h1>
 
                 <p className="mb-4">
-                    In this article, we'll provide you the routine service and maintenance cost for the Tata Nexon petrol and diesel.
-                    You'll get a periodic service cost estimate of up to 10 years or 1 lakh kilometres for the Tata Nexon 1.5L
+                    In this article, we&apos;ll provide you the routine service and maintenance cost for the Tata Nexon petrol and diesel.
+                    You&apos;ll get a periodic service cost estimate of up to 10 years or 1 lakh kilometres for the Tata Nexon 1.5L
                     petrol-manual/CVT automatic and 1.5L diesel-manual/TC automatic powertrains.
                 </p>
 

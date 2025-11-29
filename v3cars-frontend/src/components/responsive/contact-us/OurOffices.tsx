@@ -51,12 +51,12 @@ export default function OurOffices() {
                             key={i}
                             onClick={() => setSelectedOffice(office)}
                             className={`cursor-pointer bg-white dark:bg-[#171717] rounded-2xl shadow-sm p-8 ${selectedOffice.city === office.city
-                                    ? "border-2 border-yellow-400"
+                                    ? "border-2 border-primary"
                                     : ""
                                 }`}
                         >
                             <div className="flex items-center gap-4">
-                                <span className="w-[3px] h-10 bg-yellow-400 inline-block rounded-sm"></span>
+                                <span className="w-[3px] h-10 bg-primary inline-block rounded-sm"></span>
                                 <div>
                                     <h3 className="text-2xl font-semibold">{office.city}</h3>
                                     <p className="text-xs">{office.type}</p>

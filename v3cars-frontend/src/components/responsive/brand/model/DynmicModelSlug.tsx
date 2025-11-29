@@ -49,7 +49,7 @@ function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
                 dispatch(setActiveTab("CSD Price"));
             }
             if (childSlug === "mileage") {
-                dispatch(setActiveTab("Mileage, Specs & Features"));
+                dispatch(setActiveTab("Mileage"));
             }
             if (childSlug === "news") {
                 dispatch(setActiveTab("News"));
@@ -99,16 +99,16 @@ function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
                 <div className="px-4 xl:px-10">
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
-                        <span className="text-yellow-500">›</span>
+                        <span className="text-primary">›</span>
                         <Link href={`/${type}`} className="hover:underline capitalize">
                             {type}
                         </Link>
-                        <span className="text-yellow-500">›</span>
+                        <span className="text-primary">›</span>
                         <Link href={`/${type}/${slug}`} className="hover:underline capitalize">
                             {slug}
                         </Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="text-yellow-500 capitalize">
+                        <span className="text-primary">›</span>
+                        <span className="text-primary capitalize">
                             {childSlug}
                         </span>
                     </div>
@@ -134,7 +134,7 @@ function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
                             <DimensionsPage type={type} slug={slug} childSlug={childSlug} />
                             : activeTab === "CSD Price" ?
                                 <CSDPricePage type={type} slug={slug} childSlug={childSlug} />
-                                : activeTab === "Mileage, Specs & Features" ?
+                                : activeTab === "Mileage" ?
                                     <MileagePage type={type} slug={slug} childSlug={childSlug} />
                                     : activeTab === "News" ?
                                         <NewsPage type={type} slug={slug} childSlug={childSlug} />
@@ -156,11 +156,11 @@ function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
                                                                         <CompetitorsPage type={type} slug={slug} childSlug={childSlug} />
                                                                         : activeTab === "Images" ?
                                                                             <ImagesPage type={type} slug={slug} childSlug={childSlug} />
-                                                                        : activeTab === "Maintenance Cost" ?
-                                                                            <MainMaintenanceComponent type={type} slug={slug} childSlug={childSlug} />
-                                                                        : activeTab === "Cost Of Ownership" ?
-                                                                            <MainOwnershipComponent type={type} slug={slug} childSlug={childSlug} />
-                                                                            : null
+                                                                            : activeTab === "Maintenance Cost" ?
+                                                                                <MainMaintenanceComponent type={type} slug={slug} childSlug={childSlug} />
+                                                                                : activeTab === "Cost Of Ownership" ?
+                                                                                    <MainOwnershipComponent type={type} slug={slug} childSlug={childSlug} />
+                                                                                    : null
             }
         </>
     );

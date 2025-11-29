@@ -105,7 +105,7 @@ const MobileFooter: React.FC = () => {
               <input
                 type="email"
                 placeholder="Enter your email address"
-                className="w-full border border-[#262629] bg-transparent focus:border-yellow-400 focus:outline-none rounded-xl p-4"
+                className="w-full border border-[#262629] bg-transparent focus:border-primary focus:outline-none rounded-xl p-4"
               />
               <button className="w-full mt-4 bg-[#171717] hover:bg-[#0a0a0a] font-light text-white py-4 rounded-xl">
                 Subscribe
@@ -115,7 +115,7 @@ const MobileFooter: React.FC = () => {
         </div>
 
         {/* Social Footer */}
-        <div className="bg-yellow-400 text-center text-black px-4 pt-6 pb-20 rounded-t-xl">
+        <div className="bg-primary text-center text-black px-4 pt-6 pb-20 rounded-t-xl">
           <h3 className="font-bold text-lg mb-4">Connect With Us</h3>
           <div className="flex justify-center items-center gap-3 flex-wrap mb-4 mx-4">
             <Link href="#" className="border-2 border-black rounded-full p-3">

@@ -73,7 +73,7 @@ const MobileVariantsExplained = () => {
                         <h2 className="font-semibold text-lg">Variants Explained</h2>
                         <Link
                             href="#"
-                            className="text-sm text-[#FFCC00] font-medium hover:underline flex items-center gap-2"
+                            className="text-sm text-primary font-medium hover:underline flex items-center gap-2"
                         >
                             View All
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">

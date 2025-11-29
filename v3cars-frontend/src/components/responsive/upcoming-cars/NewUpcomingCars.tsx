@@ -8,7 +8,7 @@ import { IoMdStarOutline } from 'react-icons/io'
 
 const confidenceColor = (confidence: number): string => {
     if (confidence >= 90) return "bg-green-500"
-    if (confidence >= 70) return "bg-yellow-500"
+    if (confidence >= 70) return "bg-primary"
     return "bg-red-500"
 }
 
@@ -146,7 +146,7 @@ export default function NewUpcomingCars() {
                                 ₹{car.priceMin != null ? (car.priceMin / 100000).toFixed(2) : "TBA"} - {car.priceMax != null ? (car.priceMax / 100000).toFixed(2) : "TBA"} Lakh*
                             </p>
                             <p className="text-gray-500 text-sm">*Expected Launch Price</p>
-                            <button className="p-3 font-semibold text-sm w-full flex justify-center gap-2 text-black items-center cursor-pointer rounded-lg bg-yellow-400">
+                            <button className="p-3 font-semibold text-sm w-full flex justify-center gap-2 text-black items-center cursor-pointer rounded-lg bg-primary">
                                 Alert Me When Launched
                                 <FaArrowRight />
                             </button>

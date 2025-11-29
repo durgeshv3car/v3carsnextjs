@@ -32,7 +32,7 @@ const LatestUpdates: React.FC<LatestUpdatesProps> = ({ title }) => {
                 <h2 className="text-lg">
                     {title} <span className="font-semibold">Latest Updates</span>
                 </h2>
-                <button className="flex items-center text-blue-600 hover:underline text-sm font-medium gap-1">
+                <button className="flex items-center hover:underline text-sm font-medium gap-1">
                     View All <span className="hidden md:block">News & Updates</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -42,7 +42,7 @@ const LatestUpdates: React.FC<LatestUpdatesProps> = ({ title }) => {
 
             {/* Timeline */}
             <div className="py-4">
-            <div className="relative border-l-2 border-gray-300 ml-4 space-y-6">
+            <div className="relative border-l-2 border-gray-300 mx-4 space-y-6">
                 {updates.map((update, index) => (
                     <div key={index} className="relative pl-6">
                         {/* Dot */}
@@ -54,7 +54,7 @@ const LatestUpdates: React.FC<LatestUpdatesProps> = ({ title }) => {
                         </h3>
 
                         {/* Description */}
-                        <p className="text-sm mt-1 leading-relaxed">
+                        <p className="text-sm mt-1 leading-relaxed text-justify">
                             {update.description}
                         </p>
                     </div>

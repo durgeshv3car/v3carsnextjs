@@ -16,15 +16,18 @@ import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalcul
 import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import DimensionsTable from "./DimensionsTable";
 import DimensionsTyreSizeTable from "./DimensionsTyreSizeTable";
+import { useGetDimensionsCapacityQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "../overview/Overview";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import { useState } from "react";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface DimensionsPageProps {
     type: string;
@@ -32,17 +35,95 @@ interface DimensionsPageProps {
     childSlug: string;
 }
 
+export interface Dimensions {
+    length: number;
+    width: number;
+    height: number;
+    wheelbase: number;
+    groundClearance: number;
+}
+
+export interface BootSpace {
+    normal: number;
+    cng: number;
+    hybrid: number;
+}
+
+export interface TyreSize {
+    base: string;
+    top: string;
+}
+
+export interface UnitConversion {
+    mm: number;
+    cm: number;
+    inches: number;
+    feet: number;
+}
+
+export interface Conversions {
+    length: UnitConversion;
+    width: UnitConversion;
+    height: UnitConversion;
+    wheelbase: UnitConversion;
+    groundClearance: UnitConversion;
+}
+
+export interface Capacity {
+    bootSpace: {
+        Petrol: number;
+        Diesel: number;
+        CNG: number;
+        Hybrid: number | null;
+    };
+    fuelTankCapacity: {
+        Petrol: number;
+        Diesel: number;
+        CNG: number;
+        Hybrid: number | null;
+    };
+    seatingCapacity: number;
+}
+
+export interface TyreByVariantItem {
+    variantId: number;
+    variantName: string;
+    tyreSize: string | null;
+    base: string;
+    top: string;
+}
+
+export interface ModelDimensionsResponse {
+    dimensions: Dimensions;
+    bootSpace: BootSpace;
+    tyreSize: TyreSize;
+    conversions: Conversions;
+    capacity: Capacity;
+    tyreByVariant: TyreByVariantItem[];
+}
+
+
 function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
-
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const [fuelType, setFuelType] = useState("petrol");
+    const [transmission, setTransmission] = useState("");
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: dimensionsCapacityData } =
+        useGetDimensionsCapacityQuery(
+            { model_slug: slug, fuelType: fuelType || undefined, transmissionType: transmission || undefined },
+            { skip: !slug }
+        )
 
-    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const latestVideos = latestVideosData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
 
     const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>
@@ -67,7 +148,7 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -76,20 +157,33 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
                 <div className="w-full lg:app-container py-6 mx-auto space-y-7">
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
-                        <div className="w-auto lg:max-w-[74%] space-y-10"> 
-                            <DimensionsTable />
+                        <div className="w-auto lg:max-w-[74%] space-y-10">
+                            <DimensionsTable
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                conversionsData={dimensionsCapacityData?.conversions ?? null}
+                                capacityData={dimensionsCapacityData?.capacity ?? null}
+                            />
 
-                            <DimensionsTyreSizeTable />
+                            <DimensionsTyreSizeTable
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                tyreSize={dimensionsCapacityData?.tyreSize ?? null}
+                                tyreByVariantData={dimensionsCapacityData?.tyreByVariant ?? []}
+                                fuelType={fuelType}
+                                setFuelType={setFuelType}
+                                transmission={transmission}
+                                setTransmission={setTransmission}
+                            />
 
-                            <div className="border rounded-xl h-[332px]" />
+                            <CommonSellUsedCarComponent />
 
                             <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
+                                slug={slug}
                             />
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -103,29 +197,32 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
                             </div>
 
                             {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
                             }
 
                             <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
 
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs} viewAllLink="#"
+                            />
 
                             <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
@@ -146,15 +243,25 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
                             </div>
 
                             <BrochureCard
-                                title="Tata Nexon"
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
+
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -168,11 +275,15 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -185,24 +296,20 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title="Other Tata Nexon"
-                            />
-
-                            <OtherCars
-                                title="Upcoming Tata Nexon"
-                            />
-
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

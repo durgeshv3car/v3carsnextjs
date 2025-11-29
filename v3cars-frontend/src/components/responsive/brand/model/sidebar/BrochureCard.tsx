@@ -1,18 +1,21 @@
 'use client'
 
+import Link from "next/link";
 import React from "react";
 
 interface BrochureCardProps {
-    title: string
+    brand: string;
+    model: string;
+    url: string | undefined;
 }
 
-const BrochureCard: React.FC<BrochureCardProps> = ({ title }) => {
+const BrochureCard: React.FC<BrochureCardProps> = ({ brand, model, url }) => {
     return (
         <div className="border border-gray-200 rounded-xl bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
             {/* Header */}
             <div className="border-b dark:border-[#2E2E2E] bg-[#F3F3F3] rounded-t-md p-4 dark:bg-[#171717]">
                 <h3 className="">
-                    {title} <span className="font-bold">Brochure</span>
+                    {brand} {model} <span className="font-bold">Brochure</span>
                 </h3>
             </div>
 
@@ -33,12 +36,12 @@ const BrochureCard: React.FC<BrochureCardProps> = ({ title }) => {
                 </div>
 
                 {/* Button */}
-                <button
+                <Link
+                    href={url ?? "#"}
                     className="w-full border border-black rounded-lg py-2 text-sm font-medium bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition mt-4 dark:bg-[#171717] dark:border-[#2E2E2E]"
-                    onClick={() => alert('Downloading Nexon Brochure...')}
                 >
-                    Download Nexon Brochure
-                </button>
+                    Download {model} Brochure
+                </Link>
             </div>
         </div>
     );

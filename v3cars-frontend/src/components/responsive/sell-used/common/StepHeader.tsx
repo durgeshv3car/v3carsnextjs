@@ -72,7 +72,7 @@ export default function StepHeader({
               <button
                 onClick={onBack}
                 aria-label="Back"
-                className="h-8 w-8 grid place-items-center rounded-full bg-yellow-400 text-black hover:bg-yellow-300"
+                className="h-8 w-8 grid place-items-center rounded-full bg-primary text-black hover:bg-primary-light"
               >
                 <IoChevronBack />
               </button>
@@ -85,7 +85,7 @@ export default function StepHeader({
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="ml-auto h-8 w-8 grid place-items-center rounded-full bg-yellow-400 text-black hover:bg-yellow-300"
+                className="ml-auto h-8 w-8 grid place-items-center rounded-full bg-primary text-black hover:bg-primary-light"
               >
                 <IoClose />
               </button>
@@ -105,7 +105,7 @@ export default function StepHeader({
                     className={cn(
                       "shrink-0 transition-colors",
                       clickable ? "cursor-pointer hover:text-white" : "cursor-not-allowed opacity-70",
-                      (isActive || isDone) && "text-yellow-400 font-semibold"
+                      (isActive || isDone) && "text-primary font-semibold"
                     )}
                     aria-current={isActive ? "step" : undefined}
                     aria-disabled={!clickable}

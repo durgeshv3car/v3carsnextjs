@@ -25,7 +25,7 @@ const svc = new ModelsService();
 export class ModelsController {
 
   /** id or slug → numeric modelId resolver */
-  private async resolve(req: Request, res: Response): Promise<number | null> {
+ private async resolve(req: Request, res: Response): Promise<number | null> {
     const raw = String(req.params.id || '');
     const id = await svc.resolveModelId(raw);
     if (!id) {

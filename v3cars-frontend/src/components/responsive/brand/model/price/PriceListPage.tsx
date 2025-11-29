@@ -17,14 +17,18 @@ import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalcul
 import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
-import Link from "next/link";
+import { useGetModelDetailsQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
+import { CarData } from "../overview/Overview";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useState } from "react";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface PriceListPageProps {
     type: string;
@@ -32,60 +36,30 @@ interface PriceListPageProps {
     childSlug: string;
 }
 
-const variants = [
-    {
-        name: "Nexon Pure Plus",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹7.32 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹7,31,800" },
-            { label: "Road Tax", value: "₹35,561" },
-            { label: "Registration Charges", value: "₹600" },
-            { label: "FASTag", value: "₹600" },
-            { label: "Hypothecation Endorsement", value: "₹1,500" },
-            { label: "Road Safety Cess", value: "₹1,317" },
-            { label: "Other Charges", value: "₹400" },
-            { label: "Insurance", value: "₹59,575" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Pure Plus S",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Road Tax", value: "₹36,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-    {
-        name: "Nexon Creative",
-        engine: "1199 cc, Petrol, Manual",
-        exShowroom: "₹8.34 Lakh",
-        onRoad: "₹8.34 Lakh",
-        details: [
-            { label: "Ex-Showroom Price", value: "₹8,34,000" },
-            { label: "Insurance", value: "₹60,000" },
-            { label: "On-Road Price in Gurugram", value: "₹8,31,453" },
-        ],
-    },
-];
-
 function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
-
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const [fuelType, setFuelType] = useState("")
+    const [transmissionType, setTransmissionType] = useState("")
+    const [variantId, setVariantId] = useState<number | null>(null)
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: priceListDetailsData } =
+        useGetPriceListDetailsQuery(
+            { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType, variantId: variantId ? Number(variantId) : undefined },
+            { skip: !slug }
+        );
 
-    const latestCarNews = latestCarNewsData?.rows ?? [];
+    const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const latestVideos = latestVideosData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const priceListDetails = priceListDetailsData?.rows ?? []
 
     const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>
@@ -110,7 +84,7 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -121,21 +95,28 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
                             <OnRoadPriceTable
-                                title={"Tata Nexon On-Road Price in Gurugram, Haryana"}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} On-Road Price in ${selectedCity.cityName}`}
                                 desc={"See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"}
-                                data={variants}
+                                data={priceListDetails}
+                                childSlug={childSlug}
+                                setFuelType={setFuelType}
+                                setTransmissionType={setTransmissionType}
+                                setVariantId={setVariantId}
+                                transmissionType={transmissionType}
+                                fuelType={fuelType}
+                                fuelTypes={modelDetails?.availableWith.fuels}
+                            />
+
+                            <CommonSellUsedCarComponent />
+
+                            <CommonViewOfferCard
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
                                 slug={slug}
                             />
 
-                            <div className="border rounded-xl h-[332px]" />
-
-                            <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
-                            />
-
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -149,29 +130,33 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
                             }
 
                             <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
                             />
 
                             <CommonComparisonModelCard data={popularComparisons} />
 
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
 
                             <CommonSellingCarCard
                                 title="Best Selling B2-segment SUVs in India - Sep 2025"
@@ -192,15 +177,25 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             <BrochureCard
-                                title="Tata Nexon"
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
+
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -214,11 +209,15 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -231,24 +230,20 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title="Other Tata Nexon"
-                            />
-
-                            <OtherCars
-                                title="Upcoming Tata Nexon"
-                            />
-
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

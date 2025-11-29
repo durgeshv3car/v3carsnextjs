@@ -20,8 +20,8 @@ function MainCarVideoComponent() {
         <div className='px-4 xl:px-10'>
           <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
             <Link href="/" className="hover:underline">Home</Link>
-            <span className="text-yellow-500">›</span>
-            <span className="font-medium text-yellow-500">
+            <span className="text-primary">›</span>
+            <span className="font-medium text-primary">
               Car Review Videos
             </span>
           </div>

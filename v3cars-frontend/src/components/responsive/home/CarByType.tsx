@@ -102,7 +102,7 @@ const CarByType: React.FC = () => {
                 <div className="flex items-center w-full lg:w-auto gap-4">
                     <h2 className="text-lg font-semibold lg:font-medium">Search Car By Body Type</h2>
                     <button
-                        className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                        className="text-primary font-medium text-sm hover:underline flex gap-2 items-center"
                         onClick={handleBodyType}
                     >
                         View All {tabNames[carBodyTab]}
@@ -125,7 +125,7 @@ const CarByType: React.FC = () => {
                                 <button
                                     key={tab.id}
                                     onClick={() => setCarBodyTab(tab.id as CarBodyTab)}
-                                    className={`pb-4 px-6 font-semibold cursor-pointer capitalize transition-colors ${carBodyTab === tab.id ? 'border-b-4 border-yellow-400' : 'text-gray-400'
+                                    className={`pb-4 px-6 font-semibold cursor-pointer capitalize transition-colors ${carBodyTab === tab.id ? 'border-b-4 border-primary' : 'text-gray-400'
                                         }`}
                                 >
                                     {tab.tab}
@@ -208,7 +208,7 @@ const CarByType: React.FC = () => {
                                         ₹{(car.priceMin / 100000).toFixed(2)} - {(car.priceMax / 100000).toFixed(2)} Lakh*
                                     </p>
                                     <button
-                                        className="p-3 font-semibold text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-yellow-400"
+                                        className="p-3 font-semibold text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-primary"
                                         onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
                                     >
                                         View Current Offers

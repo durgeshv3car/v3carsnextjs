@@ -384,7 +384,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
         <div className="flex flex-col justify-between gap-2 bg-black p-3 rounded-2xl w-auto lg:min-w-[425px] h-[420px] lg:h-[481px]">
           <div className='flex flex-col justify-center items-center gap-1 flex-grow'>
             <div className="text-center text-sm text-white">Equated Monthly Installment (EMI)</div>
-            <div className="text-center text-5xl text-yellow-400 font-bold">₹ {monthlyPayment.toLocaleString("en-IN")}</div>
+            <div className="text-center text-5xl text-primary font-bold">₹ {monthlyPayment.toLocaleString("en-IN")}</div>
           </div>
 
           <div className='h-[256px] bg-white text-black p-3 rounded-xl flex flex-col justify-between gap-3'>
@@ -404,7 +404,7 @@ const CarLoanCalculator = ({ onLoanDataChange }: CarLoanCalculatorProps) => {
               <p className='text-4xl'>₹ {totalPayment.toLocaleString("en-IN")}</p>
             </div>
 
-            <button className="w-full bg-yellow-400 text-black py-2 rounded-xl font-bold hover:bg-yellow-300">
+            <button className="w-full bg-primary text-black py-2 rounded-xl font-bold hover:bg-primary-light">
               Get Bank Quotation
             </button>
           </div>

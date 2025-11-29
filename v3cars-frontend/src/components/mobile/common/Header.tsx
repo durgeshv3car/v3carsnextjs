@@ -193,7 +193,7 @@ const MobileHeader = () => {
             <div className="flex gap-2 items-center">
               <button
                 onClick={() => setShowLogin(true)}
-                className="bg-yellow-400 text-black text-sm px-4 py-1 rounded-full font-medium"
+                className="bg-primary text-black text-sm px-4 py-1 rounded-full font-medium"
               >
                 Login
               </button>

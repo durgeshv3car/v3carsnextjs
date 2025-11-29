@@ -166,7 +166,7 @@ const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, se
             </div>
 
             <button
-              className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium text-sm px-4 py-2 rounded-md flex items-center gap-2"
+              className="bg-primary hover:bg-primary-hover text-black font-medium text-sm px-4 py-2 rounded-md flex items-center gap-2"
               onClick={detectLocation}
             >
               <TbCurrentLocation size={18} />
@@ -175,7 +175,7 @@ const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, se
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold mb-3 border-l-4 border-yellow-400 pl-2">
+            <h3 className="text-xs font-semibold mb-3 border-l-4 border-primary pl-2">
               POPULAR CITIES
             </h3>
             <div className="grid grid-cols-4 gap-4 max-h-[200px] lg:max-h-[300px] overflow-y-auto pr-2 scrollbar-thin-yellow">
@@ -183,7 +183,7 @@ const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, se
                 filteredPopularCities.map((city, index) => (
                   <div
                     key={`${city.cityId}-${index}`}
-                    className={`${location.cityId === city.cityId ? "border border-yellow-400" : "border dark:border-[#2E2E2E]"} rounded-md flex flex-col items-center justify-center p-2 text-center bg-[#fffceb] dark:bg-transparent hover:shadow transition cursor-pointer`}
+                    className={`${location.cityId === city.cityId ? "border border-primary" : "border dark:border-[#2E2E2E]"} rounded-md flex flex-col items-center justify-center p-2 text-center bg-[#fffceb] dark:bg-transparent hover:shadow transition cursor-pointer`}
                     onClick={() => handleLocation(city)}
                   >
                     <Image
@@ -205,7 +205,7 @@ const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, se
 
         {/* Right */}
         <div className="w-full lg:w-[50%]">
-          <h3 className="text-xs font-semibold mb-3 border-l-4 border-yellow-400 pl-2">
+          <h3 className="text-xs font-semibold mb-3 border-l-4 border-primary pl-2">
             CONTINUE OTHER CITIES
           </h3>
 
@@ -217,7 +217,7 @@ const LocationDropdown: FC<LocationDropdownProps> = ({ location, setLocation, se
               displayCities.map((city, index) => (
                 <button
                   key={`${city.cityId}-${index}`}
-                  className={`bg-gray-100 dark:bg-[#171717] hover:bg-yellow-100 p-2 text-xs lg:text-sm rounded flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${location.cityId === city.cityId ? "border border-yellow-400" : "border dark:border-[#2E2E2E]"}`}
+                  className={`bg-gray-100 dark:bg-[#171717] hover:bg-primary-light p-2 text-xs lg:text-sm rounded flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${location.cityId === city.cityId ? "border border-primary" : "border dark:border-[#2E2E2E]"}`}
                   onClick={() => handleLocation(city)}
                 >
                   {city.cityName}

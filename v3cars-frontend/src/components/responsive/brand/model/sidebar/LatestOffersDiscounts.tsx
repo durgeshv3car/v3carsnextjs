@@ -1,12 +1,19 @@
 'use client'
 
+import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { useSelector } from "react-redux";
 
 interface LatestOffersDiscountsProps {
-    title: string
+     title: string;
+    slug: string;
+    type: string;
 }
 
-const LatestOffersDiscounts: React.FC<LatestOffersDiscountsProps> = ({ title }) => {
+const LatestOffersDiscounts: React.FC<LatestOffersDiscountsProps> = ({ title, slug, type }) => {
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
+    const router = useRouter()
     return (
         <div className="border border-gray-200 rounded-xl bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
             {/* Header */}
@@ -20,7 +27,7 @@ const LatestOffersDiscounts: React.FC<LatestOffersDiscountsProps> = ({ title }) 
             <div className="flex flex-col items-center text-center px-4 py-4">
                 <div className="flex justify-between items-center gap-2">
                     <p className="text-sm/relaxed text-justify">
-                        Discover Toyota Urban Cruiser Hyryder offers and discounts in Delhi including cash discount, exchange bonus, corporate discount, loyalty bonus and low-EMI finance offers. Updated regularly with amounts, eligibility and expiry.
+                        Discover {title} offers and discounts in {selectedCity.cityName} including cash discount, exchange bonus, corporate discount, loyalty bonus and low-EMI finance offers. Updated regularly with amounts, eligibility and expiry.
                     </p>
 
                     <img
@@ -35,7 +42,7 @@ const LatestOffersDiscounts: React.FC<LatestOffersDiscountsProps> = ({ title }) 
                 {/* Button */}
                 <button
                     className="w-full border border-black rounded-lg py-2 text-sm font-medium bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition mt-4 dark:bg-[#171717] dark:border-[#2E2E2E]"
-                    onClick={() => alert('Downloading Nexon Brochure...')}
+                    onClick={() => {router.push(`/${type}/${slug}/offers-discounts`)}}
                 >
                     View Offer Details | Book a Test Drive
                 </button>

@@ -1,12 +1,10 @@
 'use client'
 
-import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import CommonVideos from "@/components/common/CommonVideos";
 import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
 import CommonModelFAQ from "@/components/common/ModelCards/CommonModelFAQ";
 import CommonUsedCarCard from "@/components/common/ModelCards/CommonUsedCarCard";
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
-import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import BannerSection from "@/components/responsive/brand/model/BannerSection";
 import BrochureCard from "@/components/responsive/brand/model/sidebar/BrochureCard";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
@@ -15,15 +13,19 @@ import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalcul
 import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
+import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
+import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
+import { useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
+import { CarData } from "../overview/Overview";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
+import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
-import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
-import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
-import EngineSpecs from "./EngineSpecs";
-import EngineMileageSpecsTable from "./EngineMileageSpecsTable";
+import SpecsTechnicalDetails from "./SpecsTechnicalDetails";
+import SpecsFeatures from "./SpecsFeatures";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface MileagePageProps {
     type: string;
@@ -32,16 +34,19 @@ interface MileagePageProps {
 }
 
 function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
-
-    const { data: latestCarNewsData } = useGetLatestCarNewsQuery();
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: latestVideosData } = useGetLatestVideosQuery()
+    const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
+    const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
 
-    const latestCarNews = latestCarNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const latestVideos = latestVideosData?.rows ?? []
+    const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
+    const modelDetails: CarData | null = modelDetailsData?.data ?? null;
+    const modelLatestNews = modelLatestNewsData?.rows ?? []
 
     const isMobile = useIsMobile()
+
+    console.log(childSlug);
 
     return (
         <>
@@ -66,7 +71,7 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                 {/* Banner content on top */}
                 <div className="lg:px-8 px-4 shadow-md">
                     <div className="relative w-full lg:app-container mx-auto z-10">
-                        <BannerSection type={type} slug={slug} />
+                        <BannerSection type={type} slug={slug} modelDetails={modelDetails} />
                     </div>
                 </div>
             </div>
@@ -76,27 +81,44 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
-                            <EngineSpecs />
 
-                            <div className="p-6 bg-white dark:bg-[#171717] dark:border-[#2e2e2e] rounded-2xl shadow-sm border">
-                                <h2 className="text-xl font-semibold mb-2">Tata Nexon Features</h2>
+                            <div className="space-y-3">
+                                <h2 className="text-2xl font-semibold">{modelDetails?.model?.brand?.name} {modelDetails?.model?.name} <span className="font-medium">Engine Specs & Performance</span></h2>
+                                <p className="text-gray-400 text-sm">
+                                    {`Explore the engine specifications and performance details of the ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}, including engine type, displacement, power, torque, gearbox, and drivetrain. Use the dropdown above to select your preferred powertrain`}
+                                </p>
+
+                                <SpecsTechnicalDetails
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    slug={slug}
+                                    childSlug={childSlug}
+                                />
+                            </div>
+
+                            <div>
+                                <h2 className="text-xl font-semibold mb-2">
+                                    {modelDetails?.model?.brand?.name} {modelDetails?.model?.name}
+                                    <span className="font-medium"> Features</span>
+                                </h2>
                                 <p className="text-gray-400 text-sm leading-relaxed">
-                                    Sell used car from the comfort of your home. Get free car assessment, quick payment disbursal and free RC transfer.
-                                    Book car inspection right now to find out how much payment you can get for selling it today.
+                                    Discover all the key features of the Tata Nexon, including safety, comfort, convenience, infotainment, interior and exterior style highlights. Explore variant-wise features to understand what each trim level offers and find the version that best suits your needs
                                 </p>
                             </div>
 
-                            <EngineMileageSpecsTable />
+                            <SpecsFeatures
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                            />
 
-                            <div className="border rounded-xl h-[332px]" />
+                            <CommonSellUsedCarComponent />
 
                             <CommonViewOfferCard
-                                title="Tata Nexon"
-                                desc="The Nexon competes with popular models including"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                desc={`The ${modelDetails?.model?.name} competes with popular models including`}
+                                slug={slug}
                             />
 
                             <CommonUsedCarCard
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[160px] flex justify-center items-center dark:bg-[#171717]">
@@ -109,34 +131,34 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <CommonVideos
-                                title="Tata Nexon Latest Videos"
-                                view="Nexon Videos"
-                                videoList={latestVideos}
-                            />
-
-                            <CommonComparisonModelCard data={popularComparisons} />
-
-                            <CommonModelFAQ title="Tata Nexon" faqs={faqs} viewAllLink="#" />
-
-                            {/* {isMobile ? <MobileLatestCarNews
-                                title="Tata Nexon Latest News"
+                            {isMobile ? <MobileLatestCarNews
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
-                                data={latestCarNews}
+                                data={modelLatestNews}
                                 link="/news"
                             />
                                 :
                                 <CommonNewsUpdate
-                                    title="Tata Nexon Latest News"
-                                    view="Nexon News Update"
-                                    newsList={latestCarNews}
+                                    title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
+                                    view={`${modelDetails?.model?.name} News Update`}
+                                    newsList={modelLatestNews}
                                     link={"/news"}
                                 />
-                            } */}
+                            }
 
-                            {/* <CommonSellingCarCard
-                                title="Best Selling B2-segment SUVs in India - Sep 2025"
-                            /> */}
+                            <CommonVideos
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
+                                view={`${modelDetails?.model?.name} Videos`}
+                                videoList={modelReviewsVideos}
+                            />
+
+                            <CommonComparisonModelCard data={popularComparisons} />
+
+                            <CommonModelFAQ
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                faqs={faqs}
+                                viewAllLink="#"
+                            />
 
                         </div>
 
@@ -153,15 +175,25 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <BrochureCard
-                                title="Tata Nexon"
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
+                                url={undefined}
                             />
 
                             <CSDPriceList
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <LatestOffersDiscounts
-                                title="Toyota Urban Cruiser Hyryder"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
+                            />
+
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -175,11 +207,15 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <MonthlySales
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -192,24 +228,20 @@ function EngineSpecificationsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title="Other Tata Nexon"
-                            />
-
-                            <OtherCars
-                                title="Upcoming Tata Nexon"
-                            />
-
                             <CarColours
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
+                                type={type}
+                                slug={slug}
                             />
 
                             <VariantExplained
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator
-                                title="Tata Nexon"
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                             />
 
                         </div>

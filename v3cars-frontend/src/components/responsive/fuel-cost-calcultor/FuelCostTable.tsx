@@ -128,7 +128,7 @@ export default function FuelCostTable({ inputs, selectedCity }: Props) {
                     </div>
                   ) : (
                     <div className="font-semibold">
-                      Cost of fuel in <span className="text-yellow-500 font-normal">{country}</span>
+                      Cost of fuel in <span className="text-primary font-normal">{country}</span>
                     </div>
                   )}
                 </div>

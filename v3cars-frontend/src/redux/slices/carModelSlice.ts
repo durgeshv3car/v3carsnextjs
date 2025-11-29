@@ -5,7 +5,7 @@ export type ModelTab =
   | "Price"
   | "Variants"
   | "Dimensions"
-  | "Mileage, Specs & Features"
+  | "Mileage"
   | "Reviews"
   | "Compare"
   | "News"

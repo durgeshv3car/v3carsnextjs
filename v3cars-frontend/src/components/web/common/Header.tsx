@@ -162,7 +162,7 @@ const Header = () => {
                             }
                         >
                             <div
-                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "location" ? "text-yellow-500" : ""
+                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "location" ? "text-primary" : ""
                                     }`}
                             >
                                 <FiMapPin size={16} />
@@ -179,7 +179,7 @@ const Header = () => {
                             onMouseLeave={scheduleClose}
                         >
                             <div
-                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "newCars" ? "text-yellow-500" : ""
+                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "newCars" ? "text-primary" : ""
                                     }`}
                             >
                                 New Cars
@@ -207,7 +207,7 @@ const Header = () => {
                             onMouseLeave={scheduleClose}
                         >
                             <span
-                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "news" ? "text-yellow-500" : ""
+                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "news" ? "text-primary" : ""
                                     }`}
                             >
                                 News, Reviews & Videos
@@ -240,7 +240,7 @@ const Header = () => {
                             onMouseLeave={scheduleClose}
                         >
                             <span
-                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "tools" ? "text-yellow-500" : ""
+                                className={`cursor-pointer flex items-center gap-1 ${hoverTab === "tools" ? "text-primary" : ""
                                     }`}
                             >
                                 Tools
@@ -275,7 +275,7 @@ const Header = () => {
 
                         <button
                             onClick={() => setShowLogin(true)}
-                            className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-full flex items-center gap-2 text-sm"
+                            className="bg-primary hover:bg-primary-hover text-black px-4 py-2 rounded-full flex items-center gap-2 text-sm"
                         >
                             <HiOutlineUserCircle size={20} />
                             Login / Signup

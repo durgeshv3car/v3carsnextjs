@@ -22,7 +22,7 @@ export default function MileageCalculatorIntro() {
         </p>
 
         {/* Read More */}
-        <button className="mt-3 flex items-center gap-1 text-[16px] text-yellow-400 font-medium hover:underline">
+        <button className="mt-3 flex items-center gap-1 text-[16px] text-primary font-medium hover:underline">
           Read More
           <FaChevronDown size={12} />
         </button>

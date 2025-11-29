@@ -64,7 +64,7 @@ const CommonExpertReviews: React.FC<CommonExpertReviewProps> = ({ title, view, r
                             <h2 className="text-lg font-semibold lg:font-medium">{title}</h2>
                             <Link
                                 href="#"
-                                className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center"
+                                className="text-primary font-medium text-sm hover:underline flex gap-2 items-center"
                             >
                                 View All {view}
                                 <svg

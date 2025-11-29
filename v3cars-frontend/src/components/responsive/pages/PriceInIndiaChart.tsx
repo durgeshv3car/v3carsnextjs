@@ -109,7 +109,7 @@ const PriceInIndiaChart: React.FC<PriceInIndiaChartProps> = ({ data, type }) => 
                             key={tab}
                             onClick={() => setActiveTab(tab as typeof activeTab)}
                             className={`flex-1 py-2 font-medium border-b-2 ${activeTab === tab
-                                ? "border-yellow-400 text-black dark:text-white font-semibold"
+                                ? "border-primary text-black dark:text-white font-semibold"
                                 : "text-gray-500 dark:border-[#2E2E2E]"
                                 }`}
                         >

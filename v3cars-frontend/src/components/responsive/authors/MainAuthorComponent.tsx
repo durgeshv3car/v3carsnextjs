@@ -62,8 +62,8 @@ const MainAuthorComponent: React.FC = () => {
                 <div className="px-4 xl:px-10">
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
                         <Link href="/" className="hover:underline">Home</Link>
-                        <span className="text-yellow-500">›</span>
-                        <span className="font-medium text-yellow-500">Authors</span>
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary">Authors</span>
                     </div>
                 </div>
             </div>
@@ -78,8 +78,8 @@ const MainAuthorComponent: React.FC = () => {
                     <div className="flex flex-col lg:flex-row justify-between gap-6 pt-[60px] md:pt-[100px] px-4">
                         <h2 className="text-3xl/tight md:text-4xl/tight">
                             Meet The <br className="hidden md:block" />
-                            <span className='text-yellow-400 font-bold'>Authors Of V3Cars</span>
-                            <div className="h-[3px] bg-yellow-400 w-[100px] my-3" />
+                            <span className='text-primary font-bold'>Authors Of V3Cars</span>
+                            <div className="h-[3px] bg-primary w-[100px] my-3" />
                         </h2>
                         <p className="text-gray-700 max-w-[500px] dark:text-gray-300 text-sm md:text-base">
                             At V3Cars, our team of experts is dedicated to simplifying car buying for India.

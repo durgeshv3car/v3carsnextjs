@@ -52,6 +52,9 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
         }
     }
 
+    console.log(view);
+    
+
     useEffect(() => {
         const container = scrollRef.current
         if (!container) return
@@ -68,8 +71,8 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-medium">{title}</h2>
-                            <Link href="#" className="text-[#FFCC00] font-medium text-sm hover:underline flex gap-2 items-center">
-                                View All {view}
+                            <Link href="#" className="text-primary font-medium text-sm hover:underline flex gap-2 items-center">
+                                View All
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                 </svg>
@@ -119,13 +122,13 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                                 className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg h-auto snap-start shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
                             >
                                 {/* Thumbnail with Play Icon */}
-                                <div className="relative h-[225px] w-full rounded overflow-hidden group cursor-pointer">
+                                <div className="relative h-[190px] w-full rounded overflow-hidden group cursor-pointer">
                                     <Image
                                         src={`${IMAGE_URL}${video.thumbnail.url}`}
                                         alt={video.thumbnail.alt || video.title}
                                         fill
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
-                                        className="object-cover rounded"
+                                        className="rounded"
                                         priority={false} 
                                     />
 

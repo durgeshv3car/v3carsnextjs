@@ -50,7 +50,7 @@ export default function CollaborateSupport() {
             <div className="text-center">
                 <h1 className="text-3xl md:text-4xl">
                     Collaborate, Contribute & Support{" "}
-                    <span className="text-yellow-400 font-semibold">V3Cars</span>
+                    <span className="text-primary font-semibold">V3Cars</span>
                 </h1>
                 <p className="text-gray-400 mt-3">
                     Explore different ways to connect with us, share insights and become
@@ -64,7 +64,7 @@ export default function CollaborateSupport() {
                         <div>
                             <h2 className="text-2xl text-gray-400">
                                 {sec.title} <br />
-                                <span className="text-yellow-400 font-semibold">
+                                <span className="text-primary font-semibold">
                                     {sec.highlight}
                                 </span>
                             </h2>

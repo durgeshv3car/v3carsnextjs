@@ -93,9 +93,9 @@ export default function InsuranceQuoteSection({
 
                         {/* OR divider */}
                         <div className="w-full flex items-center gap-2 my-6">
-                            <span className="h-px flex-1 bg-[#f0d15a] dark:bg-yellow-600" />
-                            <span className="text-[#f0b400] dark:text-yellow-500 text-2xl font-semibold">or</span>
-                            <span className="h-px flex-1 bg-[#f0d15a] dark:bg-yellow-600" />
+                            <span className="h-px flex-1 bg-[#f0d15a] dark:bg-primary" />
+                            <span className="text-[#f0b400] dark:text-primary text-2xl font-semibold">or</span>
+                            <span className="h-px flex-1 bg-[#f0d15a] dark:bg-primary" />
                         </div>
 
                         {/* Yellow CTA card (no icons) */}

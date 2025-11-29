@@ -51,7 +51,7 @@ function TransmissionFilter({ openSection }: TransmissionFilterProps) {
                                 checked={selectedTransmission === type}
                                 onChange={() => handleTransmissionSelect(type)}
                             />
-                            <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-yellow-400 peer-checked:border-yellow-400 relative transition-all duration-200">
+                            <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-primary peer-checked:border-primary relative transition-all duration-200">
                                 <svg
                                     className="w-3 h-3 text-black absolute left-1 top-1 opacity-0 peer-checked:opacity-100 transition-opacity"
                                     fill="none"
