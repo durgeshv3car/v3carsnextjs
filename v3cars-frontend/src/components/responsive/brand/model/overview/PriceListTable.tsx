@@ -35,12 +35,12 @@ export interface Variant {
 }
 
 export const convertToSlug = (text: string): string => {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/--+/g, "-");
+    return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/--+/g, "-");
 };
 
 const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFuelType, fuelType, fuelTypes, transmissionType, setTransmissionType }) => {
@@ -128,44 +128,48 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFu
                 >
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b  border-gray-200 text-sm font-semibold dark:bg-[#171717] dark:border-[#2E2E2E] text-left">
-                            <th className="p-4">Variants</th>
-                            <th className="p-4">{priceType} Price</th>
-                            <th className="p-4">On-Road Price</th>
+                            <tr>
+                                <th className="p-4">Variants</th>
+                                <th className="p-4">{priceType} Price</th>
+                                <th className="p-4">On-Road Price</th>
+                            </tr>
                         </thead>
 
-                        {data?.slice(0,4)?.map((v, idx) => (
-                            <tbody
-                                key={v.variantId}
-                                className={`text-sm border-b dark:border-[#2e2e2e] ${idx % 2 === 0
-                                    ? "bg-white dark:bg-[#171717]"
-                                    : "bg-gray-50 dark:bg-[#2E2E2E]"
-                                    }`}
-                            >
-                                <td className="p-4">
-                                    <p className="font-medium">{v.name}</p>
-                                    <p className="text-xs text-gray-400">
-                                        {v.powertrain.label}
-                                    </p>
-                                </td>
+                        <tbody>
+                            {data?.slice(0, 4)?.map((v, idx) => (
+                                <tr
+                                    key={v.variantId}
+                                    className={`text-sm border-b dark:border-[#2e2e2e] ${idx % 2 === 0
+                                        ? "bg-white dark:bg-[#171717]"
+                                        : "bg-gray-50 dark:bg-[#2E2E2E]"
+                                        }`}
+                                >
+                                    <td className="p-4">
+                                        <p className="font-medium">{v.name}</p>
+                                        <p className="text-xs text-gray-400">
+                                            {v.powertrain.label}
+                                        </p>
+                                    </td>
 
-                                <td className="p-4">
-                                    {
-                                        priceType === "Ex-Showroom" ? (
-                                            <span>₹{(v.exShowroom / 100000).toFixed(2)} Lakh</span>
-                                        )
-                                            : (
-                                                <span>₹{(v.csdPrice / 100000).toFixed(2)} Lakh</span>
+                                    <td className="p-4">
+                                        {
+                                            priceType === "Ex-Showroom" ? (
+                                                <span>₹{(v.exShowroom / 100000).toFixed(2)} Lakh</span>
                                             )
-                                    }
-                                </td>
+                                                : (
+                                                    <span>₹{(v.csdPrice / 100000).toFixed(2)} Lakh</span>
+                                                )
+                                        }
+                                    </td>
 
-                                <td className="p-4">
-                                    {v.onRoad
-                                        ? `₹${(v.onRoad / 100000).toFixed(2)} Lakh`
-                                        : "—"}
-                                </td>
-                            </tbody>
-                        ))}
+                                    <td className="p-4">
+                                        {v.onRoad
+                                            ? `₹${(v.onRoad / 100000).toFixed(2)} Lakh`
+                                            : "—"}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
                     </table>
                 </div>
 
