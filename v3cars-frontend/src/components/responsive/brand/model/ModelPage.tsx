@@ -221,6 +221,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             <div id="Pros Cons">
                                 <ModelProsCons
                                     model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                    type={type}
                                     slug={slug}
                                 />
                             </div>
@@ -240,14 +241,14 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
                                 data={modelLatestNews}
-                                link="/news"
+                                link={`/${type}/${slug}/news`}
                             />
                                 :
                                 <CommonNewsUpdate
                                     title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                     view={`${modelDetails?.model?.name} News Update`}
                                     newsList={modelLatestNews}
-                                    link={"/news"}
+                                    link={`/${type}/${slug}/news`}
                                 />
                             }
 

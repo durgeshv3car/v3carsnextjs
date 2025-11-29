@@ -124,14 +124,14 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFu
 
                 {/* Variant Table */}
                 <div
-                    className={`border border-gray-200 overflow-hidden dark:border-[#2E2E2E]`}
+                    className={`border border-gray-200 overflow-x-auto dark:border-[#2E2E2E] scrollbar-hide`}
                 >
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b  border-gray-200 text-sm font-semibold dark:bg-[#171717] dark:border-[#2E2E2E] text-left">
                             <tr>
-                                <th className="p-4">Variants</th>
-                                <th className="p-4">{priceType} Price</th>
-                                <th className="p-4">On-Road Price</th>
+                                <th className="p-4 min-w-[200px]">Variants</th>
+                                <th className="p-4 min-w-[200px]">{priceType} Price</th>
+                                <th className="p-4 min-w-[200px]">On-Road Price</th>
                             </tr>
                         </thead>
 
@@ -144,14 +144,14 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFu
                                         : "bg-gray-50 dark:bg-[#2E2E2E]"
                                         }`}
                                 >
-                                    <td className="p-4">
+                                    <td className="p-4 min-w-[200px]">
                                         <p className="font-medium">{v.name}</p>
                                         <p className="text-xs text-gray-400">
                                             {v.powertrain.label}
                                         </p>
                                     </td>
 
-                                    <td className="p-4">
+                                    <td className="p-4 min-w-[200px]">
                                         {
                                             priceType === "Ex-Showroom" ? (
                                                 <span>₹{(v.exShowroom / 100000).toFixed(2)} Lakh</span>
@@ -162,7 +162,7 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFu
                                         }
                                     </td>
 
-                                    <td className="p-4">
+                                    <td className="p-4 min-w-[200px]">
                                         {v.onRoad
                                             ? `₹${(v.onRoad / 100000).toFixed(2)} Lakh`
                                             : "—"}

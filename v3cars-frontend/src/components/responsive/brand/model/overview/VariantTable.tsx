@@ -1,9 +1,12 @@
 'use client'
 
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface VariantTableProps {
     data: VariantWithPowertrain[] | null;   // FIXED
+    type: string;
+    slug: string;
 }
 
 export interface Powertrain {
@@ -29,7 +32,8 @@ export interface VariantWithPowertrain {
     variant: VariantDetails;
 }
 
-const VariantTable: React.FC<VariantTableProps> = ({ data }) => {
+const VariantTable: React.FC<VariantTableProps> = ({ data, type, slug }) => {
+    const router = useRouter()
 
     // ✅ Transform + reverse + match UI structure
     const variants = data
@@ -75,7 +79,10 @@ const VariantTable: React.FC<VariantTableProps> = ({ data }) => {
 
             {/* Footer */}
             <div className="text-center my-4">
-                <button className="text-sm font-medium flex items-center justify-center mx-auto gap-1">
+                <button 
+                className="text-sm font-medium flex items-center justify-center mx-auto gap-1"
+                onClick={() => {router.push(`/${type}/${slug}/which-variant-to-buy`)}}
+                >
                     <span className="hidden md:block">See Which Tata Nexon Variant Offers the</span>
                     <span className="font-semibold hover:underline"> Best Value for Money</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
