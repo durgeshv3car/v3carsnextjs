@@ -1,8 +1,13 @@
 'use client'
 
+import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 interface PriceListTableProps {
+    slug?: string;
+    type?: string;
     data: Variant[] | null;
     fuelTypes?: string[];
     fuelType?: string;
@@ -29,9 +34,19 @@ export interface Variant {
     updatedDate: string;
 }
 
-const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuelType, fuelTypes, transmissionType, setTransmissionType }) => {
-    const [showAll, setShowAll] = useState(false);
+export const convertToSlug = (text: string): string => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/--+/g, "-");
+};
+
+const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFuelType, fuelType, fuelTypes, transmissionType, setTransmissionType }) => {
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const [priceType, setPriceType] = useState("Ex-Showroom");
+    const router = useRouter()
 
     return (
         <div>
@@ -109,62 +124,61 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ data, setFuelType, fuel
 
                 {/* Variant Table */}
                 <div
-                    className={`border border-gray-200 overflow-hidden dark:border-[#2E2E2E]
-                        transition-all duration-500 ease-in-out
-                        ${showAll ? "max-h-[3000px]" : "max-h-[420px]"}
-                    `}
+                    className={`border border-gray-200 overflow-hidden dark:border-[#2E2E2E]`}
                 >
-                    <div className="grid grid-cols-3 bg-gray-50 border-b border-gray-200 text-sm font-semibold dark:bg-[#171717] dark:border-[#2E2E2E] p-4">
-                        <span>Variants</span>
-                        <span>{priceType} Price</span>
-                        <span>On-Road Price</span>
-                    </div>
+                    <table className="w-full">
+                        <thead className="bg-gray-50 border-b  border-gray-200 text-sm font-semibold dark:bg-[#171717] dark:border-[#2E2E2E] text-left">
+                            <th className="p-4">Variants</th>
+                            <th className="p-4">{priceType} Price</th>
+                            <th className="p-4">On-Road Price</th>
+                        </thead>
 
-                    {data?.map((v, idx) => (
-                        <div
-                            key={v.variantId}
-                            className={`grid grid-cols-3 text-sm px-3 py-3 border-b dark:border-[#2e2e2e] ${idx % 2 === 0
-                                ? "bg-white dark:bg-[#171717]"
-                                : "bg-gray-50 dark:bg-[#2E2E2E]"
-                                }`}
-                        >
-                            <div>
-                                <p className="font-medium">{v.name}</p>
-                                <p className="text-xs text-gray-400">
-                                    {v.powertrain.label}
-                                </p>
-                            </div>
+                        {data?.slice(0,4)?.map((v, idx) => (
+                            <tbody
+                                key={v.variantId}
+                                className={`text-sm border-b dark:border-[#2e2e2e] ${idx % 2 === 0
+                                    ? "bg-white dark:bg-[#171717]"
+                                    : "bg-gray-50 dark:bg-[#2E2E2E]"
+                                    }`}
+                            >
+                                <td className="p-4">
+                                    <p className="font-medium">{v.name}</p>
+                                    <p className="text-xs text-gray-400">
+                                        {v.powertrain.label}
+                                    </p>
+                                </td>
 
-                            <div className="flex items-center">
-                                {
-                                    priceType === "Ex-Showroom" ? (
-                                        <span>₹{(v.exShowroom / 100000).toFixed(2)} Lakh</span>
-                                    )
-                                        : (
-                                            <span>₹{(v.csdPrice / 100000).toFixed(2)} Lakh</span>
+                                <td className="p-4">
+                                    {
+                                        priceType === "Ex-Showroom" ? (
+                                            <span>₹{(v.exShowroom / 100000).toFixed(2)} Lakh</span>
                                         )
-                                }
-                            </div>
+                                            : (
+                                                <span>₹{(v.csdPrice / 100000).toFixed(2)} Lakh</span>
+                                            )
+                                    }
+                                </td>
 
-                            <div className="flex items-center">
-                                {v.onRoad
-                                    ? `₹${(v.onRoad / 100000).toFixed(2)} Lakh`
-                                    : "—"}
-                            </div>
-                        </div>
-                    ))}
+                                <td className="p-4">
+                                    {v.onRoad
+                                        ? `₹${(v.onRoad / 100000).toFixed(2)} Lakh`
+                                        : "—"}
+                                </td>
+                            </tbody>
+                        ))}
+                    </table>
                 </div>
 
                 {/* Footer */}
                 <div className="text-center my-4">
                     <button
-                        onClick={() => setShowAll(!showAll)}
+                        onClick={() => router.push(`/${type}/${slug}/price-in-${convertToSlug(selectedCity.cityName)}`)}
                         className="text-sm font-medium flex items-center justify-center mx-auto hover:underline gap-1"
                     >
-                        {showAll ? "View Less" : "View More Variants"}
+                        View All Model Price
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
-                            className={`size-4 transition-transform ${showAll ? "rotate-180" : ""}`}>
+                            className={`size-4 -rotate-90`}>
                             <path strokeLinecap="round" strokeLinejoin="round"
                                 d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>

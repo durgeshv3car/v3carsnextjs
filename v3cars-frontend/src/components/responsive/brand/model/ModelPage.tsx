@@ -88,7 +88,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     console.log(modelOthersCars);
-    
+
 
     const isMobile = useIsMobile()
 
@@ -178,6 +178,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                                     setFuelType={setFuelType}
                                     transmissionType={transmissionType}
                                     setTransmissionType={setTransmissionType}
+                                    type={type}
+                                    slug={slug}
                                 />
                             </div>
 
@@ -187,6 +189,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                                     title="Variant To Buy"
                                     desc="See our recommended Tata Nexon variant for each powertrain with the highest value score. Visit the Which Variant To Buy page for a complete breakdown and alternatives"
                                     data={bestVariantToBuy}
+                                    type={type}
+                                    slug={slug}
                                 />
                             </div>
 
@@ -196,6 +200,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                                     title="Dimensions & Capacity"
                                     desc="The 2025 Nexon is 3995mm long, 1804mm wide and 1620mm tall. Bigger exterior dimensions give a car a stronger road presence. The Nexon has a 2498mm long wheelbase. A long wheelbase makes the car more stable at high speeds and gives better legroom in the back"
                                     data={dimensionsCapacity as [] | null}
+                                    type={type}
+                                    slug={slug}
                                 />
                             </div>
 
