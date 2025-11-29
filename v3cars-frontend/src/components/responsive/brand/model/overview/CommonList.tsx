@@ -54,9 +54,9 @@ const CommonList: React.FC<PriceListProps> = ({ model, title, desc, data, fuelTy
                 title === "Price List" ?
                     <PriceListTable type={type} slug={slug} data={data} setFuelType={setFuelType} fuelType={fuelType} fuelTypes={fuelTypes} transmissionType={transmissionType} setTransmissionType={setTransmissionType} />
                     : title === "Variant To Buy" ?
-                        <VariantTable data={data} />
+                        <VariantTable data={data} type={type} slug={slug} />
                         :
-                        <DimensionsTable model={model} data={data} />
+                        <DimensionsTable model={model} data={data} type={type} slug={slug} />
             }
 
         </div>

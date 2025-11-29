@@ -6,6 +6,8 @@ import React from "react";
 interface DimensionsTableProps {
     model: string;
     data: ModelSpecificationResponse[] | null
+    type: string;
+    slug: string;
 }
 
 export interface Dimensions {
@@ -37,7 +39,7 @@ export interface ModelSpecificationResponse {
 }
 
 
-const DimensionsTable: React.FC<DimensionsTableProps> = ({ model, data }) => {
+const DimensionsTable: React.FC<DimensionsTableProps> = ({ model, data, type, slug }) => {
     const item = data?.[0];
 
     return (
@@ -114,7 +116,7 @@ const DimensionsTable: React.FC<DimensionsTableProps> = ({ model, data }) => {
 
             <div className="text-center my-4 hover:underline">
                 <Link
-                    href="#"
+                    href={`/${type}/${slug}/dimensions`}
                     className="text-sm flex justify-center gap-1 items-center"
                 >
                     Find the exact dimensions of Tata Nexon in{" "}
