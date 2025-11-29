@@ -109,11 +109,14 @@ export const contentModuleApi = createApi({
         getPopularComparisons: builder.query<Response, void>({
             query: () => `/comparisons/popular?limit=15`,
         }),
-        
+
         // Model Page Content Api
-        
+
         getModelLatestNews: builder.query<Response, { model_slug: string }>({
             query: ({ model_slug }) => `/content/news/by-model/${model_slug}/latest?limit=50&excludeToday=0`,
+        }),
+        getModelLatestVariantExplained: builder.query<Response, { model_slug: string }>({
+            query: ({ model_slug }) => `/content/variant-explained/by-model/${model_slug}/latest?limit=50&excludeToday=0`,
         }),
     }),
 });
@@ -150,4 +153,5 @@ export const {
     useGetPopularVariantExplainedQuery,
     useGetPopularComparisonsQuery,
     useGetModelLatestNewsQuery,
+    useGetModelLatestVariantExplainedQuery,
 } = contentModuleApi;

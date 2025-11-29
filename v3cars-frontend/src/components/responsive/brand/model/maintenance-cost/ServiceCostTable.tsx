@@ -80,7 +80,7 @@ const ServiceCostTable: React.FC = () => {
             </div>
 
             {/* Variant Selection */}
-            <div className="flex justify-between items-center mb-3">
+            <div className="flex flex-col md:flex-row justify-between md:items-center mb-3 gap-3">
                 <h2 className="text-xl">Tata Nexon <span className="font-semibold">Service Schedule</span></h2>
                 <select name="" id="" className="border rounded-lg p-3 bg-gray-50 text-sm dark:bg-[#171717] dark:border-[#2e2e2e]">
                     <option value="1.2L Turbo Petrol with 6-speed MT">1.2L Turbo Petrol with 6-speed MT</option>

@@ -1,65 +1,58 @@
 'use client'
 
-import React, { useState } from "react";
+import React from "react";
+import { ModelImagesResponse, ImageTabs } from "./ImageDisplay";
+import { IMAGE_URL } from "@/utils/constant";
+import Image from "next/image";
 
-// SAMPLE DATA (Replace with API data)
-const sampleData = {
-    all: [
-        "/model/tata.png", "/model/tata.png", "/model/tata.png", "/model/tata.png",
-        "/model/tata.png", "/model/tata.png", "/model/tata.png", "/model/tata.png",
-        "/model/tata.png", "/model/tata.png", "/model/tata.png", "/model/tata.png",
-        "/model/tata.png", "/model/tata.png", "/model/tata.png", "/model/tata.png",
-    ],
-    interior: [
-        "/model/tata.png", "/model/tata.png", "/model/tata.png", "/model/tata.png",
-    ],
-    exterior: [
-        "/model/tata.png", "/model/tata.png", "/model/tata.png", "/model/tata.png",
-    ],
-    others: [
-        "/model/tata.png", "/model/tata.png", "/model/tata.png", "/model/tata.png",
-    ],
-};
+interface CarGalleryProps {
+    imageType: string;
+    setImageType: (value: string) => void;
+    data: ModelImagesResponse | undefined;
+}
 
-export default function CarGallery() {
-    const tabs = ["All Images", "Interior", "Exterior", "Others"];
-    const [activeTab, setActiveTab] = useState("All Images");
+export default function CarGallery({ imageType, setImageType, data }: CarGalleryProps) {
 
-    const getImages = () => {
-        switch (activeTab) {
-            case "Interior": return sampleData.interior;
-            case "Exterior": return sampleData.exterior;
-            case "Others": return sampleData.others;
-            default: return sampleData.all;
-        }
-    };
+    const tabs = [
+        { label: "All Images", value: "" },
+        { label: "Interior", value: "interior" },
+        { label: "Exterior", value: "exterior" },
+        { label: "Others", value: "others" },
+    ];
+
+    const images =
+        imageType === ""
+            ? data?.tabs.all.items
+            : data?.tabs[imageType as keyof ImageTabs]?.items;
 
     return (
         <div>
             {/* Tabs */}
-            <div className="flex gap-6 mb-6">
-                {tabs.map((tab) => (
+            <div className="flex gap-6 bg-[#DEE2E6] dark:bg-[#232323] px-8 py-4 pb-0 rounded-lg mb-4 overflow-x-auto scrollbar-hide">
+                {tabs.map((tab, idx) => (
                     <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
-                        className={`px-4 py-2 rounded-lg font-semibold transition-all ${activeTab === tab
-                            ? "bg-primary text-black"
-                            : "border dark:border-[#2e2e2e] hover:bg-gray-100 dark:hover:bg-[#2e2e2e]"
+                        key={idx}
+                        onClick={() => setImageType(tab.value)}
+                        className={`text-nowrap text-sm transition-all pb-3 px-4 ${imageType === tab.value
+                            ? "border-b-2 border-black dark:border-[#ffffff] font-semibold"
+                            : ""
                             }`}
                     >
-                        {tab}
+                        {tab.label}
                     </button>
                 ))}
             </div>
 
             {/* Image Grid */}
-            <div className="grid grid-cols-4 gap-4">
-                {getImages().map((img, index) => (
-                    <div key={index} className="rounded-xl overflow-hidden border p-2 dark:border-[#2e2e2e]">
-                        <img
-                            src={img}
-                            className="w-full object-cover hover:scale-105 transition"
-                            alt="car"
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {images?.map((img) => (
+                    <div key={img.id}>
+                        <Image
+                            src={`${IMAGE_URL}/media/model-imgs/${img.url}`}
+                            alt={img.alt}
+                            width={300}
+                            height={300}
+                            className="w-full object-cover hover:scale-105 transition rounded-xl"
                         />
                     </div>
                 ))}

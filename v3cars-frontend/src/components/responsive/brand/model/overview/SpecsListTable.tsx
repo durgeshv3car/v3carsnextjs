@@ -52,6 +52,9 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model, slug, childSlug 
 
     const carSpecs = data as CarSpecification;
 
+    console.log(childSlug);
+    
+
     useEffect(() => {
         if (carSpecs?.sections?.[0]?.group) {
             setActiveTab(carSpecs.sections[0].group);

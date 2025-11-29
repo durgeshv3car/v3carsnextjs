@@ -11,19 +11,15 @@ import BannerSection from "@/components/responsive/brand/model/BannerSection";
 import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
 import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalculator";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
-import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import PriceComparison from "./PriceComparison";
-import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import BrochureCard from "../sidebar/BrochureCard";
-import CSDPriceList from "../sidebar/CSDPriceList";
-import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
 import OnRoadPriceTable from "../price/OnRoadPriceTable";
 import { useState } from "react";
 import { RootState } from "@/redux/store";
@@ -47,8 +43,6 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
-    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
     const { data: priceListDetailsData } =
         useGetPriceListDetailsQuery(
             { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType, variantId: variantId ? Number(variantId) : undefined },
@@ -61,8 +55,6 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
-    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
-    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     console.log(childSlug);
 
@@ -191,18 +183,6 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                                 url={undefined}
                             />
 
-                            <CSDPriceList
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                type={type}
-                                slug={slug}
-                            />
-
-                            <LatestOffersDiscounts
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                type={type}
-                                slug={slug}
-                            />
-
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
                                     src={'/model/miniads.png'}
@@ -215,10 +195,13 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
 
                             <MonthlySales
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
-                            <OnRoadPriceinTopCities
+                            <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                data={modelDetails?.media.colors ?? []}
                                 type={type}
                                 slug={slug}
                             />
@@ -233,25 +216,9 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelOthersCars}
-                            />
-
-                            <OtherCars
-                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingCars}
-                            />
-
-                            <CarColours
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelDetails?.media.colors ?? []}
-                                type={type}
-                                slug={slug}
-                            />
-
                             <VariantExplained
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator

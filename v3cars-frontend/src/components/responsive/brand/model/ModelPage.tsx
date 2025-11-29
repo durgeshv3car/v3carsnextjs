@@ -308,6 +308,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
                             <MonthlySales
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
@@ -345,6 +347,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
                             <VariantExplained
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator

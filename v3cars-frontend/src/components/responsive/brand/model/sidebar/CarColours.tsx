@@ -45,7 +45,7 @@ const CarColours: React.FC<CarColoursProps> = ({ title, data, type, slug }) => {
                     />
 
                     {/* Color Selection Circles */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap justify-center px-2">
                         {data.map((color) => (
                             <button
                                 key={color.colorId}

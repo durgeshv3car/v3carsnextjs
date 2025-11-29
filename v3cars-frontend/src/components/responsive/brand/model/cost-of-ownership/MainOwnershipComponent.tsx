@@ -8,7 +8,6 @@ import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
 import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalculator";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
@@ -23,7 +22,7 @@ import { EmiCalculator } from "./EmiCalculator";
 import BrochureCard from "../sidebar/BrochureCard";
 import CSDPriceList from "../sidebar/CSDPriceList";
 import LatestOffersDiscounts from "../sidebar/LatestOffersDiscounts";
-import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 
 interface MileagePageProps {
@@ -35,13 +34,9 @@ interface MileagePageProps {
 function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: latestVideosData } = useGetLatestVideosQuery()
-    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const latestVideos = latestVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
-    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
-    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     console.log(childSlug);
 
@@ -186,6 +181,8 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
 
                             <MonthlySales
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
@@ -204,16 +201,6 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelOthersCars}
-                            />
-
-                            <OtherCars
-                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingCars}
-                            />
-
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 data={modelDetails?.media.colors ?? []}
@@ -223,6 +210,7 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
 
                             <VariantExplained
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator

@@ -17,11 +17,10 @@ import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalcul
 import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetPriceListDetailsQuery } from "@/redux/api/carModuleApi";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import { CarData } from "../overview/Overview";
@@ -29,6 +28,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useState } from "react";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface PriceListPageProps {
     type: string;
@@ -50,16 +50,12 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
             { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType, variantId: variantId ? Number(variantId) : undefined },
             { skip: !slug }
         );
-    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const priceListDetails = priceListDetailsData?.rows ?? []
-    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? []; 
-    const modelOthersCars = modelOthersCarsData?.items ?? []; 
 
     const isMobile = useIsMobile()
 
@@ -198,6 +194,10 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                                 slug={slug}
                             />
 
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                            />
+
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
                                     src={'/model/miniads.png'}
@@ -210,6 +210,8 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
 
                             <MonthlySales
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
@@ -228,16 +230,6 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelOthersCars}
-                            />
-
-                            <OtherCars
-                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingCars}
-                            />
-
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 data={modelDetails?.media.colors ?? []}
@@ -247,6 +239,7 @@ function PriceListPage({ type, slug, childSlug }: PriceListPageProps) {
 
                             <VariantExplained
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator

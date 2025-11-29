@@ -1,7 +1,7 @@
 'use client'
 
 import { useGetMileageSpecsFeaturesQuery } from "@/redux/api/carModuleApi";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface SpecsListTableProps {
     title: string;
@@ -48,6 +48,8 @@ export default function SpecsTechnicalDetails({ title, slug, childSlug }: SpecsL
         },
         { skip: !slug }
     );
+
+    console.log(childSlug);
 
     return (
         <div>

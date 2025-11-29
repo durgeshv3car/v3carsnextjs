@@ -16,16 +16,16 @@ import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalcul
 import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import VariantTable from "./VariantTable";
-import { useGetBestVariantToBuyQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
+import { useGetBestVariantToBuyQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface VariantPageProps {
     type: string;
@@ -39,16 +39,12 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: modelReviewsVideosData } = useGetModelReviewsVideosQuery({ model_slug: slug }, { skip: !slug })
     const { data: bestVariantToBuyData } = useGetBestVariantToBuyQuery({ model_slug: slug, fuelType: "petrol" }, { skip: !slug });
-    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const bestVariantToBuy = bestVariantToBuyData?.rows ?? [];
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
-    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
-    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     const isMobile = useIsMobile()
 
@@ -178,6 +174,10 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
                                 slug={slug}
                             />
 
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                            />
+
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
                                     src={'/model/miniads.png'}
@@ -190,6 +190,8 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
 
                             <MonthlySales
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
@@ -208,16 +210,6 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelOthersCars}
-                            />
-
-                            <OtherCars
-                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingCars}
-                            />
-
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 data={modelDetails?.media.colors ?? []}
@@ -227,6 +219,7 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
 
                             <VariantExplained
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator

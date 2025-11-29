@@ -16,7 +16,6 @@ import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalcul
 import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
@@ -24,10 +23,11 @@ import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/red
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import DimensionsTable from "./DimensionsTable";
 import DimensionsTyreSizeTable from "./DimensionsTyreSizeTable";
-import { useGetDimensionsCapacityQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
+import { useGetDimensionsCapacityQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 import { useState } from "react";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface DimensionsPageProps {
     type: string;
@@ -115,15 +115,11 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
             { model_slug: slug, fuelType: fuelType || undefined, transmissionType: transmission || undefined },
             { skip: !slug }
         )
-    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelLatestNews = modelLatestNewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
-    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
-    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     const isMobile = useIsMobile()
 
@@ -264,6 +260,10 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
                                 slug={slug}
                             />
 
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                            />
+
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
                                     src={'/model/miniads.png'}
@@ -276,6 +276,8 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
 
                             <MonthlySales
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
@@ -294,16 +296,6 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelOthersCars}
-                            />
-
-                            <OtherCars
-                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingCars}
-                            />
-
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 data={modelDetails?.media.colors ?? []}
@@ -313,6 +305,7 @@ function DimensionsPage({ type, slug, childSlug }: DimensionsPageProps) {
 
                             <VariantExplained
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator

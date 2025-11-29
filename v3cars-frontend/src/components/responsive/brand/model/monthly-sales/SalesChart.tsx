@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+
 import {
     LineChart,
     Line,
@@ -9,65 +9,70 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
+import { MonthlySalesResponse, MonthlySales } from "./SalesTable";
 
-const dataSets = {
-    lastMonth: [
-        { name: "Week 1", revenue: 45 },
-        { name: "Week 2", revenue: 55 },
-        { name: "Week 3", revenue: 65 },
-        { name: "Week 4", revenue: 80 },
-    ],
-    last6Months: [
-        { name: "Jan", revenue: 45 },
-        { name: "Feb", revenue: 55 },
-        { name: "Mar", revenue: 75 },
-        { name: "Apr", revenue: 25 },
-        { name: "May", revenue: 50 },
-        { name: "Jun", revenue: 110 },
-    ],
-    oneYear: [
-        { name: "Jan", revenue: 40 },
-        { name: "Mar", revenue: 60 },
-        { name: "May", revenue: 75 },
-        { name: "Jul", revenue: 90 },
-        { name: "Sep", revenue: 55 },
-        { name: "Nov", revenue: 120 },
-    ],
-};
+interface SalesChartProps {
+    title: string;
+    data: MonthlySalesResponse | undefined;
+    selectedRange: number;
+    setSelectedRange: (value: number) => void;
+}
 
-export default function SalesChart() {
-    const [selectedRange, setSelectedRange] =
-        useState<keyof typeof dataSets>("last6Months");
+export default function SalesChart({
+    title,
+    data,
+    selectedRange,
+    setSelectedRange,
+}: SalesChartProps) {
+
+    // Convert API rows → chart-ready format
+    const chartData = (data?.rows ?? [])
+        .slice()                   // copy array
+        .reverse()                 // latest month first
+        .map((item: MonthlySales) => ({
+            name: item.month,      // X-axis value
+            revenue: item.units,   // Y-axis value
+        }));
+
+    // Apply selected range
+    const filteredData =
+        selectedRange === 1
+            ? chartData.slice(-1)
+            : selectedRange === 6
+                ? chartData.slice(-6)
+                : selectedRange === 12
+                    ? chartData.slice(-12)
+                    : chartData;
 
     return (
         <div>
             {/* Header */}
-            <h2 className="text-xl font-semibold mb-2">
-                Tata Nexon Sales
-            </h2>
+            <h2 className="text-xl font-semibold mb-2">{title} Sales Figures</h2>
+
             <p className="text-gray-400 text-sm mb-6">
-                Our interactive sales graph showcases the Tata Nexon performance over
-                the last 6 months, allowing you to visualize sales trends.
+                Track the monthly sales performance of {title} over the last{" "}
+                {data?.total ?? 0} months.
             </p>
 
-            {/* Chart Card */}
+            {/* CHART CARD */}
             <div className="bg-white dark:bg-[#171717] rounded-xl shadow-sm border border-gray-200 dark:border-[#2e2e2e] p-5">
+
+                {/* Range Buttons */}
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-md font-semibold">
-                        Monthly Revenue
-                    </h3>
+                    <h3 className="text-md font-semibold">Monthly Revenue</h3>
+
                     <div className="flex space-x-2">
                         {[
-                            { label: "Last Month", value: "lastMonth" },
-                            { label: "Last 6 Months", value: "last6Months" },
-                            { label: "1 Year", value: "oneYear" },
+                            { label: "Last Month", value: 1 },
+                            { label: "Last 6 Months", value: 6 },
+                            { label: "1 Year", value: 12 }
                         ].map((btn) => (
                             <button
                                 key={btn.value}
-                                onClick={() => setSelectedRange(btn.value as keyof typeof dataSets)}
+                                onClick={() => setSelectedRange(btn.value)}
                                 className={`px-3 py-1.5 text-sm rounded-md border transition ${selectedRange === btn.value
-                                        ? "bg-gray-100 dark:bg-[#292929] dark:border-[#2e2e2e]"
-                                        : "bg-white dark:bg-[#171717] border-gray-300 hover:bg-gray-100 hover:dark:bg-[#292929] dark:border-[#2e2e2e]"
+                                    ? "bg-gray-100 dark:bg-[#292929] dark:border-[#2e2e2e]"
+                                    : "bg-white dark:bg-[#171717] border-gray-300 hover:bg-gray-100 hover:dark:bg-[#292929] dark:border-[#2e2e2e]"
                                     }`}
                             >
                                 {btn.label}
@@ -79,7 +84,7 @@ export default function SalesChart() {
                 {/* Line Chart */}
                 <div className="h-[500px]">
                     <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={dataSets[selectedRange]}>
+                        <LineChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                             <XAxis dataKey="name" stroke="#888" />
                             <YAxis stroke="#888" />

@@ -152,7 +152,7 @@ const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc, 
 
                             {/* Gradient Overlay */}
                             <div className="absolute bottom-0 p-3 w-full bg-gradient-to-t from-black/90 to-transparent">
-                                <p className="text-white font-semibold">{car.brand.name}</p>
+                                <p className="text-white font-semibold uppercase">{car.brand.name}</p>
                             </div>
 
                             {/* Favorite Button */}

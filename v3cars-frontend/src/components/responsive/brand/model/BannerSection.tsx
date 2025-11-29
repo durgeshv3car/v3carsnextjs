@@ -184,8 +184,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                                                 />
                                                                 : activeTab === "Colors" ?
                                                                     <CommonModelTopSection
-                                                                        title="Tata"
-                                                                        highlight="Nexon"
+                                                                        title={`${modelDetails?.model?.brand?.name}`}
+                                                                        highlight={`${modelDetails?.model?.name}`}
                                                                         others="Colors"
                                                                         description="See all the colours available for the Tata Nexon (2025). This page showcases all the Nexon car colours offered by the manufacturer, allowing you to explore the complete selection. Visualise each stunning shade with high-quality images of the Nexon in"
                                                                     />
@@ -198,8 +198,8 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                                                         />
                                                                         : activeTab === "Images" ?
                                                                             <CommonModelTopSection
-                                                                                title="Tata"
-                                                                                highlight="Nexon"
+                                                                                title={`${modelDetails?.model?.brand?.name}`}
+                                                                                highlight={`${modelDetails?.model?.name}`}
                                                                                 others="Images (Interior & Exterior)"
                                                                                 description="Uncover the Tata Nexon from top to bottom with our extensive collection of high-resolution Nexon car images. This page allows you to examine every aspect of the vehicle in detail. Explore the Tata Nexon interior and its layout to discover the perfect..."
                                                                             />

@@ -9,10 +9,9 @@ import CarColours from "@/components/responsive/brand/model/sidebar/CarColours";
 import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalculator";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
-import { useGetModelCompetitorsQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelCompetitorsQuery, useGetModelDetailsQuery } from "@/redux/api/carModuleApi";
 import { useGetLatestComparisonReviewsQuery, useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/redux/api/contentModuleApi";
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import { CarData } from "../overview/Overview";
@@ -26,6 +25,7 @@ import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
 import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import useIsMobile from "@/hooks/useIsMobile";
 import CommonComparisonModelCard from "@/components/common/ModelCards/CommonComparisonModelCard";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface MileagePageProps {
     type: string;
@@ -40,8 +40,6 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelCompetitorsData } = useGetModelCompetitorsQuery({ model_slug: slug });
     const { data: latestComparisonReviewsData } = useGetLatestComparisonReviewsQuery();
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
 
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? []
@@ -49,8 +47,6 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
     const modelCompetitors = modelCompetitorsData?.items ?? []
     const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
-    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     const isMobile = useIsMobile()
 
@@ -183,6 +179,10 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
                                 slug={slug}
                             />
 
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                            />
+
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
                                     src={'/model/miniads.png'}
@@ -195,6 +195,8 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <MonthlySales
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
@@ -213,16 +215,6 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelOthersCars}
-                            />
-
-                            <OtherCars
-                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingCars}
-                            />
-
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 data={modelDetails?.media.colors ?? []}
@@ -232,6 +224,7 @@ function CompetitorsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <VariantExplained
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator

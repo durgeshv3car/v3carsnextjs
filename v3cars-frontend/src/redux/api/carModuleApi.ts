@@ -1,4 +1,8 @@
+import { ColorsResponse } from "@/components/responsive/brand/model/colors/ModelColours";
 import { ModelDimensionsResponse } from "@/components/responsive/brand/model/dimensions/DimensionsPage";
+import { ModelImagesResponse } from "@/components/responsive/brand/model/images/ImageDisplay";
+import { ServiceCostResponse } from "@/components/responsive/brand/model/maintenance-cost/MainMaintenanceComponent";
+import { MonthlySalesResponse } from "@/components/responsive/brand/model/monthly-sales/SalesTable";
 import { ProsConsResponse } from "@/components/responsive/brand/model/overview/ModelProsCons";
 import { CarData } from "@/components/responsive/brand/model/overview/Overview";
 import { HeaderInfo, SpecSection } from "@/components/responsive/brand/model/overview/SpecsListTable";
@@ -278,8 +282,31 @@ export const carModuleApi = createApi({
         getModelOthersCars: builder.query<ModelCompetitorsQueryResponse, { model_slug: string }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}/others-cars?limit=5`,
         }),
-        getModelMonthlySales: builder.query<Response, { model_slug: string }>({
-            query: ({ model_slug }) => `/cars/models/${model_slug}/monthly-sales?month=6`,
+        getModelMonthlySales: builder.query<MonthlySalesResponse, { model_slug: string, months: number }>({
+            query: ({ model_slug, months }) => `/cars/models/${model_slug}/monthly-sales?months=${months}`,
+        }),
+        getModelColours: builder.query<ColorsResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/colours`,
+        }),
+        getModelImages: builder.query<
+            ModelImagesResponse,
+            { model_slug: string; type?: string }
+        >({
+            query: ({ model_slug, type }) => {
+                const url = `/cars/models/${model_slug}/images`;
+
+                const params: string[] = [];
+
+                if (type && type.trim() !== "") {
+                    params.push(`type=${type}`);
+                    params.push(`limit=60`);
+                }
+
+                return params.length ? `${url}?${params.join("&")}` : url;
+            }
+        }),
+        getModelServiceCost: builder.query<ServiceCostResponse, { model_slug: string }>({
+            query: ({ model_slug }) => `/cars/models/${model_slug}/service-cost`,
         }),
     }),
 });
@@ -313,6 +340,9 @@ export const {
     useGetModelUpcomingCarsQuery,
     useGetModelOthersCarsQuery,
     useGetModelMonthlySalesQuery,
+    useGetModelColoursQuery,
+    useGetModelImagesQuery,
+    useGetModelServiceCostQuery,
 } = carModuleApi;
 
 

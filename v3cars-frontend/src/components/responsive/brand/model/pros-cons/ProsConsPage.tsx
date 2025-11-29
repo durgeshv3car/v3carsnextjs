@@ -16,7 +16,6 @@ import EMICalculator from "@/components/responsive/brand/model/sidebar/EMICalcul
 import LatestOffersDiscounts from "@/components/responsive/brand/model/sidebar/LatestOffersDiscounts";
 import MonthlySales from "@/components/responsive/brand/model/sidebar/MonthlySales";
 import OnRoadPriceinTopCities from "@/components/responsive/brand/model/sidebar/OnRoadPriceinTopCities";
-import OtherCars from "@/components/responsive/brand/model/sidebar/OtherCars";
 import VariantExplained from "@/components/responsive/brand/model/sidebar/VariantExplained";
 import Marquee from "@/components/ui/Marquee";
 import useIsMobile from "@/hooks/useIsMobile";
@@ -24,10 +23,11 @@ import { useGetModelLatestNewsQuery, useGetPopularComparisonsQuery } from "@/red
 import { useGetModelReviewsVideosQuery } from "@/redux/api/videosModuleApi";
 import Advantages from "./Advantages";
 import DisAdvantages from "./DisAdvantages";
-import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelProsConsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelProsConsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 import { ProsConsResponse } from "../overview/ModelProsCons";
+import CostOfOwnership from "../sidebar/CostOfOwnership";
 
 interface MileagePageProps {
     type: string;
@@ -43,9 +43,6 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
     const { data: modelProsConsData } = useGetModelProsConsQuery({
         model_slug: slug
     });
-    const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
-    const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug }, { skip: !slug })
-
 
     const prosConsData = modelProsConsData as ProsConsResponse | undefined;
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
@@ -55,8 +52,6 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
 
     const pros = prosConsData?.pros || [];
     const cons = prosConsData?.cons || [];
-    const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
-    const modelOthersCars = modelOthersCarsData?.items ?? [];
 
     const isMobile = useIsMobile()
 
@@ -192,6 +187,10 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
                                 slug={slug}
                             />
 
+                            <CostOfOwnership
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                            />
+
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
                                     src={'/model/miniads.png'}
@@ -204,6 +203,8 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <MonthlySales
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                type={type}
+                                slug={slug}
                             />
 
                             <OnRoadPriceinTopCities
@@ -222,16 +223,6 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <OtherCars
-                                title={`Other ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelOthersCars}
-                            />
-
-                            <OtherCars
-                                title={`Upcoming ${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
-                                data={modelUpcomingCars}
-                            />
-
                             <CarColours
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 data={modelDetails?.media.colors ?? []}
@@ -241,6 +232,7 @@ function ProsConsPage({ type, slug, childSlug }: MileagePageProps) {
 
                             <VariantExplained
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                slug={slug}
                             />
 
                             <EMICalculator
