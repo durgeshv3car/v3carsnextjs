@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import type { FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
+
 interface Response {
     success: boolean;
     page: number;
@@ -12,14 +13,17 @@ interface Response {
     rows: [];
 }
 
+
 // Define the API
 export const websiteContentApi = createApi({
     reducerPath: "websiteContentApi",
+
     baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }) as BaseQueryFn<
         string | FetchArgs,
         unknown,
         FetchBaseQueryError
     >,
+
     endpoints: (builder) => ({
         getAboutDetails: builder.query<Response, void>({
             query: () => "/website-content?moduleId=7",
@@ -46,7 +50,10 @@ export const websiteContentApi = createApi({
             query: () => "/website-content?moduleId=11",
         }),
     }),
+
 });
+
+
 
 // Export hooks
 export const {
@@ -59,3 +66,5 @@ export const {
     useGetApplyCarLoanIndiaQuery,
     useGetMileageCalculatorQuery,
 } = websiteContentApi;
+
+

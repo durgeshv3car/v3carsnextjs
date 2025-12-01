@@ -27,7 +27,10 @@ r.get('/models/:id/others-cars', setCache(1800, 120), (req, res) => c.othersOnSa
 r.get('/models/:id/service-cost', setCache(1800, 120), (req, res) => c.serviceCost(req, res));
 r.get('/models/:id/colours', setCache(1800, 120), (req, res) => c.colours(req, res));
 r.get('/models/:id/images', setCache(1800, 120), (req, res) => c.images(req, res));
+r.get('/models/:id/pow-wise-service-cost', setCache(1800, 120), (req, res) => c.serviceCostpow(req, res));
+r.get('/models/segments/:segment/top-selling', setCache(1800, 120), (req, res) => c.segmentTopSellingByMonth(req, res ));
 
+    
 export const modelsRouter = r;
 
 

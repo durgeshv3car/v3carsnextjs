@@ -253,6 +253,95 @@ export class ModelsRepo {
 
   }
 
+  async getSegmentById(segmentId: number): Promise<{ id: number; name: string } | null> {
+    const row = await prisma.tblsegments.findUnique({
+      where: { segmentId },
+      select: { segmentId: true, segmentName: true },
+    });
+    return row ? { id: row.segmentId, name: row.segmentName ?? '' } : null;
+  }
+
+  /** Resolve a segment by name (case-insensitive) */
+  async getSegmentByName(name: string): Promise<{ id: number; name: string } | null> {
+    const n = (name || '').trim();
+    if (!n) return null;
+
+    // Fast path: exact match (most MySQL collations are already CI)
+    const exact = await prisma.tblsegments.findFirst({
+      where: { segmentName: { equals: n } },
+      select: { segmentId: true, segmentName: true },
+    });
+    if (exact) return { id: exact.segmentId, name: exact.segmentName ?? '' };
+
+    // Fallback CI search via LOWER() to be safe across collations
+    const rows = await prisma.$queryRaw<Array<{ segmentId: number; segmentName: string | null }>>(Prisma.sql`
+      SELECT segmentId, segmentName
+      FROM tblsegments
+      WHERE LOWER(segmentName) = LOWER(${n})
+      LIMIT 1
+    `);
+    const r = rows[0];
+    return r ? { id: r.segmentId, name: r.segmentName ?? '' } : null;
+  }
+
+  /** Latest (year, month) that has sales for any model in a given segment */
+  async latestMonthForSegment(segmentId: number): Promise<{ year: number; month: number } | null> {
+    const rows = await prisma.$queryRaw<Array<{ year: number; month: number }>>(Prisma.sql`
+      SELECT a.year AS year, a.month AS month
+      FROM tblmonthlysales a
+      JOIN tblmodels m ON m.modelId = a.modelId
+      WHERE m.segmentId = ${segmentId}
+      ORDER BY a.year DESC, a.month DESC
+      LIMIT 1
+    `);
+    return rows[0] ?? null;
+  }
+
+  /** Latest (year, month) across all models (global) */
+  async latestMonthGlobal(): Promise<{ year: number; month: number } | null> {
+    const rows = await prisma.$queryRaw<Array<{ year: number; month: number }>>(Prisma.sql`
+      SELECT year, month
+      FROM tblmonthlysales
+      ORDER BY year DESC, month DESC
+      LIMIT 1
+    `);
+    return rows[0] ?? null;
+  }
+
+  /** Top selling within a segment for a specific month (also returns previous month for delta) */
+  async topSellingByMonthInSegment(opts: { segmentId: number; year: number; month: number; limit?: number }) {
+    const { segmentId, year, month } = opts;
+    const limit = Math.max(1, Math.min(opts.limit ?? 25, 100));
+
+    const prev = new Date(year, month - 1, 1);
+    prev.setMonth(prev.getMonth() - 1);
+    const prevYear = prev.getFullYear();
+    const prevMonth = prev.getMonth() + 1;
+
+    return prisma.$queryRaw<Array<{
+      modelId: number;
+      monthSales: number | null;
+      prevSales: number | null;
+    }>>(Prisma.sql`
+      SELECT
+        a.modelId,
+        a.numSales AS monthSales,
+        b.numSales AS prevSales
+      FROM tblmonthlysales AS a
+      JOIN tblmodels m ON m.modelId = a.modelId
+      LEFT JOIN tblmonthlysales AS b
+        ON b.modelId = a.modelId
+       AND b.year    = ${prevYear}
+       AND b.month   = ${prevMonth}
+      WHERE a.year  = ${year}
+        AND a.month = ${month}
+        AND m.segmentId = ${segmentId}
+      ORDER BY a.numSales DESC, a.modelId ASC
+      LIMIT ${limit}
+    `);
+  }
+
+
 }
   
 

@@ -14,7 +14,9 @@ import {
   modelMonthlySalesQueryDto,
   modelUpcomingByBrandDto,
   modelOthersQueryDto,
-  modelImagesQueryDto
+  modelImagesQueryDto,
+  modelServiceCostQueryDto,
+  modelSegmentTopSellingQueryDto
 } from './models.dto.js';
 
 
@@ -24,7 +26,7 @@ const svc = new ModelsService();
 export class ModelsController {
 
   /** id or slug → numeric modelId resolver */
- private async resolve(req: Request, res: Response): Promise<number | null> {
+  private async resolve(req: Request, res: Response): Promise<number | null> {
     const raw = String(req.params.id || '');
     const id = await svc.resolveModelId(raw);
     if (!id) {
@@ -183,20 +185,37 @@ export class ModelsController {
   }
 
   async colours(req: Request, res: Response) {
-  const id = await this.resolve(req, res);
-  if (!id) return;
-  const data = await svc.colours(id);
-  res.json(data);
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const data = await svc.colours(id);
+    res.json(data);
+  }
+
+  async images(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const q = modelImagesQueryDto.parse(req.query);
+    const data = await svc.gallery(id, q as any);
+    res.json(data);
+  }
+
+
+  async serviceCostpow(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+    const q = modelServiceCostQueryDto.parse(req.query);
+    const data = await svc.serviceCostpow(id, q as any);
+    res.json(data);
+  }
+
+
+  async segmentTopSellingByMonth(req: Request, res: Response) {
+    const seg = String(req.params.segment || '').trim();  // can be "3" or "C3"
+    if (!seg) return res.status(400).json({ success: false, message: 'Missing segment' });
+    const q = modelSegmentTopSellingQueryDto.parse(req.query); // year/month/limit optional
+    const data = await svc.segmentTopSellingByMonthFromPath(seg, q as any);
+    res.json({ success: true, ...data });
+  }
+
+
 }
-
-async images(req: Request, res: Response) {
-  const id = await this.resolve(req, res);
-  if (!id) return;
-  const q = modelImagesQueryDto.parse(req.query);
-  const data = await svc.gallery(id, q as any);
-  res.json(data);
-}
-
-
-}
-
