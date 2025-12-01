@@ -3,6 +3,7 @@
 import { useGetModelProsConsQuery } from "@/redux/api/carModuleApi";
 import Link from "next/link";
 import React from "react";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface ModelProsConsProps {
     model: string;
@@ -110,12 +111,10 @@ const ModelProsCons: React.FC<ModelProsConsProps> = ({ model, slug, type }) => {
             </div>
 
             {/* FOOTER */}
-            <div className="bg-[#F2F5F9] text-center border-t dark:border-[#2e2e2e] rounded-b-xl dark:bg-[#171717]">
-                <p className="text-sm py-3">
-                    <Link href={`/${type}/${slug}/pros-cons`} className="font-medium hover:underline">
-                        View Complete Assessment →
+            <div className="bg-[#F2F5F9] border-t dark:border-[#2e2e2e] rounded-b-xl dark:bg-[#171717] py-4">
+                    <Link href={`/${type}/${slug}/pros-cons`} className="font-medium hover:underline flex items-center justify-center text-sm gap-1">
+                        Pros & Cons Explained — View Complete Tata Nexon Assessment <IoIosArrowForward />
                     </Link>
-                </p>
             </div>
 
         </div>

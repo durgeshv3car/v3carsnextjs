@@ -58,72 +58,72 @@ const PriceComparison: React.FC = () => {
                         Compare civilian ex-showroom with CSD for each variant to understand base price difference.
                     </p>
                 </div>
-                <p className="text-xs">Last Updated : 24/10/2025</p>
             </div>
 
-            <p className="font-semibold mb-3">
-                Tata Nexon Civilian Ex-showroom vs CSD Price
+            <p className="mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
+                <span className="font-semibold">Tata Nexon Civilian Ex-showroom vs CSD Price</span>
+                <span className="text-xs">Last Updated : 24/10/2025</span>
             </p>
 
             {/* Tabs Section */}
             <div className="border rounded-xl dark:border-[#2e2e2e]">
-            <div className="flex flex-wrap gap-2 m-2">
-                {fuelTypes.map((type) => (
-                    <button
-                        key={type}
-                        onClick={() => setFuelType(type)}
-                        className={`px-4 py-2 text-sm rounded-md border ${fuelType === type
+                <div className="flex flex-wrap gap-2 m-2">
+                    {fuelTypes.map((type) => (
+                        <button
+                            key={type}
+                            onClick={() => setFuelType(type)}
+                            className={`px-4 py-2 text-sm rounded-md border ${fuelType === type
                                 ? "bg-gray-100 border-gray-400 dark:bg-[#171717] dark:border-[#2e2e2e]"
                                 : "bg-white dark:bg-[#171717] dark:border-[#2e2e2e] hover:dark:bg-[#292929] hover:bg-slate-100"
-                            }`}
-                    >
-                        {type}
-                    </button>
-                ))}
+                                }`}
+                        >
+                            {type}
+                        </button>
+                    ))}
 
-                {transmissions.map((type) => (
-                    <button
-                        key={type}
-                        onClick={() => setTransmission(type)}
-                        className={`px-4 py-2 text-sm rounded-md border ${transmission === type
+                    {transmissions.map((type) => (
+                        <button
+                            key={type}
+                            onClick={() => setTransmission(type)}
+                            className={`px-4 py-2 text-sm rounded-md border ${transmission === type
                                 ? "bg-gray-100 border-gray-400 dark:bg-[#171717] dark:border-[#2e2e2e]"
                                 : "bg-white dark:bg-[#171717] dark:border-[#2e2e2e] hover:dark:bg-[#292929] hover:bg-slate-100"
-                            }`}
-                    >
-                        {type}
-                    </button>
-                ))}
-            </div>
+                                }`}
+                        >
+                            {type}
+                        </button>
+                    ))}
+                </div>
 
-            {/* Table */}
-            <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm text-left">
-                    <thead>
-                        <tr className="bg-gray-100 border border-gray-200 dark:bg-[#171717] dark:border-[#2e2e2e]">
-                            <th className="p-4 font-semibold">Variants</th>
-                            <th className="p-4 font-semibold">Civilian Ex-showroom</th>
-                            <th className="p-4 font-semibold">Difference</th>
-                            <th className="p-4 font-semibold">CSD</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {variants.map((variant, index) => (
-                            <tr
-                                key={index}
-                                className="border-t border-gray-200 hover:bg-gray-50 transition dark:hover:bg-[#292929] dark:border-[#2e2e2e]"
-                            >
-                                <td className="py-3 px-3">
-                                    <p className="font-medium">{variant.name}</p>
-                                    <p className="text-xs ">{variant.engine}</p>
-                                </td>
-                                <td className="py-3 px-3">{variant.exShowroom}</td>
-                                <td className="py-3 px-3">{variant.difference}</td>
-                                <td className="py-3 px-3">{variant.csd}</td>
+                {/* Table */}
+                <div className="overflow-x-auto scrollbar-hide">
+                    <table className="w-full border-collapse text-sm text-left">
+                        <thead>
+                            <tr className="bg-[#DEE2E6] border border-gray-200 dark:bg-[#171717] dark:border-[#2e2e2e] text-nowrap">
+                                <th className="p-3 font-semibold border-r border-gray-300 dark:border-[#2e2e2e]">Variants</th>
+                                <th className="p-3 font-semibold border-r border-gray-300 dark:border-[#2e2e2e] text-center">Civilian Ex-showroom</th>
+                                <th className="p-3 font-semibold border-r border-gray-300 dark:border-[#2e2e2e] text-center">Difference</th>
+                                <th className="p-3 font-semibold text-center">CSD</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {variants.map((variant, index) => (
+                                <tr
+                                    key={index}
+                                    className="bg-white dark:bg-[#232323] border-t border-gray-200 hover:bg-gray-50 transition dark:hover:bg-[#292929] dark:border-[#2e2e2e] text-nowrap"
+                                >
+                                    <td className="py-3 px-3 border-r border-gray-300 dark:border-[#2e2e2e]">
+                                        <p className="font-medium">{variant.name}</p>
+                                        <p className="text-xs ">{variant.engine}</p>
+                                    </td>
+                                    <td className="py-3 px-3 border-r border-gray-300 dark:border-[#2e2e2e] text-center">{variant.exShowroom}</td>
+                                    <td className="py-3 px-3 border-r border-gray-300 dark:border-[#2e2e2e] text-center">{variant.difference}</td>
+                                    <td className="py-3 px-3 text-center">{variant.csd}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

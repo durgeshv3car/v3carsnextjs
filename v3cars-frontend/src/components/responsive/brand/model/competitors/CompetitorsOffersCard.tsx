@@ -50,7 +50,7 @@ const CompetitorsOffersCard: React.FC<CompetitorsOffersCardProps> = ({ title, da
                             </div>
 
                             {/* Content Section */}
-                            <div className="p-3 flex-grow flex flex-col justify-between text-center gap-2">
+                            <div className="p-3 flex-grow flex flex-col justify-between text-center gap-2 bg-white dark:bg-[#232323]">
                                 <p className="font-semibold text-lg sm:text-xl">{car?.name}</p>
 
                                 <p className="font-semibold text-2xl border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] py-3">

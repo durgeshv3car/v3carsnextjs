@@ -26,6 +26,8 @@ import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
+import CSDRequriedDoc from "../sidebar/CSDRequriedDoc";
+import CSDPurchaseStep from "../sidebar/CSDPurchaseStep";
 
 interface PriceListPageProps {
     type: string;
@@ -94,7 +96,7 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:max-w-[74%] space-y-10">
                             <OnRoadPriceTable
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Verified CSD Rates & Eligibility in Haryana`}
+                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Verified CSD Rates & Eligibility in ${selectedCity.cityName}`}
                                 desc={"See variant-wise CSD price, estimated on-road price in Haryana, your cost savings vs civilian on-road and rank/pay-level eligibility."}
                                 data={priceListDetails}
                                 childSlug={childSlug}
@@ -176,6 +178,10 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                                     className="rounded-lg"
                                 />
                             </div>
+
+                            <CSDRequriedDoc />
+
+                            <CSDPurchaseStep />
 
                             <BrochureCard
                                 brand={`${modelDetails?.model?.brand?.name}`}

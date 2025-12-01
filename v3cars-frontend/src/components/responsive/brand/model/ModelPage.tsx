@@ -86,10 +86,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? [];
     const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
     const modelOthersCars = modelOthersCarsData?.items ?? [];
-
-    console.log(modelOthersCars);
-
-
+    
     const isMobile = useIsMobile()
 
     return (
@@ -254,7 +251,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
                             <CommonVideos
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
-                                view={`${modelDetails?.model?.name} Videos`}
+                                view={`/${type}/${slug}/videos`}
                                 videoList={modelReviewsVideos}
                             />
 

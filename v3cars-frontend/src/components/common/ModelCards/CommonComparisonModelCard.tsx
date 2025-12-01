@@ -55,7 +55,7 @@ const CommonComparisonModelCard = ({ data }: MostPopularCarComparisonProps) => {
         <div>
             <h2 className="text-lg font-semibold mb-6">Most Popular Car Comparison by Tool</h2>
 
-            <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32.70%] gap-2 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide">
+            <div className="grid grid-flow-col auto-cols-[100%] md:auto-cols-[49.50%] gap-2 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide">
                 {data.map((comparison, idx) => {
                     const [car1, car2] = comparison.models;
 
@@ -64,17 +64,17 @@ const CommonComparisonModelCard = ({ data }: MostPopularCarComparisonProps) => {
                             <div className="relative h-auto snap-start flex gap-2 items-start justify-center border dark:border-[#2E2E2E] rounded-t-xl">
                                 {/* Car 1 */}
                                 <div className="w-full bg-white rounded-tl-xl overflow-hidden dark:bg-[#171717]">
-                                    <div className="relative max-w-[253px] h-[143px]">
+                                    <div className="relative">
                                         <img
                                             src={`${IMAGE_URL}/media/model-imgs/${car1.imageUrl}`}
                                             alt={car1.imageAlt || 'car'}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full"
                                         />
                                         <div className="absolute bottom-0 w-full px-4 pt-6 pb-3 text-xs font-semibold text-white bg-gradient-to-t from-black/70 to-transparent">
                                             <h3 className="line-clamp-1">{car1.brand?.name || 'N/A'}</h3>
                                         </div>
                                     </div>
-                                    <div className="space-y-4 m-4 text-center">
+                                    <div className="flex flex-col justify-between m-2 gap-2 text-center">
                                         <p className="font-semibold text-xl line-clamp-1">{car1.modelName || 'N/A'}</p>
 
                                         <div className='border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2 space-y-2'>
@@ -90,7 +90,7 @@ const CommonComparisonModelCard = ({ data }: MostPopularCarComparisonProps) => {
                                                 Check On Road Price in Delhi
                                             </p>
                                         </div>
-                                        <div className="flex justify-between text-center text-xs">
+                                        <div className="flex justify-between text-center gap-4 text-xs">
                                             <div className="flex flex-col items-center gap-1">
                                                 <FaBolt />
                                                 {car1.powertrain.powerPS ? `${car1.powertrain.powerPS} PS` : 'N/A'}
@@ -108,25 +108,25 @@ const CommonComparisonModelCard = ({ data }: MostPopularCarComparisonProps) => {
                                 </div>
 
                                 {/* VS Circle */}
-                                <div className="absolute left-1/2 top-[20%] -translate-x-1/2 -translate-y-1/2 z-10">
-                                    <div className="w-16 h-16 bg-black text-primary font-bold text-lg rounded-full flex items-center justify-center border-2 border-primary shadow-md">
+                                <div className="absolute left-1/2 top-[16%] md:top-[20%] -translate-x-1/2 -translate-y-1/2 z-10">
+                                    <div className="w-14 md:w-16 h-14 md:h-16 bg-black text-primary font-bold md:text-lg rounded-full flex items-center justify-center border-2 border-primary shadow-md">
                                         VS
                                     </div>
                                 </div>
 
                                 {/* Car 2 */}
                                 <div className="w-full overflow-hidden bg-white rounded-tr-xl dark:bg-[#171717]">
-                                    <div className="relative max-w-[253px] h-[143px]">
+                                    <div className="relative">
                                         <img
                                             src={`${IMAGE_URL}/media/model-imgs/${car2.imageUrl}`}
                                             alt={car2.imageAlt || 'car'}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full"
                                         />
                                         <div className="absolute bottom-0 w-full px-4 pt-6 pb-3 text-xs font-semibold text-white bg-gradient-to-t from-black/70 to-transparent">
                                             <h3 className="line-clamp-1">{car2.brand?.name || 'N/A'}</h3>
                                         </div>
                                     </div>
-                                    <div className="space-y-4 m-4 text-center">
+                                    <div className="flex flex-col justify-between m-2 gap-2 text-center">
                                         <p className="font-semibold text-xl line-clamp-1">{car2.modelName || 'N/A'}</p>
 
                                         <div className='border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2 space-y-2'>
@@ -142,7 +142,7 @@ const CommonComparisonModelCard = ({ data }: MostPopularCarComparisonProps) => {
                                                 Check On Road Price in Delhi
                                             </p>
                                         </div>
-                                        <div className="flex justify-between text-center text-xs">
+                                        <div className="flex justify-between text-center text-xs gap-4">
                                             <div className="flex flex-col items-center gap-1">
                                                 <FaBolt />
                                                 {car2.powertrain.powerPS ? `${car2.powertrain.powerPS} PS` : 'N/A'}

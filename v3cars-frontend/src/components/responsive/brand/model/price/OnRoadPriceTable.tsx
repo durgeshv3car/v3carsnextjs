@@ -99,8 +99,8 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                 </p>
             </div>
 
-            <div className="border rounded-xl overflow-hidden dark:border-[#2E2E2E]">
-                <div className="flex flex-wrap items-center justify-between text-xs p-1 gap-2">
+            <div className={`border rounded-xl overflow-hidden dark:border-[#2E2E2E] ${childSlug === "csd-price" ? "border-b-0 rounded-b-none" : ""}`}>
+                <div className="flex flex-wrap items-center justify-between text-xs p-1 gap-2 mb-2">
                     <div className="flex flex-wrap gap-2 p-2">
 
                         {/* Dynamic Fuel Buttons */}
@@ -143,95 +143,144 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                             Automatic
                         </button>
                     </div>
-                    <p className="mr-4">Last Updated: 24/10/2025</p>
+                    <p className="mx-4">Last Updated: 24/10/2025</p>
                 </div>
 
-                {/* Table Header */}
-                <div className="flex font-semibold bg-[#DEE2E6] px-4 py-3 border-b text-sm dark:bg-[#171717] dark:border-[#2E2E2E]">
-                    <span className="w-[250px]">Variants</span>
-                    {
-                        childSlug === "csd-price" && (
-                            <span className="w-[250px]">Eligibility (Rank/Pay level)</span>
-                        )
-                    }
-                    <span className="w-[250px]">
-                        {
-                            childSlug === "csd-price" ? (
-                                "CSD Price"
-                            ) : (
-                                "Ex-Showroom Price"
-                            )
-                        }
-                    </span>
-                    <span className="w-[250px]">On-Road Price</span>
-                </div>
+                <div className="overflow-x-auto scrollbar-hide">
 
-                {/* Variants */}
-                <div className="divide-y bg-white dark:bg-[#171717] dark:divide-[#2E2E2E]">
-                    {normalized.map((variant, index) => (
-                        <div key={index} className="border-b p-4 space-y-4 dark:border-[#2E2E2E]">
-                            <button
-                                onClick={() => {
-                                    setOpenIndex(openIndex === index ? null : index)
-                                    setVariantId?.(variant.variantId)
-                                }}
-                                className="flex w-full text-left items-center"
-                            >
-                                <div className="w-[250px]">
-                                    <p className="font-medium ">{variant.name}</p>
-                                    <p className="text-xs text-gray-400">{variant.engine}</p>
-                                </div>
-                                {
-                                    childSlug === "csd-price" && (
-                                        <span className="w-[250px]">-</span>
-                                    )
-                                }
-                                <span className="w-[250px]">
-                                    {
-                                        childSlug === "csd-price" ? (
-                                            variant.csdPrice
-                                        ) : (
-                                            variant.exShowroom
-                                        )
-                                    }
-                                </span>
+                    <table className="w-full text-left text-sm bg-white dark:bg-[#171717]">
 
-                                <div className="w-[250px] flex items-center justify-between">
-                                    <span className="">{variant.onRoad}</span>
-                                    {openIndex === index ? (
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-                                        </svg>
-                                    ) : (
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
+                        {/* Table Header */}
+                        <thead>
+                            <tr className="bg-[#DEE2E6] dark:bg-[#232323] border-b dark:border-[#2E2E2E] font-semibold">
+
+                                <th className="px-4 py-3 min-w-[250px] border-r dark:border-[#2E2E2E]">Variants</th>
+
+                                {childSlug === "csd-price" && (
+                                    <th className="px-4 py-3 min-w-[250px] text-center border-r dark:border-[#2E2E2E]">
+                                        Eligibility (Rank/Pay level)
+                                    </th>
+                                )}
+
+                                <th className="px-4 py-3 min-w-[250px] text-center border-r dark:border-[#2E2E2E]">
+                                    {childSlug === "csd-price"
+                                        ? "CSD Price"
+                                        : "Ex-Showroom Price"}
+                                </th>
+
+                                <th className="px-4 py-3 min-w-[250px] text-center">On-Road Price</th>
+                            </tr>
+                        </thead>
+
+                        <tbody className="divide-y dark:divide-[#2E2E2E]">
+
+                            {normalized.map((variant, index) => (
+                                <React.Fragment key={index}>
+
+                                    {/* Variant Row */}
+                                    <tr
+                                        className="border-b dark:border-[#2E2E2E] hover:bg-gray-50 dark:hover:bg-[#1D1D1D] cursor-pointer"
+                                        onClick={() => {
+                                            setOpenIndex(openIndex === index ? null : index);
+                                            setVariantId?.(variant.variantId);
+                                        }}
+                                    >
+                                        {/* Variant Name + Engine */}
+                                        <td className="px-4 py-4 w-[250px] border-r dark:border-[#2E2E2E]">
+                                            <p className="font-medium">{variant.name}</p>
+                                            <p className="text-xs text-gray-400">
+                                                {variant.engine}
+                                            </p>
+                                        </td>
+
+                                        {/* Eligibility column */}
+                                        {childSlug === "csd-price" && (
+                                            <td className="px-4 py-4 w-[250px] border-r text-center dark:border-[#2E2E2E]">
+                                                -
+                                            </td>
+                                        )}
+
+                                        {/* CSD / Ex-showroom */}
+                                        <td className="px-4 py-4 w-[250px] border-r text-center dark:border-[#2E2E2E]">
+                                            {childSlug === "csd-price"
+                                                ? variant.csdPrice
+                                                : variant.exShowroom}
+                                        </td>
+
+                                        {/* On-Road Price */}
+                                        <td className="px-4 py-4 w-[250px]">
+                                            <div className="flex items-center justify-center gap-6">
+                                                {variant.onRoad}
+
+                                                {openIndex === index ? (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" strokeWidth={1.5}
+                                                        stroke="currentColor" className="size-5 text-primary">
+                                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                                            d="M5 12h14" />
+                                                    </svg>
+                                                ) : (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" strokeWidth={1.5}
+                                                        stroke="currentColor" className="size-5">
+                                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                                            d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    {/* Expanded Details Row */}
+                                    {openIndex === index && variant.details.length > 0 && (
+                                        <tr className="">
+
+                                            <td
+                                                colSpan={
+                                                    childSlug === "csd-price" ? 5 : 4
+                                                }
+                                                className="p-0"
+                                            >
+                                                <div className="m-2 border border-b-0 dark:border-[#2E2E2E] rounded-xl overflow-hidden">
+
+                                                    {variant.details.map((d, i) => (
+                                                        <div className="border-l-4 border-primary">
+                                                            <div
+                                                                key={i}
+                                                                className={`
+                                                                    flex justify-between p-5 border-b dark:border-[#2E2E2E]
+                                                                    ${i === variant.details.length - 1
+                                                                        ? "bg-[#E5E5E5] font-semibold dark:bg-[#232323]"
+                                                                        : "bg-gray-50 dark:bg-[#171717]"
+                                                                    }
+    `}
+                                                            >
+                                                                <span>{d.label}</span>
+                                                                <span>
+                                                                    {d.value}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+
+                                                </div>
+                                            </td>
+                                        </tr>
                                     )}
-                                </div>
-                            </button>
 
-                            {/* Expanded Section */}
-                            {(variant.details.length > 0 && openIndex === index) && (
-                                <div className="text-sm border rounded-xl overflow-hidden dark:border-[#2E2E2E] pl-1 bg-primary">
-                                    {variant.details.map((d, i) => (
-                                        <div
-                                            key={i}
-                                            className="flex justify-between p-5 border-b last:border-none bg-gray-50 dark:bg-[#171717] dark:border-[#2E2E2E]"
-                                        >
-                                            <span>{d.label}</span>
-                                            <span className="font-medium">{d.value}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                                </React.Fragment>
+                            ))}
+
+                        </tbody>
+                    </table>
+
                 </div>
+
             </div>
 
             {
                 childSlug === "csd-price" && (
-                    <p className="text-gray-500 mt-4 text-sm">For serving/retired defence personnel with valid CSD entitlement. Prices/eligibility depend on CSD/DGQA norms, depot/URC availability and may vary by city. Registration, insurance and handling are extra. Please confirm with your URC and dealer.</p>
+                    <p className="bg-gray-200 dark:bg-[#232323] border border-t-0 p-4 rounded-xl rounded-t-none dark:border-[#2e2e2e] text-sm">For serving/retired defence personnel with valid CSD entitlement. Prices/eligibility depend on CSD/DGQA norms, depot/URC availability and may vary by city. Registration, insurance and handling are extra. Please confirm with your URC and dealer.</p>
                 )
             }
         </div>

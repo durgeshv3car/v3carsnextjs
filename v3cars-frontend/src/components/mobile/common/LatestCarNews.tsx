@@ -42,9 +42,7 @@ interface MobileLatestCarNewsProps {
 // Component
 const MobileLatestCarNews: React.FC<MobileLatestCarNewsProps> = ({ title, view, data, link }) => {
     const chunkedNews = chunkArray(data, 5)
-
-    console.log(view);
-
+    
     return (
         <section >
             <div className="space-y-4">

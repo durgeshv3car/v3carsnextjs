@@ -73,25 +73,34 @@ export default function SpecsTechnicalDetails({ title, slug, childSlug }: SpecsL
             </div>
 
             <div className="border rounded-t-xl overflow-hidden border-b-0 dark:border-[#2e2e2e]">
-                <div className="grid grid-cols-2 bg-[#CED4DA] dark:bg-[#232323] p-5 font-semibold text-sm border-b dark:border-[#2e2e2e]">
-                    <div>Specification</div>
-                    <div>Details</div>
-                </div>
 
-                {data && data.sections.map((item, sIdx) => (
-                    <div key={sIdx}>
-                        {item.rows.map((row, rIdx) => (
-                            <div
-                                key={rIdx}
-                                className="grid grid-cols-2 p-5 text-sm border-b dark:border-[#2e2e2e]"
-                            >
-                                <div className="">{row.label}</div>
-                                <div className="font-medium">{row.value}</div>
-                            </div>
-                        ))}
-                    </div>
-                ))}
+                <table className="w-full text-sm">
+
+                    {/* Table Header */}
+                    <thead>
+                        <tr className="bg-[#CED4DA] dark:bg-[#232323] border-b dark:border-[#2e2e2e] font-semibold">
+                            <th className=" text-lg p-5 w-1/2 text-left border-r dark:border-[#2e2e2e]">Specification</th>
+                            <th className=" text-lg p-5 w-1/2 text-left">Details</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {data && data.sections.map((item, sIdx) =>
+                            item.rows.map((row, rIdx) => (
+                                <tr
+                                    key={`${sIdx}-${rIdx}`}
+                                    className="border-b dark:border-[#2e2e2e] bg-white dark:bg-[#171717]"
+                                >
+                                    <td className="p-5 border-r dark:border-[#2e2e2e]">{row.label}</td>
+                                    <td className="p-5 font-medium">{row.value}</td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+
+                </table>
             </div>
+
 
             <div className="text-sm text-center p-5 cursor-pointer hover:underline border border-t-0 rounded-b-xl bg-[#F2F5F9] dark:bg-[#232323] dark:border-[#2e2e2e]">
                 Find The Exact Dimensions Of {title} In Feet, Inches, Centimeters And Millimeters

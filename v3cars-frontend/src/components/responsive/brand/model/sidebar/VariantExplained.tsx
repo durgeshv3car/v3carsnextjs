@@ -56,7 +56,7 @@ const VariantExplained: React.FC<VariantExplainedProps> = ({ title, slug }) => {
     return (
 
         <div>
-            <div className="flex items-center justify-between p-4 bg-[#F3F3F3] rounded-t-xl">
+            <div className="flex items-center justify-between p-4 bg-[#F3F3F3] dark:bg-[#232323] rounded-t-xl">
                 <div className="flex items-center justify-between w-full gap-4">
                     <h2 className="text-lg font-semibold lg:font-medium">
                         {title} <span className="font-semibold">Variant Explained</span>
@@ -98,7 +98,7 @@ const VariantExplained: React.FC<VariantExplainedProps> = ({ title, slug }) => {
                             className="bg-white dark:bg-[#171717] rounded-b-xl snap-start h-auto overflow-hidden transition p-4 flex flex-col"
                         >
                             {/* Image */}
-                            <div className="border rounded-xl">
+                            <div className="border rounded-xl dark:border-[#2e2e2e]">
                                 <Image
                                     src={`${IMAGE_URL}${item.thumbnail.url}`}
                                     alt={item.thumbnail.alt}

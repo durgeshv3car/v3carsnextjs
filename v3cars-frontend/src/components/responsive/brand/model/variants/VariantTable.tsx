@@ -63,29 +63,32 @@ const VariantTable: React.FC<VariantTableProps> = ({ title, data }) => {
                     )
                 }
             </div>
-            <table className="w-full text-sm border-b dark:border-[#2e2e2e]">
-                <thead className="border-b bg-white dark:bg-[#2e2e2e] font-semibold dark:border-[#2E2E2E]">
-                    <tr>
-                        <th className="p-5 border-r dark:border-[#2E2E2E]">Variant</th>
-                        <th className="p-5 border-r dark:border-[#2E2E2E]">VFM %</th>
-                        <th className="p-5 border-r dark:border-[#2E2E2E]">Price</th>
-                        <th className="p-5">Recommendation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((item, idx) => (
-                        <tr
-                            key={idx}
-                            className={`border-t bg-white dark:bg-[#171717] dark:border-[#2E2E2E] text-center`}
-                        >
-                            <td className="p-5 border-r dark:border-[#2E2E2E]">{item.variant}</td>
-                            <td className="p-5 border-r dark:border-[#2E2E2E]">{item.vfm}%</td>
-                            <td className="p-5 border-r dark:border-[#2E2E2E]">₹{item.price.toLocaleString("en-IN")}</td>
-                            <td className="p-5">{item.recommendation || "-"}</td>
+
+            <div className="overflow-x-auto scrollbar-hide">
+                <table className="w-full text-sm border-b dark:border-[#2e2e2e]">
+                    <thead className="border-b bg-white dark:bg-[#2e2e2e] font-semibold dark:border-[#2E2E2E]">
+                        <tr>
+                            <th className="p-5 border-r dark:border-[#2E2E2E]">Variant</th>
+                            <th className="p-5 border-r dark:border-[#2E2E2E]">VFM %</th>
+                            <th className="p-5 border-r dark:border-[#2E2E2E]">Price</th>
+                            <th className="p-5">Recommendation</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {rows.map((item, idx) => (
+                            <tr
+                                key={idx}
+                                className={`border-t bg-white dark:bg-[#171717] dark:border-[#2E2E2E] text-center`}
+                            >
+                                <td className="p-5 border-r dark:border-[#2E2E2E]">{item.variant}</td>
+                                <td className="p-5 border-r dark:border-[#2E2E2E]">{item.vfm}%</td>
+                                <td className="p-5 border-r dark:border-[#2E2E2E]">₹{item.price.toLocaleString("en-IN")}</td>
+                                <td className="p-5">{item.recommendation || "-"}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 

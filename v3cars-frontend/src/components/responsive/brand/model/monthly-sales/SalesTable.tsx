@@ -70,10 +70,7 @@ export default function SalesTable({ title, data }: SalesTableProps) {
                         {[...saleData].reverse().map((item, index) => (
                             <tr
                                 key={index}
-                                className={`${index % 2 === 0
-                                    ? "bg-white dark:bg-[#171717]"
-                                    : "bg-gray-50 dark:bg-[#292929]"
-                                    } hover:bg-gray-100 dark:hover:bg-[#292929] transition`}
+                                className={`bg-white dark:bg-[#171717] hover:bg-gray-100 dark:hover:bg-[#292929] transition`}
                             >
                                 <td className="p-5 border-b border-r border-gray-200 dark:border-[#2e2e2e]">
                                     {item.month}

@@ -47,7 +47,7 @@ export default function OffersAccordion({ slug }: OffersAccordionProps) {
                         <span className="text-xl">
                             {
                                 openIndex === index ?
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-primary">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
                                     </svg>
                                     :
@@ -59,7 +59,7 @@ export default function OffersAccordion({ slug }: OffersAccordionProps) {
                     </button>
 
                     {openIndex === index && (
-                        <div className="offer-html-wrapper px-4 py-2 bg-white dark:bg-[#171717] border-t w-full dark:border-[#2e2e2e]">
+                        <div className="offer-html-wrapper px-4 py-2 bg-white dark:bg-[#171717] border-t w-full dark:border-[#2e2e2e] overflow-x-auto scrollbar-hide">
                             {modelOfferDiscount?.map((offer, i) => (
                                 <div
                                     key={i}

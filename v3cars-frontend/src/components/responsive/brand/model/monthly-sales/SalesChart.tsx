@@ -58,7 +58,7 @@ export default function SalesChart({
             <div className="bg-white dark:bg-[#171717] rounded-xl shadow-sm border border-gray-200 dark:border-[#2e2e2e] p-5">
 
                 {/* Range Buttons */}
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-col md:flex-row justify-between md:items-center mb-4 gap-4">
                     <h3 className="text-md font-semibold">Monthly Revenue</h3>
 
                     <div className="flex space-x-2">
@@ -82,7 +82,7 @@ export default function SalesChart({
                 </div>
 
                 {/* Line Chart */}
-                <div className="h-[500px]">
+                <div className="h-[300px] md:h-[500px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />

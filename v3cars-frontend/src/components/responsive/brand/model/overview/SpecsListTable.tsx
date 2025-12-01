@@ -68,7 +68,7 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model, slug, childSlug 
             <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-3 gap-3">
                 <h2 className="text-xl">{model} <span className="font-semibold">Mileage, Specs & Features</span></h2>
                 <select
-                    className="border p-2 rounded-lg dark:bg-[#171717] dark:border-[#2e2e2e] text-sm"
+                    className="border px-2 py-4 rounded-lg dark:bg-[#171717] dark:border-[#2e2e2e] text-sm"
                     onChange={(e) => setPowertrain(Number(e.target.value))}
                 >
                     {carSpecs && carSpecs.options.map((opt) => (
@@ -79,9 +79,9 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model, slug, childSlug 
                 </select>
             </div>
 
-            <div className="flex border rounded-lg overflow-hidden dark:border-[#2e2e2e]">
+            <div className="flex border rounded-xl overflow-hidden dark:border-[#2e2e2e]">
                 {/* LEFT TABS */}
-                <div className="w-1/2 md:w-1/5 bg-gray-100 border-r divide-y dark:bg-[#171717] dark:border-[#2e2e2e] dark:divide-[#2e2e2e]">
+                <div className="w-1/2 md:w-1/5 bg-[#F6F6F6] border-r divide-y dark:bg-[#171717] dark:border-[#2e2e2e] dark:divide-[#2e2e2e]">
                     {carSpecs && carSpecs?.sections.map((sec) => (
                         <button
                             key={sec.group}
@@ -96,7 +96,7 @@ const SpecsListTable: React.FC<SpecsListTableProps> = ({ model, slug, childSlug 
                 </div>
 
                 {/* RIGHT TABLE */}
-                <div className="w-4/5">
+                <div className="w-4/5 bg-white dark:bg-[#232323]">
                     <table className="w-full text-sm">
                         <tbody>
                             {carSpecs && carSpecs?.sections

@@ -23,11 +23,11 @@ const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTab
             </p>
 
             {/* Dimensions Table */}
-            <div className="overflow-x-auto border border-gray-300 rounded-xl mb-6 dark:border-[#2E2E2E]">
+            <div className="overflow-x-auto border border-gray-300 rounded-xl mb-6 dark:border-[#2E2E2E] scrollbar-hide">
                 <table className="w-full text-left text-sm">
-                    <thead className="bg-gray-100 dark:bg-[#171717]">
-                        <tr>
-                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                    <thead className="bg-gray-100 dark:bg-[#232323]">
+                        <tr className="text-center text-nowrap">
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E] text-left">
                                 {title} Dimensions
                             </th>
                             <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
@@ -52,9 +52,9 @@ const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTab
                                 return (
                                     <tr
                                         key={key}
-                                        className={`${index % 2 === 0 ? "bg-white dark:bg-[#2E2E2E]" : ""}`}
+                                        className={`bg-white dark:bg-[#171717] border-b last:border-none dark:border-[#2e2e2e] text-center`}
                                     >
-                                        <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
+                                        <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E] text-left">
                                             {label}
                                         </td>
                                         <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
@@ -82,11 +82,11 @@ const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTab
             </p>
 
             {/* Capacity Table */}
-            <div className="overflow-x-auto border border-gray-300 rounded-xl mb-6 dark:border-[#2E2E2E]">
+            <div className="overflow-x-auto border border-gray-300 rounded-xl mb-6 dark:border-[#2E2E2E] scrollbar-hide">
                 <table className="w-full text-left text-sm">
-                    <thead className="bg-gray-100 dark:bg-[#171717]">
-                        <tr>
-                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
+                    <thead className="bg-gray-100 dark:bg-[#232323]">
+                        <tr className="text-center text-nowrap">
+                            <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E] text-left">
                                 {title} Capacity
                             </th>
                             <th className="p-5 border-r border-gray-300 font-semibold dark:border-[#2E2E2E]">
@@ -106,8 +106,8 @@ const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTab
                         {capacityData && (
                             <>
                                 {/* Boot Space */}
-                                <tr className="bg-white dark:bg-[#2E2E2E]">
-                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
+                                <tr className="bg-white dark:bg-[#171717] text-center border-b dark:border-[#2E2E2E]">
+                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E] text-left">
                                         Boot Space
                                     </td>
                                     <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
@@ -125,8 +125,8 @@ const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTab
                                 </tr>
 
                                 {/* Fuel Tank */}
-                                <tr>
-                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
+                                <tr className="text-center bg-white dark:bg-[#171717] border-b dark:border-[#2E2E2E]">
+                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E] text-left">
                                         Fuel Tank Capacity
                                     </td>
                                     <td className="p-5 border-r border-gray-300 dark:border-[#2E2E2E]">
@@ -144,8 +144,8 @@ const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTab
                                 </tr>
 
                                 {/* Seating Capacity */}
-                                <tr className="bg-white dark:bg-[#2E2E2E]">
-                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E]">
+                                <tr className="bg-white dark:bg-[#171717] text-center">
+                                    <td className="p-5 border-r border-gray-300 font-medium dark:border-[#2E2E2E] text-left">
                                         Seating Capacity
                                     </td>
                                     <td className="border-r border-gray-300 dark:border-[#2E2E2E] p-5">

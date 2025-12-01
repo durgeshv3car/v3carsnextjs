@@ -127,7 +127,7 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFu
                     className={`border border-gray-200 overflow-x-auto dark:border-[#2E2E2E] scrollbar-hide`}
                 >
                     <table className="w-full">
-                        <thead className="bg-gray-50 border-b  border-gray-200 text-sm font-semibold dark:bg-[#171717] dark:border-[#2E2E2E] text-left">
+                        <thead className="bg-[#DEE2E6] border-b border-gray-200 text-sm font-semibold dark:bg-[#2e2e2e] dark:border-[#2E2E2E] text-left">
                             <tr>
                                 <th className="p-4 min-w-[200px]">Variants</th>
                                 <th className="p-4 min-w-[200px]">{priceType} Price</th>
@@ -139,10 +139,7 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFu
                             {data?.slice(0, 4)?.map((v, idx) => (
                                 <tr
                                     key={v.variantId}
-                                    className={`text-sm border-b dark:border-[#2e2e2e] ${idx % 2 === 0
-                                        ? "bg-white dark:bg-[#171717]"
-                                        : "bg-gray-50 dark:bg-[#2E2E2E]"
-                                        }`}
+                                    className={`text-sm border-b dark:border-[#2e2e2e] bg-white dark:bg-[#171717]`}
                                 >
                                     <td className="p-4 min-w-[200px]">
                                         <p className="font-medium">{v.name}</p>
@@ -174,10 +171,10 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFu
                 </div>
 
                 {/* Footer */}
-                <div className="text-center my-4">
+                <div className="text-center bg-[#F2F5F9] dark:bg-[#232323]">
                     <button
                         onClick={() => router.push(`/${type}/${slug}/price-in-${convertToSlug(selectedCity.cityName)}`)}
-                        className="text-sm font-medium flex items-center justify-center mx-auto hover:underline gap-1"
+                        className="text-sm font-medium flex items-center justify-center mx-auto hover:underline gap-1 py-4"
                     >
                         View All Model Price
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none"

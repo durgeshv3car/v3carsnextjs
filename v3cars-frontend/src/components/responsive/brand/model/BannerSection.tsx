@@ -180,7 +180,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                                                     title={`${modelDetails?.model?.brand?.name}`}
                                                                     highlight={`${modelDetails?.model?.name}`}
                                                                     others="Videos"
-                                                                    description="The Tata Nexon is available with multiple engine options: a 1.2L turbo petrol, a 1.2L CNG and a 1.5L turbo diesel. Nexon's 1.2L turbo petrol engine is available with a 6-speed MT Manual, a 6-speed AMT Automatic, a 5-speed MT MTata Nexon Videos page brings together all our expert video content in one place — including detailed reviews, variant explanation and model comparisons. Watch V3Cars’ in-depth Hindi videos covering the Nexon’s exterior, interior, features, performananual and a 7-speed DCT"
+                                                                    description="Tata Nexon Videos page brings together all our expert video content in one place — including detailed reviews, variant explanation and model comparisons. Watch V3Cars’ in-depth Hindi videos covering the Nexon’s exterior, interior, features, performan"
                                                                 />
                                                                 : activeTab === "Colors" ?
                                                                     <CommonModelTopSection

@@ -47,7 +47,7 @@ const DimensionsTable: React.FC<DimensionsTableProps> = ({ model, data, type, sl
 
             {/* Table */}
             <div className="border-b dark:border-[#2E2E2E]">
-                <div className="bg-[#DEE2E6] border-b border-gray-200 p-3 text-center dark:bg-[#171717] dark:border-[#2E2E2E]">
+                <div className="bg-[#DEE2E6] border-b border-gray-200 p-3 text-center dark:bg-[#2e2e2e] dark:border-[#2E2E2E]">
                     <span className="font-semibold">{model}</span> Dimensions
                 </div>
 
@@ -114,10 +114,10 @@ const DimensionsTable: React.FC<DimensionsTableProps> = ({ model, data, type, sl
             </div>
 
 
-            <div className="text-center my-4 hover:underline">
+            <div className="text-center hover:underline bg-[#F2F5F9] dark:bg-[#232323]">
                 <Link
                     href={`/${type}/${slug}/dimensions`}
-                    className="text-sm flex justify-center gap-1 items-center"
+                    className="text-sm flex justify-center gap-1 items-center py-4"
                 >
                     Find the exact dimensions of Tata Nexon in{" "}
                     <span className="font-semibold hidden md:block">

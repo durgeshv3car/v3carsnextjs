@@ -50,10 +50,7 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                 behavior: 'smooth',
             })
         }
-    }
-
-    console.log(view);
-    
+    }    
 
     useEffect(() => {
         const container = scrollRef.current
@@ -71,7 +68,7 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-medium">{title}</h2>
-                            <Link href="#" className="text-primary font-medium text-sm hover:underline flex gap-2 items-center">
+                            <Link href={view} className="text-primary font-medium text-sm hover:underline flex gap-2 items-center">
                                 View All
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />

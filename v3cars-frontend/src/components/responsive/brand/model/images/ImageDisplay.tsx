@@ -80,16 +80,16 @@ export default function ImageDisplay({ brand, model, data }: ImageDisplayProps) 
                         />
                     )}
                     {/* Thumbnails */}
-                    <div className=" absolute bottom-2 flex gap-2 overflow-x-auto px-2 scrollbar-hide">
+                    <div className=" absolute bottom-2 flex gap-3 overflow-x-auto px-2 scrollbar-hide">
                         {thumbnails.map((thumb) => (
                             <button
                                 key={thumb.id}
                                 onClick={() => setActiveImage(thumb)}
                                 className={`
-                                rounded-xl overflow-hidden border flex-shrink-0 transition-all
+                                rounded-xl overflow-hidden flex-shrink-0 transition-all
                                 ${activeImage?.id === thumb.id
-                                        ? "border-4 border-white shadow-xl scale-105"
-                                        : "border-gray-300 opacity-70 hover:opacity-100"
+                                        ? "scale-105"
+                                        : "opacity-70 hover:opacity-100"
                                     }
                             `}
                             >
@@ -98,7 +98,7 @@ export default function ImageDisplay({ brand, model, data }: ImageDisplayProps) 
                                     alt={thumb.alt}
                                     width={150}
                                     height={90}
-                                    className="h-[40px] md:h-full w-full"
+                                    className="h-[40px] md:h-[80px] w-full object-cover"
                                 />
                             </button>
                         ))}

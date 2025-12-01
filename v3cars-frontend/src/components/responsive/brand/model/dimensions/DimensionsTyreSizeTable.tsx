@@ -26,7 +26,7 @@ const DimensionsTyreSizeTable = ({ title, tyreSize, tyreByVariantData, fuelType,
             </p>
 
             <div className="border border-b-0 rounded-xl dark:border-[#2e2e2e] bg-white dark:bg-[#171717] overflow-hidden">
-                <div className="flex flex-wrap items-center gap-3 p-2 border-b dark:border-[#2e2e2e]">
+                <div className="flex flex-wrap items-center gap-3 p-2">
 
                     {/* Fuel Buttons */}
                     <div className="flex flex-wrap gap-2">
@@ -64,7 +64,7 @@ const DimensionsTyreSizeTable = ({ title, tyreSize, tyreByVariantData, fuelType,
                 {/* Table */}
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
-                        <thead className="bg-[#F2F2F2] dark:bg-[#171717]">
+                        <thead className="bg-[#F2F2F2] dark:bg-[#232323]">
                             <tr>
                                 <th className="p-5 border-r rounded-tl-xl font-semibold dark:border-[#2E2E2E]">
                                     {title} Variant
@@ -79,7 +79,7 @@ const DimensionsTyreSizeTable = ({ title, tyreSize, tyreByVariantData, fuelType,
                             {tyreByVariantData.map((item, index) => (
                                 <tr
                                     key={item.variantId}
-                                    className={`${index % 2 === 0 ? "bg-white dark:bg-[#292929]" : ""} text-center`}
+                                    className={`bg-white dark:bg-[#171717] text-center`}
                                 >
                                     <td className="p-5 border-r border-b font-medium dark:border-[#2E2E2E]">
                                         {item.variantName}

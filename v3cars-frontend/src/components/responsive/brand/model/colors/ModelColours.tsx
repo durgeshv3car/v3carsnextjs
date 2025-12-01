@@ -61,7 +61,7 @@ export default function ModelColours({ title, data }: ModelColoursProps) {
                 <div className="flex flex-col md:flex-row gap-4">
 
                     {/* Car Preview */}
-                    <div className="flex-1 flex flex-col items-center justify-center border rounded-xl dark:border-[#2e2e2e]">
+                    <div className="relative flex-1 flex flex-col items-center justify-center border rounded-xl dark:border-[#2e2e2e]">
 
                         {selectedColor ? (
                             <Image
@@ -76,6 +76,10 @@ export default function ModelColours({ title, data }: ModelColoursProps) {
                                 Loading image...
                             </p>
                         )}
+
+                        <div className=" absolute top-4 left-4 bg-gray-50 text-sm rounded-full px-4 py-2 border font-semibold dark:border-[#2e2e2e] dark:bg-[#232323]">
+                            {selectedColor?.name}
+                        </div>
                     </div>
 
                     {/* Colour Selector */}

@@ -73,12 +73,12 @@ const ServiceCostSnapshot: React.FC = () => {
 
     return (
         <div>
-            <h2 className="text-xl text-center py-4 bg-black text-white rounded-t-xl">Tata Nexon Service Cost Snapshot</h2>
+            <h2 className="text-lg mb-4 font-semibold">Tata Nexon Service Cost Snapshot</h2>
 
             {/* Table Header */}
             <div className="overflow-x-auto border rounded-xl rounded-t-none dark:border-[#2e2e2e] dark:bg-[#171717]">
                 <table className="min-w-full overflow-hidden">
-                    <thead className="bg-[#DEE2E6] dark:bg-[#292929] text-sm font-semibold border-b dark:border-[#2e2e2e] text-center">
+                    <thead className="bg-[#DEE2E6] dark:bg-[#292929] text-sm font-semibold rounded-xl border-b dark:border-[#2e2e2e] text-center">
                         <tr>
                             <th className="p-3 border-r dark:border-[#2e2e2e]">Year</th>
                             <th className="p-3 border-r dark:border-[#2e2e2e]">Kilometer</th>
@@ -89,13 +89,13 @@ const ServiceCostSnapshot: React.FC = () => {
                         {mileageData.map((row, index) => (
                             <tr
                                 key={index}
-                                className={`${index % 2 === 0 ? "bg-white dark:bg-[#171717]" : "bg-gray-50 dark:bg-[#2e2e2e]"} border-b dark:border-[#2e2e2e]`}
+                                className={`bg-white dark:bg-[#171717] border-b dark:border-[#2e2e2e]`}
                             >
-                                <td className="p-3 border-r font-medium dark:border-[#2e2e2e]">
+                                <td className="p-4 border-r font-medium dark:border-[#2e2e2e]">
                                     {row.variant}
                                 </td>
-                                <td className="py-3 border-r dark:border-[#2e2e2e]">{row.claimed}</td>
-                                <td className="py-3">{row.highway}</td>
+                                <td className="py-4 border-r dark:border-[#2e2e2e]">{row.claimed}</td>
+                                <td className="py-4">{row.highway}</td>
                             </tr>
                         ))}
                     </tbody>

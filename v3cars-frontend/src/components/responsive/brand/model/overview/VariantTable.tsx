@@ -49,7 +49,7 @@ const VariantTable: React.FC<VariantTableProps> = ({ data, type, slug }) => {
 
             {/* Table */}
             <table className="w-full">
-                <thead className="bg-[#DEE2E6] border-b border-gray-200 dark:bg-[#171717] dark:border-[#2E2E2E]">
+                <thead className="bg-[#DEE2E6] border-b border-gray-200 dark:bg-[#2e2e2e] dark:border-[#2E2E2E]">
                     <tr className="text-sm font-semibold">
                         <th className="p-4 border-r dark:border-[#2e2e2e] text-left">Powertrain</th>
                         <th className="p-4 text-left">Top Recommended Variant</th>
@@ -60,17 +60,14 @@ const VariantTable: React.FC<VariantTableProps> = ({ data, type, slug }) => {
                     {variants.map((v, idx) => (
                         <tr
                             key={idx}
-                            className={`text-sm border-b dark:border-[#2e2e2e] ${idx % 2 === 0
-                                ? "bg-white dark:bg-[#171717]"
-                                : "bg-gray-50 dark:bg-[#2E2E2E]"
-                                }`}
+                            className={`text-sm border-b dark:border-[#2e2e2e] bg-white dark:bg-[#171717]`}
                         >
                             <td className="p-6 border-r dark:border-[#2e2e2e]">
                                 <p className="font-medium">{v.powertrain}</p>
                             </td>
 
                             <td className="p-6">
-                                <p className="font-medium">{v.variant}</p>
+                                <p className="font-medium underline">{v.variant}</p>
                             </td>
                         </tr>
                     ))}
@@ -78,9 +75,9 @@ const VariantTable: React.FC<VariantTableProps> = ({ data, type, slug }) => {
             </table>
 
             {/* Footer */}
-            <div className="text-center my-4">
+            <div className="text-center bg-[#F2F5F9] dark:bg-[#232323]">
                 <button 
-                className="text-sm font-medium flex items-center justify-center mx-auto gap-1"
+                className="text-sm font-medium flex items-center justify-center mx-auto gap-1 py-4"
                 onClick={() => {router.push(`/${type}/${slug}/which-variant-to-buy`)}}
                 >
                     <span className="hidden md:block">See Which Tata Nexon Variant Offers the</span>

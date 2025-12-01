@@ -162,7 +162,7 @@ const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc, 
                         </div>
 
                         {/* Content */}
-                        <div className="px-2 py-4 flex-grow text-center flex flex-col justify-between gap-4">
+                        <div className="bg-white dark:bg-[#171717] px-2 py-4 flex-grow text-center flex flex-col justify-between gap-4">
                             <p className="font-semibold text-xl">{car.modelName}</p>
                             <div className='border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2'>
                                 <p className="text-xs">

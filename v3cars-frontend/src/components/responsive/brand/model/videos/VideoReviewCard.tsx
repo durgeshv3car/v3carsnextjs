@@ -29,7 +29,7 @@ export default function VideoReviewCard({ videoList }: VideoReviewCardProps) {
 
     return (
         <div className="space-y-4">
-            <div className='grid grid-cols-3 gap-2'>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
                 {videoList.map((video, index) => (
                     <div
                         key={index}
