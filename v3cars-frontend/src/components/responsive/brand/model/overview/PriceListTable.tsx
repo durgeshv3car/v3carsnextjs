@@ -136,7 +136,7 @@ const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFu
                         </thead>
 
                         <tbody>
-                            {data?.slice(0, 4)?.map((v, idx) => (
+                            {data?.slice(0, 4)?.map((v) => (
                                 <tr
                                     key={v.variantId}
                                     className={`text-sm border-b dark:border-[#2e2e2e] bg-white dark:bg-[#171717]`}

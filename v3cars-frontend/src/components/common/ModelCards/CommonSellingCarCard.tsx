@@ -1,47 +1,77 @@
 'use client'
 
-import { useGetCarByBodyTypeQuery } from '@/redux/api/homeModuleApi'
+import { useGetModelSegmentSellingQuery } from '@/redux/api/carModuleApi'
+import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 
-interface CarProps {
-    modelId: number;
-    modelName: string;
-    modelSlug: string;
-    brandId: number;
-    modelBodyTypeId: number;
-    isUpcoming: boolean;
-    launchDate: string; // ISO date string
-    totalViews: number;
-    expectedBasePrice: number;
-    expectedTopPrice: number;
-    brand: {
+export interface ModelData {
+    model: {
         id: number;
         name: string;
         slug: string;
-        logo: string;
+        brand: {
+            id: number;
+            name: string;
+            slug: string;
+        };
+        isUpcoming: boolean;
     };
-    priceMin: number;
-    priceMax: number;
-    powerPS: number;
-    torqueNM: number;
-    mileageKMPL: number;
-    image: {
-        name: string;
-        alt: string;
-        url: string;
+    priceRange: {
+        exShowroom: {
+            min: number;
+            max: number;
+        };
     };
-    imageUrl: string;
+    media: {
+        primaryImage: {
+            url: string;
+            alt: string;
+        };
+    };
+    sales: {
+        year: number;
+        month: number;
+        current: number;
+        previous: number;
+        momDeltaPct: number;
+    };
+}
+
+export interface SegmentResponse {
+    success: boolean;
+    segmentId: number;
+    segmentName: string;
+    year: number;
+    month: number;
+    rows: ModelData[];
 }
 
 interface CommonSellingCarCardProps {
     title: string;
+    segments: string;
+    setSellingDate: (date: string) => void;
 }
 
-const CommonSellingCarCard: React.FC<CommonSellingCarCardProps> = ({ title }) => {
-    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: 3, limit: 15, page: 1 });
-    const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
+export function ConvertDate(month: number): string {
+    const months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    // month is 1–12, convert to previous month
+    const prevMonth = month
+
+    const monthName = months[prevMonth - 1];
+    return `${monthName}`;
+}
+
+const currentYear = new Date().getFullYear();
+
+const CommonSellingCarCard: React.FC<CommonSellingCarCardProps> = ({ title, segments, setSellingDate }) => {
+    const { data: carByBodyTypeData } = useGetModelSegmentSellingQuery({ segments: segments, currentYear: currentYear });
+    const carByBodyType: ModelData[] = carByBodyTypeData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
@@ -74,8 +104,14 @@ const CommonSellingCarCard: React.FC<CommonSellingCarCardProps> = ({ title }) =>
         return () => container.removeEventListener('scroll', handleScroll);
     }, []);
 
+    useEffect(() => {
+        if (carByBodyTypeData) {
+            setSellingDate(`${ConvertDate(Number(carByBodyTypeData?.month))}, ${carByBodyTypeData?.year}`);
+        }
+    }, [carByBodyTypeData])
+
     return (
-        <div className="space-y-3 mt-4">
+        <div className="space-y-3">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl mb-1">{title}</h2>
 
@@ -108,41 +144,57 @@ const CommonSellingCarCard: React.FC<CommonSellingCarCardProps> = ({ title }) =>
             <div ref={scrollRef} className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide">
                 {carByBodyType.map((car, index) => (
                     <div
-                        key={car.modelId}
-                        className="bg-white  rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-auto flex-shrink-0 flex flex-col p-2 space-y-4 dark:bg-[#171717]"
+                        key={car.model.id}
+                        className="bg-white rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-fit p-2 space-y-4 dark:bg-[#171717]"
                     >
                         <div className='flex items-center gap-2'>
                             <div className='bg-primary rounded-lg px-2 py-1 font-semibold text-black'>
                                 #{index + 1}
                             </div>
-                            <h2 className='text-lg'>Hyundai <span className='font-semibold'>Creta</span></h2>
+                            <h2 className='text-lg'>
+                                {car.model.brand.name} <span className='font-semibold'>{car.model.name}</span>
+                            </h2>
                         </div>
 
                         {/* Image Section */}
-                        <div className="relative h-[224px] w-full rounded-md overflow-hidden">
+                        <div className="w-full rounded-md overflow-hidden">
                             <Image
-                                src={'/model/honda.png'}
-                                alt={car.image.alt || car.brand.name}
-                                fill
-                                sizes="(max-width: 1280px) 100vw, 400px"
+                                src={`${IMAGE_URL}/media/model-imgs/${car.media.primaryImage.url}`}
+                                alt={car.media.primaryImage.alt || car.model.name}
+                                width={300}
+                                height={300}
                                 priority={false}
-                                className="object-cover shadow-md rounded-lg"
+                                className="w-full h-full rounded-xl"
                             />
                         </div>
 
                         <div className='text-center w-full'>
-                            <p className='text-lg'><span className='text-xl font-semibold'>17,231</span> units</p>
-                            <p className='text-xs text-gray-400'>▲ 9% MoM</p>
+                            <p className='text-lg'>
+                                <span className='text-xl font-semibold'>
+                                    {car.sales.current.toLocaleString()}
+                                </span> units
+                            </p>
+
+                            <p className='text-xs text-gray-400'>
+                                {car.sales.momDeltaPct >= 0
+                                    ? <span className='text-primary'>▲</span>
+                                    : <span className='text-red-500'>▼</span>
+                                }
+                                {car.sales.momDeltaPct} % MoM
+                            </p>
                         </div>
 
                         <button
                             className="p-3 text-sm w-full flex justify-center items-center text-black cursor-pointer rounded-lg bg-primary"
-                            onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
+                            onClick={() => {
+                                router.push(`/${car.model.brand.slug}/${car.model.slug}`);
+                            }}
                         >
                             View Sales Trend
                         </button>
                     </div>
                 ))}
+
             </div>
         </div>
     );

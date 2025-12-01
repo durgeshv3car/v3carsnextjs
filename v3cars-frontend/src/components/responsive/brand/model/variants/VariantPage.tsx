@@ -26,6 +26,7 @@ import { useGetBestVariantToBuyQuery, useGetModelDetailsQuery } from "@/redux/ap
 import { CarData } from "../overview/Overview";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
 import CostOfOwnership from "../sidebar/CostOfOwnership";
+import { useState } from "react";
 
 interface VariantPageProps {
     type: string;
@@ -34,6 +35,7 @@ interface VariantPageProps {
 }
 
 function VariantPage({ type, slug, childSlug }: VariantPageProps) {
+    const [sellingDate, setSellingDate] = useState("")
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
@@ -139,7 +141,9 @@ function VariantPage({ type, slug, childSlug }: VariantPageProps) {
                             />
 
                             <CommonSellingCarCard
-                                title="Best Selling B2-segment SUVs in India - Sep 2025"
+                                title={`Best Selling ${modelDetails?.model?.segment}-segment ${modelDetails?.model?.bodyType} in India - ${sellingDate}`}
+                                segments={`${modelDetails?.model?.segment}`}
+                                setSellingDate={setSellingDate}
                             />
 
                         </div>

@@ -46,7 +46,7 @@ const DimensionsTable = ({ title, conversionsData, capacityData }: DimensionsTab
                     {/* Dynamic Rows */}
                     <tbody>
                         {conversionsData &&
-                            Object.entries(conversionsData).map(([key, value], index) => {
+                            Object.entries(conversionsData).map(([key, value]) => {
                                 const label = key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
 
                                 return (

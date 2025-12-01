@@ -1,3 +1,4 @@
+import { SegmentResponse } from "@/components/common/ModelCards/CommonSellingCarCard";
 import { ColorsResponse } from "@/components/responsive/brand/model/colors/ModelColours";
 import { ModelDimensionsResponse } from "@/components/responsive/brand/model/dimensions/DimensionsPage";
 import { ModelImagesResponse } from "@/components/responsive/brand/model/images/ImageDisplay";
@@ -308,6 +309,9 @@ export const carModuleApi = createApi({
         getModelServiceCost: builder.query<ServiceCostResponse, { model_slug: string }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}/service-cost`,
         }),
+        getModelSegmentSelling: builder.query<SegmentResponse, { segments: string, currentYear: number }>({
+            query: ({ segments, currentYear }) => `/cars/models/segments/${segments}/top-selling?year=${currentYear}&limit=50`,
+        }),
     }),
 });
 
@@ -343,6 +347,7 @@ export const {
     useGetModelColoursQuery,
     useGetModelImagesQuery,
     useGetModelServiceCostQuery,
+    useGetModelSegmentSellingQuery,
 } = carModuleApi;
 
 

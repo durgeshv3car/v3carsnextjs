@@ -48,6 +48,7 @@ function MonthlySalesPage({ type, slug, childSlug }: MileagePageProps) {
     console.log(childSlug);
     const [selectedRange, setSelectedRange] =
         useState<number>(6);
+    const [sellingDate, setSellingDate] = useState("")
 
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
@@ -168,7 +169,9 @@ function MonthlySalesPage({ type, slug, childSlug }: MileagePageProps) {
                             />
 
                             <CommonSellingCarCard
-                                title="Best Selling B2-segment SUVs in India - Sep 2025"
+                                title={`Best Selling ${modelDetails?.model?.segment}-segment ${modelDetails?.model?.bodyType} in India - ${sellingDate}`}
+                                segments={`${modelDetails?.model?.segment}`}
+                                setSellingDate={setSellingDate}
                             />
 
                         </div>

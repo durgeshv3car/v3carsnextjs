@@ -26,6 +26,7 @@ import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSel
 import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import CommonSellingCarCard from "@/components/common/ModelCards/CommonSellingCarCard";
 import CostOfOwnership from "../sidebar/CostOfOwnership";
+import { useState } from "react";
 
 interface MileagePageProps {
     type: string;
@@ -35,6 +36,7 @@ interface MileagePageProps {
 
 
 function ReviewsPage({ type, slug, childSlug }: MileagePageProps) {
+    const [sellingDate, setSellingDate] = useState("")
     const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug })
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
@@ -136,7 +138,9 @@ function ReviewsPage({ type, slug, childSlug }: MileagePageProps) {
                             />
 
                             <CommonSellingCarCard
-                                title="Best Selling B2-segment SUVs in India - Sep 2025"
+                                title={`Best Selling ${modelDetails?.model?.segment}-segment ${modelDetails?.model?.bodyType} in India - ${sellingDate}`}
+                                segments={`${modelDetails?.model?.segment}`}
+                                setSellingDate={setSellingDate}
                             />
 
                         </div>

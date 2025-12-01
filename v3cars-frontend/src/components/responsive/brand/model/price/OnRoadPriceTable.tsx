@@ -244,9 +244,8 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                                                 <div className="m-2 border border-b-0 dark:border-[#2E2E2E] rounded-xl overflow-hidden">
 
                                                     {variant.details.map((d, i) => (
-                                                        <div className="border-l-4 border-primary">
+                                                        <div key={i} className="border-l-4 border-primary">
                                                             <div
-                                                                key={i}
                                                                 className={`
                                                                     flex justify-between p-5 border-b dark:border-[#2E2E2E]
                                                                     ${i === variant.details.length - 1

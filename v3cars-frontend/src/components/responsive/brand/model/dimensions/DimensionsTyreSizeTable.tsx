@@ -76,7 +76,7 @@ const DimensionsTyreSizeTable = ({ title, tyreSize, tyreByVariantData, fuelType,
                         </thead>
 
                         <tbody>
-                            {tyreByVariantData.map((item, index) => (
+                            {tyreByVariantData.map((item) => (
                                 <tr
                                     key={item.variantId}
                                     className={`bg-white dark:bg-[#171717] text-center`}

@@ -39,6 +39,7 @@ interface PriceListPageProps {
 function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
     const [fuelType, setFuelType] = useState("")
     const [transmissionType, setTransmissionType] = useState("")
+    const [sellingDate, setSellingDate] = useState("")
     const [variantId, setVariantId] = useState<number | null>(null)
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const { data: modelLatestNewsData } = useGetModelLatestNewsQuery({ model_slug: slug }, { skip: !slug });
@@ -162,7 +163,9 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                             />
 
                             <CommonSellingCarCard
-                                title="Best Selling B2-segment SUVs in India - Sep 2025"
+                                title={`Best Selling ${modelDetails?.model?.segment}-segment ${modelDetails?.model?.bodyType} in India - ${sellingDate}`}
+                                segments={`${modelDetails?.model?.segment}`}
+                                setSellingDate={setSellingDate}
                             />
 
                         </div>
