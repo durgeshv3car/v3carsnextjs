@@ -429,7 +429,9 @@ GET /v1/cars/models/<slug-or-id>/images?type=interior
 
 
 
+segement wise cars -
 
+/v1/cars/models/segments/<name-or-id>/top-selling?year=2025&month=9&limit=20
 
 
 

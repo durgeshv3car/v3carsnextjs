@@ -122,3 +122,9 @@ export const modelImagesQueryDto = z.object({
 export const modelServiceCostQueryDto = z.object({
   mpId: z.coerce.number().int().positive().optional(), // modelPowertrainId 
 });
+
+export const modelSegmentTopSellingQueryDto = z.object({
+  year:  z.coerce.number().int().min(2000).optional(),
+  month: z.coerce.number().int().min(1).max(12).optional(),
+  limit: z.coerce.number().int().min(1).max(100).optional(),
+});

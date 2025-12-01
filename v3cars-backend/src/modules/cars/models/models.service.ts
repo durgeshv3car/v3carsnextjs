@@ -1429,7 +1429,7 @@ async priceList(
   }
 
   // --- REPLACE ENTIRE FUNCTION ---
-  async csdVsOnroad(
+async csdVsOnroad(
     modelId: number,
     q: { cityId: number; fuelType?: string; transmissionType?: string; expandVariantId?: number; isLoan?: boolean }
   ) {
@@ -1559,94 +1559,93 @@ async priceList(
         total: shaped.length,
       };
     }, ttlMs);
-  }
+}
 
-  async offersDiscounts(
-    modelId: number,
-    q?: { months?: number; cityId?: number; expandQID?: number }
-  ) {
-    const months = Math.max(1, Math.min(q?.months ?? 12, 24)); // default 12, clamp 1..24
-    const key = cacheKey({
-      ns: 'model:offersDiscounts',
-      v: 4, // 🔼 bump: expandQID behavior
-      modelId,
-      months,
-      cityId: q?.cityId ?? undefined,
-      expandQID: q?.expandQID ?? undefined,
+async offersDiscounts(
+  modelId: number,
+  q?: { months?: number; cityId?: number; expandQID?: number }
+) {
+  const months = Math.max(1, Math.min(q?.months ?? 12, 24)); // default 12, clamp 1..24
+  const key = cacheKey({
+    ns: 'model:offersDiscounts',
+    v: 4, // 🔼 bump: expandQID behavior
+    modelId,
+    months,
+    cityId: q?.cityId ?? undefined,
+    expandQID: q?.expandQID ?? undefined,
+  });
+  const ttlMs = 30 * 60 * 1000;
+
+  return withCache(key, async () => {
+    // 1) latest active offer for this model
+    const offer = await prisma.tbloffers.findFirst({
+      where: { modelId, offerStatus: 2, expireDateTime: { gte: new Date() } },
+      orderBy: [{ addedDateTime: 'desc' }],
+      select: {
+        offerId: true,
+        modelId: true,
+        title: true,
+        imageFile: true,
+        imageAltText: true,
+        addedDateTime: true,
+        expireDateTime: true,
+      },
     });
-    const ttlMs = 30 * 60 * 1000;
 
-    return withCache(key, async () => {
-      // 1) latest active offer for this model
-      const offer = await prisma.tbloffers.findFirst({
-        where: { modelId, offerStatus: 2, expireDateTime: { gte: new Date() } },
-        orderBy: [{ addedDateTime: 'desc' }],
-        select: {
-          offerId: true,
-          modelId: true,
-          title: true,
-          imageFile: true,
-          imageAltText: true,
-          addedDateTime: true,
-          expireDateTime: true,
-        },
-      });
+    if (!offer) {
+      return { success: true, modelId, rows: [], total: 0 };
+    }
 
-      if (!offer) {
-        return { success: true, modelId, rows: [], total: 0 };
-      }
+    // 2) window start is months back FROM NOW; filter is on tbloffercontent.addedDateTime
+    const fromDate = new Date();
+    fromDate.setMonth(fromDate.getMonth() - months);
 
-      // 2) window start is months back FROM NOW; filter is on tbloffercontent.addedDateTime
-      const fromDate = new Date();
-      fromDate.setMonth(fromDate.getMonth() - months);
+    // 3) fetch content rows for this offerId within the window
+    const content = await prisma.tbloffercontent.findMany({
+      where: {
+        modelId: offer.offerId, // NOTE: in tbloffercontent, modelId stores offerId
+        addedDateTime: { gte: fromDate },
+      },
+      orderBy: [{ qid: 'desc' }],
+      select: {
+        qid: true,
+        quesText: true,
+        ansText: true,
+        sequence: true,
+        addedDateTime: true,
+      },
+    });
 
-      // 3) fetch content rows for this offerId within the window
-      const content = await prisma.tbloffercontent.findMany({
-        where: {
-          modelId: offer.offerId, // NOTE: in tbloffercontent, modelId stores offerId
-          addedDateTime: { gte: fromDate },
-        },
-        orderBy: [{ qid: 'desc' }],
-        select: {
-          qid: true,
-          quesText: true,
-          ansText: true,
-          sequence: true,
-          addedDateTime: true,
-        },
-      });
-
-      const rows = content.map(c => {
-        const isExpanded = q?.expandQID != null && Number(q.expandQID) === c.qid;
-        const hasAns = !!(c.ansText && c.ansText.trim().length > 0);
-        return {
-          id: c.qid,
-          quesText: c.quesText ?? null,
-          hasAnswer: hasAns,
-          ansHtml: isExpanded ? (c.ansText ?? null) : null,
-          sequence: c.sequence ?? null,
-          addedDate: c.addedDateTime ?? null,
-        };
-      });
-
+    const rows = content.map(c => {
+      const isExpanded = q?.expandQID != null && Number(q.expandQID) === c.qid;
+      const hasAns = !!(c.ansText && c.ansText.trim().length > 0);
       return {
-        success: true,
-        modelId,
-        offer: {
-          id: offer.offerId,
-          title: offer.title ?? null,
-          image: { url: offer.imageFile ?? null, alt: offer.imageAltText ?? null },
-          addedDate: offer.addedDateTime ?? null,
-          expireDate: offer.expireDateTime ?? null,
-        },
-        rows,
-        total: rows.length,
+        id: c.qid,
+        quesText: c.quesText ?? null,
+        hasAnswer: hasAns,
+        ansHtml: isExpanded ? (c.ansText ?? null) : null,
+        sequence: c.sequence ?? null,
+        addedDate: c.addedDateTime ?? null,
       };
-    }, ttlMs);
-  }
+    });
 
+    return {
+      success: true,
+      modelId,
+      offer: {
+        id: offer.offerId,
+        title: offer.title ?? null,
+        image: { url: offer.imageFile ?? null, alt: offer.imageAltText ?? null },
+        addedDate: offer.addedDateTime ?? null,
+        expireDate: offer.expireDateTime ?? null,
+      },
+      rows,
+      total: rows.length,
+    };
+  }, ttlMs);
+}
 
-  async monthlySales(modelId: number, q: { months?: number }) {
+async monthlySales(modelId: number, q: { months?: number }) {
     const months = Math.max(1, Math.min(q.months ?? 6, 24));
 
     const key = cacheKey({
@@ -1744,10 +1743,9 @@ async priceList(
         summary,              // for the intro sentence
       };
     }, ttlMs);
-  }
+}
 
-
-  // ⬇️ Add this method inside ModelsService class
+// ⬇️ Add this method inside ModelsService class
 async upcomingByBrand(
   modelId: number,
   opts?: { limit?: number }
@@ -1912,12 +1910,13 @@ async othersOnSale(
   }, ttlMs);
 }
 
-
 async serviceCost(modelId: number) {
+
   const key = cacheKey({ ns: 'model:serviceCost', v: 1, modelId });
   const ttlMs = 30 * 60 * 1000; // 30 min
 
   return withCache(key, async () => {
+
     const row = await prisma.tblmodelpagecontent.findFirst({
       where: { modelId },
       select: {
@@ -1935,7 +1934,6 @@ async serviceCost(modelId: number) {
     };
   }, ttlMs);
 }
-
 
 // inside ModelsService
 async colours(modelId: number) {
@@ -1984,14 +1982,15 @@ async colours(modelId: number) {
       totals: { colors: colors.length, variants: variants.length, pairs: availability.length },
     };
   }, ttlMs);
-}
 
+}
 
 // add inside ModelsService
 async gallery(
   modelId: number,
   q?: { type?: 'all' | 'interior' | 'exterior' | 'other'; limit?: number }
 ) {
+
   const type = (q?.type ?? 'all') as 'all'|'interior'|'exterior'|'other';
   const limit = Math.max(1, Math.min(q?.limit ?? 999, 2000));
 
@@ -2034,12 +2033,12 @@ async gallery(
         others: byType.other.length,
       },
     };
+
+
   }, ttlMs);
 }
 
-
-
- async serviceCostpow(
+async serviceCostpow(
     modelId: number,
     q?: { mpId?: number }   // modelPowertrainId
   ) {
@@ -2052,6 +2051,7 @@ async gallery(
     const ttlMs = 30 * 60 * 1000;
 
     return withCache(key, async () => {
+
       // 1) dropdown options (from powertrains)
       const options = await powertrainsSvc.listForModel(modelId); // [{id,label,fuelType,transmissionType}]
       if (!options.length) {
@@ -2083,6 +2083,7 @@ async gallery(
         cost: r.cost ?? 0,
       }));
 
+
       // 4) snapshots
       const take = (n: number) => {
         const slice = schedule.slice(0, n);
@@ -2093,6 +2094,7 @@ async gallery(
         return { total, kms, perMonth, perKm };
       };
       const y3 = take(3), y5 = take(5), y7 = take(7), y10 = take(10);
+
 
       // 5) names for description (lightweight selects)
       const mdl = await prisma.tblmodels.findFirst({
@@ -2134,7 +2136,132 @@ async gallery(
         description,
       };
     }, ttlMs);
+}
+
+
+
+async segmentTopSellingByMonthFromPath(
+  segRaw: string,
+  q: { year?: number; month?: number; limit?: number }
+) {
+  // 1) Resolve segment from path (id or name)
+  const token = decodeURIComponent((segRaw || '').trim());
+  const byId = /^\d+$/.test(token)
+    ? await repo.getSegmentById(Number(token))
+    : await repo.getSegmentByName(token);
+
+  if (!byId) {
+    return {
+      segmentId: null,
+      segmentName: /^\d+$/.test(token) ? null : token,
+      year: null,
+      month: null,
+      rows: [],
+      total: 0,
+      message: 'Segment not found',
+    };
   }
 
+  const segmentId = byId.id;
+  const segmentName = byId.name;
+
+  // 2) Choose year/month (fallback to latest-within-segment, then global)
+  let { year, month } = q;
+  if (!year || !month) {
+    const segLatest = await repo.latestMonthForSegment(segmentId);
+    if (segLatest) {
+      year = segLatest.year;
+      month = segLatest.month;
+    } else {
+      const anyLatest = await repo.latestMonthGlobal();
+      if (anyLatest) {
+        year = anyLatest.year;
+        month = anyLatest.month;
+      }
+    }
+  }
+  if (!year || !month) {
+    return { segmentId, segmentName, year: null, month: null, rows: [], total: 0 };
+  }
+
+  // 3) Cache + fetch
+  const limit = Math.max(1, Math.min(q.limit ?? 12, 100));
+  const key = cacheKey({
+    ns: 'models:segmentTopSellingByMonth',
+    v: 5, // bump because of repo helper change
+    segmentId,
+    year,
+    month,
+    limit,
+  });
+  const ttlMs = 30 * 60 * 1000;
+
+  return withCache(key, async () => {
+    const sales = await repo.topSellingByMonthInSegment({ segmentId, year, month, limit });
+    if (!sales.length) return { segmentId, segmentName, year, month, rows: [], total: 0 };
+
+    const ids = sales.map(s => s.modelId);
+
+    // Minimal model + brand info
+    const models = await prisma.tblmodels.findMany({
+      where: { modelId: { in: ids } },
+      select: {
+        modelId: true, modelName: true, modelSlug: true,
+        brandId: true, isUpcoming: true,
+        expectedBasePrice: true, expectedTopPrice: true,
+      },
+    });
+
+    const brandIds = Array.from(new Set(models.map(m => m.brandId!).filter(Boolean))) as number[];
+    const brands = brandIds.length ? await brandsSvc.findByIds(brandIds) : [];
+    const brandById = new Map(brands.map(b => [b.brandId, b]));
+
+    const priceBands = await variantsSvc.getPriceBandsByModelIds(ids);
+    const primary = await imagesSvc.getPrimaryByModelIds(ids);
+
+    const rows = sales.map(r => {
+      const m = models.find(x => x.modelId === r.modelId);
+      const b = m?.brandId ? brandById.get(m.brandId) : undefined;
+      const band = priceBands.get(r.modelId) ?? { min: null, max: null };
+      const img = primary.get(r.modelId);
+
+      const curr = r.monthSales ?? 0;
+      const prev = r.prevSales ?? 0;
+      const momDelta = prev > 0 ? ((curr - prev) / prev) * 100 : (curr > 0 ? 100 : 0);
+
+      return {
+        model: {
+          id: m?.modelId ?? r.modelId,
+          name: m?.modelName ?? null,
+          slug: m?.modelSlug ?? null,
+          brand: b ? { id: b.brandId, name: b.brandName, slug: b.brandSlug } : null,
+          isUpcoming: !!m?.isUpcoming,
+        },
+        priceRange: {
+          exShowroom: {
+            min: band.min ?? m?.expectedBasePrice ?? null,
+            max: band.max ?? m?.expectedTopPrice ?? null,
+          },
+        },
+        media: { primaryImage: { url: img?.url ?? null, alt: img?.alt ?? null } },
+        sales: {
+          year,
+          month,
+          current: curr,
+          previous: r.prevSales ?? null,
+          momDeltaPct: Number(momDelta.toFixed(2)),
+        },
+      };
+    });
+
+    return { segmentId, segmentName, year, month, rows, total: rows.length };
+  }, ttlMs);
+}
 
 }
+
+
+
+
+
+  
