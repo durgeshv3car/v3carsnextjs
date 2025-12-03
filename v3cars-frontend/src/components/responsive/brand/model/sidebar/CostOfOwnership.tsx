@@ -1,12 +1,22 @@
 'use client'
 
-import React from "react";
+import React, { useState } from "react";
 
 interface CostOfOwnershipProps {
     title: string
 }
 
 const CostOfOwnership: React.FC<CostOfOwnershipProps> = ({ title }) => {
+    const [formData, setFormData] = useState({
+        city: "",
+        variant: "",
+        price: "",
+        period: "",
+        running: "",
+        cost: "",
+        efficiency: "",
+        fuelCost: "",
+    })
     return (
         <div className="border border-gray-200 rounded-xl bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
             {/* Header */}
@@ -16,54 +26,36 @@ const CostOfOwnership: React.FC<CostOfOwnershipProps> = ({ title }) => {
                 </h3>
             </div>
 
-            {/* Body */}
-            <div className="flex flex-col items-center text-center">
-                <div className="overflow-hidden p-4">
-                    <table className="w-full text-sm">
-                        <tbody className="text-start">
-                            <tr className="border-b-8 bg-[#F2F2F2] border-white dark:bg-[#2E2E2E] dark:border-[#171717]">
-                                <td className="py-2 px-3 font-medium">Variants</td>
-                                <td className="py-2 px-3">Nexon Smart 1.2 Petrol 5MT</td>
-                            </tr>
-                            <tr className="border-b-8 bg-[#F2F2F2] border-white dark:bg-[#2E2E2E] dark:border-[#171717]">
-                                <td className="py-2 px-3 font-medium">Period</td>
-                                <td className="py-2 px-3">5 years</td>
-                            </tr>
-                            <tr className="border-b-8 bg-[#F2F2F2] border-white dark:bg-[#2E2E2E] dark:border-[#171717]">
-                                <td className="py-2 px-3 font-medium">Annual running</td>
-                                <td className="py-2 px-3">5000km</td>
-                            </tr>
-                            <tr className="border-b-8 bg-[#F2F2F2] border-white dark:bg-[#2E2E2E] dark:border-[#171717]">
-                                <td className="py-2 px-3 font-medium">City</td>
-                                <td className="py-2 px-3">Delhi</td>
-                            </tr>
-                            <tr className="border-b-8 bg-[#F2F2F2] border-white dark:bg-[#2E2E2E] dark:border-[#171717]">
-                                <td className="py-2 px-3 font-medium">Fuel</td>
-                                <td className="py-2 px-3">Petrol @ ₹96.53</td>
-                            </tr>
-                            <tr className="bg-[#F2F2F2] dark:bg-[#2E2E2E]">
-                                <td className="py-2 px-3 font-medium">Real-world mileage</td>
-                                <td className="py-2 px-3">15.12kmpl</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div className="p-3">
+                <div className="flex flex-col gap-3">
+                    <InputField label="City" value={formData.city} onChange={(val) => setFormData(prev => ({ ...prev, city: val }))} />
+                    <InputField label="Variants" value={formData.variant} onChange={(val) => setFormData(prev => ({ ...prev, variant: val }))} />
+                    <InputField label="On-Road Price" value={formData.price} onChange={(val) => setFormData(prev => ({ ...prev, price: val }))} />
+                    <InputField label="Period" value={formData.period} onChange={(val) => setFormData(prev => ({ ...prev, period: val }))} />
+                    <InputField label="Total Running" value={formData.running} onChange={(val) => setFormData(prev => ({ ...prev, running: val }))} />
+                    <InputField label="Maintenance Cost" value={formData.cost} onChange={(val) => setFormData(prev => ({ ...prev, cost: val }))} />
+                    <InputField label="Fuel Efficiency" value={formData.efficiency} onChange={(val) => setFormData(prev => ({ ...prev, efficiency: val }))} />
+                    <InputField label="Fuel Cost" value={formData.fuelCost} onChange={(val) => setFormData(prev => ({ ...prev, fuelCost: val }))} />
+                </div>
 
-                    {/* Highlighted Cost Section */}
-                    <div className="bg-yellow-50 px-4 py-3 border-t border-gray-200 text-start dark:bg-[#2E2E2E] dark:border-[#171717]">
-                        <div className="flex justify-between text-sm font-medium mb-1">
-                            <span>Estimated 5-year cost</span>
-                            <span className="font-semibold">₹99.95 lakh*</span>
-                        </div>
-                        <div className="flex justify-between text-sm font-medium">
-                            <span>Cost per km</span>
-                            <span className="font-semibold">₹20</span>
-                        </div>
-                        <p className="text-xs text-gray-400 mt-1">
-                            *Includes on-road price, 5-yr service/maintenance & fuel/charging
-                        </p>
+
+                <div className="bg-yellow-50 dark:bg-[#232323] border dark:border-[#2e2e2e] rounded-lg mt-4 divide-y dark:divide-[#2e2e2e]">
+                    <div className="p-3">
+                        <p className="text-sm">Total Estimated 5-Year Cost</p>
+                        <p className="text-xl font-semibold">₹11,43,124</p>
+                    </div>
+
+                    <div className="p-3">
+                        <p className="text-sm">Cost per km</p>
+                        <p className="text-xl font-semibold">₹22.86</p>
                     </div>
                 </div>
 
+                <p className="text-xs text-gray-500 mt-1">*Includes fuel and regular maintenance costs, but excludes insurance renewals and other periodic expenses.</p>
+            </div>
+
+            {/* Body */}
+            <div className="flex flex-col items-center text-center">
                 {/* Button */}
                 <div className="p-3 w-full">
                     <button
@@ -79,3 +71,31 @@ const CostOfOwnership: React.FC<CostOfOwnershipProps> = ({ title }) => {
 };
 
 export default CostOfOwnership;
+
+
+function InputField({ label, value, onChange }: { label: string; value: string; onChange?: (val: string) => void }) {
+    const hasValue = value && value.trim() !== "";
+
+
+    return (
+        <div className="relative w-full">
+            <input
+                className={`w-full border border-gray-200 rounded-xl px-4 py-2
+                    bg-white dark:bg-[#171717] transition-all duration-200 
+                    focus:ring-0 dark:border-[#2e2e2e]
+                    ${hasValue ? "pt-4" : "pt-3.5"}`
+                }
+                value={value}
+                onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+            />
+
+            <label
+                className={`absolute left-4 text-gray-400 pointer-events-none transition-all duration-200  bg-white dark:bg-[#171717]
+                ${hasValue ? "text-xs -top-2 px-1" : "top-3.5"}`}
+            >
+                {label}
+            </label>
+        </div>
+
+    );
+}

@@ -83,10 +83,12 @@ const CarByType: React.FC = () => {
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
-        handleScroll();
+        requestAnimationFrame(() => {
+            handleScroll();
+        });
         container.addEventListener('scroll', handleScroll);
         return () => container.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [carByBodyType]);
 
     function handleBodyType() {
         if (!carBodyTab) {

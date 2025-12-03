@@ -30,9 +30,11 @@ import CostOfOwnership from "./sidebar/CostOfOwnership";
 import Marquee from "@/components/ui/Marquee";
 import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "./overview/Overview";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { notFound } from "next/navigation";
+import ModelComparisonSimilarCars from "./overview/ModelComparisonSimilarCars";
 
 const data = [
     {
@@ -61,7 +63,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const [fuelType, setFuelType] = useState<string>("petrol")
     const [transmissionType, setTransmissionType] = useState<string>("")
-    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelDetailsData, isLoading } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelDetailByFuelTypeData } =
         useGetModelDetailByFuelTypeQuery(
             { model_slug: slug, cityId: Number(selectedCity.cityId), fuelType: fuelType, transmissionType: transmissionType ?? undefined },
@@ -86,8 +88,16 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? [];
     const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
     const modelOthersCars = modelOthersCarsData?.items ?? [];
-    
+
     const isMobile = useIsMobile()
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        if (!modelDetailsData?.data) {
+            notFound()
+        }
+    }, [modelDetailsData, isLoading]);
 
     return (
         <>
@@ -223,10 +233,10 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                                 />
                             </div>
 
-                            {/* <ModelComparisonSimilarCars
+                            <ModelComparisonSimilarCars
                                 model={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 slug={slug}
-                            /> */}
+                            />
 
                             <CommonViewOfferCard
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
@@ -281,11 +291,12 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             <BrochureCard
                                 brand={`${modelDetails?.model?.brand?.name}`}
                                 model={`${modelDetails?.model?.name}`}
-                                url={undefined}
+                                url={`${modelDetails?.brochure.url}`}
                             />
 
                             <CSDPriceList
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
                                 type={type}
                                 slug={slug}
                             />
@@ -311,7 +322,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
                             </div>
 
                             <MonthlySales
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
                                 type={type}
                                 slug={slug}
                             />

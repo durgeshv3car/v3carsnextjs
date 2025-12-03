@@ -11,8 +11,8 @@ import PriceListPage from "@/components/responsive/brand/model/price/PriceListPa
 import ProsConsPage from "@/components/responsive/brand/model/pros-cons/ProsConsPage";
 import ReviewsPage from "@/components/responsive/brand/model/reviews/ReviewsPage";
 import VariantPage from "@/components/responsive/brand/model/variants/VariantPage";
-import { setActiveTab } from "@/redux/slices/carModelSlice";
-import { RootState } from "@/redux/store";
+import { ModelTab, setActiveTab } from "@/redux/slices/carModelSlice";
+import { AppDispatch, RootState } from "@/redux/store";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +22,9 @@ import CompetitorsPage from "./competitors/CompetitorsPage";
 import ImagesPage from "./images/ImagesPage";
 import MainMaintenanceComponent from "./maintenance-cost/MainMaintenanceComponent";
 import MainOwnershipComponent from "./cost-of-ownership/MainOwnershipComponent";
+import { notFound, useRouter } from "next/navigation";
+import { convertToSlug } from "./overview/PriceListTable";
+import { setSelectedCity } from "@/redux/slices/commonSlice";
 
 interface DynmicModelSlugProps {
     type: string;
@@ -29,68 +32,73 @@ interface DynmicModelSlugProps {
     childSlug: string;
 }
 
+const slugMapping: Record<string, string> = {
+    "price-in-jaipur": "Price",
+    "which-variant-to-buy": "Variants",
+    "dimensions": "Dimensions",
+    "csd-price": "CSD Price",
+    "mileage": "Mileage",
+    "news": "News",
+    "pros-cons": "Pros Cons",
+    "offers-discounts": "Offers Discounts",
+    "monthly-sales": "Monthly Sales",
+    "reviews": "Reviews",
+    "videos": "Videos",
+    "engine-specifications": "Specifications Features",
+    "colors": "Colors",
+    "competitors": "Competitors",
+    "images": "Images",
+    "maintenance-cost": "Maintenance Cost",
+    "cost-of-ownership": "Cost Of Ownership",
+};
+
 function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
-    const dispatch = useDispatch();
     const activeTab = useSelector((state: RootState) => state.carModelSlice.activeTab);
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
+    const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter()
+
+    const slugMapping: Record<string, string> = {
+        [`price-in-${convertToSlug(selectedCity.cityName)}`]: "Price",
+        "which-variant-to-buy": "Variants",
+        "dimensions": "Dimensions",
+        "csd-price": "CSD Price",
+        "mileage": "Mileage",
+        "news": "News",
+        "pros-cons": "Pros Cons",
+        "offers-discounts": "Offers Discounts",
+        "monthly-sales": "Monthly Sales",
+        "reviews": "Reviews",
+        "videos": "Videos",
+        "engine-specifications": "Specifications Features",
+        "colors": "Colors",
+        "competitors": "Competitors",
+        "images": "Images",
+        "maintenance-cost": "Maintenance Cost",
+        "cost-of-ownership": "Cost Of Ownership",
+    };
+
+    const tab = slugMapping[childSlug];
 
     useEffect(() => {
-
-        function handleModelState() {
-            if (childSlug === "price-in-jaipur") {
-                dispatch(setActiveTab("Price"));
-            }
-            if (childSlug === "which-variant-to-buy") {
-                dispatch(setActiveTab("Variants"));
-            }
-            if (childSlug === "dimensions") {
-                dispatch(setActiveTab("Dimensions"));
-            }
-            if (childSlug === "csd-price") {
-                dispatch(setActiveTab("CSD Price"));
-            }
-            if (childSlug === "mileage") {
-                dispatch(setActiveTab("Mileage"));
-            }
-            if (childSlug === "news") {
-                dispatch(setActiveTab("News"));
-            }
-            if (childSlug === "pros-cons") {
-                dispatch(setActiveTab("Pros Cons"));
-            }
-            if (childSlug === "offers-discounts") {
-                dispatch(setActiveTab("Offers Discounts"));
-            }
-            if (childSlug === "monthly-sales") {
-                dispatch(setActiveTab("Monthly Sales"));
-            }
-            if (childSlug === "reviews") {
-                dispatch(setActiveTab("Reviews"));
-            }
-            if (childSlug === "videos") {
-                dispatch(setActiveTab("Videos"));
-            }
-            if (childSlug === "engine-specifications") {
-                dispatch(setActiveTab("Specifications Features"));
-            }
-            if (childSlug === "colors") {
-                dispatch(setActiveTab("Colors"));
-            }
-            if (childSlug === "competitors") {
-                dispatch(setActiveTab("Competitors"));
-            }
-            if (childSlug === "images") {
-                dispatch(setActiveTab("Images"));
-            }
-            if (childSlug === "maintenance-cost") {
-                dispatch(setActiveTab("Maintenance Cost"));
-            }
-            if (childSlug === "cost-of-ownership") {
-                dispatch(setActiveTab("Cost Of Ownership"));
-            }
+        if (!tab) {
+            notFound();
+        } else {
+            dispatch(setActiveTab(tab as ModelTab));
         }
+    }, [tab]);
 
-        handleModelState()
-    }, [childSlug])
+    // useEffect(() => {
+    //     if (!childSlug || !selectedCity?.cityName) return;
+
+    //     const expectedUrl = `/${type}/${slug}/price-in-${convertToSlug(selectedCity.cityName)}`;
+
+    //     // SAME URL hai → push mat karo (warna loop lagega)
+    //     if (window.location.pathname !== expectedUrl) {
+    //         router.push(expectedUrl);
+    //     }
+
+    // }, [childSlug, selectedCity.cityName]);
 
 
     return (

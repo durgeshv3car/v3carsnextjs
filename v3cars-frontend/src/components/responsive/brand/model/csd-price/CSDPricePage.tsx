@@ -137,20 +137,20 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                 view="Latest News"
                                 data={modelLatestNews}
-                                link="/news"
+                                link={`/${type}/${slug}/news`}
                             />
                                 :
                                 <CommonNewsUpdate
                                     title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest News`}
                                     view={`${modelDetails?.model?.name} News Update`}
                                     newsList={modelLatestNews}
-                                    link={"/news"}
+                                    link={`/${type}/${slug}/news`}
                                 />
                             }
 
-                            <CommonVideos
+                          <CommonVideos
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name} Latest Videos`}
-                                view={`${modelDetails?.model?.name} Videos`}
+                                view={`/${type}/${slug}/videos`}
                                 videoList={modelReviewsVideos}
                             />
 
@@ -186,10 +186,10 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
 
                             <CSDPurchaseStep />
 
-                            <BrochureCard
+                             <BrochureCard
                                 brand={`${modelDetails?.model?.brand?.name}`}
                                 model={`${modelDetails?.model?.name}`}
-                                url={undefined}
+                                url={`${modelDetails?.brochure.url}`}
                             />
 
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
@@ -203,7 +203,8 @@ function CSDPricePage({ type, slug, childSlug }: PriceListPageProps) {
                             </div>
 
                             <MonthlySales
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
                                 type={type}
                                 slug={slug}
                             />

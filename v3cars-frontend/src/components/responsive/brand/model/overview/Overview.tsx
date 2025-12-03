@@ -6,8 +6,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { IoColorPaletteOutline } from "react-icons/io5";
+import { convertToSlug } from "./PriceListTable";
 
 interface OverviewProps {
+    type: string;
+    slug: string;
     city: string;
     modelDetails?: CarData | null;
 }
@@ -86,7 +89,7 @@ export interface CarData {
 }
 
 
-function Overview({ city, modelDetails }: OverviewProps) {
+function Overview({ type, slug, city, modelDetails }: OverviewProps) {
 
     const images = modelDetails?.media?.images ?? [];
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -184,7 +187,7 @@ function Overview({ city, modelDetails }: OverviewProps) {
 
                         </div>
 
-                        <p className="text-sm leading-relaxed mt-4">
+                        <p className="text-sm leading-relaxed mt-4 line-clamp-2">
                             The {modelDetails?.model?.brand?.name}{" "}
                             {modelDetails?.model?.name} is a{" "}
                             {modelDetails?.model?.segment}-segment{" "}
@@ -193,7 +196,8 @@ function Overview({ city, modelDetails }: OverviewProps) {
                             {((modelDetails?.priceRange?.exShowroom?.min ?? 0) / 100000).toFixed(2)} lakh
                             and ₹
                             {((modelDetails?.priceRange?.exShowroom?.max ?? 0) / 100000).toFixed(2)} lakh
-                            (ex-showroom).
+                            (ex-showroom)...
+                            <button className="hover:text-primary"> more</button>
                         </p>
                     </div>
 
@@ -206,7 +210,7 @@ function Overview({ city, modelDetails }: OverviewProps) {
                                 {((modelDetails?.priceRange?.exShowroom?.max ?? 0) / 100000).toFixed(2)} lakh
                             </p>
 
-                            <Link href="#" className="text-blue-600 text-xs underline">
+                            <Link href={`/${type}/${slug}/on-road-price-in-${convertToSlug(city)}`} className="text-blue-600 text-xs underline">
                                 Check On Road Price in{" "}
                                 <span className="font-semibold">{city || "Delhi"}</span>
                             </Link>
@@ -221,7 +225,7 @@ function Overview({ city, modelDetails }: OverviewProps) {
                                 {modelDetails?.availableWith?.fuels?.map((fuel) => (
                                     <button
                                         key={fuel}
-                                        className="flex items-center gap-1 border-2 border-primary bg-white dark:bg-[#171717] p-2 rounded-md text-xs transition"
+                                        className="flex items-center gap-2 border-2 border-primary bg-white dark:bg-[#171717] p-3 rounded-lg text-xs transition"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-3">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />

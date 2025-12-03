@@ -4,19 +4,20 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 interface CSDPriceListProps {
-    title: string;
+    brand: string;
+    model: string;
     slug: string;
     type: string;
 }
 
-const CSDPriceList: React.FC<CSDPriceListProps> = ({ title, slug, type }) => {
+const CSDPriceList: React.FC<CSDPriceListProps> = ({ brand, model, slug, type }) => {
     const router = useRouter()
     return (
         <div className="border border-gray-200 rounded-xl bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
             {/* Header */}
             <div className="border-b dark:border-[#2E2E2E] bg-[#F3F3F3] rounded-t-md p-4 dark:bg-[#171717]">
                 <h3 className="">
-                    {title} <span className="font-bold">CSD Price List</span>
+                    {brand} {model} <span className="font-bold">CSD Price List</span>
                 </h3>
             </div>
 
@@ -41,7 +42,7 @@ const CSDPriceList: React.FC<CSDPriceListProps> = ({ title, slug, type }) => {
                     className="w-full border border-black rounded-lg py-2 text-sm font-medium bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition mt-4 dark:bg-[#171717] dark:border-[#2E2E2E]"
                     onClick={() => { router.push(`/${type}/${slug}/csd-price`) }}
                 >
-                    View {title} CSD Price
+                    View <span className="font-semibold">{model}</span> CSD Price
                 </button>
             </div>
         </div>

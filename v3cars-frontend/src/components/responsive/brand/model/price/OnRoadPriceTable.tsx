@@ -209,20 +209,22 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
 
                                         {/* On-Road Price */}
                                         <td className="px-4 py-4 w-[250px]">
-                                            <div className="flex items-center justify-center gap-6">
-                                                {variant.onRoad}
+                                            <div className="flex items-center">
+                                                <span className="text-center w-full">
+                                                    {variant.onRoad}
+                                                </span>
 
                                                 {openIndex === index ? (
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" strokeWidth={1.5}
-                                                        stroke="currentColor" className="size-5 text-primary">
+                                                        stroke="currentColor" className="size-5 text-primary transition duration-300">
                                                         <path strokeLinecap="round" strokeLinejoin="round"
                                                             d="M5 12h14" />
                                                     </svg>
                                                 ) : (
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" strokeWidth={1.5}
-                                                        stroke="currentColor" className="size-5">
+                                                        stroke="currentColor" className="size-5 transition duration-300">
                                                         <path strokeLinecap="round" strokeLinejoin="round"
                                                             d="M12 4.5v15m7.5-7.5h-15" />
                                                     </svg>
@@ -233,13 +235,11 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
 
                                     {/* Expanded Details Row */}
                                     {openIndex === index && variant.details.length > 0 && (
-                                        <tr className="">
-
+                                        <tr>
                                             <td
                                                 colSpan={
                                                     childSlug === "csd-price" ? 5 : 4
                                                 }
-                                                className="p-0"
                                             >
                                                 <div className="m-2 border border-b-0 dark:border-[#2E2E2E] rounded-xl overflow-hidden">
 
@@ -261,7 +261,6 @@ const OnRoadPriceTable: React.FC<OnRoadPriceTableProps> = ({ title, desc, data, 
                                                             </div>
                                                         </div>
                                                     ))}
-
                                                 </div>
                                             </td>
                                         </tr>

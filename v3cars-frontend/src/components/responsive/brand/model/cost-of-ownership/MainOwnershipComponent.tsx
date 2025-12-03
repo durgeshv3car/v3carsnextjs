@@ -151,14 +151,15 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
                                 />
                             </div>
 
-                            <BrochureCard
+                             <BrochureCard
                                 brand={`${modelDetails?.model?.brand?.name}`}
                                 model={`${modelDetails?.model?.name}`}
-                                url={undefined}
+                                url={`${modelDetails?.brochure.url}`}
                             />
 
-                            <CSDPriceList
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                           <CSDPriceList
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
                                 type={type}
                                 slug={slug}
                             />
@@ -180,7 +181,8 @@ function MainOwnershipComponent({ type, slug, childSlug }: MileagePageProps) {
                             </div>
 
                             <MonthlySales
-                                title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
+                                brand={`${modelDetails?.model?.brand?.name}`}
+                                model={`${modelDetails?.model?.name}`}
                                 type={type}
                                 slug={slug}
                             />

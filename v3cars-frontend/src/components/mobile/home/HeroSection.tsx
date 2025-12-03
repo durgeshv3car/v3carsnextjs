@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { setBodyTypeIds, setBrandIds, setPriceBucket } from '@/redux/slices/advanceSearchSlice';
 import { useRouter } from 'next/navigation';
+import { useGetHeroBannersQuery } from '@/redux/api/homeModuleApi';
 
 const slides = [
     {
@@ -95,12 +96,15 @@ interface AllVehicleTypes {
 }
 
 const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setSelectBrand, data, models }) => {
+    const { data: heroBannerData } = useGetHeroBannersQuery()
     const [modelId, setModelId] = useState<number | null>(null)
     const [budget, setBudget] = useState<string>("")
     const [vehicleType, setVehicleType] = useState<number | null>(null)
     const [activeTab, setActiveTab] = useState('budget');
     const dispatch = useDispatch();
     const router = useRouter()
+
+    console.log(heroBannerData);    
 
     function normalizeBrandName(name: string) {
         const lower = name.toLowerCase();

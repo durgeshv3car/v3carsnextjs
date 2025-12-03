@@ -63,10 +63,13 @@ const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsLi
     const container = scrollRef.current;
     if (!container) return;
 
-    handleScroll();
+    requestAnimationFrame(() => {
+      handleScroll();
+    });
+
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [newsList]);
 
   return (
     <section>

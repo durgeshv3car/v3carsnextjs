@@ -42,10 +42,13 @@ const CommonModelCard: React.FC<CommonModelCardProps> = ({ title, data }) => {
         const container = scrollRef.current
         if (!container) return
 
-        handleScroll()
+        requestAnimationFrame(() => {
+            handleScroll();
+        });
+
         container.addEventListener('scroll', handleScroll)
         return () => container.removeEventListener('scroll', handleScroll)
-    }, [])
+    }, [data])
 
     return (
         <>

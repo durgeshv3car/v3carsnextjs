@@ -12,20 +12,20 @@ interface CommonVideosProps {
 }
 
 interface VideoItem {
-  id: number;
-  title: string;
-  pageUrl: string;
-  publishDateandTime: string; // ISO date string
-  thumbnail: {
-    url: string;
-    alt: string;
-  };
-  videoYId: string;
-  author: {
     id: number;
-    name: string;
-    slug: string;
-  };
+    title: string;
+    pageUrl: string;
+    publishDateandTime: string; // ISO date string
+    thumbnail: {
+        url: string;
+        alt: string;
+    };
+    videoYId: string;
+    author: {
+        id: number;
+        name: string;
+        slug: string;
+    };
 }
 
 const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) => {
@@ -43,23 +43,28 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
     }
 
     const scroll = (dir: 'left' | 'right') => {
-        if (scrollRef.current) {
-            const amount = 396;
-            scrollRef.current.scrollBy({
-                left: dir === 'left' ? -amount : amount,
-                behavior: 'smooth',
-            })
-        }
-    }    
+        if (!scrollRef.current) return;
+
+        const amount = 300;
+
+        scrollRef.current.scrollBy({
+            left: dir === 'left' ? -amount : amount,
+            behavior: "smooth",
+        });
+    };
 
     useEffect(() => {
-        const container = scrollRef.current
-        if (!container) return
+        const container = scrollRef.current;
+        if (!container) return;
 
-        handleScroll()
-        container.addEventListener('scroll', handleScroll)
-        return () => container.removeEventListener('scroll', handleScroll)
-    }, [])
+        // Wait for DOM + layout calculation
+        requestAnimationFrame(() => {
+            handleScroll();
+        });
+
+        container.addEventListener('scroll', handleScroll);
+        return () => container.removeEventListener('scroll', handleScroll);
+    }, [videoList]);
 
     return (
         <>
@@ -126,7 +131,7 @@ const CommonVideos: React.FC<CommonVideosProps> = ({ title, view, videoList }) =
                                         fill
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                                         className="rounded"
-                                        priority={false} 
+                                        priority={false}
                                     />
 
                                     {/* Overlay */}

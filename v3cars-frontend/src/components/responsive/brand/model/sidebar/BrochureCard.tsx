@@ -1,5 +1,6 @@
 'use client'
 
+import { IMAGE_URL2 } from "@/utils/constant";
 import Link from "next/link";
 import React from "react";
 
@@ -37,10 +38,10 @@ const BrochureCard: React.FC<BrochureCardProps> = ({ brand, model, url }) => {
 
                 {/* Button */}
                 <Link
-                    href={url ?? "#"}
+                    href={`${IMAGE_URL2}/ad-min/uploads/${url}`}
                     className="w-full border border-black rounded-lg py-2 text-sm font-medium bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition mt-4 dark:bg-[#171717] dark:border-[#2E2E2E]"
                 >
-                    Download {model} Brochure
+                    Download <span className="font-semibold">{model}</span> Brochure
                 </Link>
             </div>
         </div>

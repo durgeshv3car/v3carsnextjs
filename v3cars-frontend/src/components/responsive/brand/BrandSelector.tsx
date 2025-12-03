@@ -3,8 +3,9 @@
 import Image from 'next/image';
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 import { IMAGE_URL } from '@/utils/constant';
+import { useRouter } from 'next/navigation';
 
-interface CarBrand {
+export interface CarBrand {
   brandId: number
   brandName: string
   brandSlug: string
@@ -23,6 +24,7 @@ interface BrandSelectorProps {
 }
 
 export default function BrandSelector({ data, setSelectBrand, selectBrand }: BrandSelectorProps) {
+  const router = useRouter()
 
   function normalizeBrandName(name: string) {
     const lower = name.toLowerCase();
@@ -84,7 +86,7 @@ export default function BrandSelector({ data, setSelectBrand, selectBrand }: Bra
           labelKey="displayName"
           valueKey="brandId"
           value={selectBrand}
-          onSelect={(value: CarBrand) => { setSelectBrand(value.brandId) }}
+          onSelect={(value: CarBrand) => { router.push(`/${value.brandSlug}`) }}
         />
       </div>
 

@@ -13,7 +13,7 @@ const EMICalculator: React.FC<EMICalculatorProps> = ({ title }) => {
             {/* Header */}
             <div className="border-b dark:border-[#2E2E2E] bg-[#F3F3F3] rounded-t-md p-4 dark:bg-[#171717]">
                 <h3 className="">
-                    {title} <span className="font-bold">EMI Calculator</span>
+                    {title} <span className="font-bold">Monthly EMI</span>
                 </h3>
             </div>
 
@@ -37,10 +37,10 @@ const EMICalculator: React.FC<EMICalculatorProps> = ({ title }) => {
 
                 {/* Button */}
                 <button
-                    className="w-full border border-black rounded-lg py-2 text-sm font-medium bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition mt-4 dark:bg-[#171717] dark:border-[#2E2E2E]"
+                    className="w-full border border-black rounded-lg py-3 bg-[#F8F9FA] hover:bg-gray-100 hover:dark:bg-[#292929] transition mt-4 dark:bg-[#171717] dark:border-[#2E2E2E]"
                     onClick={() => alert('Downloading Nexon Brochure...')}
                 >
-                    View EMI Offers
+                    EMI Calculator
                 </button>
             </div>
         </div>

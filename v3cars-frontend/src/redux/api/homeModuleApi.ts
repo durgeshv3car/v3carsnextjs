@@ -46,6 +46,10 @@ export const homeModuleApi = createApi({
       query: () =>
         `/home/latest-reviews?limit=20`,
     }),
+    getHeroBanners: builder.query<Response, void>({
+      query: () =>
+        `/home/hero-banners`,
+    }),
   }),
 });
 
@@ -57,4 +61,5 @@ export const {
   useGetCarByBodyTypeQuery,
   useGetCarByPriceQuery,
   useGetExpertCarReviewsQuery,
+  useGetHeroBannersQuery,
 } = homeModuleApi;

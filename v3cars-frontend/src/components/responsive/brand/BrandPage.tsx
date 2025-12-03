@@ -7,7 +7,7 @@ import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
 import BrandOverview from "@/components/responsive/brand/BrandAboutBlock";
 import BrandInfoTable from "@/components/responsive/brand/BrandInfoTable";
 import BrandPriceTable from "@/components/responsive/brand/BrandPriceTable";
-import BrandSelector from '@/components/responsive/brand/BrandSelector';
+import BrandSelector, { CarBrand } from '@/components/responsive/brand/BrandSelector';
 import DiscontinuedCarList from "@/components/responsive/brand/DiscontinuedCarList";
 import SimilarBrands from "@/components/responsive/brand/SimilarBrands";
 import LatestVideos from "@/components/responsive/home/LatestVideos";
@@ -15,7 +15,9 @@ import useIsMobile from "@/hooks/useIsMobile";
 import { useGetBrandsByIdQuery, useGetBrandsQuery, useGetDiscontinuedModelQuery, useGetModelsQuery } from "@/redux/api/carModuleApi";
 import { useGetLatestCarNewsQuery } from "@/redux/api/homeModuleApi";
 import { useGetLatestVideosQuery } from "@/redux/api/videosModuleApi";
-import { useState } from "react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface CarBrandDetail {
     brandId: number;
@@ -66,83 +68,107 @@ export default function BrandPage({ type }: PageProps) {
 
     const latestVideos = latestVideosData?.rows ?? []
     const latestCarNews = latestCarNewsData?.rows ?? [];
-    const brands = brandsData?.rows ?? [];
+    const brands: CarBrand[] = brandsData?.rows ?? [];
     const brandsById: CarBrandDetail | null = brandsByIdData?.data ?? null;
     const models = modelsData?.rows ?? [];
     const discontinuedModel = discontinuedModelData?.rows ?? [];
     const isMobile = useIsMobile()
 
     console.log(upcomingCount);
-    console.log(type);
-    
+
+    useEffect(() => {
+        if (!brands.length) return;
+
+        const foundBrand = brands.find(
+            (b) => b.brandSlug?.toLowerCase() === type?.toLowerCase()
+        );
+
+        if (!foundBrand) {
+            notFound();
+            return;
+        }
+        setSelectBrand(foundBrand.brandId);
+
+    }, [type, brands]);
 
     return (
-        <div className="lg:p-8 p-4">
-            <div className="flex gap-5 flex-col lg:flex-row  overflow-hidden w-full lg:app-container mx-auto">
-                <div className="flex flex-col lg:flex-row gap-5 w-full">
-                    {/* Sidebar */}
-                    <div className="w-auto lg:w-[25%] bg-black border dark:border-[#2E2E2E] p-5 rounded-xl">
-
-                        <BrandSelector data={brands} setSelectBrand={setSelectBrand} selectBrand={selectBrand} />
-
-                        <BrandInfoTable
-                            brandName={brandsById ? brandsById?.brandName : "Cars"}
-                            data={brandsById}
-                        />
-
-                        <SimilarBrands brands={brands} />
-
-                        <DiscontinuedCarList title={`Discontinued ${brandsById ? brandsById?.brandName : "Cars"} Cars`} cars={discontinuedModel} />
-
+        <>
+            <div className="bg-[#18181b] text-white">
+                <div className="px-4 xl:px-10">
+                    <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center gap-2">
+                        <Link href="/" className="hover:underline">Home</Link>
+                        <span className="text-primary">›</span>
+                        <span className="font-medium text-primary capitalize">{type}</span>
                     </div>
-
-                    <div className="w-auto lg:max-w-[75%] space-y-10">
-
-                        <BrandOverview description={brandsById?.introContent ?? "Descripation"} />
-
-                        <BrandPriceTable title={`${brandsById ? brandsById?.brandName : "Cars"} Cars price list`} cars={models} />
-
-                        <div>
-                            <p className="text-3xl font-bold mb-5">{brandsById ? brandsById?.brandName : "Cars"} Cars In India</p>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
-                                <CurrentOffersCard data={models} />
-                            </div>
-                        </div>
-
-                        <LatestVideos
-                            title="Latest Videos"
-                            data={latestVideos}
-                            link="/car-review-videos"
-                        />
-
-                        {isMobile ? <MobileLatestCarNews
-                            title="Latest Car News"
-                            view="Latest News"
-                            data={latestCarNews}
-                            link="/news"
-                        />
-                            :
-                            <div className="w-full">
-                                <CommonNewsUpdate
-                                    title="Latest Car News"
-                                    view="Latest News"
-                                    newsList={latestCarNews}
-                                    link={"/news"}
-                                />
-                            </div>
-                        }
-
-                        <UpcomingCarInIndia
-                            title={`Upcoming Cars In India`}
-                            setUpcomingCount={setUpcomingCount}
-                        />
-
-                    </div>
-
                 </div>
             </div>
-        </div>
 
+            <div className="lg:p-8 p-4">
+                <div className="flex gap-5 flex-col lg:flex-row  overflow-hidden w-full lg:app-container mx-auto">
+                    <div className="flex flex-col lg:flex-row gap-5 w-full">
+                        {/* Sidebar */}
+                        <div className="w-auto lg:w-[25%] bg-black border dark:border-[#2E2E2E] p-5 rounded-xl">
+
+                            <BrandSelector data={brands} setSelectBrand={setSelectBrand} selectBrand={selectBrand} />
+
+                            <BrandInfoTable
+                                brandName={brandsById ? brandsById?.brandName : "Cars"}
+                                data={brandsById}
+                            />
+
+                            <SimilarBrands brands={brands} />
+
+                            <DiscontinuedCarList title={`Discontinued ${brandsById ? brandsById?.brandName : "Cars"} Cars`} cars={discontinuedModel} />
+
+                        </div>
+
+                        <div className="w-auto lg:max-w-[75%] space-y-10">
+
+                            <BrandOverview description={brandsById?.introContent ?? "Descripation"} />
+
+                            <BrandPriceTable title={`${brandsById ? brandsById?.brandName : "Cars"} Cars price list`} cars={models} />
+
+                            <div>
+                                <p className="text-3xl font-bold mb-5">{brandsById ? brandsById?.brandName : "Cars"} Cars In India</p>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-white dark:bg-transparent border border-[#DEE2E6] dark:border-[#2E2E2E] rounded-xl">
+                                    <CurrentOffersCard data={models} />
+                                </div>
+                            </div>
+
+                            <LatestVideos
+                                title="Latest Videos"
+                                data={latestVideos}
+                                link="/car-review-videos"
+                            />
+
+                            {isMobile ? <MobileLatestCarNews
+                                title="Latest Car News"
+                                view="Latest News"
+                                data={latestCarNews}
+                                link="/news"
+                            />
+                                :
+                                <div className="w-full">
+                                    <CommonNewsUpdate
+                                        title="Latest Car News"
+                                        view="Latest News"
+                                        newsList={latestCarNews}
+                                        link={"/news"}
+                                    />
+                                </div>
+                            }
+
+                            <UpcomingCarInIndia
+                                title={`Upcoming Cars In India`}
+                                setUpcomingCount={setUpcomingCount}
+                            />
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </>
     );
 }

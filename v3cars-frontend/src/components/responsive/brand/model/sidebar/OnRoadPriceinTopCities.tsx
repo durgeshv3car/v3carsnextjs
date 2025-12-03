@@ -35,7 +35,7 @@ interface OnRoadPriceinTopCitiesProps {
 
 function OnRoadPriceinTopCities({ title, type, slug }: OnRoadPriceinTopCitiesProps) {
     const { data: topCitiesData } = useGetTopCitiesQuery();
-    const topCities: City[] = topCitiesData?.rows ?? [];
+    const topCities: City[] = topCitiesData?.rows ?? [];    
 
     return (
         <div className="rounded-xl border border-gray-300 dark:border-[#2E2E2E] overflow-hidden h-fit w-full">
@@ -45,15 +45,16 @@ function OnRoadPriceinTopCities({ title, type, slug }: OnRoadPriceinTopCitiesPro
             </div>
 
             {/* List */}
-            <ul className="divide-y divide-gray-200 dark:divide-[#2E2E2E] bg-white dark:bg-[#171717] overflow-y-auto scrollbar-thin-yellow">
+            <ul className="divide-y divide-gray-200 dark:divide-[#2E2E2E] bg-white dark:bg-[#171717] h-[400px] overflow-y-auto scrollbar-thin-yellow">
                 {topCities && topCities.map((item, index) => (
                     <li key={index}>
-                        <Link href={`${type}/${slug}/on-road-price-in-${toSlug(item.cityName)}`} className="p-4 cursor-pointer flex items-center gap-2 text-[13px] hover:underline">
+                        <Link href={`/${type}/${slug}/on-road-price-in-${toSlug(item.cityName)}`} className="p-4 cursor-pointer flex items-start gap-2 text-[14px] hover:underline">
                             <Image
                                 src="/logo/v3.svg"
                                 alt="v3car"
                                 width={16}
                                 height={16}
+                                className="mt-[3px]"
                             />
                             Check {title} On-Road Price In {item.cityName}
                         </Link>

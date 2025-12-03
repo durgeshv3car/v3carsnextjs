@@ -104,7 +104,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
         <div className="space-y-10">
             {
                 activeTab === "Overview" ?
-                    <Overview city={selectedCity.cityName} modelDetails={modelDetails} />
+                    <Overview type={type} slug={slug} city={selectedCity.cityName} modelDetails={modelDetails} />
                     : activeTab === "Price" ?
                         <CommonModelTopSection
                             title={`${modelDetails?.model?.brand?.name}`}
@@ -252,7 +252,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                     className={`${tab === activeTab
                                         ? "border-b-4 border-primary"
                                         : "hover:text-primary text-gray-400 hover:border-b-4 hover:border-primary"
-                                        } pb-2 transition whitespace-nowrap`}
+                                        } pb-2 px-2 transition whitespace-nowrap`}
                                 >
                                     {tab}
                                 </Link>
@@ -263,7 +263,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                                     className={`${tab === activeTab
                                         ? "border-b-4 border-primary"
                                         : "hover:text-primary text-gray-400 hover:border-b-4 hover:border-primary"
-                                        } pb-2 transition whitespace-nowrap`}
+                                        } pb-2 px-2 transition whitespace-nowrap`}
                                 >
                                     {tab}
                                 </button>
@@ -275,7 +275,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
                 <div className="relative inline-block">
                     <button
                         onClick={() => setDropDownTab(!dropDownTab)}
-                        className={`pb-2 border-b-4 border-transparent hover:border-primary transition whitespace-nowrap flex items-center gap-2 text-gray-400`}
+                        className={`pb-2 px-2 border-b-4 border-transparent hover:border-primary transition whitespace-nowrap flex items-center gap-2 text-gray-400`}
                     >
                         Others
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`size-4 transform transition-transform duration-300 ${dropDownTab ? "rotate-180" : "rotate-0"}`}>

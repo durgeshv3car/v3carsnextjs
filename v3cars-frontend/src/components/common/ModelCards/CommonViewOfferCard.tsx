@@ -94,10 +94,14 @@ const CommonViewOfferCard: React.FC<CommonViewOfferCardProps> = ({ title, desc, 
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
-        handleScroll();
+
+        requestAnimationFrame(() => {
+            handleScroll();
+        });
+
         container.addEventListener('scroll', handleScroll);
         return () => container.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [carList]);
 
     return (
         <div className="space-y-3 mt-4">

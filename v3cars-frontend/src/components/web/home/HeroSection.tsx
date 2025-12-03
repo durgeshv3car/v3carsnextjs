@@ -10,6 +10,7 @@ import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { setBodyTypeIds, setBrandIds, setPriceBucket } from '@/redux/slices/advanceSearchSlice';
+import { useGetHeroBannersQuery } from '@/redux/api/homeModuleApi';
 
 // Dummy Slides
 const slides = [
@@ -96,12 +97,15 @@ interface AllVehicleTypes {
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, data, models }) => {
+  const { data: heroBannerData } = useGetHeroBannersQuery()
   const [modelId, setModelId] = useState<number | null>(null)
   const [budget, setBudget] = useState<string>("")
   const [vehicleType, setVehicleType] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState('budget');
   const router = useRouter()
   const dispatch = useDispatch();
+
+  console.log(heroBannerData);
 
   function normalizeBrandName(name: string) {
     const lower = name.toLowerCase();
