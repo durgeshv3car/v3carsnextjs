@@ -24,6 +24,9 @@ interface BrandSelectorProps {
 }
 
 export default function BrandSelector({ data, setSelectBrand, selectBrand }: BrandSelectorProps) {
+
+  console.log(setSelectBrand);
+  
   const router = useRouter()
 
   function normalizeBrandName(name: string) {

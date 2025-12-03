@@ -1,6 +1,5 @@
 'use client'
 
-import { IMAGE_URL } from "@/utils/constant";
 import React from "react";
 
 interface ModelComparisonSimilarCarsProps {
@@ -193,6 +192,9 @@ const convertToLakhFormat = (price: number) => {
 // 👉 Component
 // ----------------------------
 export default function ModelComparisonSimilarCars({ model, slug }: ModelComparisonSimilarCarsProps) {
+
+    console.log(slug);
+    
 
     return (
         <div>

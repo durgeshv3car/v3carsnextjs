@@ -22,9 +22,8 @@ import CompetitorsPage from "./competitors/CompetitorsPage";
 import ImagesPage from "./images/ImagesPage";
 import MainMaintenanceComponent from "./maintenance-cost/MainMaintenanceComponent";
 import MainOwnershipComponent from "./cost-of-ownership/MainOwnershipComponent";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { convertToSlug } from "./overview/PriceListTable";
-import { setSelectedCity } from "@/redux/slices/commonSlice";
 
 interface DynmicModelSlugProps {
     type: string;
@@ -32,31 +31,10 @@ interface DynmicModelSlugProps {
     childSlug: string;
 }
 
-const slugMapping: Record<string, string> = {
-    "price-in-jaipur": "Price",
-    "which-variant-to-buy": "Variants",
-    "dimensions": "Dimensions",
-    "csd-price": "CSD Price",
-    "mileage": "Mileage",
-    "news": "News",
-    "pros-cons": "Pros Cons",
-    "offers-discounts": "Offers Discounts",
-    "monthly-sales": "Monthly Sales",
-    "reviews": "Reviews",
-    "videos": "Videos",
-    "engine-specifications": "Specifications Features",
-    "colors": "Colors",
-    "competitors": "Competitors",
-    "images": "Images",
-    "maintenance-cost": "Maintenance Cost",
-    "cost-of-ownership": "Cost Of Ownership",
-};
-
 function DynmicModelSlug({ type, slug, childSlug }: DynmicModelSlugProps) {
     const activeTab = useSelector((state: RootState) => state.carModelSlice.activeTab);
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouter()
 
     const slugMapping: Record<string, string> = {
         [`price-in-${convertToSlug(selectedCity.cityName)}`]: "Price",
