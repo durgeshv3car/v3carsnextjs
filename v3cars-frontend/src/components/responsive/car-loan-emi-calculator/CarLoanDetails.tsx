@@ -1,6 +1,9 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
+import { FaLocationArrow } from 'react-icons/fa';
+import { IoPrintOutline } from 'react-icons/io5';
+import { TiLocationArrow } from 'react-icons/ti';
 import { Bar, BarChart, CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 interface MonthlyRow {
@@ -154,7 +157,7 @@ export default function CarLoanRepaymentDetails({ principal, annualInterestRate,
           <tbody>
             {yearlyData.map(row => (
               <tr key={row.year} className="border-b dark:border-[#2E2E2E] text-center">
-                <td className="px-3 py-2 border-r dark:border-[#2E2E2E] cursor-pointer" onClick={()=>{setOpenModel(!openModel)}}>{row.year}</td>
+                <td className="px-3 py-2 border-r dark:border-[#2E2E2E] cursor-pointer" onClick={() => { setOpenModel(!openModel) }}>{row.year}</td>
                 <td className="px-3 py-2 border-r dark:border-[#2E2E2E]">₹ {row.principal.toLocaleString("en-IN")}</td>
                 <td className="px-3 py-2 border-r dark:border-[#2E2E2E]">₹ {row.interest.toLocaleString("en-IN")}</td>
                 <td className="px-3 py-2 border-r dark:border-[#2E2E2E]">₹ {row.totalPayment.toLocaleString("en-IN")}</td>
@@ -164,6 +167,22 @@ export default function CarLoanRepaymentDetails({ principal, annualInterestRate,
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className='flex flex-col justify-center items-center gap-2'>
+        <h2 className='font-bold'>Want to save or share your EMI calculation?</h2>
+        <p>Print this repayment summary or share a custom link with all your numbers pre-filled.</p>
+        <div className='flex items-center gap-4'>
+          <button className='flex items-center gap-2 bg-primary px-6 py-3 rounded-lg shadow-md text-sm text-black'>
+            <IoPrintOutline size={16} />
+            Print
+          </button>
+
+          <button className='flex items-center gap-2 bg-primary px-6 py-3 rounded-lg shadow-md text-sm text-black'>
+            <FaLocationArrow />
+            Share
+          </button>
+        </div>
       </div>
     </div>
   );

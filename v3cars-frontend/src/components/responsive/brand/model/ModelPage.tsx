@@ -61,7 +61,7 @@ interface ModelPageProps {
 
 export default function ModelPage({ type, slug }: ModelPageProps) {
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
-    const [fuelType, setFuelType] = useState<string>("petrol")
+    const [fuelType, setFuelType] = useState<string>("")
     const [transmissionType, setTransmissionType] = useState<string>("")
     const { data: modelDetailsData, isLoading } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelDetailByFuelTypeData } =

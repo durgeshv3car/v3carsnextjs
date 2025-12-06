@@ -159,10 +159,19 @@ export const carModuleApi = createApi({
         }),
         getModelDetailByFuelType: builder.query<Response, { model_slug: string, cityId: number, fuelType?: string, transmissionType?: string }>({
             query: ({ model_slug, cityId, fuelType, transmissionType }: { model_slug: string; cityId: number; fuelType?: string, transmissionType?: string }) => {
-                const url = `/cars/models/${model_slug}/price-list?cityId=${cityId}&fuelType=${fuelType}`;
-                return fuelType && transmissionType
-                    ? `${url}&transmissionType=${transmissionType}`
-                    : url;
+                const url = `/cars/models/${model_slug}/price-list?cityId=${cityId}`;
+
+                const params: string[] = [];
+
+                if (fuelType !== undefined && fuelType !== null && fuelType !== "") {
+                    params.push(`fuelType=${fuelType}`);
+                }
+
+                if (transmissionType !== undefined && transmissionType !== null && transmissionType !== "") {
+                    params.push(`transmissionType=${transmissionType}`);
+                }
+
+                return params.length ? `${url}&${params.join("&")}` : url;
             }
         }),
 
@@ -219,7 +228,7 @@ export const carModuleApi = createApi({
             query: ({ model_slug }) => `/cars/models/${model_slug}/competitors`,
         }),
 
-        getPriceListDetails: builder.query<PriceListDetailsResponse, { model_slug: string, cityId: number, fuelType?: string, variantId?: number, transmissionType?: string }>({
+        getPriceListDetails: builder.query<PriceListDetailsResponse, { model_slug: string | number, cityId: number, fuelType?: string, variantId?: number, transmissionType?: string }>({
             query: ({
                 model_slug,
                 cityId,
@@ -227,7 +236,7 @@ export const carModuleApi = createApi({
                 variantId,
                 transmissionType
             }: {
-                model_slug: string,
+                model_slug: string | number,
                 cityId: number,
                 fuelType?: string,
                 variantId?: number,

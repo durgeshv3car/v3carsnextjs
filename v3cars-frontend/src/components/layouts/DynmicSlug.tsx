@@ -7,6 +7,7 @@ import StatePage from "../responsive/pages/StatePage";
 import ModelPage from "../responsive/brand/model/ModelPage";
 import DynmicModelSlug from "../responsive/brand/model/DynmicModelSlug";
 import BrandPage from "../responsive/brand/BrandPage";
+import ModelOnRoadPrice from "../responsive/brand/model/ModelOnRoadPrice";
 
 type Params = {
     slug?: string[];
@@ -39,6 +40,13 @@ export default function DynmicSlug() {
         const fuelType = slug[1].replace("-price", "");
         if (!fuelType) return notFound();
         return <StatePage type={slug[0]} fuelType={fuelType} />;
+    }
+
+    //  /type/model/on-road-price-in
+    if (slug[2]?.startsWith("on-road-price-in-")) {
+        const city = slug[2].replace("on-road-price-in-", "");
+
+        return <ModelOnRoadPrice type={slug[0]} slug={slug[1]} cityName={city} />
     }
 
     //  /type/model/child
