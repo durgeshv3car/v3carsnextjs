@@ -161,4 +161,94 @@ export class VariantsService {
         const ttlMs = 30 * 60 * 1000;
         return withCache(key, async () => repo.findByIds(ids), ttlMs);
     }
+    async bestByModelId(modelId, filter) {
+        // pull all variants of the model
+        const all = await this.listByModelId(modelId);
+        // helper: Prisma Decimal -> number (or 0)
+        const toNum = (x) => (x == null ? 0 : Number(x));
+        const byPt = new Map();
+        for (const v of all) {
+            if (!v.modelPowertrainId)
+                continue;
+            if (filter?.powertrainId && v.modelPowertrainId !== filter.powertrainId)
+                continue;
+            const band = extractPriceBand(v.variantPrice ?? '');
+            const priceMin = band?.min ?? null;
+            const priceMax = band?.max ?? null;
+            const arr = byPt.get(v.modelPowertrainId) ?? [];
+            arr.push({ ...v, priceMin, priceMax });
+            byPt.set(v.modelPowertrainId, arr);
+        }
+        if (!byPt.size)
+            return [];
+        // choose best per powertrain:
+        // 1) lowest vfmRank (NULLs last), 2) highest vfmValue, 3) lowest priceMin
+        const rankVal = (n) => n == null ? Number.POSITIVE_INFINITY : n;
+        const ptIds = Array.from(byPt.keys());
+        const ptMeta = ptIds.length ? await powertrains.findByIds(ptIds) : [];
+        const ptMap = new Map(ptMeta.map(p => [p.modelPowertrainId, p]));
+        // optional meta filters (case-insensitive)
+        const wantFuel = filter?.fuelType?.trim().toLowerCase();
+        const wantTrans = filter?.transmissionType?.trim().toLowerCase();
+        if (wantFuel || wantTrans) {
+            for (const [ptId] of Array.from(byPt.entries())) {
+                const meta = ptMap.get(ptId);
+                const fuelOk = !wantFuel || (meta?.fuelType ?? '').toLowerCase() === wantFuel;
+                const transOk = !wantTrans || (meta?.transmissionType ?? '').toLowerCase() === wantTrans;
+                if (!(fuelOk && transOk))
+                    byPt.delete(ptId);
+            }
+            if (!byPt.size)
+                return [];
+        }
+        const result = [];
+        for (const [ptId, arr] of byPt.entries()) {
+            arr.sort((a, b) => {
+                const r = rankVal(a.vfmRank) - rankVal(b.vfmRank);
+                if (r !== 0)
+                    return r;
+                const v = toNum(b.vfmValue) - toNum(a.vfmValue); // Decimal → number
+                if (v !== 0)
+                    return v;
+                const p = (a.priceMin ?? Number.POSITIVE_INFINITY) -
+                    (b.priceMin ?? Number.POSITIVE_INFINITY);
+                if (p !== 0)
+                    return p;
+                return (a.variantId ?? 0) - (b.variantId ?? 0);
+            });
+            const best = arr[0];
+            const pt = ptMap.get(ptId);
+            result.push({
+                powertrain: pt
+                    ? {
+                        id: pt.modelPowertrainId,
+                        fuelType: pt.fuelType ?? null,
+                        transmissionType: pt.transmissionType ?? null,
+                        label: pt.powerTrain ?? [pt.fuelType, pt.transmissionType].filter(Boolean).join(' '),
+                    }
+                    : { id: ptId, fuelType: null, transmissionType: null, label: null },
+                variant: {
+                    variantId: best.variantId ?? null,
+                    name: best.variantName ?? null,
+                    exShowroom: best.priceMin ?? null,
+                    exShowroomMax: best.priceMax ?? null,
+                    vfmValue: best.vfmValue == null ? null : Number(best.vfmValue), // Decimal → number
+                    vfmRank: best.vfmRank == null ? null : Number(best.vfmRank),
+                    recommendation: best.variantRecommendation ?? null,
+                    updatedDate: best.updatedDate ?? null,
+                },
+            });
+        }
+        // stable order by fuel → transmission → price
+        result.sort((a, b) => {
+            const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '');
+            if (af !== 0)
+                return af;
+            const at = (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '');
+            if (at !== 0)
+                return at;
+            return (a.variant.exShowroom ?? Number.POSITIVE_INFINITY) - (b.variant.exShowroom ?? Number.POSITIVE_INFINITY);
+        });
+        return result;
+    }
 }

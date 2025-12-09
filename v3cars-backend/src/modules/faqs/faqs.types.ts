@@ -1,8 +1,12 @@
+
+
 export type FaqSort =
   | 'sequence_asc'
   | 'latest'
   | 'id_asc'
   | 'id_desc';
+
+
 
 export interface FaqsListQuery {
   moduleId: number;       // required
@@ -15,3 +19,5 @@ export interface FaqsListQuery {
   pageType?: number;      // 1 | 2 | 3 | 4
   fuelType?: 1 | 2 | 3;   // 1=Petrol, 2=Diesel, 3=CNG (optional)
 }
+
+

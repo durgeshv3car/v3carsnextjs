@@ -26,10 +26,10 @@ function buildEvScope(modelIds, fuelType) {
         conds.push(b);
     if (!conds.length)
         return Prisma.empty;
-    // 🔧 IMPORTANT: use string separator for Prisma.join to avoid TS error
     return Prisma.sql ` AND ( ${Prisma.join(conds, ' OR ')} ) `;
 }
 export class ContentRepo {
+    // -------- Site-wide (unchanged) --------
     async getToday(contentType, modelIds, fuelType) {
         const rows = await prisma.$queryRaw(Prisma.sql `
       SELECT id, title, pageUrl, publishDateandTime, shortDescription,
@@ -108,6 +108,102 @@ export class ContentRepo {
       LIMIT ${limit}
     `);
     }
+    // -------- By-model (FIXED ALIASES) --------
+    /** latest single strictly tagged to model via tbltagging */
+    async getTodayByModel(contentType, modelId) {
+        const rows = await prisma.$queryRaw(Prisma.sql `
+      SELECT a.id, a.title, a.pageUrl, a.publishDateandTime, a.shortDescription,
+             a.thumbnailAltText, a.thumbnailUrl, a.authorId
+      FROM tblcontents AS a
+      LEFT JOIN tbltagging AS t ON t.contentId = a.id
+      WHERE a.contentType = ${contentType}
+        AND a.publishDateandTime <= NOW()
+        AND a.contentPublishType IN (1,2)
+        AND a.contentPublishStatus = 2
+        AND t.mbId = ${modelId}
+        AND t.type = 1
+        AND t.tagContentType = 0
+      ORDER BY a.publishDateandTime DESC, a.id DESC
+      LIMIT 1
+    `);
+        return rows[0] ?? null;
+    }
+    async listLatestByModel(contentType, modelId, limit = 9, excludeId) {
+        return prisma.$queryRaw(Prisma.sql `
+      SELECT a.id, a.title, a.pageUrl, a.publishDateandTime, a.shortDescription,
+             a.thumbnailAltText, a.thumbnailUrl, a.authorId
+      FROM tblcontents AS a
+      LEFT JOIN tbltagging AS t ON t.contentId = a.id
+      WHERE a.contentType = ${contentType}
+        AND a.publishDateandTime <= NOW()
+        AND a.contentPublishType IN (1,2)
+        AND a.contentPublishStatus = 2
+        ${excludeId ? Prisma.sql ` AND a.id <> ${excludeId} ` : Prisma.empty}
+        AND t.mbId = ${modelId}
+        AND t.type = 1
+        AND t.tagContentType = 0
+      ORDER BY a.publishDateandTime DESC, a.id DESC
+      LIMIT ${limit}
+    `);
+    }
+    async listTrendingByModel(contentType, modelId, limit = 9) {
+        return prisma.$queryRaw(Prisma.sql `
+      SELECT a.id, a.title, a.pageUrl, a.publishDateandTime, a.shortDescription,
+             a.thumbnailAltText, a.thumbnailUrl, a.authorId
+      FROM tblcontents AS a
+      LEFT JOIN tbltagging AS t ON t.contentId = a.id
+      WHERE a.contentType = ${contentType}
+        AND a.contentPublishType IN (1,2)
+        AND a.contentPublishStatus = 2
+        AND t.mbId = ${modelId}
+        AND t.type = 1
+        AND t.tagContentType = 0
+      ORDER BY a.last_15days_view DESC, a.id DESC
+      LIMIT ${limit}
+    `);
+    }
+    async listTopByModel(contentType, modelId, limit = 9) {
+        return prisma.$queryRaw(Prisma.sql `
+      SELECT a.id, a.title, a.pageUrl, a.publishDateandTime, a.shortDescription,
+             a.thumbnailAltText, a.thumbnailUrl, a.authorId
+      FROM tblcontents AS a
+      LEFT JOIN tbltagging AS t ON t.contentId = a.id
+      WHERE a.contentType = ${contentType}
+        AND a.contentPublishType IN (1,2)
+        AND a.contentPublishStatus = 2
+        AND t.mbId = ${modelId}
+        AND t.type = 1
+        AND t.tagContentType = 0
+      ORDER BY a.last_30days_view DESC, a.id DESC
+      LIMIT ${limit}
+    `);
+    }
+    async listPopularByModel(contentType, modelId, limit = 9) {
+        return prisma.$queryRaw(Prisma.sql `
+      SELECT
+        a.id,
+        a.title,
+        a.pageUrl,
+        a.shortDescription,
+        a.thumbnailAltText,
+        a.thumbnailUrl,
+        a.authorId,
+        a.publishDateandTime,
+        CAST(a.uniqueUsers AS UNSIGNED) AS NumView
+      FROM tblcontents AS a
+      LEFT JOIN tbltagging AS t ON t.contentId = a.id
+      WHERE a.contentType = ${contentType}
+        AND a.publishDateandTime <= NOW()
+        AND a.contentPublishType IN (1,2)
+        AND a.contentPublishStatus = 2
+        AND t.mbId = ${modelId}
+        AND t.type = 1
+        AND t.tagContentType = 0
+      ORDER BY NumView DESC, a.publishDateandTime DESC, a.id DESC
+      LIMIT ${limit}
+    `);
+    }
+    // helpers
     async findAuthorsByIds(ids) {
         if (!ids.length)
             return [];

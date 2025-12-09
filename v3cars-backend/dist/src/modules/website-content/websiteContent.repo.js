@@ -63,10 +63,6 @@ const insuranceSelect = {
     section10heading: true, section10Desc: true,
 };
 /* ---------- Authors (tblauthor) for moduleId=6 ---------- */
-/** IMPORTANT FIX:
- * When authorId is provided, DO NOT force status = 1.
- * Otherwise single-author fetch returns empty for inactive/NULL status authors.
- */
 function buildAuthorsWhere(q) {
     const where = {};
     if (typeof q.authorId === 'number') {

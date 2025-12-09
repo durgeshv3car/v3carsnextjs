@@ -18,14 +18,12 @@ export const priceQueryDto = paginationQuery.merge(z.object({
         .enum(['popular', 'latest', 'price_asc', 'price_desc', 'name_asc', 'name_desc'])
         .optional(),
 }));
+export const homeHeroBannersDto = z.object({
+    limit: z.coerce.number().int().positive().max(50).default(6).optional(),
+});
 /** News widget */
 export const homeLatestNewsDto = z.object({
     limit: z.coerce.number().int().positive().max(50).default(9).optional(),
-    excludeToday: z.union([z.literal('1'), z.literal('0')]).transform((v) => v === '1').optional(),
-});
-/** Reviews widget */
-export const homeLatestReviewsDto = z.object({
-    limit: z.coerce.number().int().positive().max(50).default(6).optional(),
     excludeToday: z.union([z.literal('1'), z.literal('0')]).transform((v) => v === '1').optional(),
 });
 /** 🆕 Latest videos (global) */
@@ -34,6 +32,10 @@ export const homeLatestVideosDto = z.object({
 });
 /** 🆕 Variants Explained (articles) */
 export const homeLatestVariantExplainedDto = z.object({
+    limit: z.coerce.number().int().positive().max(50).default(6).optional(),
+    excludeToday: z.union([z.literal('1'), z.literal('0')]).transform((v) => v === '1').optional(),
+});
+export const homeLatestReviewsDto = z.object({
     limit: z.coerce.number().int().positive().max(50).default(6).optional(),
     excludeToday: z.union([z.literal('1'), z.literal('0')]).transform((v) => v === '1').optional(),
 });

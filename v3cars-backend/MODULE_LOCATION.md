@@ -93,8 +93,6 @@ Response shape (list)
   "totalPages": 6
 }
 
-
-
 `States`
 
 List:
@@ -112,7 +110,6 @@ Today-fuel flag:
 Detail:
 /v1/locations/states/7
 
-
 `Countries`
 
 List:
@@ -127,14 +124,11 @@ Search:
 Detail:
 /v1/locations/countries/101
 
-
-
 `Disrticts`
 
 Search (q filter) in a state:
 
 GET /v1/locations/districts?stateId=29&q=jaipur&limit=20&page=1
-
 
 Only popular ranks (any of 1..4), ordered by rank then name:
 

@@ -1,7 +1,6 @@
 import { env } from '../../config/env.js';
 import { ContentRepo } from './content.repo.js';
 import { PowertrainsService } from '../cars/powertrains/powertrains.service.js';
-// 🔑 Cache façade
 import { withCache, cacheKey } from '../../lib/cache.js';
 const repo = new ContentRepo();
 const powertrains = new PowertrainsService();
@@ -41,15 +40,14 @@ export class ContentService {
         const ft = fuelType?.trim();
         if (!ft)
             return undefined;
-        // NOTE: empty => undefined (so fallback title LIKE filters remain possible in repo)
         const ids = await powertrains.findModelIdsByFuel({ fuelType: ft });
         return ids.length ? ids : undefined;
     }
-    /** Single most-recent item for a contentType (e.g., NEWS) */
+    // -------------------- existing (site-wide) --------------------
     async today(contentType, q) {
         const ft = q?.fuelType?.trim() || undefined;
         const key = cacheKey({ ns: 'content:today', v: 1, type: contentType, fuelType: ft });
-        const ttlMs = 2 * 60 * 1000; // 2m — fresh but cacheable
+        const ttlMs = 2 * 60 * 1000;
         return withCache(key, async () => {
             const modelIds = await this.modelIdsForFuel(ft);
             const row = await repo.getToday(contentType, modelIds, ft);
@@ -59,20 +57,12 @@ export class ContentService {
             return card ?? null;
         }, ttlMs);
     }
-    /** Latest list (date DESC); optionally exclude the "today" item */
     async latest(contentType, q) {
         const limit = q.limit ?? 9;
         const ft = q.fuelType?.trim() || undefined;
-        const excludeToday = q.excludeToday !== false; // default true
-        const key = cacheKey({
-            ns: 'content:latest',
-            v: 1,
-            type: contentType,
-            limit,
-            excludeToday,
-            fuelType: ft,
-        });
-        const ttlMs = 3 * 60 * 1000; // 3m
+        const excludeToday = q.excludeToday !== false;
+        const key = cacheKey({ ns: 'content:latest', v: 1, type: contentType, limit, excludeToday, fuelType: ft });
+        const ttlMs = 3 * 60 * 1000;
         return withCache(key, async () => {
             const modelIds = await this.modelIdsForFuel(ft);
             let excludeId = undefined;
@@ -84,36 +74,22 @@ export class ContentService {
             return hydrate(rows);
         }, ttlMs);
     }
-    /** Trending (last_15days_view DESC) */
     async trending(contentType, q) {
         const limit = q.limit ?? 9;
         const ft = q.fuelType?.trim() || undefined;
-        const key = cacheKey({
-            ns: 'content:trending',
-            v: 1,
-            type: contentType,
-            limit,
-            fuelType: ft,
-        });
-        const ttlMs = 2 * 60 * 1000; // 2m
+        const key = cacheKey({ ns: 'content:trending', v: 1, type: contentType, limit, fuelType: ft });
+        const ttlMs = 2 * 60 * 1000;
         return withCache(key, async () => {
             const modelIds = await this.modelIdsForFuel(ft);
             const rows = await repo.listTrending(contentType, limit, modelIds, ft);
             return hydrate(rows);
         }, ttlMs);
     }
-    /** Top (last_30days_view DESC) */
     async top(contentType, q) {
         const limit = q.limit ?? 9;
         const ft = q.fuelType?.trim() || undefined;
-        const key = cacheKey({
-            ns: 'content:top',
-            v: 1,
-            type: contentType,
-            limit,
-            fuelType: ft,
-        });
-        const ttlMs = 5 * 60 * 1000; // 5m
+        const key = cacheKey({ ns: 'content:top', v: 1, type: contentType, limit, fuelType: ft });
+        const ttlMs = 5 * 60 * 1000;
         return withCache(key, async () => {
             const modelIds = await this.modelIdsForFuel(ft);
             const rows = await repo.listTop(contentType, limit, modelIds, ft);
@@ -123,17 +99,65 @@ export class ContentService {
     async popular(contentType, q) {
         const limit = q.limit ?? 9;
         const ft = q.fuelType?.trim() || undefined;
-        const key = cacheKey({
-            ns: 'content:popular',
-            v: 1,
-            type: contentType,
-            limit,
-            fuelType: ft,
-        });
-        const ttlMs = 2 * 60 * 1000; // 2m
+        const key = cacheKey({ ns: 'content:popular', v: 1, type: contentType, limit, fuelType: ft });
+        const ttlMs = 2 * 60 * 1000;
         return withCache(key, async () => {
-            const modelIds = await this.modelIdsForFuel(ft); // returns undefined or ids (empty → undefined)
+            const modelIds = await this.modelIdsForFuel(ft);
             const rows = await repo.listPopular(contentType, limit, modelIds, ft);
+            return hydrate(rows);
+        }, ttlMs);
+    }
+    // -------------------- NEW: strict-by-modelId via tbltagging --------------------
+    async todayForModel(contentType, modelId) {
+        const key = cacheKey({ ns: 'content:today:model', v: 1, type: contentType, modelId });
+        const ttlMs = 2 * 60 * 1000;
+        return withCache(key, async () => {
+            const row = await repo.getTodayByModel(contentType, modelId);
+            if (!row)
+                return null;
+            const [card] = await hydrate([row]);
+            return card ?? null;
+        }, ttlMs);
+    }
+    async latestForModel(contentType, modelId, q) {
+        const limit = q.limit ?? 15;
+        const excludeToday = q.excludeToday !== false;
+        const key = cacheKey({ ns: 'content:latest:model', v: 1, type: contentType, modelId, limit, excludeToday });
+        const ttlMs = 3 * 60 * 1000;
+        return withCache(key, async () => {
+            let excludeId = undefined;
+            if (excludeToday) {
+                const today = await repo.getTodayByModel(contentType, modelId);
+                excludeId = today?.id;
+            }
+            const rows = await repo.listLatestByModel(contentType, modelId, limit, excludeId);
+            return hydrate(rows);
+        }, ttlMs);
+    }
+    async trendingForModel(contentType, modelId, q) {
+        const limit = q.limit ?? 9;
+        const key = cacheKey({ ns: 'content:trending:model', v: 1, type: contentType, modelId, limit });
+        const ttlMs = 2 * 60 * 1000;
+        return withCache(key, async () => {
+            const rows = await repo.listTrendingByModel(contentType, modelId, limit);
+            return hydrate(rows);
+        }, ttlMs);
+    }
+    async topForModel(contentType, modelId, q) {
+        const limit = q.limit ?? 9;
+        const key = cacheKey({ ns: 'content:top:model', v: 1, type: contentType, modelId, limit });
+        const ttlMs = 5 * 60 * 1000;
+        return withCache(key, async () => {
+            const rows = await repo.listTopByModel(contentType, modelId, limit);
+            return hydrate(rows);
+        }, ttlMs);
+    }
+    async popularForModel(contentType, modelId, q) {
+        const limit = q.limit ?? 9;
+        const key = cacheKey({ ns: 'content:popular:model', v: 1, type: contentType, modelId, limit });
+        const ttlMs = 2 * 60 * 1000;
+        return withCache(key, async () => {
+            const rows = await repo.listPopularByModel(contentType, modelId, limit);
             return hydrate(rows);
         }, ttlMs);
     }

@@ -1,7 +1,12 @@
 import { HomeService } from './home.service.js';
-import { upcomingQueryDto, quickLookQueryDto, bodyTypeQueryDto, priceQueryDto, homeLatestNewsDto, homeLatestReviewsDto, homeLatestVideosDto, homeLatestVariantExplainedDto, } from './home.dto.js';
+import { upcomingQueryDto, quickLookQueryDto, bodyTypeQueryDto, priceQueryDto, homeLatestNewsDto, homeLatestVideosDto, homeLatestVariantExplainedDto, homeHeroBannersDto, homeLatestReviewsDto } from './home.dto.js';
 const svc = new HomeService();
 export class HomeController {
+    async heroBanners(req, res) {
+        const q = homeHeroBannersDto.parse(req.query);
+        const rows = await svc.heroBanners(q);
+        res.json({ success: true, rows });
+    }
     async upcoming(req, res) {
         const q = upcomingQueryDto.parse(req.query);
         const data = await svc.upcoming(q);

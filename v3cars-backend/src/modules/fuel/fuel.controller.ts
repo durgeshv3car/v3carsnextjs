@@ -6,7 +6,7 @@ import {
   fuelMetrosQueryDto,
   fuelMonthlyTrendsQueryDto
 } from './fuel.dto.js';
-import { FuelService } from './fuel.service.js';
+import { FuelService } from './fuel.service.js';       
 
 const svc = new FuelService();
 
@@ -101,4 +101,9 @@ export class FuelController {
     const data = await svc.monthlyTrends(q as any);
     res.json({ success: true, ...data });
   }
+
+  
 }
+
+
+

@@ -41,14 +41,14 @@ export const modelPriceListQueryDto = paginationQuery.merge(
     priceType: z.enum(['ex', 'onroad', 'csd']).default('ex').optional(),
     cityId: z.coerce.number().int().positive().optional(),
     expandVariantId: z.coerce.number().int().positive().optional(), // return detailed breakup for this variant only
+    variantId: z.coerce.number().int().positive().optional(),       // 🆕 sirf ek variant ka data
     isLoan: z.union([z.literal('1'), z.literal('0')]).transform(v => v === '1').optional(),
     /** required when priceType = onroad | csd (frontend can ensure) */
     citySlug: z.string().trim().min(1).max(100).optional(),
     sortBy: z
       .enum(['price_asc', 'price_desc', 'latest', 'name_asc', 'name_desc'])
       .optional(),
-  })
-
+  }),
 );
 
 export const modelBestVariantQueryDto = z.object({
