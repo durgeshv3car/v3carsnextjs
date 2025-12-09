@@ -123,6 +123,7 @@ function MainOnRoadPriceComponent() {
 
                             <CommonFaqAccordion faqData={faqByModule} />
                         </div>
+                        
                         <div className="w-auto lg:min-w-[24%] space-y-6 lg:mt-12">
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
