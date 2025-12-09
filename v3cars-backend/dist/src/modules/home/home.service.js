@@ -4,12 +4,28 @@ import { ReviewsService } from '../reviews/reviews.service.js';
 import { ContentService } from '../content/content.service.js';
 import { CONTENT_TYPES } from '../content/content.constants.js';
 import { VideosService } from '../videos/videos.service.js';
+import { prisma } from '../../lib/prisma.js';
 const models = new ModelsService();
 const news = new NewsService();
 const reviews = new ReviewsService();
 const content = new ContentService();
 const videos = new VideosService();
 export class HomeService {
+    async heroBanners(q) {
+        const limit = q.limit ?? 6;
+        const rows = await prisma.tblwebhomebanner.findMany({
+            where: { status: 2 },
+            orderBy: { bannerId: 'desc' },
+            take: limit,
+            select: {
+                bannerId: true,
+                imagePath: true,
+                imageAltTag: true,
+                redirectLink: true,
+            },
+        });
+        return rows;
+    }
     upcoming(q) {
         return models.list({
             page: q.page ?? 1,

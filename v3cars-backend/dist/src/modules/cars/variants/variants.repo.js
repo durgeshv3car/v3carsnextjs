@@ -17,8 +17,16 @@ export class VariantsRepo {
             where,
             orderBy: [{ updatedDate: 'desc' }, { variantId: 'asc' }],
             select: {
-                variantId: true, variantName: true, modelId: true,
-                modelPowertrainId: true, variantPrice: true, updatedDate: true,
+                variantId: true,
+                variantName: true,
+                modelId: true,
+                modelPowertrainId: true,
+                variantPrice: true,
+                csdPrice: true, // 🆕 include CSD price
+                vfmValue: true,
+                vfmRank: true,
+                variantRecommendation: true,
+                updatedDate: true,
             },
         });
     }
@@ -26,16 +34,20 @@ export class VariantsRepo {
         return prisma.tblvariants.findFirst({
             where: { variantId: id },
             select: {
-                variantId: true, variantName: true, modelId: true,
-                modelPowertrainId: true, variantPrice: true, updatedDate: true,
+                variantId: true,
+                variantName: true,
+                modelId: true,
+                modelPowertrainId: true,
+                variantPrice: true,
+                csdPrice: true, // 🆕 include CSD price
+                vfmValue: true,
+                vfmRank: true,
+                variantRecommendation: true,
+                updatedDate: true,
             },
         });
     }
-    /** Compute price bands per model from ALL variants' string prices.
-     *  - Uses price parsing (₹ .. lakh/cr) → rupees
-     *  - Aggregates min/max across variants
-     *  - Applies 'snapApproxINR' (e.g., 4.99L → 5.00L)
-     */
+    /** Compute price bands per model from ALL variants' string prices. */
     async getPriceBandsByModelIds(modelIds) {
         const map = new Map();
         if (!modelIds?.length)
@@ -55,7 +67,6 @@ export class VariantsRepo {
             current.max = current.max == null ? band.max : Math.max(current.max, band.max);
             map.set(r.modelId, current);
         }
-        // Snap to clean values once per model
         for (const [modelId, band] of map.entries()) {
             map.set(modelId, {
                 min: snapApproxINR(band.min),
@@ -74,11 +85,15 @@ export class VariantsRepo {
                 modelId: true,
                 modelPowertrainId: true,
                 variantPrice: true,
+                csdPrice: true, // 🆕 include CSD price
+                vfmValue: true, // 🆕
+                vfmRank: true, // 🆕
+                variantRecommendation: true, // 🆕
                 updatedDate: true,
             },
         });
     }
-    /** Fetch variants by IDs (kept narrow select for consistency) */
+    /** Fetch variants by IDs */
     async findByIds(ids) {
         if (!ids?.length)
             return [];
@@ -91,6 +106,10 @@ export class VariantsRepo {
                 modelId: true,
                 modelPowertrainId: true,
                 variantPrice: true,
+                csdPrice: true, // 🆕 include CSD price
+                vfmValue: true, // 🆕
+                vfmRank: true, // 🆕
+                variantRecommendation: true, // 🆕
                 updatedDate: true,
             },
         });

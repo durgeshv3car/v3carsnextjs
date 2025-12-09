@@ -1,15 +1,22 @@
 import { Router } from 'express';
 import { VideosController } from './videos.controller.js';
-// (optional) cache headers middleware
 import { setCache } from '../../middlewares/cacheHeaders.js';
 const r = Router();
 const c = new VideosController();
-/** ⚠️ Fixed routes FIRST (so they don't get captured by :type) */
-r.get('/latest', setCache?.(180, 60) ?? ((_, __, next) => next()), (req, res) => c.latestGlobal(req, res)); // /v1/videos/latest (global)
-r.get('/popular', setCache?.(120, 60) ?? ((_, __, next) => next()), (req, res) => c.popularGlobal(req, res)); // /v1/videos/popular (global)
-/** Type-scoped routes: /v1/videos/:type/...  */
+// fixed global routes
+r.get('/latest', setCache?.(180, 60) ?? ((_, __, next) => next()), (req, res) => c.latestGlobal(req, res));
+r.get('/popular', setCache?.(120, 60) ?? ((_, __, next) => next()), (req, res) => c.popularGlobal(req, res));
+// type-scoped (global)
 r.get('/:type/today', setCache?.(120, 60) ?? ((_, __, next) => next()), (req, res) => c.today(req, res));
 r.get('/:type/latest', setCache?.(180, 60) ?? ((_, __, next) => next()), (req, res) => c.latest(req, res));
 r.get('/:type/trending', setCache?.(120, 60) ?? ((_, __, next) => next()), (req, res) => c.trending(req, res));
 r.get('/:type/top', setCache?.(300, 60) ?? ((_, __, next) => next()), (req, res) => c.top(req, res));
+// ✅ model-scoped (ID or SLUG supported now)
+// NOTE: param renamed to :modelIdOrSlug
+r.get('/model/:modelIdOrSlug/:type/today', setCache?.(120, 60) ?? ((_, __, next) => next()), (req, res) => c.modelToday(req, res));
+r.get('/model/:modelIdOrSlug/:type/latest', setCache?.(180, 60) ?? ((_, __, next) => next()), (req, res) => c.modelLatest(req, res));
+r.get('/model/:modelIdOrSlug/:type/trending', setCache?.(120, 60) ?? ((_, __, next) => next()), (req, res) => c.modelTrending(req, res));
+r.get('/model/:modelIdOrSlug/:type/top', setCache?.(300, 60) ?? ((_, __, next) => next()), (req, res) => c.modelTop(req, res));
+// popular across all types for a model
+r.get('/model/:modelIdOrSlug/popular', setCache?.(120, 60) ?? ((_, __, next) => next()), (req, res) => c.modelPopular(req, res));
 export const videosRouter = r;

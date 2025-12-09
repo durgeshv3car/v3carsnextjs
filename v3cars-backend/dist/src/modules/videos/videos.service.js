@@ -1,9 +1,7 @@
 import { env } from '../../config/env.js';
 import { VideosRepo } from './videos.repo.js';
-import { PowertrainsService } from '../cars/powertrains/powertrains.service.js';
 import { withCache, cacheKey } from '../../lib/cache.js';
 const repo = new VideosRepo();
-const powertrains = new PowertrainsService();
 function makeUrl(u) {
     if (!u)
         return null;
@@ -29,22 +27,15 @@ async function hydrate(rows) {
             : null,
     }));
 }
-async function modelIdsForFuel(fuelType) {
-    const ft = fuelType?.trim();
-    if (!ft)
-        return undefined;
-    const ids = await powertrains.findModelIdsByFuel({ fuelType: ft });
-    return ids.length ? ids : [-1];
-}
+// ------------------------
+// GLOBAL / TYPE-SCOPED (unchanged)
+// ------------------------
 export class VideosService {
-    async today(videoType, q) {
-        const ft = q?.fuelType?.trim() || undefined;
-        const authorId = q?.authorId;
-        const key = cacheKey({ ns: 'videos:today', v: 2, type: videoType, fuelType: ft, authorId }); // 🔺v bump
+    async today(videoType) {
+        const key = cacheKey({ ns: 'videos:today', v: 3, type: videoType });
         const ttlMs = 2 * 60 * 1000;
         return withCache(key, async () => {
-            const modelIds = await modelIdsForFuel(ft);
-            const row = await repo.getToday(videoType, modelIds, ft, authorId);
+            const row = await repo.getToday(videoType);
             if (!row)
                 return null;
             const [card] = await hydrate([row]);
@@ -53,76 +44,83 @@ export class VideosService {
     }
     async latest(videoType, q) {
         const limit = q.limit ?? 9;
-        const ft = q.fuelType?.trim() || undefined;
-        const authorId = q.authorId;
         const excludeToday = q.excludeToday !== false;
-        const key = cacheKey({
-            ns: 'videos:latest',
-            v: 2, // 🔺
-            type: videoType,
-            limit,
-            excludeToday,
-            fuelType: ft,
-            authorId,
-        });
+        const key = cacheKey({ ns: 'videos:latest', v: 3, type: videoType, limit, excludeToday });
         const ttlMs = 3 * 60 * 1000;
         return withCache(key, async () => {
-            const modelIds = await modelIdsForFuel(ft);
             let excludeId = undefined;
             if (excludeToday) {
-                const today = await repo.getToday(videoType, modelIds, ft, authorId);
+                const today = await repo.getToday(videoType);
                 excludeId = today?.videoId;
             }
-            const rows = await repo.listLatest(videoType, limit, excludeId, modelIds, ft, authorId);
-            return hydrate(rows);
-        }, ttlMs);
-    }
-    async latestGlobal(q) {
-        const limit = q.limit ?? 9;
-        const ft = q.fuelType?.trim() || undefined;
-        const authorId = q.authorId;
-        const key = cacheKey({ ns: 'videos:latestGlobal', v: 2, limit, fuelType: ft, authorId }); // 🔺
-        const ttlMs = 3 * 60 * 1000;
-        return withCache(key, async () => {
-            const modelIds = await modelIdsForFuel(ft);
-            const rows = await repo.listLatestGlobal(limit, modelIds, ft, authorId);
+            const rows = await repo.listLatest(videoType, limit, excludeId);
             return hydrate(rows);
         }, ttlMs);
     }
     async trending(videoType, q) {
         const limit = q.limit ?? 9;
-        const ft = q.fuelType?.trim() || undefined;
-        const authorId = q.authorId;
-        const key = cacheKey({ ns: 'videos:trending', v: 2, type: videoType, limit, fuelType: ft, authorId }); // 🔺
+        const key = cacheKey({ ns: 'videos:trending', v: 3, type: videoType, limit });
         const ttlMs = 2 * 60 * 1000;
-        return withCache(key, async () => {
-            const modelIds = await modelIdsForFuel(ft);
-            const rows = await repo.listTrending(videoType, limit, modelIds, ft, authorId);
-            return hydrate(rows);
-        }, ttlMs);
+        return withCache(key, async () => hydrate(await repo.listTrending(videoType, limit)), ttlMs);
     }
     async top(videoType, q) {
         const limit = q.limit ?? 9;
-        const ft = q.fuelType?.trim() || undefined;
-        const authorId = q.authorId;
-        const key = cacheKey({ ns: 'videos:top', v: 2, type: videoType, limit, fuelType: ft, authorId }); // 🔺
+        const key = cacheKey({ ns: 'videos:top', v: 3, type: videoType, limit });
         const ttlMs = 5 * 60 * 1000;
-        return withCache(key, async () => {
-            const modelIds = await modelIdsForFuel(ft);
-            const rows = await repo.listTop(videoType, limit, modelIds, ft, authorId);
-            return hydrate(rows);
-        }, ttlMs);
+        return withCache(key, async () => hydrate(await repo.listTop(videoType, limit)), ttlMs);
+    }
+    async latestGlobal(q) {
+        const limit = q.limit ?? 9;
+        const key = cacheKey({ ns: 'videos:latestGlobal', v: 3, limit });
+        const ttlMs = 3 * 60 * 1000;
+        return withCache(key, async () => hydrate(await repo.listLatestGlobal(limit)), ttlMs);
     }
     async popularGlobal(q) {
         const limit = q.limit ?? 9;
-        const ft = q.fuelType?.trim() || undefined;
-        const authorId = q.authorId;
-        const key = cacheKey({ ns: 'videos:popularGlobal', v: 2, limit, fuelType: ft, authorId }); // 🔺
+        const key = cacheKey({ ns: 'videos:popularGlobal', v: 3, limit });
+        const ttlMs = 2 * 60 * 1000;
+        return withCache(key, async () => hydrate(await repo.listPopularGlobal(limit)), ttlMs);
+    }
+    // ------------------------
+    // ✅ MODEL-SCOPED using LEFT JOIN tbltagging (legacy-compatible)
+    // ------------------------
+    async todayByModel(videoType, modelId) {
+        const key = cacheKey({ ns: 'videos:model:today', v: 1, type: videoType, modelId });
         const ttlMs = 2 * 60 * 1000;
         return withCache(key, async () => {
-            const modelIds = await modelIdsForFuel(ft);
-            const rows = await repo.listPopularGlobal(limit, modelIds, ft, authorId);
+            const row = await repo.getTodayByModel(videoType, modelId);
+            if (!row)
+                return null;
+            const [card] = await hydrate([row]);
+            return card ?? null;
+        }, ttlMs);
+    }
+    async latestByModel(videoType, modelId, q) {
+        const limit = q.limit ?? 15;
+        const key = cacheKey({ ns: 'videos:model:latest', v: 1, type: videoType, modelId, limit });
+        const ttlMs = 3 * 60 * 1000;
+        return withCache(key, async () => {
+            const rows = await repo.listLatestByModel(videoType, modelId, limit);
             return hydrate(rows);
         }, ttlMs);
+    }
+    async trendingByModel(videoType, modelId, q) {
+        const limit = q.limit ?? 15;
+        const key = cacheKey({ ns: 'videos:model:trending', v: 1, type: videoType, modelId, limit });
+        const ttlMs = 2 * 60 * 1000;
+        return withCache(key, async () => hydrate(await repo.listTrendingByModel(videoType, modelId, limit)), ttlMs);
+    }
+    async topByModel(videoType, modelId, q) {
+        const limit = q.limit ?? 15;
+        const key = cacheKey({ ns: 'videos:model:top', v: 1, type: videoType, modelId, limit });
+        const ttlMs = 5 * 60 * 1000;
+        return withCache(key, async () => hydrate(await repo.listTopByModel(videoType, modelId, limit)), ttlMs);
+    }
+    /** popular across ALL types for a model */
+    async popularByModel(modelId, q) {
+        const limit = q.limit ?? 15;
+        const key = cacheKey({ ns: 'videos:model:popular', v: 1, modelId, limit });
+        const ttlMs = 2 * 60 * 1000;
+        return withCache(key, async () => hydrate(await repo.listPopularByModel(modelId, limit)), ttlMs);
     }
 }

@@ -12,3 +12,7 @@ export const latestDto = z.object({
     /** 🆕 filter by author */
     authorId: z.coerce.number().int().positive().optional(),
 });
+/** 🆕 model id param */
+export const modelIdParamDto = z.object({
+    modelId: z.coerce.number().int().positive(),
+});

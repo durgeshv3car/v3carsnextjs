@@ -27,14 +27,12 @@ const rpmRange = (min?: number | null, max?: number | null) => {
 };
 
 
-
 function sum(ns: number[]) { return ns.reduce((a, b) => a + b, 0); }
-
-
 
 function buildAssetPath(name?: string | null): string | null {
   return name ?? null;
 }
+
 
 /** INR bucket edges (rupees) */
 const priceRanges: Record<string, { min?: number; max?: number }> = {
@@ -44,6 +42,7 @@ const priceRanges: Record<string, { min?: number; max?: number }> = {
   BETWEEN_20_40L: { min: 20_00_000, max: 40_00_000 },
   ABOVE_40L: { min: 40_00_000 },
 };
+
 
 function inBucket(min: number | null, max: number | null, bucket?: keyof typeof priceRanges): boolean {
 
@@ -60,10 +59,13 @@ function inBucket(min: number | null, max: number | null, bucket?: keyof typeof 
 
 }
 
+
 // Small helper to stringify dates safely for cache key
 const toYmd = (d?: Date | string) => (d ? new Date(d).toISOString().slice(0, 10) : undefined);
 
+
 export class ModelsService {
+
 
   async resolveModelId(idOrSlug: string): Promise<number | null> {
     if (!idOrSlug) return null;
@@ -688,164 +690,185 @@ export class ModelsService {
   }
 
 
-  // src/modules/cars/models/models.service.ts
-async priceList(
-  modelId: number,
-  q: {
-    cityId?: number;
-    expandVariantId?: number;
-    isLoan?: boolean;
-    fuelType?: string;
-    transmissionType?: string;
-    priceType?: 'ex' | 'onroad' | 'csd';
-    citySlug?: string;
-    sortBy?: 'price_asc' | 'price_desc' | 'latest' | 'name_asc' | 'name_desc';
-    page?: number;
-    limit?: number;
-  }
-) {
-  const ftRaw = (q.fuelType || '').trim().toLowerCase();
-  const trRaw = (q.transmissionType || '').trim().toLowerCase();
+  async priceList(
+    modelId: number,
+    q: {
+      cityId?: number;
+      expandVariantId?: number;
+      isLoan?: boolean;
+      fuelType?: string;
+      transmissionType?: string;
+      priceType?: 'ex' | 'onroad' | 'csd';
+      citySlug?: string;
+      sortBy?: 'price_asc' | 'price_desc' | 'latest' | 'name_asc' | 'name_desc';
+      page?: number;
+      limit?: number;
+      variantId?: number;        // 🆕 filter by variantId
+    }
+  ) {
+    const ftRaw = (q.fuelType || '').trim().toLowerCase();
+    const trRaw = (q.transmissionType || '').trim().toLowerCase();
+    const variantIdFilter = q.variantId ?? undefined;
+    const expandId = q.expandVariantId ?? variantIdFilter; // 🆕 variantId pe bhi breakdown
 
-  const key = cacheKey({
-    ns: 'models:priceList',
-    v: 4, // ⬅️ bump: CSD basis + CSD-aware sorting
-    modelId,
-    fuelType: ftRaw || undefined,
-    transmissionType: trRaw || undefined,
-    priceType: q.priceType ?? 'ex',
-    cityId: q.cityId ?? undefined,
-    citySlug: q.citySlug ?? undefined,
-    expandVariantId: q.expandVariantId ?? undefined,
-    isLoan: q.isLoan ? 1 : 0,
-    sortBy: q.sortBy ?? 'price_asc',
-    page: q.page ?? 1,
-    limit: q.limit ?? 100,
-  });
-  const ttlMs = 30 * 60 * 1000;
-
-  return withCache(key, async () => {
-    const ft = ftRaw;
-    const tr = trRaw;
-
-    const fuelNorm =
-      ft === 'petrol' ? 'Petrol' :
-      ft === 'diesel' ? 'Diesel' :
-      ft === 'cng' ? 'CNG' :
-      ft === 'hybrid' ? 'Hybrid' :
-      ft === 'electric' ? 'Electric' : undefined;
-
-    const isManual = tr === 'manual';
-    const isAutomatic = tr === 'automatic';
-    const dbTransmissionType = isManual ? 'MT' : undefined;
-
-    const variants = await variantsSvc.list({
+    const key = cacheKey({
+      ns: 'models:priceList',
+      v: 4, // ⬅️ CSD basis + CSD-aware sorting
       modelId,
-      page: 1,
-      limit: 100,
-      sortBy: 'price_asc', // we'll do final sort after mapping (to support CSD basis)
-      fuelType: fuelNorm,
-      transmissionType: dbTransmissionType,
+      fuelType: ftRaw || undefined,
+      transmissionType: trRaw || undefined,
+      priceType: q.priceType ?? 'ex',
+      cityId: q.cityId ?? undefined,
+      citySlug: q.citySlug ?? undefined,
+      expandVariantId: expandId ?? undefined,   // 🔁 expand + variantId together
+      variantId: variantIdFilter ?? undefined,  // 🆕 include in cache key
+      isLoan: q.isLoan ? 1 : 0,
+      sortBy: q.sortBy ?? 'price_asc',
+      page: q.page ?? 1,
+      limit: q.limit ?? 100,
     });
+    const ttlMs = 30 * 60 * 1000;
 
-    const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+    return withCache(key, async () => {
+      const ft = ftRaw;
+      const tr = trRaw;
 
-    let rows = (variants.rows || []).map(v => {
-      const bandMin = v.priceMin ?? null;
-      const bandMax = v.priceMax ?? null;
+      const fuelNorm =
+        ft === 'petrol' ? 'Petrol' :
+        ft === 'diesel' ? 'Diesel' :
+        ft === 'cng' ? 'CNG' :
+        ft === 'hybrid' ? 'Hybrid' :
+        ft === 'electric' ? 'Electric' : undefined;
 
-      // raw CSD (nullable)
-      const csdRaw = (v as any).csdPrice as unknown;
-      const csdPrice =
-        csdRaw == null ? null : (typeof csdRaw === 'number' ? csdRaw : Number(csdRaw as any));
+      const isManual = tr === 'manual';
+      const isAutomatic = tr === 'automatic';
 
-      // 🆕 primary price basis controlled by priceType
-      const useCsd = q.priceType === 'csd';
-      const exShowroom = useCsd ? csdPrice : bandMin;
-      const exShowroomMax = useCsd ? csdPrice : bandMax;
+      // manual/automatic buckets ke case me DB ko transmissionType mat bhejo
+      const dbTransmissionType =
+        !isManual && !isAutomatic && tr ? tr : undefined;
 
-      // on-road stays estimated from EX showroom band (unchanged)
-      const onRoad =
-        q.cityId && typeof bandMin === 'number'
-          ? onroadSvc.quote({ exShowroom: bandMin, cityId: q.cityId, isLoan: q.isLoan }).total
-          : null;
+      const variants = await variantsSvc.list({
+        modelId,
+        page: 1,
+        limit: 100,
+        sortBy: 'price_asc', // we'll do final sort after mapping (to support CSD basis)
+        fuelType: fuelNorm,
+        transmissionType: dbTransmissionType,
+      });
 
-      const base: any = {
-        variantId: v.variantId ?? null,
-        name: v.variantName ?? null,
-        powertrain: v.powertrain ?? null,
-        exShowroom,          // ← CSD when priceType=csd, else EX
-        exShowroomMax,       // ← same basis as above
-        csdPrice,            // (kept separately if UI needs to show chip)
-        onRoad,
-        updatedDate: v.updatedDate ?? null,
-      };
+      const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
 
-      if (q.expandVariantId && v.variantId === q.expandVariantId && typeof bandMin === 'number') {
-        base.breakdown = onroadSvc.quote({
-          exShowroom: bandMin,
-          cityId: q.cityId,
-          isLoan: q.isLoan,
+      let rows = (variants.rows || []).map(v => {
+        const bandMin = v.priceMin ?? null;
+        const bandMax = v.priceMax ?? null;
+
+        // raw CSD (nullable)
+        const csdRaw = (v as any).csdPrice as unknown;
+        const csdPrice =
+          csdRaw == null ? null : (typeof csdRaw === 'number' ? csdRaw : Number(csdRaw as any));
+
+        // primary price basis controlled by priceType
+        const useCsd = q.priceType === 'csd';
+        const exShowroom = useCsd ? csdPrice : bandMin;
+        const exShowroomMax = useCsd ? csdPrice : bandMax;
+
+        // on-road stays estimated from EX showroom band (unchanged)
+        const onRoad =
+          q.cityId && typeof bandMin === 'number'
+            ? onroadSvc.quote({ exShowroom: bandMin, cityId: q.cityId, isLoan: q.isLoan }).total
+            : null;
+
+        const base: any = {
+          variantId: v.variantId ?? null,
+          name: v.variantName ?? null,
+          powertrain: v.powertrain ?? null,
+          exShowroom,          // ← CSD when priceType=csd, else EX
+          exShowroomMax,       // ← same basis as above
+          csdPrice,            // (kept separately if UI needs to show chip)
+          onRoad,
+          updatedDate: v.updatedDate ?? null,
+        };
+
+        // 🆕 breakdown: expandVariantId ya variantId dono me se koi bhi match ho
+        if (expandId && v.variantId === expandId && typeof bandMin === 'number') {
+          base.breakdown = onroadSvc.quote({
+            exShowroom: bandMin,
+            cityId: q.cityId,
+            isLoan: q.isLoan,
+          });
+        }
+
+        return base;
+      });
+
+      // transmission filter (manual/automatic buckets or substring)
+      if (isManual || isAutomatic || tr) {
+        const needle = tr ? tr.toUpperCase() : '';
+
+        rows = rows.filter(r => {
+          const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
+          const hasAuto = autoTokens.some(tok => raw.includes(tok));
+
+          // manual bucket → jo auto tokens nahi hain sab manual
+          if (isManual) {
+            return raw !== '' && !hasAuto;
+          }
+
+          // automatic bucket
+          if (isAutomatic) {
+            return hasAuto;
+          }
+
+          // custom string filter, e.g. "DCT", "CVT"
+          if (needle) {
+            return raw.includes(needle);
+          }
+
+          return true;
         });
       }
-      return base;
-    });
 
-    // transmission filter (manual/automatic buckets or substring)
-    if (isManual || isAutomatic) {
-      rows = rows.filter(r => {
-        const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
-        if (isManual) {
-          const isMt = raw.includes('MT');
-          const hasAuto = autoTokens.some(tok => raw.includes(tok));
-          return isMt && !hasAuto;
-        }
-        return autoTokens.some(tok => raw.includes(tok));
-      });
-    } else if (tr) {
-      const needle = tr.toUpperCase();
-      rows = rows.filter(r =>
-        (r.powertrain?.transmissionType || '').toString().toUpperCase().includes(needle)
-      );
-    }
-
-    // fuel filter
-    if (fuelNorm) {
-      rows = rows.filter(r =>
-        (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase())
-      );
-    }
-
-    // 🆕 final sort (CSD-aware for price_asc/desc)
-    const sortBy = q.sortBy || 'price_asc';
-    rows.sort((a, b) => {
-      const nameCmp = (x?: string | null, y?: string | null) =>
-        (x ?? '').localeCompare(y ?? '', undefined, { sensitivity: 'base' });
-
-      if (sortBy === 'price_asc' || sortBy === 'price_desc') {
-        const ax = a.exShowroom ?? Number.POSITIVE_INFINITY;
-        const bx = b.exShowroom ?? Number.POSITIVE_INFINITY;
-        return sortBy === 'price_asc'
-          ? (ax - bx) || nameCmp(a.name, b.name)
-          : (bx - ax) || nameCmp(a.name, b.name);
+      // fuel filter
+      if (fuelNorm) {
+        rows = rows.filter(r =>
+          (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase())
+        );
       }
-      if (sortBy === 'name_desc') return nameCmp(b.name, a.name);
-      if (sortBy === 'name_asc') return nameCmp(a.name, b.name);
-      return nameCmp(a.name, b.name); // fallback
-    });
 
-    return {
-      modelId,
-      cityId: q.cityId ?? null,
-      rows,
-      page: 1,
-      pageSize: rows.length,
-      total: rows.length,
-      totalPages: 1,
-    };
-  }, ttlMs);
-}
+      // 🆕 variantId filter – sab filtering ke baad sirf ek hi variant rakho
+      if (variantIdFilter) {
+        rows = rows.filter(r => r.variantId === variantIdFilter);
+      }
 
+      // final sort (CSD-aware for price_asc/desc)
+      const sortBy = q.sortBy || 'price_asc';
+      rows.sort((a, b) => {
+        const nameCmp = (x?: string | null, y?: string | null) =>
+          (x ?? '').localeCompare(y ?? '', undefined, { sensitivity: 'base' });
+
+        if (sortBy === 'price_asc' || sortBy === 'price_desc') {
+          const ax = a.exShowroom ?? Number.POSITIVE_INFINITY;
+          const bx = b.exShowroom ?? Number.POSITIVE_INFINITY;
+          return sortBy === 'price_asc'
+            ? (ax - bx) || nameCmp(a.name, b.name)
+            : (bx - ax) || nameCmp(a.name, b.name);
+        }
+        if (sortBy === 'name_desc') return nameCmp(b.name, a.name);
+        if (sortBy === 'name_asc') return nameCmp(a.name, b.name);
+        return nameCmp(a.name, b.name); // fallback
+      });
+
+      return {
+        modelId,
+        cityId: q.cityId ?? null,
+        rows,
+        page: 1,
+        pageSize: rows.length,
+        total: rows.length,
+        totalPages: 1,
+      };
+    }, ttlMs);
+  }
 
 
   // --- bestVariantToBuy (cached) ---
@@ -1191,7 +1214,6 @@ async priceList(
   }
 
 
-
   async prosCons(modelId: number) {
     const key = cacheKey({ ns: 'model:prosCons', v: 1, modelId });
     const ttlMs = 30 * 60 * 1000;
@@ -1304,129 +1326,131 @@ async priceList(
     }, ttlMs);
   }
 
-  // --- fuelEfficiency (cached) ---
-  // replace the existing fuelEfficiency(...) with this version
 
-  async fuelEfficiency(
-    modelId: number,
-    q?: { fuelType?: string; transmissionType?: string }
-  ) {
-    const fuelQ = q?.fuelType?.trim() || undefined;
-    const transQ = q?.transmissionType?.trim() || undefined;
+// --- fuelEfficiency (cached) ---
+// replace the existing fuelEfficiency(...) with this version
 
-    // cache key includes filters
-    const key = cacheKey({
-      ns: 'model:fuelEfficiency',
-      v: 2,
-      modelId,
-      fuelType: fuelQ ?? undefined,
-      transmissionType: transQ ?? undefined,
-    });
-    const ttlMs = 30 * 60 * 1000; // 30 min
+async fuelEfficiency(
+  modelId: number,
+  q?: { fuelType?: string; transmissionType?: string }
+) {
+  const fuelQ = q?.fuelType?.trim() || undefined;
+  const transQ = q?.transmissionType?.trim() || undefined;
 
-    return withCache(key, async () => {
-      // 1) all variants for the model (we’ll show FE per variant row)
-      const variants = await variantsSvc.listByModelId(modelId);
-      if (!variants.length) return { success: true, rows: [] };
+  // cache key includes filters
+  const key = cacheKey({
+    ns: 'model:fuelEfficiency',
+    v: 2,
+    modelId,
+    fuelType: fuelQ ?? undefined,
+    transmissionType: transQ ?? undefined,
+  });
+  const ttlMs = 30 * 60 * 1000; // 30 min
 
-      // 2) powertrain meta used for FE + labels
-      const ptIds = Array.from(
-        new Set(
-          variants.map(v => v.modelPowertrainId).filter((x): x is number => typeof x === 'number')
-        )
-      );
-      const pts = ptIds.length ? await powertrainsSvc.findByIds(ptIds) : [];
-      const ptMap = new Map(pts.map(p => [p.modelPowertrainId, p]));
+  return withCache(key, async () => {
+    // 1) all variants for the model (we’ll show FE per variant row)
+    const variants = await variantsSvc.listByModelId(modelId);
+    if (!variants.length) return { success: true, rows: [] };
 
-      // helpers for filters
-      const wantFuel = fuelQ?.toLowerCase();
-      const wantTrans = transQ?.toLowerCase();
+    // 2) powertrain meta used for FE + labels
+    const ptIds = Array.from(
+      new Set(
+        variants.map(v => v.modelPowertrainId).filter((x): x is number => typeof x === 'number')
+      )
+    );
+    const pts = ptIds.length ? await powertrainsSvc.findByIds(ptIds) : [];
+    const ptMap = new Map(pts.map(p => [p.modelPowertrainId, p]));
 
-      const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
+    // helpers for filters
+    const wantFuel = fuelQ?.toLowerCase();
+    const wantTrans = transQ?.toLowerCase();
 
-      const transPass = (raw?: string | null) => {
-        if (!wantTrans) return true;
-        const s = (raw || '').toUpperCase();
+    const autoTokens = ['AT', 'AMT', 'DCT', 'CVT', 'E-CVT', 'AUTOMATIC'];
 
-        if (wantTrans === 'manual') {
-          const isMt = s.includes('MT') || s.includes('MANUAL');
-          const hasAuto = autoTokens.some(tok => s.includes(tok));
-          return isMt && !hasAuto;
-        }
-        if (wantTrans === 'automatic') {
-          return autoTokens.some(tok => s.includes(tok));
-        }
-        // fallback: substring contains for specific codes like 'DCT', 'CVT'
-        return s.includes(wantTrans.toUpperCase());
-      };
+    const transPass = (raw?: string | null) => {
+      if (!wantTrans) return true;
+      const s = (raw || '').toUpperCase();
 
-      // 3) shape rows (and apply filters)
-      const rows = variants
-        .map(v => {
-          const pt = v.modelPowertrainId ? ptMap.get(v.modelPowertrainId) : undefined;
+      if (wantTrans === 'manual') {
+        const isMt = s.includes('MT') || s.includes('MANUAL');
+        const hasAuto = autoTokens.some(tok => s.includes(tok));
+        return isMt && !hasAuto;
+      }
+      if (wantTrans === 'automatic') {
+        return autoTokens.some(tok => s.includes(tok));
+      }
+      // fallback: substring contains for specific codes like 'DCT', 'CVT'
+      return s.includes(wantTrans.toUpperCase());
+    };
 
-          // fuel filter (case-insensitive)
-          if (wantFuel && (pt?.fuelType || '').toLowerCase() !== wantFuel) return null;
-          // transmission filter
-          if (!transPass(pt?.transmissionType ?? null)) return null;
+    // 3) shape rows (and apply filters)
+    const rows = variants
+      .map(v => {
+        const pt = v.modelPowertrainId ? ptMap.get(v.modelPowertrainId) : undefined;
 
-          const label =
-            (pt?.powerTrain && pt.powerTrain.trim().length > 0)
-              ? pt.powerTrain
-              : [pt?.fuelType, pt?.transmissionType].filter(Boolean).join(' ');
+        // fuel filter (case-insensitive)
+        if (wantFuel && (pt?.fuelType || '').toLowerCase() !== wantFuel) return null;
+        // transmission filter
+        if (!transPass(pt?.transmissionType ?? null)) return null;
 
-          return {
-            variantId: v.variantId ?? null,
-            variantName: v.variantName ?? null,
-            powertrain: {
-              id: v.modelPowertrainId ?? null,
-              label: label || null,
-              fuelType: pt?.fuelType ?? null,
-              transmissionType: pt?.transmissionType ?? null,
-            },
-            // FE columns (numbers when present, else null)
-            claimedFE: pt?.claimedFE != null ? Number(pt.claimedFE as any) : null,
-            realWorldMileage: pt?.realWorldMileage != null ? Number(pt.realWorldMileage as any) : null,
-            cityMileage: pt?.cityMileage ?? null,        // DB has strings like "17.40kmpl"
-            highwayMileage: pt?.highwayMileage ?? null,  // strings
-            // optional source links
-            sources: {
-              realWorld: pt?.realWorldUrl ?? null,
-              city: pt?.cityUrl ?? null,
-              highway: pt?.highwayUrl ?? null,
-            },
-            updatedDate: v.updatedDate ?? null,
-          };
-        })
-        .filter(Boolean) as Array<{
-          variantId: number | null;
-          variantName: string | null;
+        const label =
+          (pt?.powerTrain && pt.powerTrain.trim().length > 0)
+            ? pt.powerTrain
+            : [pt?.fuelType, pt?.transmissionType].filter(Boolean).join(' ');
+
+        return {
+          variantId: v.variantId ?? null,
+          variantName: v.variantName ?? null,
           powertrain: {
-            id: number | null;
-            label: string | null;
-            fuelType: string | null;
-            transmissionType: string | null;
-          };
-          claimedFE: number | null;
-          realWorldMileage: number | null;
-          cityMileage: string | null;
-          highwayMileage: string | null;
-          sources: { realWorld: string | null; city: string | null; highway: string | null };
-          updatedDate: Date | null;
-        }>;
+            id: v.modelPowertrainId ?? null,
+            label: label || null,
+            fuelType: pt?.fuelType ?? null,
+            transmissionType: pt?.transmissionType ?? null,
+          },
+          // FE columns (numbers when present, else null)
+          claimedFE: pt?.claimedFE != null ? Number(pt.claimedFE as any) : null,
+          realWorldMileage: pt?.realWorldMileage != null ? Number(pt.realWorldMileage as any) : null,
+          cityMileage: pt?.cityMileage ?? null,        // DB has strings like "17.40kmpl"
+          highwayMileage: pt?.highwayMileage ?? null,  // strings
+          // optional source links
+          sources: {
+            realWorld: pt?.realWorldUrl ?? null,
+            city: pt?.cityUrl ?? null,
+            highway: pt?.highwayUrl ?? null,
+          },
+          updatedDate: v.updatedDate ?? null,
+        };
+      })
+      .filter(Boolean) as Array<{
+        variantId: number | null;
+        variantName: string | null;
+        powertrain: {
+          id: number | null;
+          label: string | null;
+          fuelType: string | null;
+          transmissionType: string | null;
+        };
+        claimedFE: number | null;
+        realWorldMileage: number | null;
+        cityMileage: string | null;
+        highwayMileage: string | null;
+        sources: { realWorld: string | null; city: string | null; highway: string | null };
+        updatedDate: Date | null;
+      }>;
 
-      // 4) stable sort: by fuel → transmission → variant name
-      rows.sort((a, b) => {
-        const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '', undefined, { sensitivity: 'base' });
-        if (af !== 0) return af;
-        const at = (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '', undefined, { sensitivity: 'base' });
-        if (at !== 0) return at;
-        return (a.variantName ?? '').localeCompare(b.variantName ?? '', undefined, { sensitivity: 'base' });
-      });
+    // 4) stable sort: by fuel → transmission → variant name
+    rows.sort((a, b) => {
+      const af = (a.powertrain.fuelType ?? '').localeCompare(b.powertrain.fuelType ?? '', undefined, { sensitivity: 'base' });
+      if (af !== 0) return af;
+      const at = (a.powertrain.transmissionType ?? '').localeCompare(b.powertrain.transmissionType ?? '', undefined, { sensitivity: 'base' });
+      if (at !== 0) return at;
+      return (a.variantName ?? '').localeCompare(b.variantName ?? '', undefined, { sensitivity: 'base' });
+    });
 
-      return { success: true, rows };
-    }, ttlMs);
-  }
+    return { success: true, rows };
+  }, ttlMs);
+}
+
 
   // --- REPLACE ENTIRE FUNCTION ---
 async csdVsOnroad(
@@ -1561,6 +1585,7 @@ async csdVsOnroad(
     }, ttlMs);
 }
 
+
 async offersDiscounts(
   modelId: number,
   q?: { months?: number; cityId?: number; expandQID?: number }
@@ -1644,6 +1669,7 @@ async offersDiscounts(
     };
   }, ttlMs);
 }
+
 
 async monthlySales(modelId: number, q: { months?: number }) {
     const months = Math.max(1, Math.min(q.months ?? 6, 24));
@@ -1745,6 +1771,7 @@ async monthlySales(modelId: number, q: { months?: number }) {
     }, ttlMs);
 }
 
+
 // ⬇️ Add this method inside ModelsService class
 async upcomingByBrand(
   modelId: number,
@@ -1829,6 +1856,7 @@ async upcomingByBrand(
   }, ttlMs);
 }
 
+
 // ⬇️ add this method inside ModelsService class
 async othersOnSale(
   modelId: number,
@@ -1910,6 +1938,7 @@ async othersOnSale(
   }, ttlMs);
 }
 
+
 async serviceCost(modelId: number) {
 
   const key = cacheKey({ ns: 'model:serviceCost', v: 1, modelId });
@@ -1934,6 +1963,7 @@ async serviceCost(modelId: number) {
     };
   }, ttlMs);
 }
+
 
 // inside ModelsService
 async colours(modelId: number) {
@@ -1984,6 +2014,7 @@ async colours(modelId: number) {
   }, ttlMs);
 
 }
+
 
 // add inside ModelsService
 async gallery(
@@ -2037,6 +2068,7 @@ async gallery(
 
   }, ttlMs);
 }
+
 
 async serviceCostpow(
     modelId: number,
@@ -2137,7 +2169,6 @@ async serviceCostpow(
       };
     }, ttlMs);
 }
-
 
 
 async segmentTopSellingByMonthFromPath(
@@ -2258,9 +2289,10 @@ async segmentTopSellingByMonthFromPath(
   }, ttlMs);
 }
 
+
 }
 
-
+ 
 
 
 

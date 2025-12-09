@@ -79,4 +79,51 @@ export class PowertrainsService {
         }, ttlMs);
         return new Map(entries);
     }
+    async listForModel(modelId) {
+        const key = cacheKey({ ns: 'powertrains:listForModel', v: 1, modelId });
+        const ttlMs = 30 * 60 * 1000;
+        return withCache(key, async () => {
+            const rows = await repo.listForModel(modelId);
+            return rows.map(r => {
+                const speed = r.transmissionSpeed ? `${r.transmissionSpeed}-speed` : null;
+                const trans = [speed, r.transmissionSubType || r.transmissionType].filter(Boolean).join(' ');
+                return {
+                    id: r.modelPowertrainId,
+                    label: r.powerTrain || [r.fuelType, trans].filter(Boolean).join(' with '),
+                    fuelType: r.fuelType ?? null,
+                    transmissionType: r.transmissionType ?? null,
+                };
+            });
+        }, ttlMs);
+    }
+    /** Detailed single powertrain (cached) */
+    async getOneWithSpecs(modelPowertrainId) {
+        const key = cacheKey({ ns: 'powertrains:getOneWithSpecs', v: 1, id: modelPowertrainId });
+        const ttlMs = 30 * 60 * 1000;
+        return withCache(key, async () => repo.getOneWithSpecs(modelPowertrainId), ttlMs);
+    }
+    async getWarrantyByModelIds(modelIds) {
+        const ids = Array.from(new Set((modelIds || []).filter((n) => typeof n === 'number'))).sort((a, b) => a - b);
+        if (!ids.length)
+            return new Map();
+        const key = cacheKey({ ns: 'powertrains:warrantyByModelIds', v: 1, ids });
+        const ttlMs = 30 * 60 * 1000;
+        const entries = await withCache(key, async () => {
+            const map = await repo.getWarrantyByModelIds(ids);
+            return Array.from(map.entries());
+        }, ttlMs);
+        return new Map(entries);
+    }
+    async getServiceSchedule(modelId, modelPowertrainId) {
+        const key = cacheKey({
+            ns: 'powertrains:schedule',
+            v: 1,
+            modelId,
+            modelPowertrainId,
+        });
+        const ttlMs = 30 * 60 * 1000;
+        return withCache(key, async () => {
+            return repo.getServiceSchedule(modelId, modelPowertrainId);
+        }, ttlMs);
+    }
 }

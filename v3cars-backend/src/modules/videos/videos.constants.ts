@@ -1,3 +1,5 @@
+
+
 export const VIDEO_TYPES = {
   REVIEW: 1,
   COMPARE: 2,
@@ -6,7 +8,10 @@ export const VIDEO_TYPES = {
   AUTO_EXPO: 5,
 } as const;
 
+
 export type VideoTypeNum = (typeof VIDEO_TYPES)[keyof typeof VIDEO_TYPES];
+
+
 
 export const VIDEO_SLUG_BY_TYPE: Record<number, string> = {
   1: '/videos/reviews/',
@@ -15,6 +20,8 @@ export const VIDEO_SLUG_BY_TYPE: Record<number, string> = {
   4: '/videos/more/',
   5: '/videos/auto-expo/',
 };
+
+
 
 export function videoTypeFromParam(param: string): VideoTypeNum {
   const k = param.trim().toLowerCase();
@@ -36,3 +43,6 @@ export function videoTypeFromParam(param: string): VideoTypeNum {
       return VIDEO_TYPES.REVIEW;
   }
 }
+
+
+ 

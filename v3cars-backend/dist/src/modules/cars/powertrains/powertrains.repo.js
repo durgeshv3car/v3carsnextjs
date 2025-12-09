@@ -15,6 +15,11 @@ export class PowertrainsRepo {
                 cubicCapacity: true,
                 claimedFE: true,
                 realWorldMileage: true,
+                cityMileage: true,
+                highwayMileage: true,
+                realWorldUrl: true,
+                cityUrl: true,
+                highwayUrl: true,
             },
         });
     }
@@ -187,5 +192,102 @@ export class PowertrainsRepo {
             });
         }
         return map;
+    }
+    async listForModel(modelId) {
+        return prisma.tblmodelpowertrains.findMany({
+            where: { modelId },
+            orderBy: [{ modelPowertrainId: 'asc' }],
+            select: {
+                modelPowertrainId: true,
+                powerTrain: true,
+                fuelType: true,
+                transmissionType: true,
+                transmissionSubType: true,
+                transmissionSpeed: true,
+            },
+        });
+    }
+    async getOneWithSpecs(modelPowertrainId) {
+        return prisma.tblmodelpowertrains.findFirst({
+            where: { modelPowertrainId },
+            select: {
+                modelPowertrainId: true,
+                modelId: true,
+                powerTrain: true,
+                fuelType: true,
+                transmissionType: true,
+                transmissionSubType: true,
+                transmissionSpeed: true,
+                // specs used in table
+                engineDisplacement: true,
+                cubicCapacity: true,
+                cylinders: true,
+                powerPS: true,
+                powerMinRPM: true,
+                powerMaxRPM: true,
+                torqueNM: true,
+                torqueMinRPM: true,
+                torqueMaxRPM: true,
+                kerbWeight: true,
+                claimedFE: true,
+                realWorldMileage: true,
+                powerWeight: true,
+                torqueWeight: true,
+                drivetrain: true,
+                isFourByFour: true,
+            },
+        });
+    }
+    async getWarrantyByModelIds(modelIds) {
+        const map = new Map();
+        if (!modelIds?.length)
+            return map;
+        // MIN(modelPowertrainId) per modelId
+        const mins = await prisma.tblmodelpowertrains.groupBy({
+            by: ['modelId'],
+            where: { modelId: { in: modelIds } },
+            _min: { modelPowertrainId: true },
+        });
+        const ptIds = [];
+        const midByPt = new Map();
+        for (const g of mins) {
+            const mid = g.modelId;
+            const minId = g._min.modelPowertrainId;
+            if (typeof mid === 'number' && typeof minId === 'number') {
+                ptIds.push(minId);
+                midByPt.set(minId, mid);
+            }
+        }
+        if (!ptIds.length)
+            return map;
+        const rows = await prisma.tblmodelpowertrains.findMany({
+            where: { modelPowertrainId: { in: ptIds } },
+            select: {
+                modelPowertrainId: true,
+                standardWarrantyKm: true,
+                standardWarrantyYear: true,
+            },
+        });
+        for (const r of rows) {
+            const mid = midByPt.get(r.modelPowertrainId);
+            if (!mid)
+                continue;
+            map.set(mid, {
+                years: r.standardWarrantyYear ?? null,
+                km: r.standardWarrantyKm ?? null,
+            });
+        }
+        return map;
+    }
+    async getServiceSchedule(modelId, modelPowertrainId) {
+        return prisma.tblperiodicmaintenancecost.findMany({
+            where: { modelId, modelPowertrainId },
+            orderBy: [{ id: 'asc' }],
+            select: {
+                id: true,
+                kmDriven: true,
+                cost: true,
+            },
+        });
     }
 }

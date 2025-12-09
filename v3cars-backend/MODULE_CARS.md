@@ -322,7 +322,7 @@ Model basics:
 Price list:
 /v1/cars/models/grand-vitara/price-list
 /v1/cars/models/grand-vitara/price-list?cityId=6
-/v1/cars/models/grand-vitara/price-list?fuelType=diesel
+/v1/cars/models/grand-vitara/price-list?fuelType=diesel&variantId=123
 /v1/cars/models/grand-vitara/price-list?cityId=6&fuelType=manual&expandVariantId=987&isLoan=1
 
 
@@ -410,6 +410,7 @@ GET http://localhost:3121/v1/cars/models/grand-vitara//pow-wise-service-cost?mpI
 colors -
 
 /v1/cars/models/<slug-or-id>/colours
+
 
 image gallary -
 

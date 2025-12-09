@@ -2,6 +2,7 @@ import { prisma } from '../../lib/prisma.js';
 import type { Prisma } from '@prisma/client';
 import type { FaqsListQuery } from './faqs.types.js';
 
+
 function buildFaqWhere(q: FaqsListQuery): Prisma.tblfaqsWhereInput {
   const where: Prisma.tblfaqsWhereInput = { moduleId: q.moduleId };
   if (q.q) {
@@ -10,15 +11,19 @@ function buildFaqWhere(q: FaqsListQuery): Prisma.tblfaqsWhereInput {
   return where;
 }
 
+
+
 function buildFaqOrder(sortBy?: FaqsListQuery['sortBy']): Prisma.tblfaqsOrderByWithRelationInput[] {
   switch (sortBy) {
     case 'latest':  return [{ updateDateTime: 'desc' }, { id: 'desc' }];
     case 'id_asc':  return [{ id: 'asc' }];
     case 'id_desc': return [{ id: 'desc' }];
-    case 'sequence_asc':
-    default:        return [{ sequance: 'asc' }, { id: 'asc' }];
+    case 'sequence_asc':  
+    default: return [{ sequance: 'asc' }, { id: 'asc' }];
   }
 }
+
+
 
 const faqSelect = {
   id: true,
@@ -31,6 +36,8 @@ const faqSelect = {
   careateDateTime: true,
   updateDateTime: true,
 } satisfies Prisma.tblfaqsSelect;
+
+ 
 
 export class FaqsRepo {
   async list(q: FaqsListQuery) {
@@ -164,3 +171,5 @@ export class FaqsRepo {
     });
   }
 }
+
+
