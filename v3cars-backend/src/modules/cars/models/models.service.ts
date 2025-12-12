@@ -559,6 +559,7 @@ export class ModelsService {
     }, ttlMs);
   }
 
+  
   /** 🆕 Top selling list for a given month (with brand slug, primary image, % change) */
   async topSellingModelsByMonth(opts: { year: number; month: number; limit?: number }) {
     const key = cacheKey({ ns: 'models:topSelling', v: 1, year: opts.year, month: opts.month, limit: opts.limit ?? 25 });
@@ -2287,6 +2288,19 @@ async segmentTopSellingByMonthFromPath(
 
     return { segmentId, segmentName, year, month, rows, total: rows.length };
   }, ttlMs);
+}
+
+
+async powertrainsOptions(modelId: number) {
+  // PowertrainsService already caching use kar raha hai
+  const options = await powertrainsSvc.listForModel(modelId); // [{id,label,fuelType,transmissionType}]
+
+  return {
+    success: true,
+    modelId,
+    options,
+    total: options.length,
+  };
 }
 
 

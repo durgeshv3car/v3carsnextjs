@@ -1,9 +1,13 @@
+// variants.types.ts
 import type { Pagination, SortInput } from '../cars.types.js';
 import type { PriceBucketKey } from '../cars.types.js';
 
 export interface VariantsListQuery extends Pagination, SortInput {
   q?: string;
   modelId?: number;
+
+  powertrainId?: number;        // 🆕 explicit modelPowertrainId filter
+
   // price filters
   priceBucket?: PriceBucketKey;
   minPrice?: number; // in ₹
@@ -12,6 +16,3 @@ export interface VariantsListQuery extends Pagination, SortInput {
   fuelType?: string;          // e.g., "Petrol", "Diesel", "CNG", "EV"
   transmissionType?: string;  // e.g., "MT", "AT", "AMT", "DCT", etc.
 }
-
-
-

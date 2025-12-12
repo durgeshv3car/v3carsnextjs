@@ -1,76 +1,55 @@
-Fuel Prices module (Petrol/Diesel/CNG) — latest price, previous day delta, listings, and last-N-days history for states and cities.
+## Fuel Prices (Petrol/Diesel/CNG)
+Base path: /v1/fuel
 
-Conventions
+Fuel types: 1=Petrol, 2=Diesel, 3=CNG
 
-Fuel types
-1 = Petrol, 2 = Diesel, 3 = CNG
+---
 
-Quick test URLs (same as before, now backed by old logic)
+### Metros snapshot/history
+GET /v1/fuel/metros
+- Params: fuelType (optional 1|2|3), days (optional 1..90)
+- No days: latest + previous delta for metros (Delhi=612, Chennai=353, Mumbai=280, Kolkata=465); combined or per-fuel.
+- With days: per-city history (single-fuel flat list, or grouped petrol/diesel/cng when fuelType not passed).
+Examples: /v1/fuel/metros, /v1/fuel/metros?fuelType=1, /v1/fuel/metros?fuelType=2&days=7, /v1/fuel/metros?days=10
 
-Latest (no history)
+### Latest price (city/state)
+GET /v1/fuel/price/latest
+- Params: fuelType (required) and one of cityId | districtId | stateId (city/district auto-mapped to district)
+- Returns: scope (district/state), price, prevPrice, change, updatedAt
 
-All 3 fuels (4 metros):
-http://localhost:3121/v1/fuel/metros
+### Latest popular cities in a state
+GET /v1/fuel/price/latest/popular
+- Params: fuelType (required), stateId (required)
 
-Petrol only:
-http://localhost:3121/v1/fuel/metros?fuelType=1
+### History (single fuel)
+GET /v1/fuel/price/history
+- Params: fuelType (required), one of cityId | districtId | stateId, days (default 10, max 90)
 
-Diesel only:
-http://localhost:3121/v1/fuel/metros?fuelType=2
+### State list (single fuel)
+GET /v1/fuel/states
+- Params: fuelType (required), q, sortBy 
+ame_asc | price_desc | price_asc, page, limit (max 100)
 
-CNG only:
-http://localhost:3121/v1/fuel/metros?fuelType=3
+### City list within a state
+GET /v1/fuel/cities
+- Params: fuelType (required), stateId (required), q, sortBy 
+ame_asc | price_desc | price_asc, popular 0|1, page, limit (max 100)
 
-Last N days history
+### State-wise combined (all fuels)
+GET /v1/fuel/states/combined
+- Params: q, page, limit (max 100)
+- Returns petrol/diesel/cng in one row
 
-All 3 fuels, last 10 days:
-http://localhost:3121/v1/fuel/metros?days=10
+### Combined history (all fuels)
+GET /v1/fuel/price/history/combined
+- Params: stateId or districtId (one required), days (default 10, max 90)
 
-Petrol, last 10 days:
-http://localhost:3121/v1/fuel/metros?fuelType=1&days=10
+### Monthly trends (single fuel)
+GET /v1/fuel/monthly/trends
+- Params: fuelType (required), districtId or cityId (one required), months (default 6, max 24)
 
-Diesel, last 7 days:
-http://localhost:3121/v1/fuel/metros?fuelType=2&days=7
+---
 
-CNG, last 30 days:
-http://localhost:3121/v1/fuel/metros?fuelType=3&days=30
-
-
-
-
-
-City today price:
-/v1/fuel/price/latest?fuelType=1&districtId=1489
-
-State today price:
-/v1/fuel/price/latest/popular?fuelType=1&stateId=29
-
-City 10-day history:
-/v1/fuel/price/history?fuelType=1&districtId=1489&days=10
-
-State 10-day history:
-/v1/fuel/price/history?fuelType=1&stateId=29&days=10
-
-State-wise list (one fuel):
-/v1/fuel/states?fuelType=1&limit=10&page=1&sortBy=name_asc
-
-Cities in a state (use popular flag = 1 for top cities list):l
-/v1/fuel/cities?fuelType=1&stateId=29&limit=10&page=1
-
-State-wise combined (petrol/diesel/cng):
-/v1/fuel/states/combined?limit=50&page=1
-
-
-Combined 10-day history (all fuels) for state or city:
-/v1/fuel/price/history/combined?stateId=29&days=10
-/v1/fuel/price/history/combined?districtId=1489&days=10
-
-
-Last Six Month Trends
-/v1/fuel/monthly/trends?fuelType=1&cityId=1489&months=6
-/v1/fuel/monthly/trends?fuelType=1&districtId=17&months=6
-
-
-faq -
+FAQ (fuel module):
 /v1/faqs?moduleId=16&pageType=1&fuelType=1&limit=50&page=1
 

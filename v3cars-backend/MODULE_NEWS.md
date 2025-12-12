@@ -1,60 +1,43 @@
-# Module: News (Legacy Convenience Endpoints)
+## Module: News (Legacy convenience)
+Base path: `/v1/news` (delegates to Content with `contentType=1`).  
+Response shape matches `ContentCard` (thumbnail, author, commentsCount).
 
-News endpoints live under **`/v1/news`** but internally delegate to the **Content** module with `contentType=1`.
-Response shape is a **News card** with thumbnail, author and comments count.
-
----
-
-## Today
-```
-GET /v1/news/today
-```
-- Most recent published item up to DB `NOW()`.
-- Returns a single object or `204 No Content` when none.
-
-**Response**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 9266,
-    "title": "Title...",
-    "pageUrl": "slug-or-url",
-    "publishDateandTime": "2025-09-11T09:00:00.000Z",
-    "shortDescription": "...",
-    "thumbnail": { "url": "https://cdn.../thumb.webp", "alt": "..." },
-    "author": { "id": 4, "name": "Mahesh Yadav", "slug": "mahesh-yadav" },
-    "commentsCount": 0
-  }
-}
-
-```
+Common query params:
+- `limit` 1..50 (default 9)
+- `excludeToday` `"1"|"0"` → boolean (Latest only, default exclude)
+- `fuelType` string (optional, EV-scoped like Content)
 
 ---
 
-## Latest
-```
-GET /v1/news/latest?limit=9
-# Optional: &excludeToday=0 (default excludes the today item)
-```
+### Today
+`GET /v1/news/today`  
+- Most recent published item up to DB `NOW()`  
+- 204 No Content when none  
+- Optional: `fuelType`
 
-## Trending
-```
-GET /v1/news/trending?limit=9
-# Ordered by last_15days_view DESC
-```
+### Latest
+`GET /v1/news/latest?limit=&excludeToday=`  
+- Default: `limit=9`, `excludeToday=1`
+- Optional: `fuelType`
 
-## Top
-```
-GET /v1/news/top?limit=9
-# Ordered by last_30days_view DESC
+### Trending
+`GET /v1/news/trending?limit=`  
+- Ordered by `last_15days_view DESC`
+- Optional: `fuelType`
 
-```
+### Top
+`GET /v1/news/top?limit=`  
+- Ordered by `last_30days_view DESC`
+- Optional: `fuelType`
 
-## Popular
-GET /v1/news/popular?limit=9
-# publishDateandTime <= NOW() ORDER BY uniqueUsers DESC 
+### Popular
+`GET /v1/news/popular?limit=`  
+- Ordered by `uniqueUsers DESC`, published up to `NOW()`
+- Optional: `fuelType`
 
-**Notes**
-- Thumbnail URLs are absolute if `MEDIA_BASE_URL` is set, otherwise raw file/path is returned.
-- Author and comments are hydrated in service layer.
+---
+
+Notes:
+- Thumbnails are absolute when `MEDIA_BASE_URL` is set; otherwise raw path.
+- Author + commentsCount hydrated in service layer.
+- For type-agnostic APIs, use `/v1/content/:type/*` (see `MODULE_CONTENT.md`).

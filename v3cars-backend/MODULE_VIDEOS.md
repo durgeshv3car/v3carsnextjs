@@ -1,92 +1,54 @@
-Per-type endpoints (slug-based)
+## Videos Module
+Base path: `/v1/videos`
 
-Today (single card)
+Video types (path `:type`):
+- `reviews`
+- `compare`
+- `variant-explained`
+- `more`
+- `auto-expo`
 
-GET /v1/videos/reviews/today
+Common query params:
+- `limit` 1..50 (default 9 for lists; 15 for model lists)
+- `excludeToday` `"1"|"0"` (Latest only, default `1` exclude)
+- `fuelType` string (EV scope) — applies to global lists (latest/popular/global latest/popular)
+- `authorId` number (optional filter where supported by DTO)
 
-GET /v1/videos/compare/today
+Card shape: see service `hydrate` (id, title, pageUrl, publishDateandTime, thumbnail {url,alt}, videoYId, author).
 
-GET /v1/videos/variant-explained/today
+---
 
-GET /v1/videos/more/today
+### Global (all types mixed)
+- Latest global: `GET /v1/videos/latest?limit=&excludeToday=`  
+- Popular global: `GET /v1/videos/popular?limit=`
+- Optional `fuelType`, `authorId` supported.
 
-GET /v1/videos/auto-expo/today
+### Type-scoped (global)
+- Today: `GET /v1/videos/:type/today`
+- Latest: `GET /v1/videos/:type/latest?limit=&excludeToday=`
+- Trending: `GET /v1/videos/:type/trending?limit=`
+- Top: `GET /v1/videos/:type/top?limit=`
 
-Latest list (optionally exclude today; default excludeToday=true)
+### Model-scoped (id or slug)
+Base: `/v1/videos/model/:modelIdOrSlug/:type/*`
+- Today: `.../today`
+- Latest: `.../latest?limit=&excludeToday=`
+- Trending: `.../trending?limit=`
+- Top: `.../top?limit=`
 
-GET /v1/videos/reviews/latest?limit=9
+Popular across all types for a model:  
+`GET /v1/videos/model/:modelIdOrSlug/popular?limit=`
 
-GET /v1/videos/compare/latest?limit=9&excludeToday=false
+Examples:
+- `/v1/videos/reviews/today`
+- `/v1/videos/reviews/latest?limit=9&excludeToday=0`
+- `/v1/videos/compare/trending?limit=9&fuelType=Electric`
+- `/v1/videos/latest?limit=12&fuelType=Electric`
+- `/v1/videos/popular?limit=5&fuelType=Electric`
+- `/v1/videos/model/fronx/reviews/latest?limit=15`
+- `/v1/videos/model/444/popular?limit=12`
 
-Trending (last_15days_view desc)
-
-GET /v1/videos/reviews/trending?limit=9
-
-Top (last_30days_view desc)
-
-GET /v1/videos/reviews/top?limit=9
-
-EV-scope (optional, kisi bhi upar wale pe laga sakte ho)
-
-GET /v1/videos/reviews/latest?limit=9&fuelType=Electric
-
-GET /v1/videos/compare/trending?limit=9&fuelType=Electric
-
-Global latest (all types mixed)
-
-GET /v1/videos/latest-global?limit=9
-
-EV-scope:
-
-GET /v1/videos/latest-global?limit=12&fuelType=Electric
-
-Popular videos (global):
-
-/v1/videos/popular?limit=5
-
-/v1/videos/popular?limit=5&fuelType=Electric (EV scope)
-
-by author add authorId params
-
-Model-scoped by slug (ID or slug both work)
-
-Replace {slug} with an actual model slug, e.g. fronx, baleno, punch, etc.
-
-Reviews
-
-/v1/videos/model/{slug}/reviews/today
-
-/v1/videos/model/{slug}/reviews/latest?limit=15&excludeToday=1
-
-/v1/videos/model/{slug}/reviews/trending?limit=12
-
-/v1/videos/model/{slug}/reviews/top?limit=12
-
-Compare
-
-/v1/videos/model/{slug}/compare/today
-
-/v1/videos/model/{slug}/compare/latest?limit=15
-
-/v1/videos/model/{slug}/compare/trending?limit=12
-
-/v1/videos/model/{slug}/compare/top?limit=12
-
-Variant-Explained
-
-/v1/videos/model/{slug}/variant-explained/today
-
-/v1/videos/model/{slug}/variant-explained/latest?limit=15
-
-/v1/videos/model/{slug}/variant-explained/trending?limit=12
-
-/v1/videos/model/{slug}/variant-explained/top?limit=12
-
-Model-scoped Popular (any type)
-
-By slug: /v1/videos/model/{slug}/popular?limit=12
-
-By ID (example 444): /v1/videos/model/444/popular?limit=12
-
-
-
+Notes:
+- `:modelIdOrSlug` accepts numeric id or model slug.
+- Caching is applied via `setCache` per route (120–300s with stale-while-revalidate).
+- Thumbnails use `MEDIA_BASE_URL` when present; otherwise raw path.

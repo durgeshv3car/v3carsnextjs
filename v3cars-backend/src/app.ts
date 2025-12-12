@@ -32,7 +32,7 @@ app.get('/ready', async (_req, res) => {
 app.use('/v1', v1);
 
 // 404 for unknown routes
-app.use((_req, res) => res.status(404).json({ error: { message: 'Not Found' } }));
+app.use((_req, res) => res.status(404).json({ success: false, message: 'Not Found' }));
 
 export default app;
 // src

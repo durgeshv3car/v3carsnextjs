@@ -1,223 +1,81 @@
 
 
-Module: FAQs
+## Module: FAQs
+Base path: `/v1/faqs`
 
-Unified FAQs for product modules like Car loan EMI calculator, Fuel cost calculator, Buy/Renew car insurance, etc.
-Exposes endpoints under /v1/faqs/*.
+Public API returns DB field names as-is (`sequance`, `careateDateTime`, etc.).
 
-Data Model (DB)
+### Routes
+1) **List modules** — `GET /v1/faqs/modules`
+   - Query: `q` (search name), `page` (default 1), `limit` (default 50, max 100)
 
-tblmodules
+2) **Module detail** — `GET /v1/faqs/modules/:id`
 
-id (PK, int, auto)
+3) **List FAQs by module** — `GET /v1/faqs`
+   - `moduleId` (required)
+   - `q` search in `que` / `ans` (optional)
+   - `page` (default 1), `limit` (default 50, max 100)
+   - `sortBy` `sequence_asc | latest | id_asc | id_desc` (default `sequence_asc`)
+   - Fuel-price module (moduleId=16) extras:
+     - `pageType` 1|2|3|4
+     - `fuelType` 1|2|3
 
-name (varchar)
+4) **FAQ detail** — `GET /v1/faqs/:id`
 
-createdAt (datetime, default NOW)
+### Sorting & Pagination
+- Pagination via `page`, `limit` (server-side)
+- Sort options:
+  - `sequence_asc`: `sequance ASC, id ASC` (default)
+  - `latest`: `updateDateTime DESC, id DESC`
+  - `id_asc` / `id_desc`
 
-tblfaqs
-
-id (PK, int, auto)
-
-moduleId (FK → tblmodules.id, cascade on delete/update)
-
-que (varchar)
-
-ans (text)
-
-sequance (int) — note: spelling follows DB
-
-addedBy (int, nullable)
-
-updatedBy (int, nullable)
-
-careateDateTime (datetime, default NOW) — note: spelling follows DB
-
-updateDateTime (datetime, on update NOW)
-
-The public API returns DB field names as-is to avoid confusion with migrations.
-
-Endpoints
-1) List Modules
-GET /v1/faqs/modules?limit=50&page=1&q=loan
-
-Query
-
-q (optional) — substring match on module name
-
-page (default 1), limit (default 50, max 100)
-
-Response
-
-{
-  "success": true,
-  "rows": [
-    { "id": 1, "name": "Car loan emi calculator", "createdAt": "2025-09-20T09:00:00.000Z" }
-  ],
-  "page": 1,
-  "pageSize": 50,
-  "total": 3,
-  "totalPages": 1
-}
-
-2) Module Detail
-GET /v1/faqs/modules/:id
-
-Response
-
-{
-  "success": true,
-  "data": { "id": 1, "name": "Car loan emi calculator", "createdAt": "2025-09-20T09:00:00.000Z" }
-}
-
-3) List FAQs (by module)
-GET /v1/faqs?moduleId=1&limit=50&page=1&sortBy=sequence_asc&q=emi
-
-Query
-
-moduleId (required) — module whose FAQs to return
-
-q (optional) — substring match in que or ans
-
-page (default 1), limit (default 50, max 100)
-
-sortBy (default sequence_asc) — one of:
-
-sequence_asc (default)
-
-latest (by updateDateTime desc, then id desc)
-
-id_asc
-
-id_desc
-
-Response
-
-{
-  "success": true,
-  "rows": [
-    {
-      "id": 101,
-      "moduleId": 1,
-      "que": "EMI kaise calculate hota hai?",
-      "ans": "EMI = [P × R × (1+R)^N] / [(1+R)^N − 1] ...",
-      "sequance": 1,
-      "addedBy": null,
-      "updatedBy": null,
-      "careateDateTime": "2025-09-20T09:00:00.000Z",
-      "updateDateTime": "2025-09-21T09:00:00.000Z"
-    }
-  ],
-  "page": 1,
-  "pageSize": 50,
-  "total": 12,
-  "totalPages": 1
-}
-
-4) FAQ Detail
-GET /v1/faqs/:id
-
-Responses
-
-200 OK
-
-{
-  "success": true,
-  "data": {
-    "id": 101,
-    "moduleId": 1,
-    "que": "EMI kaise calculate hota hai?",
-    "ans": "EMI = [P × R × (1+R)^N] / ...",
-    "sequance": 1,
-    "addedBy": null,
-    "updatedBy": null,
-    "careateDateTime": "2025-09-20T09:00:00.000Z",
-    "updateDateTime": "2025-09-21T09:00:00.000Z"
+### Responses (examples)
+- Modules list:
+  ```json
+  {
+    "success": true,
+    "rows": [{ "id": 1, "name": "Car loan emi calculator", "createdAt": "2025-09-20T09:00:00.000Z" }],
+    "page": 1, "pageSize": 50, "total": 3, "totalPages": 1
   }
-}
+  ```
+- FAQs list:
+  ```json
+  {
+    "success": true,
+    "rows": [{
+      "id": 101, "moduleId": 1, "que": "...", "ans": "...",
+      "sequance": 1, "addedBy": null, "updatedBy": null,
+      "careateDateTime": "...", "updateDateTime": "..."
+    }],
+    "page": 1, "pageSize": 50, "total": 12, "totalPages": 1
+  }
+  ```
+- FAQ detail 404: `{ "success": false, "message": "FAQ not found" }`
+- Bad request: `{ "success": false, "message": "Invalid FAQ id", "issues": [...] }`
 
-404 Not Found
+### Caching
+- Server cache (Redis/memory):
+  - `faqs:list` page1 30m, page>1 15m
+  - `faq:detail` 30m
+  - `faqModules:list` 6h
+  - `faqModule:detail` 6h
+- HTTP cache headers applied via middleware (e.g., `s-maxage=1800, stale-while-revalidate=120`)
+- Invalidation hints (admin side):
+  - FAQ changes → purge `faqs:list`, `faq:detail`, optionally `faqModule:detail`
+  - Module changes → purge `faqModules:list`, `faqModule:detail`, `faqs:list`
 
-{ "success": false, "message": "FAQ not found" }
+### Special: Fuel price FAQs (moduleId=16)
+- Data source: `tblfuelpricefaqs`
+- Supports filters: `pageType (1|2|3|4)`, `fuelType (1|2|3)`, `q` (ques/ans contains)
+- Normalized fields returned as standard FAQ shape; extra `_fuelMeta` included (pageType, fuelType, fadCityId, faqStates, faqCityState).
 
-400 Bad Request (invalid id)
-
-{ "success": false, "message": "Invalid FAQ id", "issues": [ ... ] }
-
-Sorting & Pagination
-
-Pagination is server-side: page, limit.
-
-Sorting:
-
-sequence_asc → sequance ASC, id ASC
-
-latest → updateDateTime DESC, id DESC
-
-id_asc / id_desc
-
-Search
-
-q filters FAQs where que or ans contains the substring (case-insensitive per DB collation).
-
-Caching
-
-Server cache (Redis/in-memory)
-
-faqs:list
-
-page 1 ⇒ 30 min TTL
-
-page >1 ⇒ 15 min TTL
-
-faq:detail ⇒ 30 min
-
-faqModules:list ⇒ 6 hours
-
-faqModule:detail ⇒ 6 hours
-
-Network caching (optional middleware)
-
-list/detail use Cache-Control like:
-public, s-maxage=1800, stale-while-revalidate=120 (adjusted per route)
-
-Invalidation (admin writes)
-
-On FAQ create/update/delete: purge prefixes
-faqs:list, faq:detail (and faqModule:detail if needed)
-
-On module create/update/delete: purge
-faqModules:list, faqModule:detail, faqs:list
-
-Example Flows
-Get module ids, then FAQs
-
-GET /v1/faqs/modules → pick id
-
-GET /v1/faqs?moduleId=1&sortBy=sequence_asc
-
-Search FAQs within a module
-
-GET /v1/faqs?moduleId=2&q=cost&page=1&limit=20
-
-Show latest-changed FAQs (for admin review)
-
-GET /v1/faqs?moduleId=3&sortBy=latest&limit=10
-
-Error Codes
-
-400 — invalid params (zod validation fails)
-
-404 — entity not found
-
-200 — success; list/detail shapes as above
-
-Seeded Modules (suggested)
-
-Car loan emi calculator
-
-Fuel cost calculator
-
+### Example flows
+- Get modules then FAQs:  
+  `/v1/faqs/modules` → pick id → `/v1/faqs?moduleId=1&sortBy=sequence_asc`
+- Search within module:  
+  `/v1/faqs?moduleId=2&q=cost&page=1&limit=20`
+- Latest-changed:  
+  `/v1/faqs?moduleId=3&sortBy=latest&limit=10`
 Buy/Renew car insurance
 
 (Use /v1/faqs/modules to verify ids in your DB)
