@@ -1,9 +1,13 @@
 'use client'
 
 import { useGetAllBrandsQuery, useGetModelsQuery } from "@/redux/api/carModuleApi"
+import { RootState } from "@/redux/store"
 import { IMAGE_URL, IMAGE_URL2 } from "@/utils/constant"
+import { convertToSlug } from "@/utils/helperFunction"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
+import { useSelector } from "react-redux"
 
 interface CarBrand {
     brandId: number
@@ -50,15 +54,18 @@ interface CarImage {
 }
 
 interface CommonBrandModelToolProps {
+    url?: string;
     searchQuery: string;
     modelId: number | null;
     setModelId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-function CommonBrandModelTool({ searchQuery, modelId, setModelId }: CommonBrandModelToolProps) {
+function CommonBrandModelTool({ searchQuery, modelId, setModelId, url }: CommonBrandModelToolProps) {
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const [selectBrand, setSelectBrand] = useState<number | null>(null);
     const { data: brandsData } = useGetAllBrandsQuery();
     const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand! }, { skip: !selectBrand });
+    const router = useRouter()
 
     const brands: CarBrand[] = brandsData?.rows ?? [];
     const models: CarModel[] = modelsData?.rows ?? [];
@@ -113,7 +120,12 @@ function CommonBrandModelTool({ searchQuery, modelId, setModelId }: CommonBrandM
                                             flex flex-col items-center overflow-hidden rounded-lg cursor-pointer 
                                             ${m.modelId === modelId ? "border-2 border-primary" : "border border-[#DBDBDB] dark:border-[#2e2e2e]"} 
                                         `}
-                                    onClick={() => { setModelId(m.modelId) }}
+                                    onClick={() => {
+                                        url === "/car-loan-emi-calculator" ?
+                                            setModelId(m.modelId)
+                                            :
+                                            router.push(`/${m.brand.slug}/${m.modelSlug}/on-road-price-in-${convertToSlug(selectedCity.cityName)}`)
+                                    }}
                                 >
                                     <Image
                                         src={`${IMAGE_URL}/media/model-imgs/${m.image.url}`}

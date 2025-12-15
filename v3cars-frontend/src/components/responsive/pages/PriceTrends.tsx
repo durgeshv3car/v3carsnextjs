@@ -67,10 +67,10 @@ const PriceTrends: React.FC<PriceTrendsProps> = ({ type, city, data }) => {
                 const netChangeSymbol = m.netChange > 0 ? "+" : "";
 
                 return (
-                    <div key={m.month} className="border">
+                    <div key={m.month} className="border dark:border-[#2e2e2e]">
                         <button
                             onClick={() => toggleSection(m.month)}
-                            className={`w-full text-left bg-primary px-4 py-2 font-semibold flex justify-between items-center ${idx !== 0 ? "border-t" : ""
+                            className={`w-full text-left bg-primary text-black px-4 py-2 font-semibold flex justify-between items-center dark:border-[#2e2e2e] ${idx !== 0 ? "border-t" : ""
                                 }`}
                         >
                             <span>
@@ -80,37 +80,37 @@ const PriceTrends: React.FC<PriceTrendsProps> = ({ type, city, data }) => {
                         </button>
 
                         {isOpen && (
-                            <div className="p-4 bg-gray-50">
-                                <table className="w-full border border-gray-300 text-sm mb-4">
+                            <div className="p-4 bg-gray-50 dark:bg-[#171717]">
+                                <table className="w-full border border-gray-300 text-sm mb-4 dark:border-[#2e2e2e]">
                                     <thead>
-                                        <tr className="bg-gray-100">
-                                            <th className="text-left px-3 py-2 border"> </th>
-                                            <th className="text-left px-3 py-2 border uppercase">{type} PRICE</th>
+                                        <tr className="bg-gray-100 dark:bg-[#171717]">
+                                            <th className="text-left px-3 py-2 border dark:border-[#2e2e2e]"> </th>
+                                            <th className="text-left px-3 py-2 border uppercase dark:border-[#2e2e2e]">{type} PRICE</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td className="px-3 py-2 border">{monthName} 1st</td>
-                                            <td className="px-3 py-2 border">₹{m.firstPrice}</td>
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">{monthName} 1st</td>
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">₹{m.firstPrice}</td>
                                         </tr>
                                         <tr>
-                                            <td className="px-3 py-2 border">Last day of {monthName}</td>
-                                            <td className="px-3 py-2 border">₹{m.lastPrice}</td>
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">Last day of {monthName}</td>
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">₹{m.lastPrice}</td>
                                         </tr>
                                         <tr>
-                                            <td className="px-3 py-2 border font-semibold">Net Change in {monthName}</td>
-                                            <td className="px-3 py-2 border font-semibold">
+                                            <td className="px-3 py-2 border font-semibold dark:border-[#2e2e2e]">Net Change in {monthName}</td>
+                                            <td className="px-3 py-2 border font-semibold dark:border-[#2e2e2e]">
                                                 ₹{netChangeSymbol}
                                                 {m.netChange}
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td className="px-3 py-2 border">Average Rate in {monthName}</td>
-                                            <td className="px-3 py-2 border">₹{m.avgPrice}</td>
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">Average Rate in {monthName}</td>
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">₹{m.avgPrice}</td>
                                         </tr>
                                         <tr>
-                                            <td className="px-3 py-2 border">Highest Rate in {monthName}</td>
-                                            <td className="px-3 py-2 border">
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">Highest Rate in {monthName}</td>
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">
                                                 ₹{m.highest.price} (
                                                 {new Date(m.highest.date).toLocaleDateString("en-IN", {
                                                     day: "numeric",
@@ -120,8 +120,8 @@ const PriceTrends: React.FC<PriceTrendsProps> = ({ type, city, data }) => {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td className="px-3 py-2 border">Lowest Rate in {monthName}</td>
-                                            <td className="px-3 py-2 border">
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">Lowest Rate in {monthName}</td>
+                                            <td className="px-3 py-2 border dark:border-[#2e2e2e]">
                                                 ₹{m.lowest.price} (
                                                 {new Date(m.lowest.date).toLocaleDateString("en-IN", {
                                                     day: "numeric",

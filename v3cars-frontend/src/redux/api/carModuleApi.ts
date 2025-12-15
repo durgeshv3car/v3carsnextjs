@@ -63,7 +63,7 @@ export const carModuleApi = createApi({
             query: ({ brandId }) => `/cars/models?brandId=${brandId}&isUpcoming=0`,
         }),
         getVariants: builder.query<Response, GetVariantArgs>({
-            query: ({ modelId }) => `/cars/variants?modelId=${modelId}`,
+            query: ({ modelId }) => `/cars/variants?modelId=${modelId}&limit=100`,
         }),
         getElectricCar: builder.query<Response, void>({
             query: () => "/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=14&page=1&fuelType=Electric",
@@ -77,8 +77,8 @@ export const carModuleApi = createApi({
         getPopularCar: builder.query<Response, void>({
             query: () => "/cars/models?isUpcoming=0&sortBy=popular&limit=30&page=1",
         }),
-        getTopSellingCar: builder.query<Response, void>({
-            query: () => "/cars/models/top-selling-month?year=2025&month=8&limit=25",
+        getTopSellingCar: builder.query<Response, { limit?: number }>({
+            query: ({ limit }) => `/cars/models/top-selling-month?year=2025&month=8&limit=${limit}`,
         }),
         getUpcomingCars: builder.query<Response, void>({
             query: () => "/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=9&page=1",
@@ -228,23 +228,29 @@ export const carModuleApi = createApi({
             query: ({ model_slug }) => `/cars/models/${model_slug}/competitors`,
         }),
 
-        getPriceListDetails: builder.query<PriceListDetailsResponse, { model_slug: string | number, cityId: number, fuelType?: string, variantId?: number, transmissionType?: string }>({
+        getPriceListDetails: builder.query<PriceListDetailsResponse, { model_slug: string | number, cityId: number, fuelType?: string, variantId?: number, transmissionType?: string, singleVariantId?: number }>({
             query: ({
                 model_slug,
                 cityId,
                 fuelType,
                 variantId,
+                singleVariantId,
                 transmissionType
             }: {
                 model_slug: string | number,
                 cityId: number,
                 fuelType?: string,
                 variantId?: number,
+                singleVariantId?: number,
                 transmissionType?: string
             }) => {
                 const url = `/cars/models/${model_slug}/price-list?cityId=${cityId}`;
 
                 const params: string[] = [];
+
+                if (singleVariantId !== undefined && singleVariantId !== null) {
+                    params.push(`variantId=${singleVariantId}`);
+                }
 
                 if (fuelType !== undefined && fuelType !== null && fuelType !== "") {
                     params.push(`fuelType=${fuelType}`);

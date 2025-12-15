@@ -104,7 +104,7 @@ export default function FuelInputSection({ onInputChange }: FuelInputSectionProp
 
     return (
         <div>
-            <div className="grid md:grid-cols-3 gap-2 lg:gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-6">
 
                 {/* ---------------- COUNTRY CARD ---------------- */}
                 <div className="bg-white rounded-xl shadow border p-5 dark:bg-[#171717] dark:border-[#2e2e2e]">
@@ -219,7 +219,7 @@ export default function FuelInputSection({ onInputChange }: FuelInputSectionProp
                 </div>
 
                 {/* ---------------- DISTANCE & QUANTITY CARD ---------------- */}
-                <div className="bg-white rounded-xl border shadow p-5 dark:bg-[#171717] dark:border-[#2e2e2e]">
+                <div className="col-span-1 sm:col-span-2 lg:col-span-1 bg-white rounded-xl border shadow p-5 dark:bg-[#171717] dark:border-[#2e2e2e]">
                     <div className="grid grid-cols-2 gap-4">
 
                         {/* Distance toggle */}

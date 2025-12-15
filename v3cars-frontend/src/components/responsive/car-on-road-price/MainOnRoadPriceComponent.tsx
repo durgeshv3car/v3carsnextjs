@@ -78,22 +78,24 @@ function MainOnRoadPriceComponent() {
                         desc={`Get accurate, city-wise on-road prices for every car sold in India — including RTO tax, insurance, registration, and other mandatory charges. Our tool lets you instantly calculate the total cost of ownership for your selected...`}
                     />
 
-                    <div className="w-full lg:app-container mx-auto">
-                        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-3">
-                            <div className="flex items-center gap-1 text-2xl">
-                                <h2>Select</h2>
-                                <span className="font-bold">Brand</span>
-                            </div>
+                    <div className="px-4 xl:px-10">
+                        <div className="w-full lg:app-container mx-auto">
+                            <div className="w-full flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-1 text-xl lg:text-2xl">
+                                    <h2>Select</h2>
+                                    <span className="font-bold">Brand</span>
+                                </div>
 
-                            <div className="flex items-center bg-transparent border border-gray-300 rounded-full px-4 py-2 w-[300px] dark:border-[#2e2e2e]">
-                                <input
-                                    type="text"
-                                    placeholder="Search Brand Name"
-                                    className="w-full bg-transparent outline-none text-sm placeholder-gray-500"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <IoSearchSharp size={18} className="text-gray-500" />
+                                <div className="flex items-center bg-transparent border border-gray-300 rounded-full px-4 py-2 w-[200px] lg:w-[300px] dark:border-[#2e2e2e]">
+                                    <input
+                                        type="text"
+                                        placeholder="Search Brand Name"
+                                        className="w-full bg-transparent outline-none text-sm placeholder-gray-500"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                    <IoSearchSharp size={18} className="text-gray-500" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -119,11 +121,11 @@ function MainOnRoadPriceComponent() {
 
                             <OnRoadPriceInfo />
 
-                            <CommonQuickLinkComponent />
+                            <CommonQuickLinkComponent data={links} />
 
                             <CommonFaqAccordion faqData={faqByModule} />
                         </div>
-                        
+
                         <div className="w-auto lg:min-w-[24%] space-y-6 lg:mt-12">
                             <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
                                 <img
@@ -193,3 +195,30 @@ const howItWorkData = [
         bg: "#d8e7ca", // Light green
     },
 ];
+
+ const links = [
+        {
+            title: "Mileage Calculator",
+            desc: "Estimate Your Vehicle's Fuel Efficiency",
+            img: "/emicalculator/mileage.png",
+            bg: "bg-[#E4F3FE]",
+        },
+        {
+            title: "Fuel Price in India",
+            desc: "Check Latest Fuel Prices Across India",
+            img: "/emicalculator/fuel.png",
+            bg: "bg-[#FCEFFE]",
+        },
+        {
+            title: "Car Loan EMI Calculator",
+            desc: "Calculate Your Monthly Car Loan EMI",
+            img: "/emicalculator/emi.png",
+            bg: "bg-[#FFF8C9]",
+        },
+        {
+            title: "Compare Cars",
+            desc: "Compare Specs, Features & Prices",
+            img: "/emicalculator/compare.png",
+            bg: "bg-[#E0F8E8]",
+        },
+    ];

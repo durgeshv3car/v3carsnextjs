@@ -66,14 +66,14 @@ export const fuelModuleApi = createApi({
     get10DaysFuelPrice: builder.query<Response, { districtId: number }>({
       query: ({ districtId }) => `/fuel/price/history/combined?districtId=${districtId}&days=11`,
     }),
-    getLatestFuelPrice: builder.query<LatestFuelPriceResponse, { districtId: number }>({
-      query: ({ districtId }) => `/fuel/price/latest?fuelType=1&districtId=${districtId}`,
+    getLatestFuelPrice: builder.query<LatestFuelPriceResponse, { districtId: number, fuelType: number }>({
+      query: ({ districtId, fuelType }) => `/fuel/price/latest?fuelType=${fuelType}&districtId=${districtId}`,
     }),
     getFuelPriceState: builder.query<Response, void>({
       query: () => `/fuel/states/combined?page=1&limit=50`,
     }),
-    getMetroCityFuel: builder.query<Response, { fuelType: number }>({
-      query: ({ fuelType }) => `/fuel/metros?fuelType=${fuelType}`,
+    getMetroCityFuel: builder.query<Response, void>({
+      query: () => `/fuel/metros`,
     }),
     getMetroCityFuelByCity: builder.query<LatestFuelPriceResponse, { fuelType: number, cityId: number }>({
       query: ({ fuelType, cityId }) => `/fuel/price/latest?fuelType=${fuelType}&districtId=${cityId}`,

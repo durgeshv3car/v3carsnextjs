@@ -1,6 +1,7 @@
 'use client'
 
 import { useGetTopCitiesQuery } from "@/redux/api/locationModuleApi";
+import { convertToSlug } from "@/utils/helperFunction";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,15 +18,6 @@ export interface City {
     ismajorCityCNG: number;
     isImage: string;
 }
-
-export const toSlug = (text: string): string => {
-    return text
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, "")   // remove special chars
-        .replace(/\s+/g, "-")           // spaces → hyphens
-        .replace(/-+/g, "-");           // remove duplicate hyphens
-};
 
 interface OnRoadPriceinTopCitiesProps {
     title: string;
@@ -48,7 +40,7 @@ function OnRoadPriceinTopCities({ title, type, slug }: OnRoadPriceinTopCitiesPro
             <ul className="divide-y divide-gray-200 dark:divide-[#2E2E2E] bg-white dark:bg-[#171717] h-[400px] overflow-y-auto scrollbar-thin-yellow">
                 {topCities && topCities.map((item, index) => (
                     <li key={index}>
-                        <Link href={`/${type}/${slug}/on-road-price-in-${toSlug(item.cityName)}`} className="p-4 cursor-pointer flex items-start gap-2 text-[14px] hover:underline">
+                        <Link href={`/${type}/${slug}/on-road-price-in-${convertToSlug(item.cityName)}`} className="p-4 cursor-pointer flex items-start gap-2 text-[14px] hover:underline">
                             <Image
                                 src="/logo/v3.svg"
                                 alt="v3car"

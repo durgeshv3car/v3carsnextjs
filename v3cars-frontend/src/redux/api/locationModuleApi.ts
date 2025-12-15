@@ -16,7 +16,7 @@ export const locationModuleApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   endpoints: (builder) => ({
     getPopularCities: builder.query<Response, void>({
-      query: () => `/locations/cities?isPopular=1&limit=24&sortBy=name_asc`,
+      query: () => `/locations/cities?isPopular=1&sortBy=name_asc`,
     }),
     getTopCities: builder.query<Response, void>({
       query: () => `/locations/cities?isTop=1`,

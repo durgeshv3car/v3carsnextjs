@@ -1,18 +1,46 @@
 'use client';
 
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CommonUsefulToolComponent() {
     const tools = [
-        "Mileage Calculator",
-        "Fuel Cost Calculator",
-        "Car Loan EMI Calculator",
-        "Fuel Price in India",
-        "Buy / Renew Car Insurance",
-        "Apply for Car Loan",
-        "Car On-Road Price",
-        "Sell Used Car",
-        "Buy Used Cars",
+        {
+            name: "Mileage Calculator",
+            url: "/mileage-calculator"
+        },
+        {
+            name: "Fuel Cost Calculator",
+            url: "/fuel-cost-calculator"
+        },
+        {
+            name: "Car Loan EMI Calculator",
+            url: "/car-loan-emi-calculator"
+        },
+        {
+            name: "Fuel Price in India",
+            url: "/fuel-price-in-india"
+        },
+        {
+            name: "Buy / Renew Car Insurance",
+            url: "/car-insurance-india"
+        },
+        {
+            name: "Apply for Car Loan",
+            url: "/apply-car-loan-india"
+        },
+        {
+            name: "Car On-Road Price",
+            url: "/car-on-road-price-in-india"
+        },
+        {
+            name: "Sell Used Car",
+            url: "/sell-used-car"
+        },
+        {
+            name: "Buy Used Cars",
+            url: "https://buysecondhandcars.v3cars.com/buy-cars"
+        },
     ];
 
     return (
@@ -44,7 +72,7 @@ export default function CommonUsefulToolComponent() {
                             height={16}
                             className="hidden group-hover:block"
                         />
-                        <p className="text-[15px]">{item}</p>
+                        <Link href={item.url} className="text-[15px]">{item.name}</Link>
                     </div>
                 ))}
             </div>

@@ -1,119 +1,174 @@
 'use client';
 
-import TopSection from "@/components/common/TopSection";
-import {
-    useGetBrandsQuery,
-    useGetModelsQuery,
-    useGetVariantsQuery,
-} from "@/redux/api/carModuleApi";
-import { useState } from "react";
 import useIsMobile from "@/hooks/useIsMobile";
-import CommonNewsUpdate from "@/components/common/CommonNewsUpdate";
-import MobileLatestCarNews from "@/components/mobile/common/LatestCarNews";
-import LatestVideos from "@/components/responsive/home/LatestVideos";
 import {
-    useGetLatestComparisonReviewsQuery,
     useGetPopularComparisonsQuery,
 } from "@/redux/api/contentModuleApi";
-import { useGetLatestCompareVideosQuery } from "@/redux/api/videosModuleApi";
-import CompareNow from "./CompareNow";
-import Information from "./Information";
 import MostPopularCarComparison from "./MostPopularCarComparison";
+import ToolsCommonSection from "@/components/common/ToolsCommonSection";
+import { IoIosArrowForward } from "react-icons/io";
+import Link from "next/link";
+import CommonHowItWorkCard from "@/components/common/CommonHowItWorkCard";
+import BottomAd from "@/components/common/BottomAd";
+import CommonFaqAccordion from "@/components/common/CommonFaqAccordion";
+import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
+import CommonUsefulToolComponent from "@/components/common/CommonUsefulToolComponent";
+import CommonQuickLinkComponent from "@/components/common/CommonQuickLinkComponent";
+import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
+import WhyCompareCars from "./WhyCompareCars";
+import SmartBuyersGuide from "./SmartBuyersGuide";
+import CarComparison from "./CarComparison";
 
 function MainCompareCarComponent() {
-    const [selectedBrands, setSelectedBrands] = useState<(number | null)[]>(Array(4).fill(null));
-    const [selectedModels, setSelectedModels] = useState<(number | null)[]>(Array(4).fill(null));
-    const [selectedVariants, setSelectedVariants] = useState<(number | null)[]>(Array(4).fill(null));
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
 
-    const { data: brandsData } = useGetBrandsQuery();
-    const { data: latestComparisonReviewsData } = useGetLatestComparisonReviewsQuery();
-    const { data: latestCompareVideosData } = useGetLatestCompareVideosQuery();
+    const faqByModule = faqByModuleData?.rows ?? [];
+
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
 
-    const brands = brandsData?.rows ?? [];
-    const latestComparisonReviews = latestComparisonReviewsData?.rows ?? [];
-    const latestCompareVideos = latestCompareVideosData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
-
-    // ✅ Fixed number of hooks (no map)
-    const modelQuery1 = useGetModelsQuery({ brandId: selectedBrands[0]! }, { skip: !selectedBrands[0] });
-    const modelQuery2 = useGetModelsQuery({ brandId: selectedBrands[1]! }, { skip: !selectedBrands[1] });
-    const modelQuery3 = useGetModelsQuery({ brandId: selectedBrands[2]! }, { skip: !selectedBrands[2] });
-    const modelQuery4 = useGetModelsQuery({ brandId: selectedBrands[3]! }, { skip: !selectedBrands[3] });
-
-    const variantQuery1 = useGetVariantsQuery({ modelId: selectedModels[0]! }, { skip: !selectedModels[0] });
-    const variantQuery2 = useGetVariantsQuery({ modelId: selectedModels[1]! }, { skip: !selectedModels[1] });
-    const variantQuery3 = useGetVariantsQuery({ modelId: selectedModels[2]! }, { skip: !selectedModels[2] });
-    const variantQuery4 = useGetVariantsQuery({ modelId: selectedModels[3]! }, { skip: !selectedModels[3] });
-
-    const modelsData = [
-        modelQuery1.data?.rows ?? [],
-        modelQuery2.data?.rows ?? [],
-        modelQuery3.data?.rows ?? [],
-        modelQuery4.data?.rows ?? [],
-    ];
-
-    const variantsData = [
-        variantQuery1.data?.rows ?? [],
-        variantQuery2.data?.rows ?? [],
-        variantQuery3.data?.rows ?? [],
-        variantQuery4.data?.rows ?? [],
-    ];
 
     const isMobile = useIsMobile();
 
     return (
         <>
-            <TopSection
-                title="Compare to choose the right car!"
-                description="Want to buy a Car but confused how to select the best car as per your requirements? V3Cars compare car tool can help you to finalize your car..."
-            />
+
+            <div className='bg-[#18181b] text-white'>
+                <div className='px-4 xl:px-10'>
+                    <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                            <Link href="/" className="hover:underline">Home</Link>
+                            <span className="text-primary">
+                                <IoIosArrowForward />
+                            </span>
+                            <span className="font-medium text-primary">
+                                Compare Cars
+                            </span>
+                        </div>
+
+                        <span className="font-medium text-primary">
+                            How It Works
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                className="relative bg-bottom bg-cover bg-no-repeat py-6"
+                style={{ backgroundImage: `url('/car-on-road-price/top-bg.png')` }}
+            >
+                <div
+                    className="absolute top-6 right-4 w-[200px] h-[200px] bg-cover bg-no-repeat z-20 pointer-events-none opacity-30"
+                    style={{ backgroundImage: `url('/car-on-road-price/Wave.png')` }}
+                />
+
+                <div className="absolute inset-0 dark:bg-black/85"></div>
+
+                <div className="relative z-10">
+                    <div className="flex justify-center items-center my-4">
+                        <img
+                            src="/model/bannerads.png"
+                            alt="bannerads"
+                            width={970}
+                            height={90}
+                            className="rounded-lg"
+                        />
+                    </div>
+
+                    <ToolsCommonSection
+                        title={
+                            <span>
+                                Car <span className="text-yellow-500">Comparison</span>
+                            </span>
+                        }
+                        desc={`Compare up to four cars side by side and evaluate every detail that matters before buying. This car comparison tool lets you compare price, engine specs, mileage, safety rating, dimensions, features, maintenance cost, warranty, colours and variant-wi`}
+                    />
+
+                    <div className="px-4 xl:px-10">
+                        <div className="w-full lg:app-container mx-auto">
+                            <div className="w-full flex items-center justify-center gap-3">
+                                <div className="flex items-center gap-1 text-xl lg:text-2xl">
+                                    <h2>Select</h2>
+                                    <span className="font-bold">Brand</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:app-container py-6 mx-auto space-y-7">
-                    <CompareNow
-                        brands={brands}
-                        modelsData={modelsData}
-                        variantsData={variantsData}
-                        selectedBrands={selectedBrands}
-                        setSelectedBrands={setSelectedBrands}
-                        selectedModels={selectedModels}
-                        setSelectedModels={setSelectedModels}
-                        selectedVariants={selectedVariants}
-                        setSelectedVariants={setSelectedVariants}
-                    />
+                    <CarComparison />
 
-                    <Information
-                        selectedModels={selectedModels}
-                        modelsData={modelsData}
-                        variantsData={variantsData}
-                        selectedVariants={selectedVariants}
-                        setSelectedVariants={setSelectedVariants}
-                    />
+                    <div>
+                        {/* Heading */}
+                        <h2 className="text-2xl font-semibold mb-3">
+                            Compare to Choose the Right Car!
+                        </h2>
 
-                    {isMobile ? (
-                        <MobileLatestCarNews
-                            title="Comparison Car Review"
-                            view="Comparison Review"
-                            data={latestComparisonReviews}
-                            link="/comparison"
-                        />
-                    ) : (
-                        <CommonNewsUpdate
-                            title="Comparison Car Review"
-                            view="Comparison Review"
-                            newsList={latestComparisonReviews}
-                            link="/comparison"
-                        />
-                    )}
+                        {/* First paragraph */}
+                        <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                            Choosing a new car can feel overwhelming, especially when several
+                            models fit your budget and preferences. This comparison section
+                            helps you simplify that decision by letting you line up multiple
+                            cars and instantly see how they differ where it truly matters to
+                            you.
+                        </p>
+
+                        {/* Second paragraph */}
+                        <p className="text-sm text-gray-700 leading-relaxed">
+                            Just pick the cars you want to evaluate, select the relevant variants,
+                            and the tool highlights meaningful differences—helping you understand
+                            which option aligns better with your priorities, whether that’s
+                            performance, comfort, practicality or long-term ownership experience.
+                        </p>
+                    </div>
+
+                    <CommonHowItWorkCard
+                        title="Car Comparison Tool - How it works"
+                        data={howItWorkData}
+                    />
 
                     <MostPopularCarComparison data={popularComparisons} />
 
-                    <LatestVideos
-                        title="Car Comparison Latest Videos"
-                        data={latestCompareVideos}
-                        link="/car-comparison-videos"
-                    />
+                </div>
+            </div>
+
+            <BottomAd />
+
+            <div className="px-4 xl:px-10">
+
+                <div className="w-full lg:app-container pb-6 mx-auto space-y-7">
+                    <WhyCompareCars />
+
+                    <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
+                        <div className="w-auto lg:min-w-[74%] space-y-6">
+
+                            <CommonSellUsedCarComponent />
+
+                            <SmartBuyersGuide />
+
+                            <CommonQuickLinkComponent data={links} />
+
+                            <CommonFaqAccordion faqData={faqByModule} />
+                        </div>
+
+                        <div className="w-auto lg:min-w-[24%] space-y-6">
+                            <div className="bg-[#E3E3E3] rounded-xl h-[340px] flex justify-center items-center dark:bg-[#171717]">
+                                <img
+                                    src={'/model/miniads.png'}
+                                    alt="miniads"
+                                    width={300}
+                                    height={250}
+                                    className="rounded-lg"
+                                />
+                            </div>
+
+                            <CommonUsefulToolComponent />
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </>
@@ -121,3 +176,74 @@ function MainCompareCarComponent() {
 }
 
 export default MainCompareCarComponent;
+
+
+const howItWorkData = [
+    {
+        title: "Select Cars",
+        desc: "Choose up to four cars you want to compare & start building your shortlist.",
+        icon: (
+            <div className="flex items-center gap-4">
+                <img src="/compare-car/car.png" className="w-16 h-12" />
+            </div>
+        ),
+        bg: "#cbe7f4", // Blue
+    },
+    {
+        title: "Choose Variants",
+        desc: "Pick fuel type, transmission & variant for each car.",
+        icon: (
+            <div className="flex items-center gap-4">
+                <img src="/compare-car/variant.png" className="w-14 h-14" />
+            </div>
+        ),
+        bg: "#fcd9d7", // Light red
+    },
+    {
+        title: "View Detailed Comparison",
+        desc: "Get detailed specs, features, prices & differences.",
+        icon: (
+            <div className="flex items-center gap-4">
+                <img src="/compare-car/compare.png" className="w-14 h-14" />
+            </div>
+        ),
+        bg: "#ffecbe", // Light yellow
+    },
+    {
+        title: "Check Expert Verdict",
+        desc: "Get smart insights & a clear verdict to understand which car suits you best.",
+        icon: (
+            <div className="flex items-center gap-4">
+                <img src="/compare-car/verdict.png" className="w-14 h-14" />
+            </div>
+        ),
+        bg: "#d8e7ca", // Light green
+    },
+];
+
+const links = [
+    {
+        title: "Mileage Calculator",
+        desc: "Estimate Your Vehicle's Fuel Efficiency",
+        img: "/emicalculator/mileage.png",
+        bg: "bg-[#E4F3FE]",
+    },
+    {
+        title: "Fuel Price in India",
+        desc: "Check Latest Fuel Prices Across India",
+        img: "/emicalculator/fuel.png",
+        bg: "bg-[#FCEFFE]",
+    },
+    {
+        title: "Car Loan EMI Calculator",
+        desc: "Calculate Your Monthly Car Loan EMI",
+        img: "/emicalculator/emi.png",
+        bg: "bg-[#FFF8C9]",
+    },
+    {
+        title: "Compare Cars",
+        desc: "Compare Specs, Features & Prices",
+        img: "/emicalculator/compare.png",
+        bg: "bg-[#E0F8E8]",
+    },
+];

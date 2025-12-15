@@ -2,6 +2,7 @@
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
 import { useGetDistrictsByStateIdQuery, useGetStatesQuery } from "@/redux/api/locationModuleApi";
+import { convertToSlug } from "@/utils/helperFunction";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -66,16 +67,6 @@ function slugToName(slug: string): string {
     return slug
         .replace(/-/g, " ")
         .replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-function toSlug(name: string) {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[\s_]+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
 
 function SearchSection({ type, city, state, setCityId, selectState, setSelectState, cityId }: SearchSectionProps) {
@@ -166,7 +157,7 @@ function SearchSection({ type, city, state, setCityId, selectState, setSelectSta
                                     setSelectState(value.stateId);
                                     setSelectStateName(value.stateName);
                                     setCityId(null)
-                                    router.push(`/${toSlug(value.stateName).toLowerCase()}/${fuelType.toLowerCase()}-price`)
+                                    router.push(`/${convertToSlug(value.stateName).toLowerCase()}/${fuelType.toLowerCase()}-price`)
                                 }}
                             />
                         </div>

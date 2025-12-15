@@ -1,6 +1,7 @@
 'use client'
 
 import { RootState } from "@/redux/store";
+import { convertToSlug } from "@/utils/helperFunction";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -33,15 +34,6 @@ export interface Variant {
     onRoad: number | null;
     updatedDate: string;
 }
-
-export const convertToSlug = (text: string): string => {
-    return text
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/--+/g, "-");
-};
 
 const PriceListTable: React.FC<PriceListTableProps> = ({ type, slug, data, setFuelType, fuelType, fuelTypes, transmissionType, setTransmissionType }) => {
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);

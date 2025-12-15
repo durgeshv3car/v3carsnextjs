@@ -25,12 +25,10 @@ import CarColours from "./sidebar/CarColours";
 import VariantExplained from "./sidebar/VariantExplained";
 import EMICalculator from "./sidebar/EMICalculator";
 import { CarData } from "./overview/Overview";
-import { useGetModelCompetitorsQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
+import { useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import CarInIndia from "../../car-on-road-price/CarsInIndia";
-import CommonModelCard from "@/components/common/CommonCards/CommonModelCard";
 import ModelOnRoadPriceDetails from "../../car-on-road-price/ModelOnRoadPriceDetails";
 import EmiComponent from "../../car-on-road-price/EmiComponent";
-import CommonViewOfferCard from "@/components/common/ModelCards/CommonViewOfferCard";
 import CommonCompetitorCard from "@/components/common/CommonCards/CommonCompetitorCard";
 
 interface ModelOnRoadPriceProps {
@@ -47,9 +45,7 @@ function ModelOnRoadPrice({ type, slug, cityName }: ModelOnRoadPriceProps) {
     const { data: modelDetailsData, isLoading } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug })
-    const { data: modelComparisonSimilarData } = useGetModelCompetitorsQuery({ model_slug: slug });
 
-    const modelComparisonSimilar = modelComparisonSimilarData?.items ?? [];
     const modelDetails: CarData | null = modelDetailsData?.data ?? null;
     const faqByModule = faqByModuleData?.rows ?? [];
     const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
@@ -116,22 +112,24 @@ function ModelOnRoadPrice({ type, slug, cityName }: ModelOnRoadPriceProps) {
                         desc={`Get accurate, city-wise on-road prices for every car sold in India — including RTO tax, insurance, registration, and other mandatory charges. Our tool lets you instantly calculate the total cost of ownership for your selected...`}
                     />
 
-                    <div className="w-full lg:app-container mx-auto">
-                        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-3">
-                            <div className="flex items-center gap-1 text-2xl">
-                                <h2>Select</h2>
-                                <span className="font-bold">Brand</span>
-                            </div>
+                    <div className="px-4 xl:px-10">
+                        <div className="w-full lg:app-container mx-auto">
+                            <div className="w-full flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-1 text-xl lg:text-2xl">
+                                    <h2>Select</h2>
+                                    <span className="font-bold">Brand</span>
+                                </div>
 
-                            <div className="flex items-center bg-transparent border border-gray-300 rounded-full px-4 py-2 w-[300px] dark:border-[#2e2e2e]">
-                                <input
-                                    type="text"
-                                    placeholder="Search Brand Name"
-                                    className="w-full bg-transparent outline-none text-sm placeholder-gray-500"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <IoSearchSharp size={18} className="text-gray-500" />
+                                <div className="flex items-center bg-transparent border border-gray-300 rounded-full px-4 py-2 w-[200px] lg:w-[300px] dark:border-[#2e2e2e]">
+                                    <input
+                                        type="text"
+                                        placeholder="Search Brand Name"
+                                        className="w-full bg-transparent outline-none text-sm placeholder-gray-500"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                    <IoSearchSharp size={18} className="text-gray-500" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -148,7 +146,9 @@ function ModelOnRoadPrice({ type, slug, cityName }: ModelOnRoadPriceProps) {
                 className="relative bg-bottom bg-cover bg-no-repeat py-6 mb-10"
                 style={{ backgroundImage: `url('/car-on-road-price/model-bg.png')` }}
             >
-                <div className="px-4 xl:px-10">
+                <div className="absolute inset-0 dark:bg-black/85"></div>
+
+                <div className=" relative px-4 xl:px-10 z-10">
                     <div className="w-full lg:app-container pb-6 mx-auto space-y-7">
                         <ModelOnRoadPriceDetails
                             modelId={Number(modelDetails?.model.id)}
@@ -163,11 +163,12 @@ function ModelOnRoadPrice({ type, slug, cityName }: ModelOnRoadPriceProps) {
                 <div className="w-full lg:app-container pb-6 mx-auto space-y-7">
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:min-w-[74%] space-y-6">
-                            <EmiComponent />
+                            <EmiComponent data={modelDetails} cityName={cityName} />
 
                             <CommonCompetitorCard
                                 title={`${modelDetails?.model?.brand?.name} ${modelDetails?.model?.name}`}
                                 slug={slug}
+                                cityName={cityName}
                             />
 
                             <CarInIndia />
@@ -181,7 +182,7 @@ function ModelOnRoadPrice({ type, slug, cityName }: ModelOnRoadPriceProps) {
 
                             <OnRoadPriceInfo />
 
-                            <CommonQuickLinkComponent />
+                            <CommonQuickLinkComponent data={links} />
 
                             <CommonFaqAccordion faqData={faqByModule} />
                         </div>
@@ -345,3 +346,31 @@ const howItWorkData = [
         bg: "#d8e7ca", // Light green
     },
 ];
+
+
+ const links = [
+        {
+            title: "Mileage Calculator",
+            desc: "Estimate Your Vehicle's Fuel Efficiency",
+            img: "/emicalculator/mileage.png",
+            bg: "bg-[#E4F3FE]",
+        },
+        {
+            title: "Fuel Price in India",
+            desc: "Check Latest Fuel Prices Across India",
+            img: "/emicalculator/fuel.png",
+            bg: "bg-[#FCEFFE]",
+        },
+        {
+            title: "Car Loan EMI Calculator",
+            desc: "Calculate Your Monthly Car Loan EMI",
+            img: "/emicalculator/emi.png",
+            bg: "bg-[#FFF8C9]",
+        },
+        {
+            title: "Compare Cars",
+            desc: "Compare Specs, Features & Prices",
+            img: "/emicalculator/compare.png",
+            bg: "bg-[#E0F8E8]",
+        },
+    ];

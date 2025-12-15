@@ -1,41 +1,35 @@
 'use client';
 
+import { useGetPopularCitiesQuery } from "@/redux/api/locationModuleApi";
 import Image from "next/image";
 import { useState } from "react";
 
-const cityList = [
-    "Ahmedabad",
-    "Bangalore",
-    "Bhopal",
-    "Chennai",
-    "Delhi",
-    "Hyderabad",
-    "Kolkata",
-    "Mumbai",
-];
+interface City {
+    cityId: number;
+    cityName: string;
+    stateId: number;
+    countryId: number;
+    status: number;
+    isPopularCity: number;
+    isTopCity: number;
+    ismajorCityPetrol: number;
+    ismajorCityDiesel: number;
+    ismajorCityCNG: number;
+    isImage: string;
+}
 
 export default function CommonPriceInMajorCitiesCard() {
+    const { data: popularCitiesData } = useGetPopularCitiesQuery();
+    const popularCities: City[] = popularCitiesData?.rows ?? [];
     const [activeTab, setActiveTab] = useState<"Petrol" | "Diesel" | "CNG">(
         "Petrol"
     );
-
-    const tools = [
-        "Mileage Calculator",
-        "Fuel Cost Calculator",
-        "Car Loan EMI Calculator",
-        "Fuel Price in India",
-        "Buy / Renew Car Insurance",
-        "Apply for Car Loan",
-        "Car On-Road Price",
-        "Sell Used Car",
-        "Buy Used Cars",
-    ];
 
     return (
         <div className="w-full border rounded-xl overflow-hidden dark:border-[#2e2e2e]">
             {/* Header */}
             <div className="text-center font-semibold py-4 bg-[#DEE2E6] dark:bg-[#232323]">
-                Petrol Price In Major Cities
+                {activeTab} Price In Major Cities
             </div>
 
             <div className="flex border-b dark:border-[#2e2e2e]">
@@ -56,7 +50,7 @@ export default function CommonPriceInMajorCitiesCard() {
 
             {/* Scrollable List */}
             <div className="max-h-[500px] overflow-y-auto scrollbar-thin-yellow bg-white dark:bg-[#171717]">
-                {cityList.map((city, index) => (
+                {popularCities && popularCities.map((city, index) => (
                     <div
                         key={index}
                         className="group flex items-center gap-3 p-4 border-b last:border-none hover:text-primary dark:border-[#2e2e2e] cursor-pointer"
@@ -78,7 +72,7 @@ export default function CommonPriceInMajorCitiesCard() {
                         />
 
                         <p className="text-[15px]">
-                            {activeTab} Price In {city}
+                            {activeTab} Price In {city.cityName}
                         </p>
                     </div>
                 ))}

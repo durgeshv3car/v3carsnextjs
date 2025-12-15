@@ -1,88 +1,102 @@
-'use client'
+'use client';
 
+import { convertToSlug } from "@/utils/helperFunction";
 import Link from "next/link";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 
-interface FuelPriceInfo {
-    districtId: number;
-    cityName: string;
-    stateId: number;
+interface FuelPriceProps {
+    type: string;
+    city: string;
     stateName: string;
-    fuelType?: number;
-    scope?: string;
-    price: number;
-    prevPrice: number;
-    change: number;
-    updatedAt: string; // ISO date string (e.g. "2025-10-28T00:00:00.000Z")
+    petrol: { price: number; change: number };
+    diesel: { price: number; change: number };
+    cng: { price: number; change: number };
+    updatedAt: string;
 }
 
-interface FuelPricesProps {
-    fuelData: FuelPriceInfo[];
-    type: string
-}
-
-function toSlug(name?: string) {
-  if (!name || typeof name !== "string") return "";
-
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[\s_]+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-const FuelPrices = ({ fuelData, type }: FuelPricesProps) => {
-
-    console.log(fuelData);
+const FuelPrices = ({ type, city, stateName, petrol, diesel, cng, updatedAt }: FuelPriceProps) => {
+    const showAll = type === "fuel";
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {fuelData.map((item, idx) => (
-                <div
-                    key={idx}
-                    className={`p-4 rounded-lg border ${item.change < 0
-                        ? "bg-red-50 border-red-200"
-                        : "bg-green-50 border-green-200"
-                        }`}
-                >
-                    <div className="flex justify-between items-center mb-2">
-                        <h2 className="font-semibold text-black cursor-pointer hover:underline">
-                            <Link
-                                href={
-                                    type === "Fuel" ?
-                                    `/${toSlug(item.stateName)}/petrol-price-in-${toSlug(item.cityName)}`
-                                    :
-                                    `/${toSlug(item.stateName)}/${type.toLowerCase()}-price-in-${toSlug(item.cityName)}`
-                                 }
-                            >
-                                {item.cityName}
-                            </Link>
-                        </h2>
-                        <span
-                            className={`text-sm font-bold text-white px-2 py-0.5 rounded ${item.change < 0 ? "bg-red-500" : "bg-green-500"
-                                }`}
-                        >
-                            {item.change}
-                        </span>
-                    </div>
-                    <div
-                        className={`text-xs font-bold ${item.change < 0 ? "text-red-600" : "text-green-600"
-                            }`}
-                    >
-                        {type.toUpperCase()}
-                    </div>
-                    <div
-                        className={`text-2xl font-bold ${item.change < 0 ? "text-red-600" : "text-green-600"
-                            }`}
-                    >
-                        ₹ {item.price}{" "}
-                        <span className="text-lg">/L</span>
-                    </div>
-                </div>
-            ))}
+        <div className="p-5 rounded-2xl shadow-md border bg-white dark:bg-[#171717] dark:border-[#2e2e2e]">
+
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3">
+                <h2 className="text-xl font-semibold">{city}</h2>
+                <span className="text-blue-600 text-sm cursor-pointer hover:underline flex items-center gap-1">
+                    {
+                        type === "fuel" ? "10-day trend" : "7-day trend"
+                    }
+                    <FaArrowRightLong size={12} />
+                </span>
+            </div>
+
+            {/* Price Rows */}
+            {(showAll || type === "petrol") && (
+                <PriceRow label="Petrol" city={city} stateName={stateName} price={petrol.price} change={petrol.change} />
+            )}
+
+            {(showAll || type === "diesel") && (
+                <PriceRow label="Diesel" city={city} stateName={stateName} price={diesel.price} change={diesel.change} />
+            )}
+
+            {(showAll || type === "cng") && (
+                <PriceRow label="CNG" city={city} stateName={stateName} price={cng.price} change={cng.change} />
+            )}
+
+            {/* Footer */}
+            <p className="text-xs text-gray-400 mt-4">
+                Updated at {new Date(updatedAt).toLocaleString()}
+            </p>
         </div>
     );
 };
 
 export default FuelPrices;
+
+
+const PriceRow = ({
+    label,
+    city,
+    stateName,
+    price,
+    change
+}: {
+    label: string;
+    stateName: string;
+    city: string;
+    price: number;
+    change: number;
+}) => {
+    const isPositive = change > 0;
+    const isNegative = change < 0;
+
+    return (
+        <div className="flex items-center justify-between py-3 text-[15px] border-b dark:border-[#2e2e2e] ">
+            <Link href={`/${convertToSlug(stateName)}/${convertToSlug(label)}-price-in-${convertToSlug(city)}`} className="cursor-pointer hover:underline">{label}</Link>
+
+            <div className="flex items-center gap-3 text-lg">
+                <span className="font-semibold">₹{price.toFixed(2)}</span>
+
+                <span
+                    className={`px-2 py-[2px] rounded-full text-sm font-medium min-w-[55px] text-center flex items-center ${isPositive
+                        ? "bg-red-100 text-red-600"
+                        : isNegative
+                            ? "bg-green-100 text-green-600"
+                            : "bg-gray-100 dark:bg-[#2e2e2e]"
+                        }`}
+                >
+                    {change === 0 ? (
+                        "₹0.00"
+                    ) : (
+                        <>
+                            {isPositive ? <IoIosArrowRoundUp /> : <IoIosArrowRoundDown />}
+                            ₹{Math.abs(change).toFixed(2)}
+                        </>
+                    )}
+                </span>
+            </div>
+        </div>
+    );
+};

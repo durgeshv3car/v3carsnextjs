@@ -8,21 +8,12 @@ import { ModelTab, setActiveTab } from "@/redux/slices/carModelSlice";
 import Overview, { CarData } from "./overview/Overview";
 import CommonModelTopSection from "@/components/common/ModelCards/CommonModelTopSection";
 import Link from "next/link";
+import { convertToSlug } from "@/utils/helperFunction";
 
 interface BannerSectionProps {
     type: string;
     slug: string;
     modelDetails?: CarData | null;
-}
-
-function toSlug(name: string) {
-    return name
-        .toLowerCase()
-        .trim()
-        .replace(/[\s_]+/g, "-")
-        .replace(/[^\w-]+/g, "")
-        .replace(/--+/g, "-")
-        .replace(/^-+|-+$/g, "");
 }
 
 const tabs = [
@@ -61,7 +52,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
         if (tab === "Overview") {
             router.push(`/${type}/${slug}`);
         } else if (tab === "Price") {
-            router.push(`/${type}/${slug}/price-in-${toSlug(selectedCity.cityName)}`);
+            router.push(`/${type}/${slug}/price-in-${convertToSlug(selectedCity.cityName)}`);
         } else if (tab === "Variants") {
             router.push(`/${type}/${slug}/which-variant-to-buy`);
         } else if (tab === "Dimensions") {
@@ -96,7 +87,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({ type, slug, modelDetails 
             router.push(`/${type}/${slug}/cost-of-ownership`);
         }
         else {
-            router.push(`/${type}/${slug}/${toSlug(tab)}`);
+            router.push(`/${type}/${slug}/${convertToSlug(tab)}`);
         }
     }
 

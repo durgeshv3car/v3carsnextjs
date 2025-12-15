@@ -2,6 +2,7 @@
 
 import { useGetModelCompetitorsQuery } from '@/redux/api/carModuleApi'
 import { IMAGE_URL } from '@/utils/constant'
+import { convertToSlug } from '@/utils/helperFunction'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { BiTachometer } from 'react-icons/bi'
@@ -12,6 +13,7 @@ import { PiEngine } from 'react-icons/pi'
 interface CommonCompetitorCardProps {
     title: string;
     slug: string;
+    cityName: string;
 }
 
 export interface CarImage {
@@ -36,7 +38,7 @@ export interface CarOverviewShort {
     mileageKMPL: number;
 }
 
-const CommonCompetitorCard: React.FC<CommonCompetitorCardProps> = ({ title, slug }) => {
+const CommonCompetitorCard: React.FC<CommonCompetitorCardProps> = ({ title, slug, cityName }) => {
     const { data: modelComparisonSimilarData } = useGetModelCompetitorsQuery({ model_slug: slug });
 
     const similarCars: CarOverviewShort[] = modelComparisonSimilarData?.items ?? [];
@@ -128,7 +130,7 @@ const CommonCompetitorCard: React.FC<CommonCompetitorCardProps> = ({ title, slug
                             </div>
                             <button
                                 className="p-3 text-sm w-full flex justify-between items-center text-black cursor-pointer rounded-lg bg-primary"
-                                onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
+                                onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}/on-road-price-in-${convertToSlug(cityName)}`) }}
                             >
                                 Check {car.modelName} On-road Price
                                 <FaArrowRight />

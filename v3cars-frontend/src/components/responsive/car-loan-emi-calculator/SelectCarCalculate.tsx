@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { IoIosCheckmark } from 'react-icons/io';
 import CarLoanCalculator from './CarLoanCalculator';
 import CommonBrandModelTool from '@/components/common/CommonBrandModelTool';
+import { usePathname } from 'next/navigation';
 
 
 interface PowerTrain {
@@ -47,6 +48,7 @@ const SelectCarCalculate = ({ searchQuery, onLoanDataChange }: SelectCarCalculat
     const [selectedFuelType, setSelectedFuelType] = useState("");
     const [selectedTransmissionType, setSelectedTransmissionType] = useState("");
     const { data: variantsData } = useGetVariantsQuery({ modelId: modelId! }, { skip: !modelId });
+    const path = usePathname()
 
     
     const variants: CarVariant[] = variantsData?.rows ?? [];
@@ -86,10 +88,10 @@ const SelectCarCalculate = ({ searchQuery, onLoanDataChange }: SelectCarCalculat
     return (
         <div className="space-y-4">
 
-            <CommonBrandModelTool searchQuery={searchQuery} modelId={modelId} setModelId={setModelId} />
+            <CommonBrandModelTool searchQuery={searchQuery} modelId={modelId} setModelId={setModelId} url={path} />
 
             <div className='grid grid-cols-1 md:grid-cols-4 justify-between gap-4'>
-                <div className="md:col-span-1">
+                <div className="col-span-1 sm:col-span-2 lg:col-span-1">
 
                     {/* ================= LEFT FILTER PANEL ================= */}
                     <div className="space-y-3">
@@ -180,11 +182,11 @@ const SelectCarCalculate = ({ searchQuery, onLoanDataChange }: SelectCarCalculat
                         </div>
 
                         {/* Variants */}
-                        <div className="rounded-xl overflow-hidden border border-[#2D2F31]">
+                        <div className="rounded-xl overflow-hidden border border-[#2D2F31] flex-grow flex flex-col">
                             <p className="bg-[#2D2F31] text-white p-4 text-sm font-semibold">Variants</p>
 
                             {filteredVariants && filteredVariants.length > 0 ? (
-                                <div className="divide-y dark:divide-[#2e2e2e] h-[120px] overflow-y-auto scrollbar-thin-yellow">
+                                <div className="divide-y dark:divide-[#2e2e2e] h-[200px] sm:h-[490px] lg:h-[120px] flex-grow overflow-y-auto scrollbar-thin-yellow">
                                     {
                                         filteredVariants.map((v, index) => (
                                             <div
@@ -229,7 +231,7 @@ const SelectCarCalculate = ({ searchQuery, onLoanDataChange }: SelectCarCalculat
                 </div>
 
                 {/* Sliders & Results */}
-                <div className='md:col-span-3'>
+                <div className='col-span-1 sm:col-span-2 lg:col-span-3'>
                     <CarLoanCalculator selectedVariantPrice={selectedVariantPrice} onLoanDataChange={onLoanDataChange} />
                 </div>
             </div>

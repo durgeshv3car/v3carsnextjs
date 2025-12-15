@@ -1,5 +1,6 @@
 'use client'
 
+import { convertToSlug } from "@/utils/helperFunction";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -23,16 +24,6 @@ interface StateWiseFuelListProps {
     type: string;
 }
 
-function toSlug(name: string) {
-    return name
-        .toLowerCase()
-        .trim()
-        .replace(/[\s_]+/g, '-')
-        .replace(/[^\w-]+/g, '')
-        .replace(/--+/g, '-')
-        .replace(/^-+|-+$/g, '');
-}
-
 const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
     const [showAll, setShowAll] = useState(false);
 
@@ -42,8 +33,9 @@ const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
     return (
         <div className="space-y-4">
             {/* Heading */}
-            <div className="flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
+            <div className="flex flex-col gap-4">
                 <h1 className="text-2xl">State-wise List For {type} Price</h1>
+                <p>Fuel prices differ from one state to another due to factors like local VAT, transportation charges, dealer commissions and state-level policies. To make fuel price tracking easier, we’ve compiled a state-wise list of today’s petrol, diesel and CNG pr... More</p>
             </div>
 
             {/* Table */}
@@ -61,9 +53,9 @@ const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
                             {(isAllFuel || type === "CNG") && (
                                 <th className="px-4 py-2 font-semibold min-w-[200px]">CNG</th>
                             )}
-                            {!isAllFuel && (
+                            {/* {!isAllFuel && (
                                 <th className="px-4 py-2 font-semibold min-w-[200px]">CHANGE</th>
-                            )}
+                            )} */}
                         </tr>
                     </thead>
 
@@ -71,15 +63,15 @@ const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
                         {visibleData.map((row) => (
                             <tr
                                 key={row.stateId}
-                                className="even:bg-transparent odd:bg-gray-50 dark:odd:bg-[#171717]"
+                                className="even:bg-white dark:even:bg-transparent odd:bg-[#F0F0F0] dark:odd:bg-[#171717]"
                             >
                                 <td className="p-4 border dark:border-[#2E2E2E] cursor-pointer hover:underline">
                                     <Link
                                         href={
-                                            type === "Fuel" ? 
-                                            `/${toSlug(row.stateName)}/petrol-price`
-                                            :
-                                            `/${toSlug(row.stateName)}/${type.toLowerCase()}-price`
+                                            type === "Fuel" ?
+                                                `/${convertToSlug(row.stateName)}/petrol-price`
+                                                :
+                                                `/${convertToSlug(row.stateName)}/${type.toLowerCase()}-price`
                                         }
                                     >
                                         {row.stateName}
@@ -87,16 +79,16 @@ const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
                                 </td>
 
                                 {(isAllFuel || type === "Petrol") && (
-                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.petrol ?? "0"}</td>
+                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.petrol ?? "0"}₹/L</td>
                                 )}
                                 {(isAllFuel || type === "Diesel") && (
-                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.diesel ?? "0"}</td>
+                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.diesel ?? "0"}₹/L</td>
                                 )}
                                 {(isAllFuel || type === "CNG") && (
-                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.cng ?? "0"}</td>
+                                    <td className="p-4 border dark:border-[#2E2E2E]">{row.cng ?? "0"}₹/kg</td>
                                 )}
 
-                                {type === "Petrol" && (
+                                {/* {type === "Petrol" && (
                                     <td className="p-3 border dark:border-[#2E2E2E]">
                                         <div
                                             className={`px-4 py-1 rounded w-fit ${row.petrol === null || row.petrolPrev === null
@@ -145,7 +137,7 @@ const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
                                             {row.cngChange ?? "0"}
                                         </div>
                                     </td>
-                                )}
+                                )} */}
                             </tr>
                         ))}
                     </tbody>
@@ -157,7 +149,7 @@ const StateWiseFuelList = ({ type, data }: StateWiseFuelListProps) => {
                 <div className="text-center mt-4">
                     <button
                         onClick={() => setShowAll(true)}
-                        className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition"
+                        className="px-6 py-2 bg-primary text-black rounded-lg hover:bg-primary-hover transition"
                     >
                         View All States Diesel Prices
                     </button>

@@ -98,7 +98,7 @@ export default function FuelCardSection({ inputs, selectedCity }: FuelCardSectio
 
     return (
         <div className="w-full">
-            <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32.20%] snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide gap-6">
+            <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[48%] lg:auto-cols-[32.20%] snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide gap-6">
 
                 {/* PETROL */}
                 <FuelCard

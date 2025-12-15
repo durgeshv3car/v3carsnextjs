@@ -62,9 +62,6 @@ const howItWorkData = [
 
 function MainEMICalculatorComponent() {
     const path = usePathname()
-
-    console.log(path);
-
     const [loanData, setLoanData] = useState({
         principal: 0,
         annualInterestRate: 7,
@@ -187,7 +184,7 @@ function MainEMICalculatorComponent() {
 
                             <ExploreUsefulCarTools />
 
-                            <CommonQuickLinkComponent />
+                            <CommonQuickLinkComponent data={links} />
 
                             <CommonFaqAccordion faqData={faqByModule} />
                         </div>
@@ -214,3 +211,31 @@ function MainEMICalculatorComponent() {
 }
 
 export default MainEMICalculatorComponent;
+
+
+ const links = [
+        {
+            title: "Mileage Calculator",
+            desc: "Estimate Your Vehicle's Fuel Efficiency",
+            img: "/emicalculator/mileage.png",
+            bg: "bg-[#E4F3FE]",
+        },
+        {
+            title: "Fuel Price in India",
+            desc: "Check Latest Fuel Prices Across India",
+            img: "/emicalculator/fuel.png",
+            bg: "bg-[#FCEFFE]",
+        },
+        {
+            title: "Car Loan EMI Calculator",
+            desc: "Calculate Your Monthly Car Loan EMI",
+            img: "/emicalculator/emi.png",
+            bg: "bg-[#FFF8C9]",
+        },
+        {
+            title: "Compare Cars",
+            desc: "Compare Specs, Features & Prices",
+            img: "/emicalculator/compare.png",
+            bg: "bg-[#E0F8E8]",
+        },
+    ];

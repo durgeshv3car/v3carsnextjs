@@ -32,7 +32,7 @@ interface CarModel {
 }
 
 const PopularCar = () => {
-  const { data: topSellingCarData, error, isLoading } = useGetTopSellingCarQuery();
+  const { data: topSellingCarData, error, isLoading } = useGetTopSellingCarQuery({ limit: 25 });
 
   const topSellingCars: CarModel[] = topSellingCarData?.rows ?? [];
 

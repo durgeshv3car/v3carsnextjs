@@ -92,7 +92,7 @@ export default function MainFuelCalculatorComponent() {
             </div>
 
 
-            <div className="relative mb-[470px] lg:mb-36">
+            <div className="relative mb-[470px] sm:mb-[300px] lg:mb-36">
                 <div className="absolute -top-12 left-0 w-full px-4 lg:px-10">
                     <div className="w-full lg:app-container mx-auto">
                         <FuelInputSection onInputChange={handleInputChange} />
@@ -148,7 +148,7 @@ export default function MainFuelCalculatorComponent() {
 
                                 <FuelCostCalculation />
 
-                                <CommonQuickLinkComponent />
+                                <CommonQuickLinkComponent data={links} />
 
                                 <CommonFaqAccordion faqData={faqByModule} />
 
@@ -220,3 +220,30 @@ const howItWorkData = [
         bg: "#d8e7ca", // Light green
     },
 ];
+
+ const links = [
+        {
+            title: "Mileage Calculator",
+            desc: "Estimate Your Vehicle's Fuel Efficiency",
+            img: "/emicalculator/mileage.png",
+            bg: "bg-[#E4F3FE]",
+        },
+        {
+            title: "Fuel Price in India",
+            desc: "Check Latest Fuel Prices Across India",
+            img: "/emicalculator/fuel.png",
+            bg: "bg-[#FCEFFE]",
+        },
+        {
+            title: "Car Loan EMI Calculator",
+            desc: "Calculate Your Monthly Car Loan EMI",
+            img: "/emicalculator/emi.png",
+            bg: "bg-[#FFF8C9]",
+        },
+        {
+            title: "Compare Cars",
+            desc: "Compare Specs, Features & Prices",
+            img: "/emicalculator/compare.png",
+            bg: "bg-[#E0F8E8]",
+        },
+    ];

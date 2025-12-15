@@ -1,39 +1,23 @@
 'use client';
+export interface LoanDetailCard {
+  title: string;
+  desc: string;
+  img: string;   // because you are passing JSX (<div>...</div>)
+  bg: string;        // background color (hex, rgb, etc.)
+}
 
-export default function CommonQuickLinkComponent() {
-    const links = [
-        {
-            title: "Mileage Calculator",
-            desc: "Estimate Your Vehicle's Fuel Efficiency",
-            img: "/emicalculator/mileage.png",
-            bg: "bg-[#E4F3FE]",
-        },
-        {
-            title: "Fuel Price in India",
-            desc: "Check Latest Fuel Prices Across India",
-            img: "/emicalculator/fuel.png",
-            bg: "bg-[#FCEFFE]",
-        },
-        {
-            title: "Car Loan EMI Calculator",
-            desc: "Calculate Your Monthly Car Loan EMI",
-            img: "/emicalculator/emi.png",
-            bg: "bg-[#FFF8C9]",
-        },
-        {
-            title: "Compare Cars",
-            desc: "Compare Specs, Features & Prices",
-            img: "/emicalculator/compare.png",
-            bg: "bg-[#E0F8E8]",
-        },
-    ];
+interface CommonQuickLinkComponentProps {
+    data: LoanDetailCard[]
+}
+
+export default function CommonQuickLinkComponent({ data }: CommonQuickLinkComponentProps) {
 
     return (
         <div>
             <h2 className="text-2xl font-semibold mb-4">Quick Links</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                {links.map((item, index) => (
+                {data && data.map((item, index) => (
                     <div
                         key={index}
                         className={`${item.bg} border rounded-xl p-6 flex flex-col items-center justify-between text-center shadow-sm hover:shadow-md transition`}

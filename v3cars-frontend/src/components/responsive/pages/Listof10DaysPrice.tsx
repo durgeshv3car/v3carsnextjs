@@ -43,7 +43,7 @@ const Listof10DaysPrice = ({ type, data, city }: Listof10DaysPriceProps) => {
                             <th className="px-4 py-2 font-semibold min-w-[200px] uppercase">
                                 {type} PRICE
                             </th>
-                            <th className="px-4 py-2 font-semibold min-w-[200px]">CHANGE</th>
+                            {/* <th className="px-4 py-2 font-semibold min-w-[200px]">CHANGE</th> */}
                         </tr>
                     </thead>
                     <tbody className="border border-gray-200 dark:border-[#2E2E2E]">
@@ -58,18 +58,20 @@ const Listof10DaysPrice = ({ type, data, city }: Listof10DaysPriceProps) => {
                             return (
                                 <tr
                                     key={idx}
-                                    className="even:bg-transparent odd:bg-gray-50 dark:odd:bg-[#171717]"
+                                    className="even:bg-white dark:even:bg-transparent odd:bg-[#F0F0F0] dark:odd:bg-[#171717]"
                                 >
                                     <td className="p-4 border dark:border-[#2E2E2E]">{row.day}</td>
                                     <td className="p-4 border dark:border-[#2E2E2E]">
-                                        ₹ {row.price}
+                                        {
+                                            row.price ? `${row.price}${type === "CNG" ? "₹/kg" : "₹/L"}` : "___"
+                                        }
                                     </td>
-                                    <td className="p-3 border dark:border-[#2E2E2E]">
+                                    {/* <td className="p-3 border dark:border-[#2E2E2E]">
                                         <div className={`px-4 py-1 rounded w-fit ${colorClass}`}>
                                             {row.change > 0 ? "+" : ""}
                                             {row.change.toFixed(2)}
                                         </div>
-                                    </td>
+                                    </td> */}
                                 </tr>
                             );
                         })}

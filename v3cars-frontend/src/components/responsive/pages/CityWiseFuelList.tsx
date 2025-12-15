@@ -1,5 +1,6 @@
 'use client'
 
+import { convertToSlug } from "@/utils/helperFunction";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -19,16 +20,6 @@ interface CityWiseFuelListProps {
     slug: string;
 }
 
-function toSlug(name: string) {
-    return name
-        .toLowerCase()
-        .trim()
-        .replace(/[\s_]+/g, '-')
-        .replace(/[^\w-]+/g, '')
-        .replace(/--+/g, '-')
-        .replace(/^-+|-+$/g, '');
-}
-
 const CityWiseFuelList = ({ type, data, slug }: CityWiseFuelListProps) => {
     const [showAll, setShowAll] = useState(false);
 
@@ -37,10 +28,12 @@ const CityWiseFuelList = ({ type, data, slug }: CityWiseFuelListProps) => {
     return (
         <div className="space-y-4">
             {/* Heading */}
-            <div className="flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
-                <h1 className="text-2xl">
+            <div className="">
+                <h1 className="text-2xl mb-2">
                     City-wise List For {type} Price
                 </h1>
+                <p className="text-sm">Fuel rates can differ significantly between cities, even within the same state. By selecting a state, you can explore city-wise petrol prices, including metro areas, tier-2 cities and key districts.This detailed view helps you:
+                    Compare petrol price</p>
             </div>
 
             <div className="overflow-x-auto">
@@ -51,7 +44,7 @@ const CityWiseFuelList = ({ type, data, slug }: CityWiseFuelListProps) => {
                             <th className="px-4 py-2 font-semibold min-w-[200px] uppercase">
                                 {type} PRICE
                             </th>
-                            <th className="px-4 py-2 font-semibold min-w-[200px]">CHANGE</th>
+                            {/* <th className="px-4 py-2 font-semibold min-w-[200px]">CHANGE</th> */}
                         </tr>
                     </thead>
 
@@ -69,24 +62,26 @@ const CityWiseFuelList = ({ type, data, slug }: CityWiseFuelListProps) => {
                             return (
                                 <tr
                                     key={row.districtId}
-                                    className="even:bg-transparent odd:bg-gray-50 dark:odd:bg-[#171717]"
+                                    className="even:bg-white dark:even:bg-transparent odd:bg-[#F0F0F0] dark:odd:bg-[#171717]"
                                 >
                                     <td className="p-4 border dark:border-[#2E2E2E] hover:underline cursor-pointer">
-                                        <Link href={`/${toSlug(slug)}/${type.toLowerCase()}-price-in-${toSlug(row.cityName)}`} >
+                                        <Link href={`/${convertToSlug(slug)}/${type.toLowerCase()}-price-in-${convertToSlug(row.cityName)}`} >
                                             {row.cityName}
                                         </Link>
                                     </td>
 
                                     <td className="p-4 border dark:border-[#2E2E2E]">
-                                        ₹ {row.price}
+                                        {
+                                            row.price ? `${row.price}${type === "CNG" ? "₹/kg" : "₹/L"}` : "___"
+                                        }
                                     </td>
 
-                                    <td className="p-3 border dark:border-[#2E2E2E]">
+                                    {/* <td className="p-3 border dark:border-[#2E2E2E]">
                                         <div className={`px-4 py-1 rounded w-fit ${changeClass}`}>
                                             {row.change > 0 ? "+" : ""}
                                             {row.change === null ? "0" : row.change}
                                         </div>
-                                    </td>
+                                    </td> */}
                                 </tr>
                             );
                         })}
@@ -99,7 +94,7 @@ const CityWiseFuelList = ({ type, data, slug }: CityWiseFuelListProps) => {
                 <div className="text-center mt-4">
                     <button
                         onClick={() => setShowAll(true)}
-                        className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition"
+                        className="px-6 py-2 bg-primary text-black rounded-lg hover:bg-primary-hover transition"
                     >
                         {`View All Cities ${type} Prices`}
                     </button>

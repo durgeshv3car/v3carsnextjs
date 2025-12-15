@@ -23,7 +23,7 @@ import ImagesPage from "./images/ImagesPage";
 import MainMaintenanceComponent from "./maintenance-cost/MainMaintenanceComponent";
 import MainOwnershipComponent from "./cost-of-ownership/MainOwnershipComponent";
 import { notFound } from "next/navigation";
-import { convertToSlug } from "./overview/PriceListTable";
+import { convertToSlug } from "@/utils/helperFunction";
 
 interface DynmicModelSlugProps {
     type: string;

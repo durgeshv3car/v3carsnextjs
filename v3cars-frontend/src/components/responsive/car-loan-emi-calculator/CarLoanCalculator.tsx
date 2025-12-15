@@ -209,7 +209,7 @@ const CarLoanCalculator = ({ selectedVariantPrice, onLoanDataChange }: CarLoanCa
         </div>
 
         {/* EMI Result */}
-        <div className="bg-[#2f3136] text-white p-6 rounded-xl space-y-6 w-full md:w-[443px] flex flex-col justify-between">
+        <div className="bg-[#2f3136] text-white p-6 rounded-xl space-y-6 w-full lg:w-[443px] flex flex-col justify-between">
 
           {/* Header */}
           <div className="text-center">

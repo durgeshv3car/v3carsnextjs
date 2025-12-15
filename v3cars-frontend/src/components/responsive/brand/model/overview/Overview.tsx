@@ -1,12 +1,12 @@
 'use client'
 
 import { IMAGE_URL } from "@/utils/constant";
+import { convertToSlug } from "@/utils/helperFunction";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { IoColorPaletteOutline } from "react-icons/io5";
-import { convertToSlug } from "./PriceListTable";
 
 interface OverviewProps {
     type: string;

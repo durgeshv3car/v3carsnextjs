@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CarData } from "../brand/model/overview/Overview";
 import { useGetPriceListDetailsQuery, useGetVariantsQuery } from "@/redux/api/carModuleApi";
 import { BiCheck } from "react-icons/bi";
@@ -59,15 +59,21 @@ export default function ModelOnRoadPriceDetails({ modelId, data }: ModelOnRoadPr
 
     const [selectedFuelType, setSelectedFuelType] = useState("Petrol");
     const [selectedTransmissionType, setSelectedTransmissionType] = useState("Manual");
-    const [variantId, setVariantId] = useState<number | null>(variants && variants[0]?.variantId);
+    const [variantId, setVariantId] = useState<number | null>(null);
 
     const { data: priceListDetailsData } =
         useGetPriceListDetailsQuery(
-            { model_slug: Number(modelId), cityId: Number(selectedCity.cityId), fuelType: selectedFuelType.toLowerCase(), transmissionType: selectedTransmissionType.toLowerCase(), variantId: variantId ? Number(variantId) : undefined },
-            { skip: !modelId }
+            { model_slug: Number(modelId), cityId: Number(selectedCity.cityId), fuelType: selectedFuelType.toLowerCase(), transmissionType: selectedTransmissionType.toLowerCase(), singleVariantId: variantId ? Number(variantId) : undefined },
+            { skip: !variantId }
         );
 
     const priceListDetails: PriceListItem[] = priceListDetailsData?.rows ?? []
+
+    useEffect(() => {
+        if (variants && variants.length > 0) {
+            setVariantId(variants[0].variantId);
+        }
+    }, [variants]);
 
     const availableFuels = new Set(
         variants.map(v => v.powertrain?.fuelType).filter(Boolean)
@@ -102,58 +108,85 @@ export default function ModelOnRoadPriceDetails({ modelId, data }: ModelOnRoadPr
     }
 
     return (
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4">
 
             <div className="w-full lg:w-[75%]">
-                <h1 className="text-3xl mb-6">
+                <h1 className="text-xl md:text-3xl mb-6">
                     {data?.model?.brand?.name} <span className="font-bold">{data?.model?.name}</span> {variants[0]?.variantName} {selectedFuelType} {selectedTransmissionType}
                 </h1>
 
                 {/* LEFT SIDE — CAR IMAGE */}
-                <div className="flex gap-4 justify-between">
-                    <div className="w-[65%] space-y-6 flex flex-col justify-between">
+                <div className="flex flex-col md:flex-row gap-4 justify-between">
+                    <div className="w-full md:w-[65%] space-y-6 flex flex-col justify-between">
                         <Image
                             src={`${IMAGE_URL}/media/model-imgs/${data?.media?.primaryImage?.url}`}
                             alt={data?.media?.primaryImage?.alt || "Car Image"}
                             width={700}
                             height={400}
-                            className="rounded-2xl object-cover h-[400px] w-full"
+                            className="rounded-2xl object-cover h-auto lg:h-[400px] w-full"
                             placeholder="blur"
                             blurDataURL="/blur-placeholder.png"
                         />
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 text-nowrap overflow-x-auto scrollbar-hide">
                             <ActionBtn label="Download Brochure" onClick={() => handleBtn("Download Brochure")} />
                             <ActionBtn label="View Latest Offers" onClick={() => handleBtn("View Latest Offers")} />
                             <ActionBtn label="Book a Test Drive" onClick={() => handleBtn("Book a Test Drive")} />
                         </div>
                     </div>
 
-                    <div className="w-[35%] space-y-6 flex flex-col justify-between">
+                    <div className="w-full lg:w-[35%] space-x-2 lg:space-y-6 flex flex-col justify-between">
                         <div className="divide-y divide-[#F6F6F6] dark:divide-[#2e2e2e]">
-                            {priceListDetails?.map((list: PriceListItem, idx) => (
-                                <div key={idx}>
-                                    {list.breakdown &&
-                                        (Object.keys(list.breakdown) as (keyof Breakdown)[]).map((key) => (
-                                            <PriceRow
-                                                key={key}
-                                                label={breakdownLabels[key]}
-                                                value={list.breakdown![key]}
-                                            />
-                                        ))}
-                                </div>
-                            ))}
+                            {priceListDetails.length > 0 ?
+                                priceListDetails?.map((list: PriceListItem, idx) => {
+                                    const keys = list.breakdown ? Object.keys(list.breakdown) : [];
+                                    const filteredKeys = keys.slice(0, -1); // last key remove
+
+                                    return (
+                                        <div key={idx}>
+                                            {filteredKeys.map((key) => (
+                                                <PriceRow
+                                                    key={key}
+                                                    label={breakdownLabels[key as keyof Breakdown]}
+                                                    value={list.breakdown ? list.breakdown[key as keyof Breakdown] : null}
+                                                />
+                                            ))}
+                                        </div>
+                                    );
+                                }) : (
+                                    <div
+                                        className="
+                                            h-[400px] w-full rounded-lg
+                                            bg-gray-300 dark:bg-[#2e2e2e] 
+                                            animate-pulse
+                                        ">
+                                    </div>
+                                )
+                            }
                         </div>
 
-                        <div className="p-5 border rounded-xl bg-yellow-50 flex justify-between gap-2">
-                            <span className="font-semibold">On Road Price</span>
-                            <span className="font-bold text-xl">₹7,11,154</span>
+                        <div className="p-5 rounded-xl bg-primary-light text-black flex items-center justify-between gap-2">
+                            <span className="font-semibold text-sm lg:text-base">On Road Price</span>
+                            {priceListDetails?.map((list: PriceListItem, idx) => {
+                                const keys = list.breakdown ? Object.keys(list.breakdown) : [];
+                                const lastKey = keys[keys.length - 1] as keyof Breakdown; // last key
+
+                                return (
+                                    <div key={idx}>
+                                        {lastKey && (
+                                            <span className="font-bold text-sm lg:text-xl">
+                                                ₹{Number(list.breakdown![lastKey]).toLocaleString("en-IN")}
+                                            </span>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
 
 
-                <p className="text-gray-400 text-sm mt-4">The on-road price of Maruti Suzuki Dzire in Gurugram may vary slightly across dealers depending on insurance packages, handling charges, additional accessories, warranty or service packages. State taxes and RTO fees remain uniform across Haryana. You can view the variant-wise price breakup, compare on-road prices across cities, and estimate EMI or ownership costs using the calculator above.</p>
+                <p className="text-gray-400 text-sm mt-4">The on-road price of {data?.model.brand.name} {data?.model.name} in {selectedCity?.cityName} may vary slightly across dealers depending on insurance packages, handling charges, additional accessories, warranty or service packages. State taxes and RTO fees remain uniform across Haryana. You can view the variant-wise price breakup, compare on-road prices across cities, and estimate EMI or ownership costs using the calculator above.</p>
             </div>
 
             <div className="space-y-3 lg:w-[25%] flex flex-col">
@@ -161,7 +194,7 @@ export default function ModelOnRoadPriceDetails({ modelId, data }: ModelOnRoadPr
                 <div className="rounded-xl overflow-hidden border dark:border-[#2D2F31]">
 
                     {/* Header */}
-                    <div className="bg-[#E9E9E9] p-4 text-sm font-semibold">
+                    <div className="bg-[#E9E9E9] dark:bg-[#232323] p-4 text-sm font-semibold">
                         Fuel Type
                     </div>
 
@@ -203,7 +236,7 @@ export default function ModelOnRoadPriceDetails({ modelId, data }: ModelOnRoadPr
                 <div className="rounded-xl overflow-hidden border dark:border-[#2D2F31]">
 
                     {/* Header */}
-                    <div className="bg-[#E9E9E9] p-4 text-sm font-semibold">
+                    <div className="bg-[#E9E9E9] dark:bg-[#232323] p-4 text-sm font-semibold">
                         Transmission
                     </div>
 
@@ -244,7 +277,7 @@ export default function ModelOnRoadPriceDetails({ modelId, data }: ModelOnRoadPr
 
                 {/* Variants */}
                 <div className="rounded-xl overflow-hidden border dark:border-[#2D2F31] flex-grow flex flex-col">
-                    <p className="bg-[#E9E9E9] p-4 text-sm font-semibold">Variants</p>
+                    <p className="bg-[#E9E9E9] dark:bg-[#232323] p-4 text-sm font-semibold">Variants</p>
 
                     {filteredVariants && filteredVariants.length > 0 ? (
                         <div className="divide-y dark:divide-[#2e2e2e] h-[120px] overflow-y-auto scrollbar-thin-yellow flex-grow">
@@ -297,9 +330,9 @@ export default function ModelOnRoadPriceDetails({ modelId, data }: ModelOnRoadPr
 
 function PriceRow({ label, value }: { label: string | null; value: number | null }) {
     return (
-        <div className="flex justify-between py-3 text-gray-700 text-sm">
+        <div className="flex justify-between py-3 text-sm">
             <span>{label}</span>
-            <span className="font-medium">{value}</span>
+            <span className="font-medium">₹ {Number(value).toLocaleString("en-IN")}</span>
         </div>
     );
 }
@@ -307,10 +340,7 @@ function PriceRow({ label, value }: { label: string | null; value: number | null
 function ActionBtn({ label, highlight, onClick }: { label: string; highlight?: boolean; onClick?: () => void }) {
     return (
         <button
-            className={`p-5 rounded-lg border ${highlight
-                ? "bg-yellow-400 font-bold shadow"
-                : "bg-white shadow-sm hover:bg-gray-100"
-                }`}
+            className={`p-5 rounded-lg border hover:bg-primary hover:dark:bg-primary hover:dark:text-black bg-white shadow-sm dark:bg-[#171717] dark:border-[#2e2e2e]`}
             onClick={onClick}
         >
             {label}
