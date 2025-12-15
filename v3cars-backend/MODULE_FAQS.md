@@ -1,5 +1,4 @@
 
-
 ## Module: FAQs
 Base path: `/v1/faqs`
 
@@ -19,7 +18,7 @@ Public API returns DB field names as-is (`sequance`, `careateDateTime`, etc.).
    - Fuel-price module (moduleId=16) extras:
      - `pageType` 1|2|3|4
      - `fuelType` 1|2|3
-
+ 
 4) **FAQ detail** — `GET /v1/faqs/:id`
 
 ### Sorting & Pagination
@@ -28,7 +27,7 @@ Public API returns DB field names as-is (`sequance`, `careateDateTime`, etc.).
   - `sequence_asc`: `sequance ASC, id ASC` (default)
   - `latest`: `updateDateTime DESC, id DESC`
   - `id_asc` / `id_desc`
-
+ 
 ### Responses (examples)
 - Modules list:
   ```json
@@ -97,3 +96,6 @@ curl -s "http://localhost:3121/v1/faqs/101"
 fuel price page -
 
 /v1/faqs?moduleId=16&pageType=1&fuelType=1&limit=50&page=1
+
+
+

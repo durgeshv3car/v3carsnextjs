@@ -10,6 +10,7 @@ import { prisma } from '../../../lib/prisma.js';
 // ⬇️ Cache façade (adapter-aware: Redis if available, else in-memory)
 import { withCache, cacheKey } from '../../../lib/cache.js';
 import { OnRoadService } from '../../tools/onroad/onroad.service.js';
+import { extractPriceBand } from '../variants/price.util.js';
 
 const repo = new ModelsRepo();
 const brandsSvc = new BrandsService();
@@ -2302,6 +2303,471 @@ async powertrainsOptions(modelId: number) {
     total: options.length,
   };
 }
+
+
+// inside ModelsService
+async compareByVariantIds(variantIds: number[], cityId?: number) {
+  const ids = Array.from(
+    new Set(
+      (variantIds || [])
+        .map((n) => Number(n))
+        .filter((n) => Number.isFinite(n) && n > 0)
+    )
+  );
+  if (!ids.length) return { items: [] };
+
+  const key = cacheKey({
+    ns: 'models:compareByVariantIds',
+    v: 1,
+    ids,
+    cityId: cityId ?? null,
+  });
+  const ttlMs = 30 * 60 * 1000; // 30 min
+
+  return withCache(key, async () => {
+    // City name (for summaries)
+    const [compareData, cityRow] = await Promise.all([
+      repo.getCompareDataByVariantIds(ids),
+      cityId
+        ? prisma.tblcities.findFirst({
+            where: { cityId },
+            select: { cityName: true },
+          })
+        : Promise.resolve(null),
+    ]);
+
+    const cityName = cityRow?.cityName ?? null;
+
+    const { variants, models, powertrains, modelColors, colors, prosCons } =
+      compareData;
+
+    const modelMap = new Map(models.map((m) => [m.modelId, m]));
+    const ptMap = new Map(powertrains.map((p) => [p.modelPowertrainId, p]));
+    const colorMap = new Map(colors.map((c) => [c.colorId, c]));
+
+    const mcByModel = new Map<number, typeof modelColors>();
+    for (const mc of modelColors) {
+      if (!mc.modelId) continue;
+      const arr = mcByModel.get(mc.modelId) ?? [];
+      arr.push(mc);
+      mcByModel.set(mc.modelId, arr);
+    }
+
+    const prosConsByModel = new Map<number, typeof prosCons>();
+    for (const pc of prosCons) {
+      if (!pc.modelId) continue;
+      const arr = prosConsByModel.get(pc.modelId) ?? [];
+      arr.push(pc);
+      prosConsByModel.set(pc.modelId, arr);
+    }
+
+    // primary images per model
+    const modelIds = models.map((m) => m.modelId);
+    const imageMap = await imagesSvc.getPrimaryByModelIds(modelIds);
+
+    // EMI helper (5 years @ 9.5% p.a.)
+    const calcEmi = (principal: number | null) => {
+      if (!principal || principal <= 0) return null;
+      const r = 0.095 / 12; // monthly rate
+      const n = 5 * 12; // 5 years
+      const pow = Math.pow(1 + r, n);
+      const emi = (principal * r * pow) / (pow - 1);
+      return Math.round(emi);
+    };
+
+    const items = variants.map((v) => {
+      const model = v.modelId ? modelMap.get(v.modelId) ?? null : null;
+      const pt = v.modelPowertrainId
+        ? ptMap.get(v.modelPowertrainId) ?? null
+        : null;
+
+      const band = extractPriceBand(v.variantPrice ?? '');
+      const exMin = band?.min ?? null;
+      const exMax = band?.max ?? null;
+
+      // colours
+      const mcList = v.modelId ? mcByModel.get(v.modelId) ?? [] : [];
+      const colourOptions = mcList
+        .map((mc) => {
+          if (!mc.colorId) return null;
+          const c = colorMap.get(mc.colorId);
+          if (!c) return null;
+          return {
+            colorId: c.colorId,
+            name: c.colorName ?? null,
+            code: c.colorCode ?? null,
+            imageFileName: mc.fileName ?? c.imageFileName ?? null,
+          };
+        })
+        .filter(
+          (x): x is {
+            colorId: number;
+            name: string | null;
+            code: string | null;
+            imageFileName: string | null;
+          } => !!x
+        );
+
+      // pros & cons
+      const pcList = v.modelId ? prosConsByModel.get(v.modelId) ?? [] : [];
+      const pros = pcList
+        .filter((x) => x.type === 1)
+        .map((x) => ({
+          heading: x.prosConsHeading ?? null,
+          desc: x.prosConsDesc ?? null,
+        }));
+      const cons = pcList
+        .filter((x) => x.type === 2)
+        .map((x) => ({
+          heading: x.prosConsHeading ?? null,
+          desc: x.prosConsDesc ?? null,
+        }));
+
+      // primary model image
+      const img =
+        model?.modelId != null
+          ? imageMap.get(model.modelId) ?? { name: null, alt: null, url: null }
+          : { name: null, alt: null, url: null };
+
+      // On-road + insurance via OnRoadService (if cityId + exMin available)
+      let onRoadPrice: number | null = null;
+      let insuranceFirstYear: number | null = null;
+
+      if (cityId && exMin != null) {
+        const breakdown = onroadSvc.quote({
+          exShowroom: exMin,
+          cityId,
+          isLoan: true,
+        });
+        onRoadPrice =
+          breakdown && typeof breakdown.total === 'number'
+            ? breakdown.total
+            : null;
+        insuranceFirstYear =
+          breakdown && typeof breakdown.insurance === 'number'
+            ? breakdown.insurance
+            : null;
+      }
+
+      const emiPrincipal = onRoadPrice ?? exMin ?? null;
+      const estimatedEmi = calcEmi(emiPrincipal);
+
+      return {
+        variantId: v.variantId,
+        variantName: v.variantName ?? null,
+        modelId: model?.modelId ?? null,
+        modelName: model?.modelName ?? null,
+        image: img,
+        imageUrl: img.url ?? null,
+
+        // === Price & On-Road Cost Comparison ===
+        price: {
+          exShowroomMin: exMin,
+          exShowroomMax: exMax,
+          csdPriceRaw: v.csdPrice ?? null,
+          estimatedEmi,
+          insuranceFirstYear,
+          onRoadPrice,
+          summary: null as string | null,
+        },
+
+        // === Engine & Performance Comparison ===
+        enginePerformance: pt
+          ? {
+              powertrainId: pt.modelPowertrainId,
+              engineFuelType: pt.powerTrain ?? pt.fuelType ?? null,
+              fuelType: pt.fuelType ?? null,
+              fuelTypeSubCategory: pt.fuelTypeSubCategory ?? null,
+              transmissionType: pt.transmissionType ?? null,
+              engineDisplacement:
+                pt.engineDisplacement == null
+                  ? null
+                  : Number(pt.engineDisplacement),
+              cubicCapacity: pt.cubicCapacity ?? null,
+              cylinders: pt.cylinders ?? null,
+              powerPS: pt.powerPS ?? null,
+              powerMinRPM: pt.powerMinRPM ?? null,
+              powerMaxRPM: pt.powerMaxRPM ?? null,
+              torqueNM: pt.torqueNM ?? null,
+              torqueMinRPM: pt.torqueMinRPM ?? null,
+              torqueMaxRPM: pt.torqueMaxRPM ?? null,
+              kerbWeight: pt.kerbWeight ?? null,
+              powerToWeight:
+                pt.powerWeight == null ? null : Number(pt.powerWeight),
+              torqueToWeight:
+                pt.torqueWeight == null ? null : Number(pt.torqueWeight),
+              claimedFE: pt.claimedFE == null ? null : Number(pt.claimedFE),
+              claimedRange: pt.claimedRange ?? null,
+              topSpeed: null as number | null,
+              zeroToHundred: null as number | null,
+              summary: null as string | null,
+            }
+          : null,
+
+        // === Dimensions & Space ===
+        dimensionsSpace: model
+          ? {
+              length: model.length ?? null,
+              width: model.width ?? null,
+              height: model.height ?? null,
+              wheelbase: model.wheelBase ?? null,
+              groundClearance: model.groundClearance ?? null,
+              bootSpace: model.bootSpace ?? null,
+              tyreSize: model.tyreSize ?? null,
+              fuelTankCapacity: pt?.fuelTankCapacity ?? null,
+              summary: null as string | null,
+            }
+          : null,
+
+        // === Feature Comparison (abhi data nahi, isliye null) ===
+        features: null as null,
+
+        // === Colours ===
+        colours: {
+          options: colourOptions,
+          summary: null as string | null,
+        },
+
+        // === Ownership & Running Cost ===
+        ownership: {
+          claimedMileage:
+            pt?.claimedFE == null ? null : Number(pt.claimedFE),
+          realWorldMileage:
+            pt?.realWorldMileage == null
+              ? null
+              : Number(pt.realWorldMileage),
+          fuelPricePerUnit: null as number | null,
+          runningCost: null as number | null,
+          serviceAndMaintenanceCost: null as number | null,
+          serviceInterval: null as string | null,
+          serviceNetwork: null as string | null,
+          standardWarrantyKm: pt?.standardWarrantyKm ?? null,
+          standardWarrantyYear: pt?.standardWarrantyYear ?? null,
+          carOwnershipCost: null as number | null,
+          summary: null as string | null,
+        },
+
+        // === Pros & Cons ===
+        prosCons: {
+          pros,
+          cons,
+        },
+      };
+    });
+
+    // ---------- Dynamic summaries ----------
+
+    const carLabel = (item: (typeof items)[number]) =>
+      item.variantName || item.modelName || 'this car';
+
+    // Price Summary
+    let priceSummary: string | null = null;
+    const priced = items.filter((i) => i.price.onRoadPrice != null);
+    if (priced.length >= 2) {
+      const sorted = [...priced].sort(
+        (a, b) => (a.price.onRoadPrice ?? 0) - (b.price.onRoadPrice ?? 0)
+      );
+      const best = sorted[0];
+      const worst = sorted[sorted.length - 1];
+
+      const emis = priced
+        .map((i) => i.price.estimatedEmi)
+        .filter((n): n is number => typeof n === 'number');
+      const emiDiff =
+        emis.length >= 2
+          ? Math.max(...emis) - Math.min(...emis)
+          : null;
+
+      const cityPart = cityName ? ` in ${cityName}` : '';
+      if (emiDiff != null) {
+        priceSummary = `Among the selected variants, ${carLabel(
+          best
+        )} offers the lowest on-road price${cityPart}, while ${carLabel(
+          worst
+        )} is the costliest. The EMI difference between the options is about ₹${emiDiff.toLocaleString(
+          'en-IN'
+        )} per month.`;
+      } else {
+        priceSummary = `Among the selected variants, ${carLabel(
+          best
+        )} offers the lowest on-road price${cityPart}, while ${carLabel(
+          worst
+        )} is the costliest.`;
+      }
+    }
+
+    // Performance Summary
+    let performanceSummary: string | null = null;
+    const perfItems = items.filter(
+      (i) =>
+        i.enginePerformance &&
+        (i.enginePerformance.powerPS != null ||
+          i.enginePerformance.torqueNM != null)
+    );
+    if (perfItems.length) {
+      const mostPowerful = [...perfItems].sort((a, b) => {
+        const ap = a.enginePerformance!.powerPS ?? 0;
+        const bp = b.enginePerformance!.powerPS ?? 0;
+        if (bp !== ap) return bp - ap;
+        const at = a.enginePerformance!.torqueNM ?? 0;
+        const bt = b.enginePerformance!.torqueNM ?? 0;
+        return bt - at;
+      })[0];
+
+      const effItems = perfItems.filter(
+        (i) => i.enginePerformance!.claimedFE != null
+      );
+      if (effItems.length) {
+        const mostEfficient = [...effItems].sort(
+          (a, b) =>
+            (b.enginePerformance!.claimedFE ?? 0) -
+            (a.enginePerformance!.claimedFE ?? 0)
+        )[0];
+
+        performanceSummary = `In terms of outright performance, ${carLabel(
+          mostPowerful
+        )} produces the highest power and torque, while ${carLabel(
+          mostEfficient
+        )} offers the best claimed fuel efficiency. If you prioritise performance, ${carLabel(
+          mostPowerful
+        )} has a clear edge; for lower running costs, ${carLabel(
+          mostEfficient
+        )} will be more suitable.`;
+      }
+    }
+
+    // Space & Size Summary
+    let dimensionsSummary: string | null = null;
+    const dimItems = items.filter((i) => i.dimensionsSpace);
+    if (dimItems.length) {
+      const longest = [...dimItems].sort((a, b) => {
+        const al = a.dimensionsSpace!.length ?? 0;
+        const bl = b.dimensionsSpace!.length ?? 0;
+        if (bl !== al) return bl - al;
+        const aw = a.dimensionsSpace!.width ?? 0;
+        const bw = b.dimensionsSpace!.width ?? 0;
+        return bw - aw;
+      })[0];
+
+      const gcItems = dimItems.filter(
+        (i) => i.dimensionsSpace!.groundClearance != null
+      );
+      const bestGc =
+        gcItems.length > 0
+          ? [...gcItems].sort(
+              (a, b) =>
+                (b.dimensionsSpace!.groundClearance ?? 0) -
+                (a.dimensionsSpace!.groundClearance ?? 0)
+            )[0]
+          : null;
+
+      const bootItems = dimItems.filter(
+        (i) => i.dimensionsSpace!.bootSpace != null
+      );
+      const bestBoot =
+        bootItems.length > 0
+          ? [...bootItems].sort(
+              (a, b) =>
+                (b.dimensionsSpace!.bootSpace ?? 0) -
+                (a.dimensionsSpace!.bootSpace ?? 0)
+            )[0]
+          : null;
+
+      if (bestGc && bestBoot) {
+        dimensionsSummary = `${carLabel(
+          longest
+        )} is the longest and widest of the group, which should translate to better cabin space, while ${carLabel(
+          bestGc
+        )} offers the highest ground clearance—useful for poor roads and speed breakers. Boot space is largest in ${carLabel(
+          bestBoot
+        )}, making it more practical for luggage.`;
+      }
+    }
+
+    // Colour Summary
+    let colourSummary: string | null = null;
+    const colourItems = items
+      .map((i) => ({ item: i, count: i.colours.options.length }))
+      .filter((x) => x.count > 0);
+    if (colourItems.length >= 2) {
+      const sorted = [...colourItems].sort((a, b) => b.count - a.count);
+      const best = sorted[0];
+      const others = sorted.slice(1);
+
+      const bestLabel = carLabel(best.item);
+      const count = best.count;
+
+      const otherNames = others.map((o) => carLabel(o.item));
+      const otherCarsText =
+        otherNames.length === 1
+          ? otherNames[0]
+          : `${otherNames.slice(0, -1).join(', ')} and ${
+              otherNames[otherNames.length - 1]
+            }`;
+
+      const otherCounts = others.map((o) => o.count);
+      const minC = Math.min(...otherCounts);
+      const maxC = Math.max(...otherCounts);
+      const countsText = minC === maxC ? `${minC}` : `${minC}–${maxC}`;
+
+      colourSummary = `${bestLabel} offers the widest colour range with ${count} options, while ${otherCarsText} are available in ${countsText} shades.`;
+    }
+
+    // Ownership Summary
+    let ownershipSummary: string | null = null;
+    const mileageItems = items
+      .map((i) => {
+        const m =
+          i.ownership.realWorldMileage ?? i.ownership.claimedMileage ?? null;
+        return { item: i, mileage: m };
+      })
+      .filter((x) => x.mileage != null);
+
+    if (mileageItems.length) {
+      const lowestRunning = [...mileageItems].sort(
+        (a, b) => (b.mileage ?? 0) - (a.mileage ?? 0)
+      )[0];
+
+      const warrantyItems = items
+        .map((i) => {
+          const text = i.ownership.standardWarrantyYear ?? '';
+          const match = text.match(/(\d+(\.\d+)?)/);
+          const years = match ? Number(match[1]) : null;
+          return { item: i, years };
+        })
+        .filter((x) => x.years != null);
+
+      if (warrantyItems.length) {
+        const bestMaintenance = [...warrantyItems].sort(
+          (a, b) => (b.years ?? 0) - (a.years ?? 0)
+        )[0];
+
+        const cityPart = cityName ? ` in ${cityName}` : '';
+        ownershipSummary = `Based on estimated mileage and current fuel prices${cityPart}, ${carLabel(
+          lowestRunning.item
+        )} has the lowest running cost, while long-term maintenance over 5 years is expected to be most affordable with ${carLabel(
+          bestMaintenance.item
+        )}.`;
+      }
+    }
+
+    // attach summaries to each item section
+    for (const item of items) {
+      item.price.summary = priceSummary;
+      if (item.enginePerformance) {
+        item.enginePerformance.summary = performanceSummary;
+      }
+      if (item.dimensionsSpace) {
+        item.dimensionsSpace.summary = dimensionsSummary;
+      }
+      item.colours.summary = colourSummary;
+      item.ownership.summary = ownershipSummary;
+    }
+
+    return { items };
+  }, ttlMs);
+}
+
 
 
 }

@@ -7,7 +7,7 @@ import { setCache } from '../../../middlewares/cacheHeaders.js';
 const r = Router();
 const c = new ModelsController();
 
-
+r.get('/models/compare', setCache(600, 60), (req, res) => c.compare(req, res));
 r.get('/models/top-selling-month', setCache(1800, 120), (req, res) => c.topSellingMonthly(req, res));
 r.get('/models/upcoming-monthly-count', setCache(1800, 120), (req, res) => c.upcomingMonthlyCount(req, res));
 r.get('/models', setCache(300, 60), (req, res) => c.list(req, res));

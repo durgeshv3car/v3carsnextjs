@@ -16,7 +16,8 @@ import {
   modelOthersQueryDto,
   modelImagesQueryDto,
   modelServiceCostQueryDto,
-  modelSegmentTopSellingQueryDto
+  modelSegmentTopSellingQueryDto,
+  compareModelsQueryDto
 } from './models.dto.js';
 
 
@@ -218,12 +219,19 @@ export class ModelsController {
   }
 
   async powertrains(req: Request, res: Response) {
-  const id = await this.resolve(req, res); // id or slug → numeric modelId
-  if (!id) return;
+    const id = await this.resolve(req, res); // id or slug → numeric modelId
+    if (!id) return;
 
-  const data = await svc.powertrainsOptions(id);
-  res.json(data);
-}
+    const data = await svc.powertrainsOptions(id);
+    res.json(data);
+  }
 
+  async compare(req: Request, res: Response) {
+    const { variantIds, cityId } = compareModelsQueryDto.parse(req.query);
+
+    const data = await svc.compareByVariantIds(variantIds, cityId);
+
+    res.json({ success: true, ...data });
+  }
 
 }
