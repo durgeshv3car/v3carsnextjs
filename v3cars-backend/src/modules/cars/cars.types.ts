@@ -1,6 +1,6 @@
+
 // src/modules/cars/cars.types.ts
 // Reusable types for all car modules
-
 export type PriceBucketKey =
   | 'UNDER_5L'
   | 'BETWEEN_5_10L'
@@ -12,7 +12,6 @@ export interface Pagination {
   page: number;
   limit: number;
 }
-
 
 export interface SortInput {
   // generic key for simple sorts; module can map this to its fields
@@ -42,7 +41,6 @@ export interface BaseListResponse<T> {
   total: number;
   totalPages: number;
 }
-  
 
 /** Common filters used across models/variants listing */
 export interface CommonFilters {

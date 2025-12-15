@@ -128,3 +128,23 @@ export const modelSegmentTopSellingQueryDto = z.object({
   month: z.coerce.number().int().min(1).max(12).optional(),
   limit: z.coerce.number().int().min(1).max(100).optional(),
 });
+
+export const compareModelsQueryDto = z.object({
+  /**
+   * Comma separated variant ids
+   * example: ?variantIds=101,202,303
+   */
+  variantIds: z
+    .string()
+    .trim()
+    .min(1)
+    .transform((val) =>
+      val
+        .split(',')
+        .map((s) => Number(s.trim()))
+        .filter((n) => Number.isFinite(n) && n > 0)
+    ),
+
+  // 🆕 optional cityId from query
+  cityId: z.coerce.number().int().positive().optional(),
+});

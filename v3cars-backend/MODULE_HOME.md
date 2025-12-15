@@ -1,76 +1,81 @@
-Module: Home (Homepage Sections)
+## Home Module (Homepage Sections)
+Base path: `/v1/home`
 
-All endpoints under /v1/home. These compose existing services for cards on the homepage.
+All endpoints are read-only aggregations that reuse other services (cars, content, videos). Pagination defaults: `page=1`, `limit` varies per endpoint as noted.
 
-Upcoming Cars
+---
 
-Closest upcoming first (future-only).
+### Hero Banners
+`GET /v1/home/hero-banners`
+- `limit` number (default 6, max 50)
+- Returns: array of `{ bannerId, imagePath, imageAltTag, redirectLink }`
 
-GET /v1/home/upcoming-cars?limit=10&page=1
+---
 
-Uses: ModelsService.list with isUpcoming=1, futureOnly=1, sortBy=launch_asc.
+### Upcoming Cars
+`GET /v1/home/upcoming-cars`
+- `page` (default 1), `limit` (default 8)
+- Internals: `isUpcoming=1`, `futureOnly=1`, `sortBy=launch_asc` via `ModelsService.list`
+- Returns enriched model cards (see `MODULE_CARS.md` models list shape)
 
-Returns enriched model cards (brand, priceMin/Max, powerPS/torque/mileage, image).
+---
 
-For Your Quick Look
+### Quick Look (popular/latest on-sale)
+`GET /v1/home/quick-look`
+- `type` `popular | latest` (default `popular`)
+- `page` (default 1), `limit` (default 8)
+- Internals: `isUpcoming=false`, sort by `type`
+- Returns model cards
 
-Popular or latest cars (not upcoming).
+---
 
-GET /v1/home/quick-look?type=popular&limit=8&page=1
-GET /v1/home/quick-look?type=latest&limit=8&page=1
+### Search By Body Type
+`GET /v1/home/search-by-body-type`
+- `bodyTypeId` (required)
+- `isUpcoming` 0|1 (optional)
+- `sortBy` `popular | latest | price_asc | price_desc | name_asc | name_desc` (default `popular`)
+- `page` (default 1), `limit` (default 8)
+- Returns model cards
 
-Search Car By Body Type
-GET /v1/home/search-by-body-type?bodyTypeId=<ID>&limit=8&page=1
-# Optional:
-# &isUpcoming=1
-# &sortBy=popular|latest|price_asc|price_desc|name_asc|name_desc
+---
 
-Search Car By Price
-GET /v1/home/search-by-price?bucket=UNDER_5L&limit=8&page=1
-# bucket: UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L
-# Optional: &isUpcoming=0|1, &sortBy=price_asc|price_desc|popular|latest|name_asc|name_desc
+### Search By Price Bucket
+`GET /v1/home/search-by-price`
+- `bucket` `UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L` (required)
+- `isUpcoming` 0|1 (optional, default false)
+- `sortBy` `popular | latest | price_asc | price_desc | name_asc | name_desc` (default `price_asc`)
+- `page` (default 1), `limit` (default 8)
+- Returns model cards
 
-Latest Car News (Homepage)
-GET /v1/home/latest-news?limit=9
+---
 
-# Optional: &excludeToday=0  (default = 1, i.e., excludes the 'today' card)
+### Latest News (homepage widget)
+`GET /v1/home/latest-news`
+- `limit` (default 9, max 50)
+- `excludeToday` 0|1 (default 1 → today card excluded)
+- Returns news cards (see `MODULE_NEWS.md` / `MODULE_CONTENT.md`)
 
-Returns NewsCard[] from Content/News module (thumbnail absolute URL, author, comments count).
+### Latest Expert Reviews
+`GET /v1/home/latest-reviews`
+- `limit` (default 6, max 50)
+- `excludeToday` 0|1 (default 0 → today included)
+- Returns review cards (content type: Expert Review)
 
-Expert Car Reviews (Homepage)
-GET /v1/home/latest-reviews?limit=6
+### Latest Variant Explained
+`GET /v1/home/latest-variant-explained`
+- `limit` (default 6, max 50)
+- `excludeToday` 0|1 (default 0)
+- Returns variant-explained article cards
 
-# Optional: &excludeToday=0|1 (default = 0; includes today)
+### Latest Videos (global)
+`GET /v1/home/latest-videos`
+- `limit` (default 9, max 50)
+- No videoType filter (global latest)
+- Returns video cards (see `MODULE_VIDEOS.md`)
 
-Source: Reviews (content type = Expert Reviews).
+---
 
-Shape: same as NewsCard (title, pageUrl, publishDateandTime, thumbnail, author, commentsCount).
-
-Variants Explained (Homepage)
-GET /v1/home/latest-variant-explained?limit=6
-
-# Optional: &excludeToday=0|1 (default = 0; includes today)
-
-Source: Content type = Variant Explained.
-
-Shape: same as NewsCard.
-
-Latest Videos (Homepage)
-GET /v1/home/latest-videos?limit=9
-
-Global latest videos (no videoType filter).
-
-Shape: video card (videoId, video_title, pageUrl, video_thumbnail, videoYId, author, dateTimePublishing).
-
-Response Shapes
-
-Models → see MODULE_CARS.md
-
-News/Reviews/Variant Explained → see MODULE_NEWS.md or generic MODULE_CONTENT.md
-
-Videos → see MODULE_VIDEOS.md
-
-
-
-
-
+## Response Shapes (references)
+- Models: see `MODULE_CARS.md` (list response with brand, priceMin/Max, powertrain, image)
+- News/Reviews/Variant Explained: see `MODULE_NEWS.md` or `MODULE_CONTENT.md`
+- Videos: see `MODULE_VIDEOS.md`

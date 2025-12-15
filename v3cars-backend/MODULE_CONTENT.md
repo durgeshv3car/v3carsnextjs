@@ -1,19 +1,22 @@
-Module: Content (Unified — News, Reviews, Guides, etc.)
+## Content Module (Unified: News, Reviews, Guides, etc.)
+Base path: `/v1/content/:type/*`  
+Legacy aliases: `/v1/news/*` (type fixed to `news`)
 
-Generic content APIs for all content types. These power both /v1/content/:type/* and the legacy /v1/news/* routes.
+### Type Map
+| type param | contentType |
+| --- | --- |
+| news | 1 |
+| reviews / expert-review(s) | 2 |
+| variant-explained | 3 |
+| comparison | 4 |
+| user-reviews | 5 |
+| features-explained | 6 |
+| car-guide | 7 |
+| auto-expo | 8 |
+| press-release | 9 |
 
-Type Map
-:type	contentType
-news	1
-reviews	2
-variant-explained	3
-comparison	4
-user-reviews	5
-features-explained	6
-car-guide	7
-auto-expo	8
-press-release	9
-Card Shape (ContentCard)
+### Card Shape (ContentCard)
+```json
 {
   "id": 123,
   "title": "Title",
@@ -24,143 +27,81 @@ Card Shape (ContentCard)
   "author": { "id": 4, "name": "Author", "slug": "author-slug" },
   "commentsCount": 12
 }
+```
+`MEDIA_BASE_URL` is used to build absolute thumbnail URLs when present.
 
-MEDIA_BASE_URL (env) is used to convert relative thumbnailUrl to absolute.
+### Common Query Params
+- `limit` integer 1..50 (default 9)
+- `excludeToday` `"1"|"0"` → boolean (default `1`, i.e., exclude today) — only for Latest
+- `fuelType` string (optional, e.g., `Electric`) → EV-scoped using modelTagging + powertrains
 
-Common query params
+---
 
-limit — integer (1..50), default 9
+## Site-wide Feeds
+1) **Today** — `GET /v1/content/:type/today`  
+   - Optional: `fuelType`  
+   - Picks most recent row with `publishDateandTime <= NOW()`
 
-excludeToday — "1" or "0" (boolean), default "1" (i.e., exclude today) — applies to Latest only
+2) **Latest** — `GET /v1/content/:type/latest`  
+   - Params: `limit`, `excludeToday` (default 1), optional `fuelType`  
+   - Order: `publishDateandTime DESC, id DESC`
 
-fuelType — string (optional). Example: Electric
-When provided, results are EV-scoped using modelTagging (models having at least one powertrain with the given fuel type). Internally, we resolve EV models via powertrains, then match modelTagging in content.
+3) **Trending** — `GET /v1/content/:type/trending`  
+   - Params: `limit`, optional `fuelType`  
+   - Order: `last_15days_view DESC`
 
-Endpoints
-1) Today
-GET /v1/content/:type/today
-# Picks most recent row with publishDateandTime <= NOW()
-# Optional: ?fuelType=Electric
+4) **Top** — `GET /v1/content/:type/top`  
+   - Params: `limit`, optional `fuelType`  
+   - Order: `last_30days_view DESC`
 
-Examples
+5) **Popular** — `GET /v1/content/:type/popular`  
+   - Params: `limit`, optional `fuelType`  
+   - Order: `uniqueUsers (NumView) DESC`
 
-News today: /v1/content/news/today
+Examples:
+- `/v1/content/news/latest?limit=9`
+- `/v1/content/news/latest?excludeToday=0`
+- `/v1/content/reviews/latest?fuelType=Electric`
+- `/v1/content/news/trending?limit=9`
+- `/v1/content/news/top?limit=9`
+- `/v1/content/news/popular?limit=5`
+- Comparisons popular: `/v1/comparisons/popular?limit=15`
 
-EV News today: /v1/content/news/today?fuelType=Electric
+**Legacy news aliases (same params/shape, type=news):**  
+`/v1/news/today`, `/v1/news/latest`, `/v1/news/trending`, `/v1/news/top`, `/v1/news/popular`
 
-Expert Review today: /v1/content/reviews/today
+---
 
-2) Latest
-GET /v1/content/:type/latest?limit=9&excludeToday=1
-# Ordered by publishDateandTime DESC, id DESC
-# Optional: &fuelType=Electric
+## Model-scoped Feeds (id or slug via :model)
+Base: `/v1/content/:type/by-model/:model/*`
 
+- Today: `GET .../today`
+- Latest: `GET .../latest?limit=&excludeToday=`
+- Trending: `GET .../trending?limit=`
+- Top: `GET .../top?limit=`
+- Popular: `GET .../popular?limit=`
 
-Examples
+Rules:
+- `:model` accepts numeric id or modelSlug.
+- `excludeToday` only for Latest (default 1).
+- Defaults: latest limit=15, others limit=9 (service defaults).
 
-Latest News (default): /v1/content/news/latest?limit=9
+Examples:
+- `/v1/content/reviews/by-model/444/latest?limit=15&excludeToday=1`
+- `/v1/content/reviews/by-model/grand-vitara/trending?limit=9`
+- `/v1/content/reviews/by-model/444/popular?limit=9`
 
-Latest News including today: /v1/content/news/latest?excludeToday=0
+---
 
-Latest Expert Reviews: /v1/content/reviews/latest?limit=9
+## Notes
+- DB time (`NOW()`) gates Today/Latest inclusion.
+- Author + commentsCount hydrated for all cards.
+- `fuelType` scoping: matches tagged models; for Electric also does EV keyword fallback on titles.
+- Further scoping (brand/model) can be added easily in service/repo.
 
-Latest Comparison Reviews: /v1/content/comparison/latest?limit=9
+---
 
-Latest EV Reviews: /v1/content/reviews/latest?limit=9&fuelType=Electric
+## Cross-links
+- Videos feeds: see `MODULE_VIDEOS.md`.
+- News legacy paths: see `MODULE_NEWS.md` (delegates here).
 
-3) Trending
-GET /v1/content/:type/trending?limit=9
-# Ordered by last_15days_view DESC (legacy behavior)
-# Optional: &fuelType=Electric
-
-Examples
-
-Trending News: /v1/content/news/trending?limit=9
-
-Trending Expert Reviews: /v1/content/reviews/trending?limit=9
-
-Trending EV News: /v1/content/news/trending?limit=9&fuelType=Electric
-
-4) Top
-GET /v1/content/:type/top?limit=9
-# Ordered by last_30days_view DESC (legacy behavior)
-# Optional: &fuelType=Electric
-
-Examples
-
-Top News: /v1/content/news/top?limit=9
-
-Top Expert Reviews: /v1/content/reviews/top?limit=9
-
-Top EV News: /v1/content/news/top?limit=9&fuelType=Electric
-
-5) Popular (🆕)
-GET /v1/content/:type/popular?limit=9
-# Ordered by uniqueUsers (NumView) DESC
-# Optional: &fuelType=Electric  (EV scope via modelTagging and powertrains)
-
-Examples
-
-Popular News: /v1/content/news/popular?limit=5
-
-Popular EV News: /v1/content/news/popular?limit=5&fuelType=Electric
-
-popular comparisions - /v1/comparisons/popular?limit=15
-
-Legacy News Aliases (backward compatible)
-
-Exactly same response shape & params, fixed type=news:
-
-Today: /v1/news/today (optional ?fuelType=Electric)
-
-Latest: /v1/news/latest?limit=9&excludeToday=1 (optional &fuelType=Electric)
-
-Trending: /v1/news/trending?limit=9 (optional &fuelType=Electric)
-
-Top: /v1/news/top?limit=9 (optional &fuelType=Electric)
-
-Popular (new): /v1/news/popular?limit=5 (optional &fuelType=Electric)
-
-Notes
-
-Database time (NOW()) is used to include only published rows up to “now” for Today/Latest.
-
-Author and commentsCount are hydrated for all lists.
-
-fuelType (e.g., Electric) works when content is tagged with model IDs in modelTagging. We resolve models with the given fuel type via powertrains and filter content accordingly.
-
-Need other scoping (e.g., by brand/model explicitly)? We can extend with brandId/modelId params later.
-
-Extra Examples
-
-EV reviews:
-/v1/content/reviews/latest?fuelType=Electric&limit=9&excludeToday=0
-
-EV videos (videos module):
-/v1/videos/latest?limit=10&fuelType=Electric
-
-model wise data -
-
-Today
-
-/v1/content/reviews/by-model/444/today
-
-Latest
-
-/v1/content/reviews/by-model/444/latest?limit=15&excludeToday=1
-
-Trending
-
-/v1/content/reviews/by-model/444/trendling?limit=9
-
-Top 
-
-/v1/content/reviews/by-model/444/top?limit=9
-
-Popular
-
-/v1/content/reviews/by-model/444/popular?limit=9
-
-
-
- 

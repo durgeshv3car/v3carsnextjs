@@ -1,4 +1,4 @@
-// src/utils/cacheHeaders.ts
+
 import type { Request, Response, NextFunction } from 'express';
 
 export const setCache = (sMaxAgeSec: number, swrSec = 60) =>

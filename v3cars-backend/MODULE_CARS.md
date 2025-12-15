@@ -1,440 +1,154 @@
 
-Module: Cars (Brands, Models, Variants)
 
-All endpoints are under /v1/cars. Example base URL: http://localhost:3121.
+## Cars Module (Brands, Models, Variants)
+
+Base path: `/v1/cars` (example: `http://localhost:3121/v1/cars`)
 
-Brands
+### Common
+- Pagination: `page` (default 1), `limit` (default 12, max 100)
+- Multi-select accepted as: comma-separated (`a,b`), repeated keys (`k=a&k=b`), or array style (`k[]=a&k[]=b`)
+- Slug-or-id: every `:id` path can take numeric id or model slug (controller resolves)
+
+---
 
-List
+## Brands
+**List** — `GET /v1/cars/brands`
+- `q` search brandName/brandSlug  
+- `status` number (brandStatus)  
+- `hasServiceNetwork` 0|1  
+- `brandType` number  
+- `sortBy` `popular | latest | name_asc | name_desc`  
+- `page, limit`
 
-GET /v1/cars/brands
-
-Query params
-
-q — search in brandName/brandSlug
-
-status — numeric (brandStatus)
-
-hasServiceNetwork — 0|1
-
-brandType — numeric
-
-sortBy — popular | latest | name_asc | name_desc
-
-page, limit
-
-Examples
-
-List: /v1/cars/brands?limit=12&page=1
-
-Search: /v1/cars/brands?q=maruti&limit=12&page=1
-
-Popular: /v1/cars/brands?sortBy=popular&limit=12&page=1
-
-Latest: /v1/cars/brands?sortBy=latest&limit=12&page=1
-
-Filters: /v1/cars/brands?status=1&hasServiceNetwork=1&brandType=0&limit=12&page=1
-
-Discontinued Model : /v1/cars/brands/3/discontinued-models
-
-Models
-
-List
-
-GET /v1/cars/models
-
-Query params (summary)
-
-q — search in modelName/modelSlug
-
-isUpcoming — 0|1
-
-futureOnly — 0|1 (when isUpcoming=1, keeps only launchDate >= today)
-
-brandId — numeric (single)
-
-brandIds — multi-select (comma / repeated / array style)  
-
-bodyTypeId — numeric (single)
-
-bodyTypeIds — multi-select (comma / repeated / array style)
-
-priceBucket — UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L
-
-minPrice, maxPrice — numeric (₹)
-
-sortBy — launch_asc | latest | popular | price_asc | price_desc | name_asc | name_desc
-
-page, limit
-
-futureOnly, launchMonth, launchFrom, launchTo as before
-
-Powertrain / spec filters (service-level)
-
-fuelType — string (e.g., Petrol, Diesel, CNG, Electric, case-insensitive contains)
-
-transmissionType — string (e.g., Manual, Automatic, DCT, AMT)
-
-cylinders — single (e.g., 4) or
-
-cylindersList — multi-select (e.g., 4,6 or repeated cylindersList=4&cylindersList=6). Allowed values: 2,3,4,5,6,7,8_PLUS (use 8_PLUS for 8 and above).
-
-mileage — one of UNDER_10 | BETWEEN_10_15 | ABOVE_15 (matches claimedFE OR realWorldMileage)
-
-engineDisplacement — single key mapping to tblmodelpowertrains.cubicCapacity (DB column used is cubicCapacity in cc). Allowed keys:
-
-800 (<= 800)
-
-1000 (== 1000)
-
-800_1000 (800–1000)
-
-1000_1500 (1000–1500)
-
-1500_2000 (1500–2000)
-
-2000_3000 (2000–3000)
-
-3000_4000 (3000–4000)
-
-ABOVE_4000 (>= 4000)
-
-Note: engineDisplacement is currently single-valued (if you want multi-select for displacement, we can extend it).
-
-seating — single (numeric, matches tblmodels.seats) or
-
-seatingList — multi-select (comma / repeated / array style), e.g. seatingList=5,7
-
-Accepted formats for multi-select params
-The API accepts multi-select values in all three common shapes (validators normalize them):
-
-comma-separated: brandIds=12,15,20
-
-repeated keys: brandIds=12&brandIds=15&brandIds=20
-
-array-style: brandIds[]=12&brandIds[]=15
-This applies to brandIds, bodyTypeIds, cylindersList, seatingList etc.
-
-Examples
-
-Upcoming (closest first):
-/v1/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&limit=10&page=1
-
-Recently launched (not upcoming):
-/v1/cars/models?isUpcoming=0&sortBy=latest&limit=10&page=1
-
-Popular SUVs 10–20L:
-/v1/cars/models?bodyTypeId=<SUV_ID>&priceBucket=BETWEEN_10_20L&sortBy=popular&limit=12
-
-Multi-select examples
-
-
-Comma-separated (brands, body types, cylinders, seating):
-
-GET /v1/cars/models?priceBucket=BETWEEN_5_10L&page=1&limit=12&sortBy=popular
-&brandIds=12,15,20
-&bodyTypeIds=1,3
-&cylindersList=4,6
-&seatingList=5,7
-&mileage=BETWEEN_10_15
-&transmissionType=Manual
-One-line:
-
-http://localhost:3121/v1/cars/models?priceBucket=BETWEEN_5_10L&page=1&limit=12&sortBy=popular&brandIds=12,15,20&bodyTypeIds=1,3&cylindersList=4,6&seatingList=5,7&mileage=BETWEEN_10_15&transmissionType=Manual
-
-
-Repeated keys (Express will parse into arrays):
-
-http://localhost:3121/v1/cars/models?brandIds=12&brandIds=15&brandIds=20&bodyTypeIds=1&bodyTypeIds=3&cylindersList=4&cylindersList=6&seatingList=5&seatingList=7&fuelType=Petrol
-
-
-Array-style ([]):
-
-http://localhost:3121/v1/cars/models?brandIds[]=12&brandIds[]=15&bodyTypeIds[]=1&cylindersList[]=4&seatingList[]=5
-
-
-Response item (enriched)
-
-{
-  "modelId": 444,
-  "modelName": "Grand Vitara",
-  "modelSlug": "grand-vitara",
-  "brandId": 3,
-  "modelBodyTypeId": 3,
-  "isUpcoming": false,
-  "launchDate": "2022-09-26T00:00:00.000Z",
-  "totalViews": 899990,
-  "expectedBasePrice": 0,
-  "expectedTopPrice": 0,
-  "brand": { "id": 3, "name": "Maruti Nexa", "slug": "maruti-nexa-cars", "logo": "6000853031maruti-suzuki-nexa-logo.png" },
-  "priceMin": 1142000,
-  "priceMax": 2052000,
-  "powerPS": 90,
-  "torqueNM": 113,
-  "mileageKMPL": 21.11,
-  "image": { "name": "grand-vitara-main.jpg", "alt": "Grand Vitara Front", "url": "https://cdn.example.com/grand-vitara-main.jpg" },
-  "imageUrl": "https://cdn.example.com/grand-vitara-main.jpg"
-}
-
-Variants
-
-List
-
-
-GET /v1/cars/variants
-
-
-Query params
-
-
-modelId — recommended to scope variants
-
-
-q — search in variantName    
-
-
-Price filters
-
-
-priceBucket — UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L
-
-
-minPrice, maxPrice — numbers (₹) 
-
-
-Powertrain filters
-
-
-fuelType — Petrol|Diesel|CNG|EV...
-
-
-transmissionType — MT|AT|AMT|DCT...
-
-
-Sorting — price_asc | price_desc | latest | name_asc | name_desc
-
-
-
-page, limit
-
-
-Examples
-
-
-By model: /v1/cars/variants?modelId=163&limit=10&page=1
-
-
-Search + price sort: /v1/cars/variants?modelId=101&q=delta&sortBy=price_asc&limit=10&page=1
-
-
-Fuel + Transmission: /v1/cars/variants?modelId=101&fuelType=Petrol&transmissionType=AT&limit=10&page=1
-
-
-Bucket: /v1/cars/variants?modelId=101&priceBucket=BETWEEN_10_20L&sortBy=price_asc&limit=10&page=1
-
-
-Numeric window: /v1/cars/variants?modelId=101&minPrice=700000&maxPrice=1200000&limit=10&page=1
-
-
-Response item
-
-{
-  "variantId": 177,
-  "variantName": "S",
-  "modelId": 105,
-  "modelPowertrainId": 549,
-  "variantPrice": "₹ 7.79 lakh",
-  "updatedDate": "2025-05-19T17:52:30.000Z",
-  "priceMin": 779000,
-  "priceMax": 779000,
-  "powertrain": { "id": 549, "fuelType": "Petrol", "transmissionType": "MT", "label": "1.5P MT" }
-}
- 
-
-
-Notes
-
-
-
-Multi-select formats accepted: comma-separated (a,b,c), repeated query keys (k=a&k=b), or array-style (k[]=a&k[]=b). Validators normalize them to arrays server-side.
-
-
-
-Engine displacement → cubicCapacity: Frontend uses engineDisplacement keys (e.g., 1000_1500) — server maps these to the DB column tblmodelpowertrains.cubicCapacity (cc). This fixes filters which previously targeted engineDisplacement.
-
-
-Cylinders: Use 8_PLUS to indicate 8 or more cylinders.
-
-
-Seating: seating (single) or seatingList (multi).
-
-
-Price fallback: If model expected prices are 0/null, priceMin/Max come from parsed variant prices.
-
-
-Images: Hero image picked by priority: isMainImage DESC, position_no ASC, imageId ASC (model or variant image).
-
-
-MEDIA_BASE_URL: set to build absolute image URLs.
-
-
-model pages -
-
-
-overview  -
-Using numeric id (e.g., 444)
-
-
-Model basics:
-/v1/cars/models/444
-
-
-Price list:
-/v1/cars/models/444/price-list
-/v1/cars/models/444/price-list?cityId=6
-/v1/cars/models/444/price-list?fuelType=petrol
-/v1/cars/models/444/price-list?cityId=6&fuelType=automatic&expandVariantId=987&isLoan=1&transmissionType=automatic
-
-Best variant to buy:
-/v1/cars/models/444/best-variant-to-buy
-/v1/cars/models/444/best-variant-to-buy?powertrainId=123
-
-Dimensions & capacity:
-/v1/cars/models/444/dimensions-capacity
-
-
-Mileage, specs & features:
-/v1/cars/models/444/mileage-specs-features
-/v1/cars/models/444/mileage-specs-features?powertrainId=123 
-
-Pros & cons:
-/v1/cars/models/444/pros-cons
-
-competitors:
-/v1/cars/models/444/competitors
-
-Using slug (e.g., grand-vitara)
-
-Model basics:
-/v1/cars/models/grand-vitara
-
-
-Price list:
-/v1/cars/models/grand-vitara/price-list
-/v1/cars/models/grand-vitara/price-list?cityId=6
-/v1/cars/models/grand-vitara/price-list?fuelType=diesel&variantId=123
-/v1/cars/models/grand-vitara/price-list?cityId=6&fuelType=manual&expandVariantId=987&isLoan=1
-
-
-Best variant to buy:
-/v1/cars/models/grand-vitara/best-variant-to-buy
-/v1/cars/models/grand-vitara/best-variant-to-buy?powertrainId=123
-http://localhost:3121/v1/cars/models/444/best-variant-to-buy?detailed=true&fuelType=petrol&transmissionType=manual
-
-
-Dimensions & capacity:
-/v1/cars/models/grand-vitara/dimensions-capacity
-
-
-for detailed - detailed=1
-
-
-Mileage, specs & features:
-/v1/cars/models/grand-vitara/mileage-specs-features
-/v1/cars/models/grand-vitara/mileage-specs-features?powertrainId=123
-
-
-Pros & cons:
-/v1/cars/models/grand-vitara/pros-cons
-
-
-competitors:
-/v1/cars/models/grand-vitara/competitors
-
-Efficiency
-Both filters (CNG + Manual):
-/v1/cars/models/2/fuel-efficiency?fuelType=CNG&transmissionType=Manual
-
-Petrol + Automatic (any AT/AMT/CVT/DCT wording will match via contains):
-/v1/cars/models/2/fuel-efficiency?fuelType=Petrol&transmissionType=Automatic
-
-
-Only fuel filter:
-/v1/cars/models/2/fuel-efficiency?fuelType=Diesel
-
-Only transmission filter:
-/v1/cars/models/2/fuel-efficiency?transmissionType=MT
-
-
-Using a slug instead of numeric id (example slug):
-/v1/cars/models/fronx/fuel-efficiency?fuelType=CNG&transmissionType=Manual
-
-
-No filters (full table):
-/v1/cars/models/2/fuel-efficiency
-
-
-offer-disscounts -
-
-/v1/cars/models/<slug-or-id>/offers-discounts?months=12&expandQID=938
-
-
-
-monthly-sales 
-
-/v1/cars/models/<slug-or-id>/monthly-sales?months=6
-
-
-upcomping cars by model
-
-/v1/cars/models/<slug-or-id>/upcoming-cars?limit=5
-
-others cars by model
-
-/v1/cars/models/<slug-or-id>/others-cars?limit=5
-
-
-service-cost -
-
-/v1/cars/models/<slug-or-id>/service-cost
-
-
-Default (auto-pick first PT with schedule):
-
-GET http://localhost:3121/v1/cars/models/grand-vitara/pow-wise-service-cost
-
-Specific powertrain:
-
-GET http://localhost:3121/v1/cars/models/grand-vitara//pow-wise-service-cost?mpId=719
-
-colors -
-
-/v1/cars/models/<slug-or-id>/colours
-
-
-image gallary -
-
-All data (default):
-
-GET /v1/cars/models/<slug-or-id>/images
-
-
-Sirf exterior, first 60:
-
-GET /v1/cars/models<slug-or-id>/images?type=exterior&limit=60
-
-
-Sirf interior:
-
-GET /v1/cars/models/<slug-or-id>/images?type=interior
-
-
-
-segement wise cars -
-
-/v1/cars/models/segments/<name-or-id>/top-selling?year=2025&month=9&limit=20
-
-
-
-
-
+Examples  
+- `/v1/cars/brands?limit=12&page=1`  
+- `/v1/cars/brands?q=maruti&sortBy=popular&page=1`  
+- `/v1/cars/brands?status=1&hasServiceNetwork=1&brandType=0&page=1`
+
+**Detail** — `GET /v1/cars/brands/:id`
+
+**Discontinued models** — `GET /v1/cars/brands/:id/discontinued-models`
+
+---
+
+## Models
+### List — `GET /v1/cars/models`
+Filters:
+- Text/search: `q`
+- Status/date: `isUpcoming` 0|1, `futureOnly` 0|1 (keep launchDate >= today when upcoming)
+- Brand/body: `brandId`, `brandIds`, `bodyTypeId`, `bodyTypeIds`
+- Price: `priceBucket` (`UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L`), `minPrice`, `maxPrice`
+- Sort: `launch_asc | latest | popular | price_asc | price_desc | name_asc | name_desc`
+- Launch window: `launchMonth (YYYY-MM)`, `launchFrom (date)`, `launchTo (date)`
+- Powertrain/spec: `fuelType`, `transmissionType`, `cylinders` or `cylindersList` (`2,3,4,5,6,7,8_PLUS`), `mileage` (`UNDER_10 | BETWEEN_10_15 | ABOVE_15`), `engineDisplacement` (`800 | 1000 | 800_1000 | 1000_1500 | 1500_2000 | 2000_3000 | 3000_4000 | ABOVE_4000`), `seating` or `seatingList`
+- Pagination: `page`, `limit`
+
+Examples:
+- Upcoming soon: `/v1/cars/models?isUpcoming=1&futureOnly=1&sortBy=launch_asc&page=1`
+- Recent launches: `/v1/cars/models?isUpcoming=0&sortBy=latest&page=1`
+- Popular SUVs 10–20L: `/v1/cars/models?bodyTypeId=<SUV_ID>&priceBucket=BETWEEN_10_20L&sortBy=popular`
+- Multi-select: `/v1/cars/models?brandIds=12,15&bodyTypeIds=1,3&cylindersList=4,6&seatingList=5,7`
+
+### Analytics
+- `GET /v1/cars/models/upcoming-monthly-count` — `months` (1–24, default 12), `brandId`, `bodyTypeId`
+- `GET /v1/cars/models/top-selling-month` — `year` (required), `month` (required), `limit` (default 25, max 100)
+
+### Detail (id or slug)
+- `GET /v1/cars/models/:id` — core model detail
+
+### Price list
+- `GET /v1/cars/models/:id/price-list`
+- Query: `fuelType`, `transmissionType`, `priceType` (`ex|onroad|csd`, default ex), `cityId`, `citySlug` (required for onroad/csd), `expandVariantId`, `variantId`, `isLoan` 0|1, `sortBy` (`price_asc|price_desc|latest|name_asc|name_desc`), `page`, `limit`
+
+### Best variant to buy
+- `GET /v1/cars/models/:id/best-variant-to-buy`
+- Query: `powertrainId`, `fuelType`, `transmissionType`, `detailed` 0|1|true|false
+
+### Dimensions & capacity
+- `GET /v1/cars/models/:id/dimensions-capacity`
+- Query: `detailed` 0|1 (when true also returns tyre-by-variant), `fuelType`, `transmissionType`
+
+### Mileage, specs, features
+- `GET /v1/cars/models/:id/mileage-specs-features`
+- Query: `powertrainId` (optional)
+
+### Pros & cons
+- `GET /v1/cars/models/:id/pros-cons`
+
+### Competitors
+- `GET /v1/cars/models/:id/competitors`
+
+### Fuel efficiency table
+- `GET /v1/cars/models/:id/fuel-efficiency`
+- Query: `fuelType`, `transmissionType`
+
+### CSD vs On-road price compare
+- `GET /v1/cars/models/:id/csd-vs-onroad`
+- Query: **cityId (required)**, `fuelType`, `transmissionType`, `expandVariantId`, `isLoan` 0|1
+
+### Offers & discounts
+- `GET /v1/cars/models/:id/offers-discounts`
+- Query: `cityId`, `expandQID`, `month (YYYY-MM)`, `months` (range, default 12)
+
+### Monthly sales
+- `GET /v1/cars/models/:id/monthly-sales`
+- Query: `months` (default 6, max 24)
+
+### Related lists
+- Upcoming in same brand: `GET /v1/cars/models/:id/upcoming-cars?limit=5`
+- Other on-sale models: `GET /v1/cars/models/:id/others-cars?limit=5`
+
+### Service cost
+- Overall: `GET /v1/cars/models/:id/service-cost`
+- Powertrain-wise schedule: `GET /v1/cars/models/:id/pow-wise-service-cost?mpId=<modelPowertrainId>`
+
+### Colours
+- `GET /v1/cars/models/:id/colours`
+
+### Image gallery
+- `GET /v1/cars/models/:id/images`
+- Query: `type` (`all|interior|exterior|other`), `limit` (max 2000)
+
+### Segment top-selling
+- `GET /v1/cars/models/segments/:segment/top-selling`
+- `segment` can be id or name (e.g., `C3`)
+- Query: `year`, `month`, `limit`
+
+### Powertrains model wise
+- `GET /v1/cars/models/:id/powertrains`
+
+---
+
+## Variants
+**List** — `GET /v1/cars/variants`
+- `modelId` (recommended)
+- `q` — search `variantName`
+- Powertrain:
+  - `powertrainId` (modelPowertrainId — highest priority if present)
+  - `fuelType`
+  - `transmissionType`
+- Price:  
+  - `priceBucket` (`UNDER_5L | BETWEEN_5_10L | BETWEEN_10_20L | BETWEEN_20_40L | ABOVE_40L`)  
+  - `minPrice`, `maxPrice`
+- Sort: `price_asc | price_desc | latest | name_asc | name_desc`
+- Pagination: `page`, `limit`
+
+Examples:
+- `/v1/cars/variants?modelId=163&page=1`
+- `/v1/cars/variants?modelId=101&q=delta&sortBy=price_asc`
+- `/v1/cars/variants?modelId=101&fuelType=Petrol&transmissionType=AT`
+- `/v1/cars/variants?modelId=101&powertrainId=456`
+- `/v1/cars/variants?modelId=101&priceBucket=BETWEEN_10_20L`
+- `/v1/cars/variants?modelId=101&minPrice=700000&maxPrice=1200000`
+
+**Detail** — `GET /v1/cars/variants/:id`
+
+---
+
+## Notes & Behaviors
+- Multi-select: `brandIds`, `bodyTypeIds`, `cylindersList`, `seatingList` accept comma, repeated, or array styles; validators normalize.
+- Engine displacement filter maps to `tblmodelpowertrains.cubicCapacity`; use keys shown above.
+- Cylinders: use `8_PLUS` for 8 or more.
+- Seating: `seating` (single) or `seatingList` (multi).
+- Price fallback: when model expected prices are 0/null, `priceMin/priceMax` come from parsed variant prices.
+- Images: hero chosen by priority `isMainImage DESC`, `position_no ASC`, `imageId ASC`; URLs built with `MEDIA_BASE_URL` when set.
