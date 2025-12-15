@@ -8,6 +8,7 @@ import ModelPage from "../responsive/brand/model/ModelPage";
 import DynmicModelSlug from "../responsive/brand/model/DynmicModelSlug";
 import BrandPage from "../responsive/brand/BrandPage";
 import ModelOnRoadPrice from "../responsive/brand/model/ModelOnRoadPrice";
+import ComparePage from "../responsive/compare-cars/ComparePage";
 
 type Params = {
     slug?: string[];
@@ -26,6 +27,10 @@ export default function DynmicSlug() {
         const [fuelType] = slug[0].split("-price-in-india");
         if (!fuelType) return notFound();
         return <FuelTypePriceInIndiaPage fuelType={fuelType} />;
+    }
+
+    if (slug[0]?.startsWith("compare")) {
+        return <ComparePage slug={slug} />;
     }
 
     //  /type/fueltype-price-in-city

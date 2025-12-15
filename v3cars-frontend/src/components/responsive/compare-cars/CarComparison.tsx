@@ -1,17 +1,13 @@
 'use client'
 
 import CustomSelect from "@/components/ui/custom-inputs/CustomSelect";
-import { useGetBrandsQuery, useGetModelsQuery } from "@/redux/api/carModuleApi";
-import React, { useState } from "react";
-
-/* ---------------- Types ---------------- */
-type CardType = {
-    id: number;
-    type: "filled" | "empty";
-    model?: string;
-    variant?: string;
-    brochureLabel?: string;
-};
+import { useGetBrandsQuery, useGetModelPowertrainsQuery, useGetModelsQuery, useGetVariantsByPowertrainsQuery } from "@/redux/api/carModuleApi";
+import { setBrand, setModel, setPowertrainId, setVariantId } from "@/redux/slices/comparisonSlice";
+import { RootState } from "@/redux/store";
+import { IMAGE_URL } from "@/utils/constant";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 interface CarBrand {
     brandId: number
@@ -54,10 +50,20 @@ interface CarModel {
     mileageKMPL: number
     image: CarImage
     imageUrl: string
+    transmissionType: string
+    powerTrain: string
 }
 
 /* ---------------- Main Component ---------------- */
 export default function CarComparison() {
+    const router = useRouter();
+
+    // ✅ NEW: get comparison items array
+    const items = useSelector(
+        (state: RootState) => state.comparisonSlice.items
+    );
+
+    const [modelsSlug, setModelsSlug] = useState<string[]>([]);
     const [cards, setCards] = useState<(boolean | null)[]>([
         true,
         true,
@@ -71,6 +77,12 @@ export default function CarComparison() {
         );
     };
 
+    // ✅ build compare slug from redux items (safe)
+    const compareSlug = items
+        .filter((item) => item.brandSlug && item.modelSlug)
+        .map((item) => `${item.brandSlug}-${item.modelSlug}`)
+        .join("-vs-");
+
     return (
         <div className="rounded-2xl bg-[#DCE7FA] p-6">
             <p className="mb-6 text-center text-sm text-gray-700">
@@ -81,21 +93,32 @@ export default function CarComparison() {
             <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[49.40%] lg:auto-cols-[24.55%] gap-2 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide">
                 {Array(4)
                     .fill(null)
-                    .map((_, i) =>
-                        cards[i] ? (
+                    .map((_, i) => {
+                        const item = items[i];
+
+                        return cards[i] ? (
                             <FilledCard
                                 key={i}
-                                index={i + 1}
+                                index={i}
+                                setModelsSlug={setModelsSlug}
                                 onCancel={() => handleCancel(i)}
+                                brandId={item?.brandId ?? null}
+                                modelId={item?.modelId ?? null}
+                                powertrainId={item?.powertrainId ?? null}
+                                variantId={item?.variantId ?? null}
                             />
                         ) : (
                             <EmptyCard key={i} index={i + 1} />
-                        )
-                    )}
+                        );
+                    })}
             </div>
 
             <div className="mt-8 flex justify-center">
-                <button className="rounded-xl bg-yellow-400 px-12 py-4 text-lg font-semibold">
+                <button
+                    className="rounded-xl bg-yellow-400 px-12 py-4 text-lg font-semibold disabled:opacity-50"
+                    disabled={compareSlug.split("-vs-").length < 2}
+                    onClick={() => router.push(`/compare/${compareSlug}`)}
+                >
                     Compare Now
                 </button>
             </div>
@@ -108,8 +131,42 @@ export default function CarComparison() {
 
 
 
+interface Option {
+    id: number;
+    label: string;
+    fuelType: string;
+    transmissionType: string;
+}
 
+export interface PowerTrainResponse {
+    success: boolean;
+    modelId: number;
+    options: Option[];
+    total: number;
+}
 
+interface Powertrain {
+    id: number;
+    fuelType: string;
+    transmissionType: string;
+    label: string;
+}
+
+interface Variant {
+    variantId: number;
+    variantName: string;
+    modelId: number;
+    modelPowertrainId: number;
+    variantPrice: string;
+    csdPrice: string;
+    vfmValue: string;
+    vfmRank: number;
+    variantRecommendation: string;
+    updatedDate: string; // ISO date string
+    priceMin: number;
+    priceMax: number;
+    powertrain: Powertrain;
+}
 
 /* ---------------- Select Field ---------------- */
 const SelectField = ({
@@ -136,14 +193,31 @@ const SelectField = ({
 );
 
 /* ---------------- Filled Card ---------------- */
-const FilledCard = ({ index, onCancel, }: { index: number, onCancel: () => void }) => {
-    const [selectBrand, setSelectBrand] = useState<number | null>(null)
-    const [modelId, setModelId] = useState<number | null>(null)
+const FilledCard = ({
+    index,
+    onCancel,
+    setModelsSlug,
+    brandId, modelId, powertrainId, variantId,
+}: {
+    index: number;
+    onCancel: () => void;
+    setModelsSlug: React.Dispatch<React.SetStateAction<string[]>>;
+    brandId: number | null;
+    modelId: number | null;
+    powertrainId: number | null;
+    variantId: number | null;
+}) => {
+    const dispatch = useDispatch();
+    const [modelData, setModelData] = useState<CarModel>()
     const { data: brandsData } = useGetBrandsQuery();
-    const { data: modelsData } = useGetModelsQuery({ brandId: selectBrand! }, { skip: !selectBrand, });
+    const { data: modelsData } = useGetModelsQuery({ brandId: brandId! }, { skip: !brandId, });
+    const { data: modelPowertrainsData } = useGetModelPowertrainsQuery({ modelId: modelId! }, { skip: !modelId, });
+    const { data: variantsByPowertrainsData } = useGetVariantsByPowertrainsQuery({ modelId: modelId!, powertrainId: Number(powertrainId) }, { skip: !modelId || !powertrainId });
 
     const brands = brandsData?.rows ?? [];
     const models = modelsData?.rows ?? [];
+    const modelPowertrains: Option[] = modelPowertrainsData?.options ?? [];
+    const variantsByPowertrains: Variant[] = variantsByPowertrainsData?.rows ?? [];
 
     function normalizeBrandName(name: string) {
         const lower = name.toLowerCase();
@@ -152,6 +226,16 @@ const FilledCard = ({ index, onCancel, }: { index: number, onCancel: () => void 
         }
         return name;
     }
+
+    useEffect(() => {
+        if (modelId) {
+            const foundModel = models.find(
+                (model: CarModel) => model.modelId === modelId
+            );
+
+            setModelData(foundModel);
+        }
+    }, [modelId, models]);
 
     function splitBrands(brands: CarBrand[]) {
         const normalizedBrands = brands.map((b) => ({
@@ -190,7 +274,6 @@ const FilledCard = ({ index, onCancel, }: { index: number, onCancel: () => void 
         };
     }
 
-
     const { groupedOptions } = splitBrands(brands)
 
     return (
@@ -207,7 +290,7 @@ const FilledCard = ({ index, onCancel, }: { index: number, onCancel: () => void 
 
             {/* Index */}
             <div className="absolute left-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold">
-                {index}
+                {index + 1}
             </div>
 
             <div className="mt-4 space-y-2">
@@ -219,8 +302,8 @@ const FilledCard = ({ index, onCancel, }: { index: number, onCancel: () => void 
                             placeholder="Select Brand"
                             labelKey="displayName"
                             valueKey="brandId"
-                            value={selectBrand}
-                            onSelect={(value: CarBrand) => { setSelectBrand(value.brandId) }}
+                            value={brandId}
+                            onSelect={(value: CarBrand) => { dispatch(setBrand({ index: index, id: value.brandId, slug: value.brandSlug })) }}
                         />
                     </div>
                 </div>
@@ -234,7 +317,13 @@ const FilledCard = ({ index, onCancel, }: { index: number, onCancel: () => void 
                             labelKey="modelName"
                             valueKey="modelId"
                             value={modelId}
-                            onSelect={(value: CarModel) => { setModelId(value.modelId) }}
+                            onSelect={(value: CarModel) => {
+                                dispatch(setModel({ index: index, id: value.modelId, slug: value.modelSlug }));
+                                setModelsSlug((prev) => [
+                                    ...prev,
+                                    `${value.brand.slug}-${value.modelSlug}`,
+                                ]);
+                            }}
                         />
                     </div>
                 </div>
@@ -243,12 +332,12 @@ const FilledCard = ({ index, onCancel, }: { index: number, onCancel: () => void 
                     <label htmlFor="" className="text-xs">Powertrain</label>
                     <div className='border dark:border-[#2E2E2E] w-full text-xs py-1 bg-white rounded-lg'>
                         <CustomSelect
-                            options={models}
+                            options={modelPowertrains}
                             placeholder="Select Powertrain"
-                            labelKey="modelName"
-                            valueKey="modelId"
-                            value={modelId}
-                            onSelect={(value: CarModel) => { setModelId(value.modelId) }}
+                            labelKey="label"
+                            valueKey="id"
+                            value={powertrainId}
+                            onSelect={(value: Option) => { dispatch(setPowertrainId({ index: index, id: Number(value.id) })); }}
                         />
                     </div>
                 </div>
@@ -257,28 +346,34 @@ const FilledCard = ({ index, onCancel, }: { index: number, onCancel: () => void 
                     <label htmlFor="" className="text-xs">Variant</label>
                     <div className='border dark:border-[#2E2E2E] w-full text-xs py-1 bg-white rounded-lg'>
                         <CustomSelect
-                            options={models}
+                            options={variantsByPowertrains}
                             placeholder="Select Variant"
-                            labelKey="modelName"
-                            valueKey="modelId"
-                            value={modelId}
-                            onSelect={(value: CarModel) => { setModelId(value.modelId) }}
+                            labelKey="variantName"
+                            valueKey="variantId"
+                            value={variantId}
+                            onSelect={(value: Variant) => { dispatch(setVariantId({ index: index, id: value.variantId })); }}
                         />
                     </div>
                 </div>
             </div>
 
             <div className="mt-2 flex items-center gap-3 rounded-lg border bg-gray-50 p-2">
-                <img 
-                    src={"/model/tata.png"}
-                    alt="tata"
-                    className="w-10 h-10"
-                />
-                <div className="text-xs">
-                    {/* <p className="font-semibold">{brochureLabel}</p> */}
-                    <p className="text-gray-500">1199cc | Petrol | Manual</p>
-                    <p className="font-semibold text-gray-800">₹8.79 Lakh</p>
-                </div>
+                {
+                    modelData && (
+                        <>
+                            <img
+                                src={`${IMAGE_URL}/media/model-imgs/${modelData?.image?.url}`}
+                                alt={modelData?.image?.alt}
+                                className="w-16 h-10 rounded"
+                            />
+                            <div className="text-xs">
+                                <p className="font-semibold">{modelData.modelName}</p>
+                                <p className="text-gray-500 py-1">{modelData?.powerPS} PS | {modelData?.powerTrain} | {modelData?.transmissionType}</p>
+                                <p className="font-semibold text-gray-800">₹8.79 Lakh</p>
+                            </div>
+                        </>
+                    )
+                }
             </div>
 
             <button className="mt-auto rounded-lg bg-yellow-400 py-2 text-sm font-semibold hover:bg-yellow-500">

@@ -8,6 +8,7 @@ import { ProsConsResponse } from "@/components/responsive/brand/model/overview/M
 import { CarData } from "@/components/responsive/brand/model/overview/Overview";
 import { HeaderInfo, SpecSection } from "@/components/responsive/brand/model/overview/SpecsListTable";
 import { PriceListDetailsResponse } from "@/components/responsive/brand/model/price/OnRoadPriceTable";
+import { PowerTrainResponse } from "@/components/responsive/compare-cars/CarComparison";
 import { BASE_URL } from "@/utils/constant";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -154,7 +155,7 @@ export const carModuleApi = createApi({
 
         // Models Query
 
-        getModelDetails: builder.query<CarModelResponse, { model_slug: string }>({
+        getModelDetails: builder.query<CarModelResponse, { model_slug: string | number }>({
             query: ({ model_slug }) => `/cars/models/${model_slug}`,
         }),
         getModelDetailByFuelType: builder.query<Response, { model_slug: string, cityId: number, fuelType?: string, transmissionType?: string }>({
@@ -327,6 +328,12 @@ export const carModuleApi = createApi({
         getModelSegmentSelling: builder.query<SegmentResponse, { segments: string, currentYear: number }>({
             query: ({ segments, currentYear }) => `/cars/models/segments/${segments}/top-selling?year=${currentYear}&limit=50`,
         }),
+        getModelPowertrains: builder.query<PowerTrainResponse, { modelId: number }>({
+            query: ({ modelId }) => `/cars/models/${modelId}/powertrains`,
+        }),
+        getVariantsByPowertrains: builder.query<Response, { modelId: number, powertrainId: number }>({
+            query: ({ modelId, powertrainId }) => `/cars/variants?modelId=${modelId}&powertrainId=${powertrainId}`,
+        }),
     }),
 });
 
@@ -363,6 +370,8 @@ export const {
     useGetModelImagesQuery,
     useGetModelServiceCostQuery,
     useGetModelSegmentSellingQuery,
+    useGetModelPowertrainsQuery,
+    useGetVariantsByPowertrainsQuery,
 } = carModuleApi;
 
 
