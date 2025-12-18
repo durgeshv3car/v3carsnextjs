@@ -37,94 +37,125 @@ function cmp(a, b, dir) {
 }
 export class VariantsService {
     async list(q) {
-        // 1) Powertrain pre-filter → ids (so DB work is reduced)
-        let powertrainIds = undefined;
-        if (q.fuelType || q.transmissionType) {
-            powertrainIds = await powertrains.findIdsByFilters({
-                fuelType: q.fuelType,
-                transmissionType: q.transmissionType,
-                modelId: q.modelId,
-            });
-            if (!powertrainIds.length) {
-                const limit = Math.max(1, Math.min(q.limit || 12, 100));
-                return { success: true, rows: [], page: q.page || 1, pageSize: limit, total: 0, totalPages: 0 };
-            }
-        }
-        // 2) Fetch raw variants (DB filters: modelId, q, powertrainIds)
-        const raw = await repo.listRaw({
-            q: q.q,
-            modelId: q.modelId,
-            powertrainIds,
-        });
-        // 3) Enrich with numeric prices & powertrain meta
-        const ptMap = new Map();
-        const ptIds = Array.from(new Set(raw.map((v) => v.modelPowertrainId).filter((x) => typeof x === 'number')));
-        if (ptIds.length) {
-            const pts = await powertrains.findByIds(ptIds);
-            pts.forEach((p) => ptMap.set(p.modelPowertrainId, {
-                fuelType: p.fuelType ?? undefined,
-                transmissionType: p.transmissionType ?? undefined,
-                powerTrain: p.powerTrain ?? undefined,
-            }));
-        }
-        const enriched = raw.map((v) => {
-            const band = extractPriceBand(v.variantPrice ?? '');
-            const priceMin = band?.min ?? null;
-            const priceMax = band?.max ?? null;
-            const pt = v.modelPowertrainId ? ptMap.get(v.modelPowertrainId) : undefined;
-            return {
-                ...v,
-                priceMin,
-                priceMax,
-                powertrain: pt
-                    ? {
-                        id: v.modelPowertrainId,
-                        fuelType: pt.fuelType,
-                        transmissionType: pt.transmissionType,
-                        label: pt.powerTrain,
-                    }
-                    : null,
-            };
-        });
-        // 4) Price-based filters (bucket/min/max)
-        let filtered = enriched.filter((v) => priceInBucket(v.priceMin, v.priceMax, q.priceBucket));
-        if (q.minPrice != null)
-            filtered = filtered.filter((v) => (v.priceMax ?? v.priceMin ?? Infinity) >= q.minPrice);
-        if (q.maxPrice != null)
-            filtered = filtered.filter((v) => (v.priceMin ?? v.priceMax ?? 0) <= q.maxPrice);
-        // 5) Sorting
-        switch (q.sortBy) {
-            case 'price_asc':
-                filtered.sort((a, b) => cmp(a.priceMin ?? a.priceMax, b.priceMin ?? b.priceMax, 'asc'));
-                break;
-            case 'price_desc':
-                filtered.sort((a, b) => cmp(a.priceMax ?? a.priceMin, b.priceMax ?? b.priceMin, 'desc'));
-                break;
-            case 'name_asc':
-                filtered.sort((a, b) => (a.variantName ?? '').localeCompare(b.variantName ?? ''));
-                break;
-            case 'name_desc':
-                filtered.sort((a, b) => (b.variantName ?? '').localeCompare(a.variantName ?? ''));
-                break;
-            case 'latest':
-            default:
-                filtered.sort((a, b) => {
-                    const ad = a.updatedDate ? new Date(a.updatedDate).getTime() : 0;
-                    const bd = b.updatedDate ? new Date(b.updatedDate).getTime() : 0;
-                    if (bd !== ad)
-                        return bd - ad;
-                    return (a.variantId ?? 0) - (b.variantId ?? 0);
-                });
-                break;
-        }
-        // 6) Pagination (after filter/sort)
         const page = q.page || 1;
         const limit = Math.max(1, Math.min(q.limit || 12, 100));
-        const total = filtered.length;
-        const totalPages = Math.max(1, Math.ceil(total / limit));
-        const start = (page - 1) * limit;
-        const rows = filtered.slice(start, start + limit);
-        return { success: true, rows, page, pageSize: limit, total, totalPages };
+        const key = cacheKey({
+            ns: 'variants:list',
+            v: 1,
+            page,
+            limit,
+            q: q.q ?? undefined,
+            modelId: q.modelId ?? undefined,
+            powertrainId: q.powertrainId ?? undefined, // 🆕 if added in types/dto
+            fuelType: q.fuelType ?? undefined,
+            transmissionType: q.transmissionType ?? undefined,
+            priceBucket: q.priceBucket ?? undefined,
+            minPrice: q.minPrice ?? undefined,
+            maxPrice: q.maxPrice ?? undefined,
+            sortBy: q.sortBy ?? 'latest',
+        });
+        const ttlMs = 30 * 60 * 1000; // 30 min
+        return withCache(key, async () => {
+            // 1) Powertrain pre-filter → ids (so DB work is reduced)
+            let powertrainIds = undefined;
+            // 🆕 highest priority: explicit powertrainId (modelPowertrainId)
+            if (q.powertrainId) {
+                powertrainIds = [q.powertrainId];
+            }
+            else if (q.fuelType || q.transmissionType) {
+                // fallback: derive from fuelType / transmissionType + modelId
+                powertrainIds = await powertrains.findIdsByFilters({
+                    fuelType: q.fuelType,
+                    transmissionType: q.transmissionType,
+                    modelId: q.modelId,
+                });
+                if (!powertrainIds.length) {
+                    return {
+                        success: true,
+                        rows: [],
+                        page,
+                        pageSize: limit,
+                        total: 0,
+                        totalPages: 0,
+                    };
+                }
+            }
+            // 2) Fetch raw variants (DB filters: modelId, q, powertrainIds)
+            const raw = await repo.listRaw({
+                q: q.q,
+                modelId: q.modelId,
+                powertrainIds,
+            });
+            // 3) Enrich with numeric prices & powertrain meta
+            const ptMap = new Map();
+            const ptIds = Array.from(new Set(raw.map((v) => v.modelPowertrainId).filter((x) => typeof x === 'number')));
+            if (ptIds.length) {
+                const pts = await powertrains.findByIds(ptIds);
+                pts.forEach((p) => ptMap.set(p.modelPowertrainId, {
+                    fuelType: p.fuelType ?? undefined,
+                    transmissionType: p.transmissionType ?? undefined,
+                    powerTrain: p.powerTrain ?? undefined,
+                }));
+            }
+            const enriched = raw.map((v) => {
+                const band = extractPriceBand(v.variantPrice ?? '');
+                const priceMin = band?.min ?? null;
+                const priceMax = band?.max ?? null;
+                const pt = v.modelPowertrainId ? ptMap.get(v.modelPowertrainId) : undefined;
+                return {
+                    ...v,
+                    priceMin,
+                    priceMax,
+                    powertrain: pt
+                        ? {
+                            id: v.modelPowertrainId,
+                            fuelType: pt.fuelType,
+                            transmissionType: pt.transmissionType,
+                            label: pt.powerTrain,
+                        }
+                        : null,
+                };
+            });
+            // 4) Price-based filters (bucket/min/max)
+            let filtered = enriched.filter((v) => priceInBucket(v.priceMin, v.priceMax, q.priceBucket));
+            if (q.minPrice != null) {
+                filtered = filtered.filter((v) => (v.priceMax ?? v.priceMin ?? Infinity) >= q.minPrice);
+            }
+            if (q.maxPrice != null) {
+                filtered = filtered.filter((v) => (v.priceMin ?? v.priceMax ?? 0) <= q.maxPrice);
+            }
+            // 5) Sorting
+            switch (q.sortBy) {
+                case 'price_asc':
+                    filtered.sort((a, b) => cmp(a.priceMin ?? a.priceMax, b.priceMin ?? b.priceMax, 'asc'));
+                    break;
+                case 'price_desc':
+                    filtered.sort((a, b) => cmp(a.priceMax ?? a.priceMin, b.priceMax ?? b.priceMin, 'desc'));
+                    break;
+                case 'name_asc':
+                    filtered.sort((a, b) => (a.variantName ?? '').localeCompare(b.variantName ?? ''));
+                    break;
+                case 'name_desc':
+                    filtered.sort((a, b) => (b.variantName ?? '').localeCompare(a.variantName ?? ''));
+                    break;
+                case 'latest':
+                default:
+                    filtered.sort((a, b) => {
+                        const ad = a.updatedDate ? new Date(a.updatedDate).getTime() : 0;
+                        const bd = b.updatedDate ? new Date(b.updatedDate).getTime() : 0;
+                        if (bd !== ad)
+                            return bd - ad;
+                        return (a.variantId ?? 0) - (b.variantId ?? 0);
+                    });
+                    break;
+            }
+            // 6) Pagination (after filter/sort)
+            const total = filtered.length;
+            const totalPages = Math.max(1, Math.ceil(total / limit));
+            const start = (page - 1) * limit;
+            const rows = filtered.slice(start, start + limit);
+            return { success: true, rows, page, pageSize: limit, total, totalPages };
+        }, ttlMs);
     }
     async getById(id) {
         const v = await repo.getById(id);

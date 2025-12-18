@@ -1,5 +1,4 @@
 
-
 ## Cars Module (Brands, Models, Variants)
 
 Base path: `/v1/cars` (example: `http://localhost:3121/v1/cars`)
@@ -28,8 +27,8 @@ Examples
 **Detail** — `GET /v1/cars/brands/:id`
 
 **Discontinued models** — `GET /v1/cars/brands/:id/discontinued-models`
-
 ---
+
 
 ## Models
 ### List — `GET /v1/cars/models`
@@ -52,6 +51,14 @@ Examples:
 ### Analytics
 - `GET /v1/cars/models/upcoming-monthly-count` — `months` (1–24, default 12), `brandId`, `bodyTypeId`
 - `GET /v1/cars/models/top-selling-month` — `year` (required), `month` (required), `limit` (default 25, max 100)
+
+### Compare (by variantIds)
+- `GET /v1/cars/models/compare`
+- Query: `variantIds` (comma-separated, required), `cityId` (optional)
+- Returns: `items[]` (comparison blocks) + `expertVerdict` (dynamic verdict lines)
+
+Example:
+- `/v1/cars/models/compare?variantIds=3235,3234&cityId=1489`
 
 ### Detail (id or slug)
 - `GET /v1/cars/models/:id` — core model detail
@@ -78,6 +85,14 @@ Examples:
 ### Competitors
 - `GET /v1/cars/models/:id/competitors`
 
+### Segment compare carousel (same segment cars)
+- `GET /v1/cars/models/:id/segment-compare`
+- Query: `page`, `limit`
+- Response pagination: `page`, `pageSize`, `total`, `totalPages` (no hasPrev/hasNext)
+
+Example:
+- `/v1/cars/models/venue/segment-compare?page=1&limit=12`
+
 ### Fuel efficiency table
 - `GET /v1/cars/models/:id/fuel-efficiency`
 - Query: `fuelType`, `transmissionType`
@@ -102,7 +117,7 @@ Examples:
 - Overall: `GET /v1/cars/models/:id/service-cost`
 - Powertrain-wise schedule: `GET /v1/cars/models/:id/pow-wise-service-cost?mpId=<modelPowertrainId>`
 
-### Colours
+### Colours 
 - `GET /v1/cars/models/:id/colours`
 
 ### Image gallery
@@ -132,6 +147,7 @@ Examples:
   - `minPrice`, `maxPrice`
 - Sort: `price_asc | price_desc | latest | name_asc | name_desc`
 - Pagination: `page`, `limit`
+ 
 
 Examples:
 - `/v1/cars/variants?modelId=163&page=1`
@@ -152,3 +168,9 @@ Examples:
 - Seating: `seating` (single) or `seatingList` (multi).
 - Price fallback: when model expected prices are 0/null, `priceMin/priceMax` come from parsed variant prices.
 - Images: hero chosen by priority `isMainImage DESC`, `position_no ASC`, `imageId ASC`; URLs built with `MEDIA_BASE_URL` when set.
+
+
+
+
+bhai muje iss project me ek or chiz 
+
