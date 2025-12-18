@@ -2405,7 +2405,6 @@ model tblwebsitepages {
   @@index([pageCategoryId], map: "pageCategoryId")
 }
 
-
 model tblwebvideos {
   videoId            Int      @id @default(autoincrement()) @db.SmallInt
   video_title        String   @db.VarChar(555)
@@ -2446,7 +2445,6 @@ model tblwebvideos {
   @@index([videoType], map: "idx_tblwebvideos_videoType")
   @@index([video_title], map: "idx_tblwebvideos_video_title")
 }
-
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model tblwhatsapplog {
@@ -2588,4 +2586,8 @@ enum tblfeaturesnew_displayCount {
   Front @map(" Front")
   Rear  @map(" Rear")
 }
+
+
+
+
 
