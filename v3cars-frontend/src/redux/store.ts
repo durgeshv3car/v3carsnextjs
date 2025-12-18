@@ -2,7 +2,6 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import { authApi } from "./api/authApi";
 import { commonApi } from "./api/commonApi";
 import authReducer from "./slices/authSlice";
 import comparisonSlice from "./slices/comparisonSlice";
@@ -18,6 +17,7 @@ import { newsModuleApi } from "./api/newsModuleApi";
 import { contentModuleApi } from "./api/contentModuleApi";
 import { videosModuleApi } from "./api/videosModuleApi";
 import { fuelModuleApi } from "./api/fuelModuleApi";
+import { authModuleApi } from "./api/authModuleApi";
 
 const persistConfig = {
   key: "root",
@@ -26,7 +26,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  [authApi.reducerPath]: authApi.reducer,
+  [authModuleApi.reducerPath]: authModuleApi.reducer,
   [commonApi.reducerPath]: commonApi.reducer,
   [homeModuleApi.reducerPath]: homeModuleApi.reducer,
   [contentModuleApi.reducerPath]: contentModuleApi.reducer,
@@ -54,7 +54,7 @@ export const store = configureStore({
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
     }).concat(
-      authApi.middleware,
+      authModuleApi.middleware,
       commonApi.middleware,
       homeModuleApi.middleware,
       contentModuleApi.middleware,
