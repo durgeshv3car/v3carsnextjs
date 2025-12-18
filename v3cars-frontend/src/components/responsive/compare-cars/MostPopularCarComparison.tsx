@@ -44,46 +44,54 @@ interface Powertrain {
 }
 
 interface MostPopularCarComparisonProps {
+    title: string
     data: CarData[];
 }
 
-const MostPopularCarComparison = ({ data }: MostPopularCarComparisonProps) => {
+const MostPopularCarComparison = ({ title, data }: MostPopularCarComparisonProps) => {
 
     const router = useRouter()
 
     return (
         <div>
-            <h2 className="text-lg font-semibold mb-6">Most Popular Car Comparison by Tool</h2>
+            <h2 className="text-lg font-semibold mb-6">{title}</h2>
 
-            <div className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide">
+            <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[49.40%] lg:auto-cols-[32.90%] gap-2 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide">
                 {data.map((comparison, idx) => {
                     const [car1, car2] = comparison.models;
 
                     return (
                         <div key={idx}>
-                            <div className="relative min-w-[390px] flex gap-2 items-start justify-center border dark:border-[#2E2E2E] rounded-t-xl p-1">
+                            <div className="relative h-auto snap-start flex gap-2 items-start justify-center border dark:border-[#2E2E2E] rounded-t-xl">
                                 {/* Car 1 */}
-                                <div className="w-full">
-                                    <div className="relative max-w-[253px] h-[143px]">
+                                <div className="w-full bg-white rounded-tl-xl overflow-hidden dark:bg-[#171717]">
+                                    <div className="relative">
                                         <img
                                             src={`${IMAGE_URL}/media/model-imgs/${car1.imageUrl}`}
                                             alt={car1.imageAlt || 'car'}
-                                            className="w-full h-full object-cover rounded-xl"
+                                            className="w-full h-full"
                                         />
-                                        <div className="absolute bottom-0 w-full px-4 pt-6 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/70 to-transparent">
-                                            <h3 className="line-clamp-2">{car1.brand?.name || 'N/A'}</h3>
+                                        <div className="absolute bottom-0 w-full px-4 pt-6 pb-3 text-xs font-semibold text-white bg-gradient-to-t from-black/70 to-transparent">
+                                            <h3 className="line-clamp-1">{car1.brand?.name || 'N/A'}</h3>
                                         </div>
                                     </div>
-                                    <div className="space-y-4 m-4">
-                                        <div className="flex flex-col lg:flex-row justify-between items-center">
-                                            <div className="text-xs font-semibold line-clamp-1">{car1.modelName || 'N/A'}</div>
-                                            <div className="text-xs font-medium line-clamp-1">
+                                    <div className="flex flex-col justify-between m-2 gap-2 text-center">
+                                        <p className="font-semibold text-xl line-clamp-1">{car1.modelName || 'N/A'}</p>
+
+                                        <div className='border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2 space-y-2'>
+                                            <p className="text-xs">
+                                                Ex-showroom
+                                            </p>
+                                            <p className="font-semibold">
                                                 {car1.priceRange.min && car1.priceRange.max
                                                     ? `₹${(car1.priceRange.min / 100000).toFixed(1)}L - ₹${(car1.priceRange.max / 100000).toFixed(1)}L`
                                                     : 'N/A'}
-                                            </div>
+                                            </p>
+                                            <p className="text-xs text-blue-500 underline">
+                                                Check On Road Price in Delhi
+                                            </p>
                                         </div>
-                                        <div className="flex justify-between text-center text-xs border-t pt-2 dark:border-[#2E2E2E]">
+                                        <div className="flex justify-between text-center gap-4 text-xs">
                                             <div className="flex flex-col items-center gap-1">
                                                 <FaBolt />
                                                 {car1.powertrain.powerPS ? `${car1.powertrain.powerPS} PS` : 'N/A'}
@@ -101,34 +109,41 @@ const MostPopularCarComparison = ({ data }: MostPopularCarComparisonProps) => {
                                 </div>
 
                                 {/* VS Circle */}
-                                <div className="absolute left-1/2 top-[30%] -translate-x-1/2 -translate-y-1/2 z-10">
-                                    <div className="w-16 h-16 bg-black text-primary font-bold text-lg rounded-full flex items-center justify-center border-2 border-primary shadow-md">
+                                <div className="absolute left-1/2 top-[16%] md:top-[20%] -translate-x-1/2 -translate-y-1/2 z-10">
+                                    <div className="w-14 md:w-16 h-14 md:h-16 bg-black text-primary font-bold md:text-lg rounded-full flex items-center justify-center border-2 border-primary shadow-md">
                                         VS
                                     </div>
                                 </div>
 
                                 {/* Car 2 */}
-                                <div className="w-full overflow-hidden">
-                                    <div className="relative max-w-[253px] h-[143px]">
+                                <div className="w-full overflow-hidden bg-white rounded-tr-xl dark:bg-[#171717]">
+                                    <div className="relative">
                                         <img
                                             src={`${IMAGE_URL}/media/model-imgs/${car2.imageUrl}`}
                                             alt={car2.imageAlt || 'car'}
-                                            className="w-full h-full object-cover rounded-xl"
+                                            className="w-full h-full"
                                         />
-                                        <div className="absolute bottom-0 w-full px-4 pt-6 pb-3 rounded-b-xl text-xs font-semibold text-white bg-gradient-to-t from-black/70 to-transparent">
-                                            <h3 className="line-clamp-2">{car2.brand?.name || 'N/A'}</h3>
+                                        <div className="absolute bottom-0 w-full px-4 pt-6 pb-3 text-xs font-semibold text-white bg-gradient-to-t from-black/70 to-transparent">
+                                            <h3 className="line-clamp-1">{car2.brand?.name || 'N/A'}</h3>
                                         </div>
                                     </div>
-                                    <div className="space-y-4 m-4">
-                                        <div className="flex flex-col lg:flex-row justify-between items-center">
-                                            <div className="text-xs font-semibold line-clamp-1">{car2.modelName || 'N/A'}</div>
-                                            <div className="text-xs font-medium line-clamp-1">
+                                    <div className="flex flex-col justify-between m-2 gap-2 text-center">
+                                        <p className="font-semibold text-xl line-clamp-1">{car2.modelName || 'N/A'}</p>
+
+                                        <div className='border-t border-b border-[#E9E9E9] dark:border-[#2E2E2E] p-2 space-y-2'>
+                                            <p className="text-xs">
+                                                Ex-showroom
+                                            </p>
+                                            <p className="font-semibold">
                                                 {car2.priceRange.min && car2.priceRange.max
                                                     ? `₹${(car2.priceRange.min / 100000).toFixed(1)}L - ₹${(car2.priceRange.max / 100000).toFixed(1)}L`
                                                     : 'N/A'}
-                                            </div>
+                                            </p>
+                                            <p className="text-xs text-blue-500 underline">
+                                                Check On Road Price in Delhi
+                                            </p>
                                         </div>
-                                        <div className="flex justify-between text-center text-xs border-t pt-2 dark:border-[#2E2E2E]">
+                                        <div className="flex justify-between text-center text-xs gap-4">
                                             <div className="flex flex-col items-center gap-1">
                                                 <FaBolt />
                                                 {car2.powertrain.powerPS ? `${car2.powertrain.powerPS} PS` : 'N/A'}
@@ -146,9 +161,9 @@ const MostPopularCarComparison = ({ data }: MostPopularCarComparisonProps) => {
                                 </div>
                             </div>
 
-                            <button 
-                            className="bg-primary hover:bg-primary-hover w-full py-3 rounded-b-xl text-black font-semibold text-sm"
-                            onClick={()=>{router.push(`/compare/${comparison.url}`)}}
+                            <button
+                                className="bg-primary hover:bg-primary-hover w-full py-3 rounded-b-xl text-black font-semibold text-sm"
+                                onClick={() => { router.push(`/compare/${comparison.url}`) }}
                             >
                                 Compare Now
                             </button>

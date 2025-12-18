@@ -8,7 +8,7 @@ const WhyCompareCars = () => {
             </h2>
 
             {/* Intro paragraph */}
-            <p className="text-sm text-gray-700 mb-6 leading-relaxed">
+            <p className="text-sm text-gray-400 mb-6 leading-relaxed">
                 Comparing cars becomes easier and more meaningful on V3Cars because
                 our data goes beyond basic specs. We provide variant-wise comparison,
                 helping buyers evaluate real differences that affect buying
@@ -21,7 +21,7 @@ const WhyCompareCars = () => {
             </h3>
 
             {/* Bullet points */}
-            <ul className="list-disc pl-5 space-y-2 text-sm text-gray-700 mb-6">
+            <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400 mb-6">
                 <li>
                     Accurate, real-time data taken directly from manufacturer listings
                 </li>
@@ -48,7 +48,7 @@ const WhyCompareCars = () => {
             </ul>
 
             {/* Footer paragraph */}
-            <p className="text-sm text-gray-700 leading-relaxed">
+            <p className="text-sm text-gray-400 leading-relaxed">
                 Whether you’re cross-shopping hatchbacks, sedans or SUVs, or deciding
                 between petrol, diesel, CNG or electric variants — V3Cars helps you
                 compare smarter.

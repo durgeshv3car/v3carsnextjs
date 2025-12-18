@@ -9,6 +9,7 @@ import DynmicModelSlug from "../responsive/brand/model/DynmicModelSlug";
 import BrandPage from "../responsive/brand/BrandPage";
 import ModelOnRoadPrice from "../responsive/brand/model/ModelOnRoadPrice";
 import ComparePage from "../responsive/compare-cars/ComparePage";
+import CostOfOwnerShip from "../responsive/cost-of-ownership/CostOfOwnerShip";
 
 type Params = {
     slug?: string[];
@@ -31,6 +32,10 @@ export default function DynmicSlug() {
 
     if (slug[0]?.startsWith("compare")) {
         return <ComparePage slug={slug} />;
+    }
+
+    if (slug[0]?.startsWith("ownership")) {
+        return <CostOfOwnerShip slug={slug} />;
     }
 
     //  /type/fueltype-price-in-city

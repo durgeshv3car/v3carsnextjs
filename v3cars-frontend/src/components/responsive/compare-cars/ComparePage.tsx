@@ -19,31 +19,91 @@ import WhyCompareCars from "./WhyCompareCars";
 import SmartBuyersGuide from "./SmartBuyersGuide";
 import CarComparison from "./CarComparison";
 import SelectCarComparison from "./SelectCarComparison";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useGetCompareVariantsQuery } from "@/redux/api/carModuleApi";
+import { CompareVariant } from "./CompareInterface";
+import PriceComparison from "./PriceComparison";
+import PerformanceComparison from "./PerformanceComparison";
+import DimensionsTable from "./DimensionsTable";
+import ColoursComparison from "./ColoursComparison";
+import OwnershipComparison from "./OwnershipComparison";
+import ProsConsComparison from "./ProsConsComparison";
+import ExpertVerdict from "./ExpertVerdict";
+import FeaturesComparison from "./FeaturesComparison";
+import { convertToName } from "@/utils/helperFunction";
+import { useState } from "react";
+import CommonSelectInput from "@/components/common/CommonSelectInput";
+import { useGetSearchCityQuery } from "@/redux/api/locationModuleApi";
+import { City } from "@/components/web/header/LocationDropdown";
+import { setSelectedCity } from "@/redux/slices/commonSlice";
 
 interface ComparePageProps {
     slug: string[]
 }
 
 function ComparePage({ slug }: ComparePageProps) {
-    const items = useSelector(
-        (state: RootState) => state.comparisonSlice.items
-    );
+    const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
+    const dispatch = useDispatch();
+    const [cityId, setCityId] = useState<number | null>(null)
+    const [query, setQuery] = useState("");
+    const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: query! }, { skip: !query });
+    const [selectedVariantIds, setSelectedVariantIds] = useState<(number | null)[]>([])
 
-    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
+    const finalVariantIds = selectedVariantIds
+        .filter((id): id is number => Boolean(id))
+        .join(",");
 
-    const faqByModule = faqByModuleData?.rows ?? [];
-
+    const { data: compareVariantsData } = useGetCompareVariantsQuery({ variantIds: finalVariantIds, cityId: Number(selectedCity?.cityId) });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
+    const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
+    const cities = searchCityData?.rows ?? []
 
+    const compareVariants: CompareVariant[] = compareVariantsData?.items ?? [];
+    const faqByModule = faqByModuleData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
 
     const isMobile = useIsMobile();
 
+    const priceData = compareVariants.map(
+        (variant) => variant.price
+    );
+
+    const variantData = compareVariants.map(
+        (variant) => ({
+            variantId: variant.variantId,
+            variantName: variant.variantName,
+            modelId: variant.modelId,
+            modelName: variant.modelName,
+            image: variant.image,
+            imageUrl: variant.imageUrl,
+            enginePerformance: variant.enginePerformance,
+            price: variant.price
+        })
+    );
+
+    const enginePerformanceData = compareVariants.map(
+        (variant) => variant.enginePerformance
+    );
+
+    const dimensionsSpaceData = compareVariants.map(
+        (variant) => variant.dimensionsSpace
+    );
+
+    const coloursData = compareVariants.map(
+        (variant) => variant.colours
+    );
+
+    const ownershipData = compareVariants.map(
+        (variant) => variant.ownership
+    );
+
+    const prosConsData = compareVariants.map(
+        (variant) => variant.prosCons
+    );
+
     return (
         <>
-
             <div className='bg-[#18181b] text-white'>
                 <div className='px-4 xl:px-10'>
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center justify-between gap-2">
@@ -52,8 +112,12 @@ function ComparePage({ slug }: ComparePageProps) {
                             <span className="text-primary">
                                 <IoIosArrowForward />
                             </span>
+                            <Link href="/compare-cars" className="hover:underline">Compare Cars</Link>
+                            <span className="text-primary">
+                                <IoIosArrowForward />
+                            </span>
                             <span className="font-medium text-primary">
-                                Compare Cars
+                                {convertToName(slug[1])}
                             </span>
                         </div>
 
@@ -98,9 +162,23 @@ function ComparePage({ slug }: ComparePageProps) {
                     <div className="px-4 xl:px-10">
                         <div className="w-full lg:app-container mx-auto">
                             <div className="w-full flex items-center justify-center gap-3">
-                                <div className="flex items-center gap-1 text-xl lg:text-2xl">
-                                    <h2>Select</h2>
-                                    <span className="font-bold">Brand</span>
+                                <div className="w-[200px] border rounded-lg text-sm py-1 dark:border-[#2e2e2e]">
+                                    <CommonSelectInput
+                                        query={query}
+                                        setQuery={setQuery}
+                                        options={cities}
+                                        defaultValue={selectedCity.cityName}
+                                        labelKey="cityName"
+                                        valueKey="cityId"
+                                        value={cityId ?? undefined}
+                                        onSelect={(item: City) => {
+                                            setCityId(item.cityId);
+                                            dispatch(setSelectedCity({
+                                                cityId: item.cityId,
+                                                cityName: item.cityName
+                                            }));
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -110,11 +188,68 @@ function ComparePage({ slug }: ComparePageProps) {
 
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:app-container py-6 mx-auto space-y-7">
-                    <CarComparison />
+                    <CarComparison slug={slug[1]} setSelectedVariantIds={setSelectedVariantIds} />
 
-                    <SelectCarComparison />
+                    <SelectCarComparison variantData={variantData} />
 
-                    <div>
+                    <PriceComparison priceData={priceData} />
+
+                    <PerformanceComparison data={enginePerformanceData} />
+
+                    <DimensionsTable data={dimensionsSpaceData} />
+                </div>
+            </div>
+
+            <BottomAd />
+
+            <div className="px-4 xl:px-10">
+                <div className="w-full lg:app-container py-6 mx-auto space-y-7">
+                    <FeaturesComparison />
+                </div>
+            </div>
+
+            <BottomAd />
+
+            <div className="px-4 xl:px-10">
+                <div className="w-full lg:app-container py-6 mx-auto space-y-7">
+                    <ColoursComparison data={coloursData} />
+
+                    <OwnershipComparison data={ownershipData} />
+
+                    <ProsConsComparison data={prosConsData} />
+
+                    <ExpertVerdict
+                        priceAndValue="{{CarA}} is more affordable to buy."
+                        performanceAndMileage="{{CarA}} delivers better performance with more power and torque, whereas {{CarB}} focuses on efficiency and lower running costs."
+                        spaceAndComfort="{{LongestCar}} is the longest and widest of the group, which should translate to better cabin space, while {{BestGroundClearanceCar}} offers the highest ground clearance—useful for poor roads and speed breakers. Boot space is largest in {{BestBootCar}}, making it more practical for luggage."
+                        featuresAndSafety="Feature-wise, {{MostLoadedCar}} offers the richest equipment list. {{LeastEquippedCar}} misses out on some basic safety, functional or convenience features that rivals provide."
+                        finalVerdict="Choose {{CarA}} if you prioritise {{CarAPriorities}}. Go for {{CarB}} if you want {{CarBPriorities}}. Overall, {{BestAllRounder}} emerges as the most balanced choice for most buyers, while {{Alt1}} suits those who want {{Alt1Focus}}, and {{Alt2}} is better for {{Alt2Focus}}."
+                    />
+
+                    <MostPopularCarComparison
+                        title="Hyundai Venue – Compare with Other B2-segment SUV"
+                        data={popularComparisons}
+                    />
+
+                    <MostPopularCarComparison
+                        title="Hyundai Creta E – Compare with Other B2-segment SUV"
+                        data={popularComparisons}
+                    />
+
+                    <MostPopularCarComparison
+                        title="Popular Car Comparison"
+                        data={popularComparisons}
+                    />
+
+                </div>
+            </div>
+
+            <BottomAd />
+
+            <div className="px-4 xl:px-10">
+
+                <div className="w-full lg:app-container pb-6 mx-auto space-y-7">
+                    <div className="mt-7">
                         {/* Heading */}
                         <h2 className="text-2xl font-semibold mb-3">
                             Compare to Choose the Right Car!
@@ -143,22 +278,12 @@ function ComparePage({ slug }: ComparePageProps) {
                         data={howItWorkData}
                     />
 
-                    <MostPopularCarComparison data={popularComparisons} />
-
-                </div>
-            </div>
-
-            <BottomAd />
-
-            <div className="px-4 xl:px-10">
-
-                <div className="w-full lg:app-container pb-6 mx-auto space-y-7">
-                    <WhyCompareCars />
-
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:min-w-[74%] space-y-6">
 
                             <CommonSellUsedCarComponent />
+
+                            <WhyCompareCars />
 
                             <SmartBuyersGuide />
 

@@ -334,6 +334,18 @@ export const carModuleApi = createApi({
         getVariantsByPowertrains: builder.query<Response, { modelId: number, powertrainId: number }>({
             query: ({ modelId, powertrainId }) => `/cars/variants?modelId=${modelId}&powertrainId=${powertrainId}`,
         }),
+        getCompareVariants: builder.query<
+            ModelCompetitorsQueryResponse,
+            { variantIds: string; cityId: number }
+        >({
+            query: ({ variantIds, cityId }) => ({
+                url: `/cars/models/compare`,
+                params: {
+                    variantIds: variantIds,
+                    cityId,
+                },
+            }),
+        }),
     }),
 });
 
@@ -372,6 +384,7 @@ export const {
     useGetModelSegmentSellingQuery,
     useGetModelPowertrainsQuery,
     useGetVariantsByPowertrainsQuery,
+    useGetCompareVariantsQuery,
 } = carModuleApi;
 
 

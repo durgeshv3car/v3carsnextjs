@@ -4,7 +4,6 @@ import useIsMobile from "@/hooks/useIsMobile";
 import {
     useGetPopularComparisonsQuery,
 } from "@/redux/api/contentModuleApi";
-import MostPopularCarComparison from "./MostPopularCarComparison";
 import ToolsCommonSection from "@/components/common/ToolsCommonSection";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
@@ -15,18 +14,19 @@ import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
 import CommonUsefulToolComponent from "@/components/common/CommonUsefulToolComponent";
 import CommonQuickLinkComponent from "@/components/common/CommonQuickLinkComponent";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
-import WhyCompareCars from "./WhyCompareCars";
-import SmartBuyersGuide from "./SmartBuyersGuide";
-import CarComparison from "./CarComparison";
-import CommonSelectInput from "@/components/common/CommonSelectInput";
+import CarComparison from "../compare-cars/CarComparison";
+import MostPopularCarComparison from "../compare-cars/MostPopularCarComparison";
+import HowToEvaluate from "./HowToEvaluate";
+import WhatIncluded from "./WhatIncluded";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { useState } from "react";
 import { useGetSearchCityQuery } from "@/redux/api/locationModuleApi";
+import CommonSelectInput from "@/components/common/CommonSelectInput";
 import { City } from "@/components/web/header/LocationDropdown";
-import { useDispatch, useSelector } from "react-redux";
 import { setSelectedCity } from "@/redux/slices/commonSlice";
-import { RootState } from "@/redux/store";
 
-function MainCompareCarComponent() {
+function MainOwnerShipPageComponent() {
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const dispatch = useDispatch();
     const [cityId, setCityId] = useState<number | null>(null)
@@ -35,11 +35,9 @@ function MainCompareCarComponent() {
     const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
 
     const faqByModule = faqByModuleData?.rows ?? [];
-    const cities = searchCityData?.rows ?? []
-
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-
     const popularComparisons = popularComparisonsData?.rows ?? [];
+    const cities = searchCityData?.rows ?? []
 
     const isMobile = useIsMobile();
 
@@ -55,7 +53,7 @@ function MainCompareCarComponent() {
                                 <IoIosArrowForward />
                             </span>
                             <span className="font-medium text-primary">
-                                Compare Cars
+                                Cost of Ownership
                             </span>
                         </div>
 
@@ -91,15 +89,15 @@ function MainCompareCarComponent() {
                     <ToolsCommonSection
                         title={
                             <span>
-                                Car <span className="text-yellow-500">Comparison</span>
+                                Cost of Ownership <span className="text-yellow-500">Calculator</span>
                             </span>
                         }
-                        desc={`Compare up to four cars side by side and evaluate every detail that matters before buying. This car comparison tool lets you compare price, engine specs, mileage, safety rating, dimensions, features, maintenance cost, warranty, colours and variant-wi`}
+                        desc={`Understanding how much a car costs to own is just as important as checking its price or features. This Cost of Ownership Calculator gives you a clear estimate of the total expense you’re likely to incur over your ownership period, including on-road`}
                     />
 
                     <div className="px-4 xl:px-10">
                         <div className="w-full lg:app-container mx-auto">
-                            <div className="flex items-center justify-center gap-3">
+                            <div className="w-full flex items-center justify-center gap-3">
                                 <div className="w-[200px] border rounded-lg text-sm py-1 dark:border-[#2e2e2e]">
                                     <CommonSelectInput
                                         query={query}
@@ -129,36 +127,34 @@ function MainCompareCarComponent() {
                     <CarComparison />
 
                     <div>
-                        {/* Heading */}
-                        <h2 className="text-2xl font-semibold mb-3">
-                            Compare to Choose the Right Car!
-                        </h2>
+                        <h1 className="text-2xl font-semibold mb-4">
+                            Understand Your Car’s True Ownership Cost
+                        </h1>
 
-                        {/* First paragraph */}
-                        <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                            Choosing a new car can feel overwhelming, especially when several
-                            models fit your budget and preferences. This comparison section
-                            helps you simplify that decision by letting you line up multiple
-                            cars and instantly see how they differ where it truly matters to
-                            you.
+                        <p className="mb-6 leading-relaxed text-gray-400">
+                            Most buyers focus on the ex-showroom price, but the real cost of owning
+                            a car becomes clear only when you add fuel or charging expenses,
+                            scheduled service bills, insurance, taxes and routine wear-and-tear
+                            over time. This tool brings all those numbers together so you can see
+                            what you’ll actually spend during ownership.
                         </p>
 
-                        {/* Second paragraph */}
-                        <p className="text-sm text-gray-400 leading-relaxed">
-                            Just pick the cars you want to evaluate, select the relevant variants,
-                            and the tool highlights meaningful differences—helping you understand
-                            which option aligns better with your priorities, whether that’s
-                            performance, comfort, practicality or long-term ownership experience.
+                        <p className="leading-relaxed text-gray-400">
+                            Whether you’re choosing between petrol, diesel, CNG or electric
+                            models, or comparing multiple cars for long-term costs, the breakdown
+                            here helps you make an informed decision. Adjust your city, running
+                            distance or finance preference to see how the numbers change and which
+                            car fits your budget in the long run.
                         </p>
                     </div>
 
                     <CommonHowItWorkCard
-                        title="Car Comparison Tool - How it works"
+                        title="Cost of Ownership Tool – How It Works"
                         data={howItWorkData}
                     />
 
                     <MostPopularCarComparison
-                        title="Popular Car Comparison"
+                        title="Popular Ownership Comparisons"
                         data={popularComparisons}
                     />
 
@@ -169,15 +165,14 @@ function MainCompareCarComponent() {
 
             <div className="px-4 xl:px-10">
 
-                <div className="w-full lg:app-container pb-6 mx-auto space-y-7">
-                    <WhyCompareCars />
+                <div className="w-full lg:app-container pb-6 mx-auto space-y-7 mt-7">
+                    <HowToEvaluate />
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:min-w-[74%] space-y-6">
-
                             <CommonSellUsedCarComponent />
 
-                            <SmartBuyersGuide />
+                            <WhatIncluded />
 
                             <CommonQuickLinkComponent data={links} />
 
@@ -205,13 +200,13 @@ function MainCompareCarComponent() {
     );
 }
 
-export default MainCompareCarComponent;
+export default MainOwnerShipPageComponent;
 
 
 const howItWorkData = [
     {
-        title: "Select Cars",
-        desc: "Choose up to four cars you want to compare & start building your shortlist.",
+        title: "Select Car & City",
+        desc: "Choose your car along with the city where you’ll register it.",
         icon: (
             <div className="flex items-center gap-4">
                 <img src="/compare-car/car.png" className="w-16 h-12" />
@@ -220,28 +215,28 @@ const howItWorkData = [
         bg: "#cbe7f4", // Blue
     },
     {
-        title: "Choose Variants",
-        desc: "Pick fuel type, transmission & variant for each car.",
+        title: "Set Ownership Period & Usage",
+        desc: "Choose your ownership duration & enter how much you plan to drive.",
         icon: (
             <div className="flex items-center gap-4">
-                <img src="/compare-car/variant.png" className="w-14 h-14" />
+                <img src="/cost-of-ownership/ownership-period.png" className="w-14 h-14" />
             </div>
         ),
         bg: "#fcd9d7", // Light red
     },
     {
-        title: "View Detailed Comparison",
-        desc: "Get detailed specs, features, prices & differences.",
+        title: "View Ownership Breakdown",
+        desc: "See a detailed split of taxes, fuel/charging, insurance & service costs.",
         icon: (
             <div className="flex items-center gap-4">
-                <img src="/compare-car/compare.png" className="w-14 h-14" />
+                <img src="/cost-of-ownership/breakdown.png" className="w-14 h-14" />
             </div>
         ),
         bg: "#ffecbe", // Light yellow
     },
     {
-        title: "Check Expert Verdict",
-        desc: "Get smart insights & a clear verdict to understand which car suits you best.",
+        title: "Compare & Decide",
+        desc: "Compare up to four cars & see which one costs less to own long-term.",
         icon: (
             <div className="flex items-center gap-4">
                 <img src="/compare-car/verdict.png" className="w-14 h-14" />

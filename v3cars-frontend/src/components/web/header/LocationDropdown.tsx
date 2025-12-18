@@ -9,7 +9,7 @@ import { FiMapPin } from "react-icons/fi";
 import { TbCurrentLocation } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 
-interface City {
+export interface City {
   cityId: number;
   cityName: string;
   stateId: number;

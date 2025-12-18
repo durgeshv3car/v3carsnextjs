@@ -35,7 +35,7 @@ const emptyItem: ComparisonItem = {
  * Initial state (2 cars comparison by default)
  */
 const initialState: ComparisonState = {
-  items: [{ ...emptyItem }, { ...emptyItem }],
+  items: [{ ...emptyItem }, { ...emptyItem }, { ...emptyItem }, { ...emptyItem }],
 };
 
 const comparisonSlice = createSlice({
@@ -139,8 +139,8 @@ const comparisonSlice = createSlice({
     /**
      * Reset everything
      */
-    resetComparison() {
-      return initialState;
+    resetItem(state, action: PayloadAction<number>) {
+      state.items[action.payload] = { ...emptyItem };
     },
   },
 });
@@ -152,7 +152,7 @@ export const {
   setVariantId,
   addComparisonSlot,
   removeComparisonSlot,
-  resetComparison,
+  resetItem,
 } = comparisonSlice.actions;
 
 export default comparisonSlice.reducer;

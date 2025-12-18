@@ -4,7 +4,6 @@ import useIsMobile from "@/hooks/useIsMobile";
 import {
     useGetPopularComparisonsQuery,
 } from "@/redux/api/contentModuleApi";
-import MostPopularCarComparison from "./MostPopularCarComparison";
 import ToolsCommonSection from "@/components/common/ToolsCommonSection";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
@@ -15,37 +14,72 @@ import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
 import CommonUsefulToolComponent from "@/components/common/CommonUsefulToolComponent";
 import CommonQuickLinkComponent from "@/components/common/CommonQuickLinkComponent";
 import CommonSellUsedCarComponent from "@/components/common/ModelCards/CommonSellUsedCarComponent";
-import WhyCompareCars from "./WhyCompareCars";
-import SmartBuyersGuide from "./SmartBuyersGuide";
-import CarComparison from "./CarComparison";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useGetCompareVariantsQuery } from "@/redux/api/carModuleApi";
+import CarComparison from "../compare-cars/CarComparison";
+import MostPopularCarComparison from "../compare-cars/MostPopularCarComparison";
+import SelectCarComparison from "../compare-cars/SelectCarComparison";
+import { CompareVariant } from "../compare-cars/CompareInterface";
+import HowToEvaluate from "./HowToEvaluate";
+import WhatIncluded from "./WhatIncluded";
+import CostOfOwnershipInfo from "./CostOfOwnershipInfo";
+import OwnershipAssumptions from "./OwnershipAssumptions";
+import PriceCost from "./PriceCost";
+import PeriodicMaintenanceCost from "./PeriodicMaintenanceCost";
+import RunningCostComparison from "./RunningCostComparison";
+import TotalCostOfOwnership from "./TotalCostOfOwnership";
 import CommonSelectInput from "@/components/common/CommonSelectInput";
+import { City } from "@/components/web/header/LocationDropdown";
+import { setSelectedCity } from "@/redux/slices/commonSlice";
 import { useState } from "react";
 import { useGetSearchCityQuery } from "@/redux/api/locationModuleApi";
-import { City } from "@/components/web/header/LocationDropdown";
-import { useDispatch, useSelector } from "react-redux";
-import { setSelectedCity } from "@/redux/slices/commonSlice";
-import { RootState } from "@/redux/store";
 
-function MainCompareCarComponent() {
+interface CostOfOwnerShipProps {
+    slug: string[]
+}
+
+function CostOfOwnerShip({ slug }: CostOfOwnerShipProps) {
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const dispatch = useDispatch();
     const [cityId, setCityId] = useState<number | null>(null)
     const [query, setQuery] = useState("");
     const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: query! }, { skip: !query });
+    const items = useSelector(
+        (state: RootState) => state.comparisonSlice.items
+    );
+
+    const variantIds = items
+        .map((item) => item.variantId)
+        .filter((id): id is number => Boolean(id))
+        .join(',');
+
+    const { data: compareVariantsData } = useGetCompareVariantsQuery({ variantIds, cityId: Number(selectedCity?.cityId) });
+    const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
 
+    const compareVariants: CompareVariant[] = compareVariantsData?.items ?? [];
     const faqByModule = faqByModuleData?.rows ?? [];
-    const cities = searchCityData?.rows ?? []
-
-    const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
-
     const popularComparisons = popularComparisonsData?.rows ?? [];
+    const cities = searchCityData?.rows ?? []
 
     const isMobile = useIsMobile();
 
+    const variantData = compareVariants.map(
+        (variant) => ({
+            variantId: variant.variantId,
+            variantName: variant.variantName,
+            modelId: variant.modelId,
+            modelName: variant.modelName,
+            image: variant.image,
+            imageUrl: variant.imageUrl,
+            enginePerformance: variant.enginePerformance,
+            price: variant.price
+        })
+    );
+
     return (
         <>
-
             <div className='bg-[#18181b] text-white'>
                 <div className='px-4 xl:px-10'>
                     <div className="w-full lg:app-container mx-auto text-sm h-[42px] flex items-center justify-between gap-2">
@@ -55,7 +89,7 @@ function MainCompareCarComponent() {
                                 <IoIosArrowForward />
                             </span>
                             <span className="font-medium text-primary">
-                                Compare Cars
+                                Ownership
                             </span>
                         </div>
 
@@ -91,15 +125,15 @@ function MainCompareCarComponent() {
                     <ToolsCommonSection
                         title={
                             <span>
-                                Car <span className="text-yellow-500">Comparison</span>
+                                Venue vs Creta Ownership Cost Comparison in <span className="text-yellow-500">{selectedCity?.cityName}</span>
                             </span>
                         }
-                        desc={`Compare up to four cars side by side and evaluate every detail that matters before buying. This car comparison tool lets you compare price, engine specs, mileage, safety rating, dimensions, features, maintenance cost, warranty, colours and variant-wi`}
+                        desc={`Compare the total ownership cost of your selected cars in {{City}} based on your chosen usage and ownership period. This comparison shows how much you are likely to spend on on-road charges, fuel or charging, scheduled services, insurance renewals an`}
                     />
 
                     <div className="px-4 xl:px-10">
                         <div className="w-full lg:app-container mx-auto">
-                            <div className="flex items-center justify-center gap-3">
+                            <div className="w-full flex items-center justify-center gap-3">
                                 <div className="w-[200px] border rounded-lg text-sm py-1 dark:border-[#2e2e2e]">
                                     <CommonSelectInput
                                         query={query}
@@ -126,61 +160,52 @@ function MainCompareCarComponent() {
 
             <div className="px-4 xl:px-10">
                 <div className="w-full lg:app-container py-6 mx-auto space-y-7">
-                    <CarComparison />
+                    <CarComparison slug={slug[1]} />
 
-                    <div>
-                        {/* Heading */}
-                        <h2 className="text-2xl font-semibold mb-3">
-                            Compare to Choose the Right Car!
-                        </h2>
+                    <OwnershipAssumptions />
 
-                        {/* First paragraph */}
-                        <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                            Choosing a new car can feel overwhelming, especially when several
-                            models fit your budget and preferences. This comparison section
-                            helps you simplify that decision by letting you line up multiple
-                            cars and instantly see how they differ where it truly matters to
-                            you.
-                        </p>
+                    <SelectCarComparison variantData={variantData} />
 
-                        {/* Second paragraph */}
-                        <p className="text-sm text-gray-400 leading-relaxed">
-                            Just pick the cars you want to evaluate, select the relevant variants,
-                            and the tool highlights meaningful differences—helping you understand
-                            which option aligns better with your priorities, whether that’s
-                            performance, comfort, practicality or long-term ownership experience.
-                        </p>
-                    </div>
-
-                    <CommonHowItWorkCard
-                        title="Car Comparison Tool - How it works"
-                        data={howItWorkData}
-                    />
-
-                    <MostPopularCarComparison
-                        title="Popular Car Comparison"
-                        data={popularComparisons}
-                    />
-
+                    <PriceCost />
                 </div>
             </div>
 
             <BottomAd />
 
             <div className="px-4 xl:px-10">
+                <div className="w-full lg:app-container pb-6 mx-auto space-y-7 mt-7">
+                    <PeriodicMaintenanceCost />
 
-                <div className="w-full lg:app-container pb-6 mx-auto space-y-7">
-                    <WhyCompareCars />
+                    <RunningCostComparison />
+
+                    <TotalCostOfOwnership />
+
+                    <CommonHowItWorkCard
+                        title="Cost of Ownership Tool – How It Works"
+                        data={howItWorkData}
+                    />
+
+                    <MostPopularCarComparison
+                        title="Popular Ownership Comparisons"
+                        data={popularComparisons}
+                    />
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
                         <div className="w-auto lg:min-w-[74%] space-y-6">
-
                             <CommonSellUsedCarComponent />
-
-                            <SmartBuyersGuide />
-
+                            <WhatIncluded />
+                            <CostOfOwnershipInfo />
+                            <div className="flex justify-center items-center my-4 bg-[#E3E3E3] py-8 rounded-lg">
+                                <img
+                                    src="/model/bannerads.png"
+                                    alt="bannerads"
+                                    width={970}
+                                    height={90}
+                                    className="rounded-lg"
+                                />
+                            </div>
+                            <HowToEvaluate />
                             <CommonQuickLinkComponent data={links} />
-
                             <CommonFaqAccordion faqData={faqByModule} />
                         </div>
 
@@ -205,7 +230,7 @@ function MainCompareCarComponent() {
     );
 }
 
-export default MainCompareCarComponent;
+export default CostOfOwnerShip;
 
 
 const howItWorkData = [

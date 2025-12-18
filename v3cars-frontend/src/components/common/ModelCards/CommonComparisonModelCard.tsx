@@ -43,11 +43,11 @@ interface Powertrain {
     powerTrain: string | null;
 }
 
-interface MostPopularCarComparisonProps {
+interface CommonComparisonModelCardProps {
     data: CarData[];
 }
 
-const CommonComparisonModelCard = ({ data }: MostPopularCarComparisonProps) => {
+const CommonComparisonModelCard = ({ data }: CommonComparisonModelCardProps) => {
 
     const router = useRouter()
 
