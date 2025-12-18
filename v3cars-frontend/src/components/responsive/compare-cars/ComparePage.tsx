@@ -1,6 +1,5 @@
 'use client';
 
-import useIsMobile from "@/hooks/useIsMobile";
 import {
     useGetPopularComparisonsQuery,
 } from "@/redux/api/contentModuleApi";
@@ -37,6 +36,8 @@ import CommonSelectInput from "@/components/common/CommonSelectInput";
 import { useGetSearchCityQuery } from "@/redux/api/locationModuleApi";
 import { City } from "@/components/web/header/LocationDropdown";
 import { setSelectedCity } from "@/redux/slices/commonSlice";
+import SegmentCarCompareCard from "./SegmentCarCompareCard";
+import { parseMultiCompareSlug } from "./parseMultiCompareSlug";
 
 interface ComparePageProps {
     slug: string[]
@@ -47,7 +48,7 @@ function ComparePage({ slug }: ComparePageProps) {
     const dispatch = useDispatch();
     const [cityId, setCityId] = useState<number | null>(null)
     const [query, setQuery] = useState("");
-    const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: query! }, { skip: !query });
+    const { data: searchCityData } = useGetSearchCityQuery({ query: query! }, { skip: !query });
     const [selectedVariantIds, setSelectedVariantIds] = useState<(number | null)[]>([])
 
     const finalVariantIds = selectedVariantIds
@@ -63,7 +64,7 @@ function ComparePage({ slug }: ComparePageProps) {
     const faqByModule = faqByModuleData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
 
-    const isMobile = useIsMobile();
+    const exportSlug = parseMultiCompareSlug(slug[1] ?? "")
 
     const priceData = compareVariants.map(
         (variant) => variant.price
@@ -100,7 +101,7 @@ function ComparePage({ slug }: ComparePageProps) {
 
     const prosConsData = compareVariants.map(
         (variant) => variant.prosCons
-    );
+    );    
 
     return (
         <>
@@ -226,15 +227,14 @@ function ComparePage({ slug }: ComparePageProps) {
                         finalVerdict="Choose {{CarA}} if you prioritise {{CarAPriorities}}. Go for {{CarB}} if you want {{CarBPriorities}}. Overall, {{BestAllRounder}} emerges as the most balanced choice for most buyers, while {{Alt1}} suits those who want {{Alt1Focus}}, and {{Alt2}} is better for {{Alt2Focus}}."
                     />
 
-                    <MostPopularCarComparison
-                        title="Hyundai Venue – Compare with Other B2-segment SUV"
-                        data={popularComparisons}
-                    />
-
-                    <MostPopularCarComparison
-                        title="Hyundai Creta E – Compare with Other B2-segment SUV"
-                        data={popularComparisons}
-                    />
+                    {
+                        exportSlug && exportSlug.map((slug, idx) => (
+                            <SegmentCarCompareCard
+                                key={idx}
+                                modelSlug={slug.modelSlug}
+                            />
+                        ))
+                    }
 
                     <MostPopularCarComparison
                         title="Popular Car Comparison"

@@ -1,15 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useGetAllBrandsQuery, useGetModelsQuery, useGetVariantsQuery } from '@/redux/api/carModuleApi';
-import { IMAGE_URL, IMAGE_URL2 } from '@/utils/constant';
+import { useGetVariantsQuery } from '@/redux/api/carModuleApi';
 import { BiCheck } from 'react-icons/bi';
-import Image from 'next/image';
 import { IoIosCheckmark } from 'react-icons/io';
 import CarLoanCalculator from './CarLoanCalculator';
 import CommonBrandModelTool from '@/components/common/CommonBrandModelTool';
 import { usePathname } from 'next/navigation';
-
 
 interface PowerTrain {
     id: number,
@@ -72,13 +69,13 @@ const SelectCarCalculate = ({ searchQuery, onLoanDataChange }: SelectCarCalculat
         return fuelMatch && transmissionMatch;
     });
 
-    function normalizeBrandName(name: string) {
-        const lower = name.toLowerCase();
-        if (lower === "maruti arena" || lower === "maruti nexa") {
-            return "Maruti Suzuki";
-        }
-        return name;
-    }
+    // function normalizeBrandName(name: string) {
+    //     const lower = name.toLowerCase();
+    //     if (lower === "maruti arena" || lower === "maruti nexa") {
+    //         return "Maruti Suzuki";
+    //     }
+    //     return name;
+    // }
 
     function handleVariant(data: CarVariant) {
         setVariantId(data.variantId)

@@ -50,7 +50,7 @@ export default function ColoursComparison({ data }: ColoursComparisonProps) {
                                             <span
                                                 key={colour.colorId}
                                                 title={colour.name}
-                                                className="w-12 h-8 rounded"
+                                                className="w-12 h-8 rounded border dark:border-[#2e2e2e]"
                                                 style={{ backgroundColor: colour.code }}
                                             />
                                         ))}

@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 
 import CommonFaqAccordion from '@/components/common/CommonFaqAccordion'
 import { useGetFAQByModuleQuery } from '@/redux/api/commonApi'
-import { useGetMileageCalculatorQuery } from '@/redux/api/websiteContentApi'
 import ToolsCommonSection from '@/components/common/ToolsCommonSection'
 import Link from 'next/link'
 import { IoIosArrowForward } from 'react-icons/io'
@@ -17,11 +16,6 @@ import MileageGuide from './MileageGuide'
 import BottomAd from '@/components/common/BottomAd'
 import MileageCalculatorComponent from './MileageCalculatorComponent'
 
-type MileageCalculatorType = {
-    title: string
-    description: string
-}
-
 export type FuelCostInputs = {
     vehicle?: string;
     fuel?: string;
@@ -33,14 +27,11 @@ export default function MainMileageComponent() {
     const [inputs, setInputs] = useState<FuelCostInputs>({});
 
     const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 11 });
-    const { data: mileageCalculatorData } = useGetMileageCalculatorQuery()
-
-    const mileageCalculator: MileageCalculatorType[] = mileageCalculatorData?.rows ?? []
     const faqByModule = faqByModuleData?.rows ?? [];
 
-     const handleInputChange = (updatedValues: FuelCostInputs) => {
+    const handleInputChange = (updatedValues: FuelCostInputs) => {
         setInputs((prev) => ({ ...prev, ...updatedValues }));
-    };    
+    };
 
     return (
         <div>
@@ -123,7 +114,7 @@ export default function MainMileageComponent() {
 
                         <div className="space-y-4 text-[15px] leading-relaxed text-gray-400">
                             <p>
-                                Save money and optimize performance by monitoring your vehicle's mileage. This mileage calculator is perfect for tracking mileage using the tankful-to-tankful method. Wondering why monitoring mileage is important? Our FAQ section dives deeper into the benefits, applicable to all vehicles (cars, bikes, SUVs, trucks, taxis). There, you'll also find a detailed explanation of the tank-to-tank method itself. Check Your Car / Bike Average Running Cost With V3Cars Fuel Cost Calculator
+                                Save money and optimize performance by monitoring your vehicle&apos;s mileage. This mileage calculator is perfect for tracking mileage using the tankful-to-tankful method. Wondering why monitoring mileage is important? Our FAQ section dives deeper into the benefits, applicable to all vehicles (cars, bikes, SUVs, trucks, taxis). There, you&apos;ll also find a detailed explanation of the tank-to-tank method itself. Check Your Car / Bike Average Running Cost With V3Cars Fuel Cost Calculator
                             </p>
                         </div>
                     </div>

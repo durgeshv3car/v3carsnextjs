@@ -18,10 +18,12 @@ interface City {
     isImage: string;
 }
 
+type FuelType = "Petrol" | "Diesel" | "CNG";
+
 export default function CommonPriceInMajorCitiesCard() {
     const { data: popularCitiesData } = useGetPopularCitiesQuery();
     const popularCities: City[] = popularCitiesData?.rows ?? [];
-    const [activeTab, setActiveTab] = useState<"Petrol" | "Diesel" | "CNG">(
+    const [activeTab, setActiveTab] = useState<FuelType>(
         "Petrol"
     );
 
@@ -36,7 +38,7 @@ export default function CommonPriceInMajorCitiesCard() {
                 {["Petrol", "Diesel", "CNG"].map((tab) => (
                     <button
                         key={tab}
-                        onClick={() => setActiveTab(tab as any)}
+                        onClick={() => setActiveTab(tab as FuelType)}
                         className={`flex-1 text-center py-3 text-sm font-medium transition
                 ${activeTab === tab
                                 ? "border-primary border-b-4"

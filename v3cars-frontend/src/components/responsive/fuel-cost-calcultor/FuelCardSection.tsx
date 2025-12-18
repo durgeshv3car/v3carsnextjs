@@ -5,6 +5,27 @@ import { FaGasPump } from "react-icons/fa";
 import { MdInfoOutline } from "react-icons/md";
 
 /* -------------------- TYPES -------------------- */
+
+interface FuelCardProps {
+    title: string;
+    color: string;
+    border: string;
+    fuelCost: FuelCostResult;
+    fuelPrice: number;
+    fuelEfficiency: number;
+    onEfficiencyChange: (value: number) => void;
+    onPriceChange: (value: number) => void;
+    currency: string;
+    city: City
+}
+
+interface FuelCostResult {
+    daily: number;
+    monthly: number;
+    yearly: number;
+}
+
+
 type FuelCostInputs = {
     drivingDistance?: number;
     country?: string;
@@ -39,8 +60,8 @@ export default function FuelCardSection({ inputs, selectedCity }: FuelCardSectio
     const { drivingDistance = 70, country = "India", currencySymbol = "₹", exchangeCurrencyRate } = inputs;
 
     /* -------------------- FUEL TYPES -------------------- */
-    const fuelTypes: Array<"petrol" | "diesel" | "cng"> =
-        country === "India" ? ["petrol", "diesel", "cng"] : ["petrol"];
+    // const fuelTypes: Array<"petrol" | "diesel" | "cng"> =
+    //     country === "India" ? ["petrol", "diesel", "cng"] : ["petrol"];
 
     /* -------------------- Update Fuel Cost Based on Country -------------------- */
     useEffect(() => {
@@ -76,7 +97,7 @@ export default function FuelCardSection({ inputs, selectedCity }: FuelCardSectio
                 });
             }
         } catch (e) {
-            console.warn("City price fetch failed, using default prices.");
+            console.warn(e, "City price fetch failed, using default prices.");
         }
     };
 
@@ -111,7 +132,7 @@ export default function FuelCardSection({ inputs, selectedCity }: FuelCardSectio
                     onEfficiencyChange={(v: number) => setFuelEfficiencies(prev => ({ ...prev, petrol: v }))}
                     onPriceChange={(v: number) => setFuelCosts(prev => ({ ...prev, petrol: v }))}
                     currency={currencySymbol}
-                    city={selectedCity}
+                    city={selectedCity as City}
                 />
 
                 {/* DIESEL */}
@@ -125,7 +146,7 @@ export default function FuelCardSection({ inputs, selectedCity }: FuelCardSectio
                     onEfficiencyChange={(v: number) => setFuelEfficiencies(prev => ({ ...prev, diesel: v }))}
                     onPriceChange={(v: number) => setFuelCosts(prev => ({ ...prev, diesel: v }))}
                     currency={currencySymbol}
-                    city={selectedCity}
+                    city={selectedCity as City}
                 />
 
                 {/* CNG */}
@@ -139,7 +160,7 @@ export default function FuelCardSection({ inputs, selectedCity }: FuelCardSectio
                     onEfficiencyChange={(v: number) => setFuelEfficiencies(prev => ({ ...prev, cng: v }))}
                     onPriceChange={(v: number) => setFuelCosts(prev => ({ ...prev, cng: v }))}
                     currency={currencySymbol}
-                    city={selectedCity}
+                    city={selectedCity as City}
                 />
 
             </div>
@@ -162,7 +183,7 @@ function FuelCard({
     onPriceChange,
     currency,
     city,
-}: any) {
+}: FuelCardProps) {
 
     const avg = fuelCost.daily > 0 ? (fuelPrice / fuelEfficiency).toFixed(2) : "0.00";
 
@@ -233,7 +254,7 @@ function FuelCard({
 }
 
 /* ------------------ SINGLE ROW ------------------ */
-function Row({ label, value }: any) {
+function Row({ label, value }: { label: string, value: number | string }) {
     return (
         <div className="p-4 flex justify-between border-b border-white/20">
             <span>{label}</span>

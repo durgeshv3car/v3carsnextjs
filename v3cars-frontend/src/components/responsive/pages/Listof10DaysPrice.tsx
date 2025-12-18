@@ -48,12 +48,12 @@ const Listof10DaysPrice = ({ type, data, city }: Listof10DaysPriceProps) => {
                     </thead>
                     <tbody className="border border-gray-200 dark:border-[#2E2E2E]">
                         {computedData.map((row, idx) => {
-                            const colorClass =
-                                row.change > 0
-                                    ? "bg-red-200 text-red-700 dark:bg-red-900/30"
-                                    : row.change < 0
-                                        ? "bg-green-200 text-green-700 dark:bg-green-900/30"
-                                        : "bg-green-200 text-green-700 dark:bg-green-900/30";
+                            // const colorClass =
+                            //     row.change > 0
+                            //         ? "bg-red-200 text-red-700 dark:bg-red-900/30"
+                            //         : row.change < 0
+                            //             ? "bg-green-200 text-green-700 dark:bg-green-900/30"
+                            //             : "bg-green-200 text-green-700 dark:bg-green-900/30";
 
                             return (
                                 <tr

@@ -37,11 +37,6 @@ interface DistrictInfo {
     isPopularCity: number;
 }
 
-interface FuelTypes {
-    id: number,
-    name: string
-}
-
 interface PriceInputSectionProps {
     type: string;
     city: string | null;

@@ -42,7 +42,7 @@ function ModelOnRoadPrice({ type, slug, cityName }: ModelOnRoadPriceProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [modelId, setModelId] = useState<number | null>(null);
     const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
-    const { data: modelDetailsData, isLoading } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
+    const { data: modelDetailsData } = useGetModelDetailsQuery({ model_slug: slug }, { skip: !slug });
     const { data: modelUpcomingCarsData } = useGetModelUpcomingCarsQuery({ model_slug: slug }, { skip: !slug })
     const { data: modelOthersCarsData } = useGetModelOthersCarsQuery({ model_slug: slug })
 

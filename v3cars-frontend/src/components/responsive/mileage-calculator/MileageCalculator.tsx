@@ -77,7 +77,7 @@ function UnitToggle<T extends string>({
 export default function MileageCalculator() {
   const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
 
-  const { data: LatestFuelPriceData } = useGetLatestFuelPriceQuery({ districtId: Number(selectedCity?.cityId) });
+  const { data: LatestFuelPriceData } = useGetLatestFuelPriceQuery({ districtId: Number(selectedCity?.cityId), fuelType: 1 });
   const latestFuelPrice = (LatestFuelPriceData?.data ?? null) as LatestFuelPriceType | null;
 
   // --- State ---

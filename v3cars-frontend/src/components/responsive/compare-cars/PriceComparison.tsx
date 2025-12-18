@@ -21,9 +21,7 @@ interface PriceComparisonProps {
 /* ---------------- Component ---------------- */
 
 export default function PriceComparison({ priceData }: PriceComparisonProps) {
-    const columns = 4;
 
-    // find lowest on-road price for highlight
     const onRoadPrices = priceData.map((p) => p.onRoadPrice);
     const lowestIndex = onRoadPrices.indexOf(Math.min(...onRoadPrices));
 

@@ -11,7 +11,7 @@ export default function MileageGuide() {
 
             {/* Intro Paragraph */}
             <p className="mb-4">
-                A mileage calculator helps you measure your vehicle’s real-world fuel efficiency and
+                A mileage calculator helps you measure your vehicle&apos;s real-world fuel efficiency and
                 understand how much it costs you to drive per kilometre. Unlike brochure numbers, this
                 calculator shows actual fuel usage based on the way you drive, road conditions and fuel
                 prices in your city.

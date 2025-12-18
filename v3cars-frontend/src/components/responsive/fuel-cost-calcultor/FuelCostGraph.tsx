@@ -15,6 +15,16 @@ import {
 
 /* ----------------------------- TYPES ----------------------------- */
 
+export interface FuelPriceByDay {
+  day: string;               // e.g. "2025-12-07"
+  petrol: number;
+  petrolChange: number | null;
+  diesel: number;
+  dieselChange: number | null;
+  cng: number;
+  cngChange: number | null;
+}
+
 const fuelTypes = ["petrol", "diesel", "cng"] as const;
 
 type FuelType = typeof fuelTypes[number];
@@ -53,7 +63,7 @@ export default function FuelCostGraph({ districtId, selectedCity }: FuelCostGrap
     useEffect(() => {
         if (!apiData?.rows) return;
 
-        const formatted: FuelPriceDay[] = apiData.rows.map((item: any) => ({
+        const formatted: FuelPriceDay[] = apiData.rows.map((item: FuelPriceByDay) => ({
             day: item.day,
             petrol: item.petrol,
             petrolChange: item.petrolChange ?? null,

@@ -2,8 +2,6 @@
 
 import React from "react";
 import { CarData } from "../brand/model/overview/Overview";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
 
 interface EmiComponentProps {
     data: CarData | null

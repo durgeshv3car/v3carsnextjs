@@ -1,6 +1,7 @@
 'use client';
 
 import { IMAGE_URL } from '@/utils/constant';
+import { convertToSlug } from '@/utils/helperFunction';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FaBolt, FaRoad, FaTachometerAlt } from 'react-icons/fa';
@@ -163,7 +164,12 @@ const MostPopularCarComparison = ({ title, data }: MostPopularCarComparisonProps
 
                             <button
                                 className="bg-primary hover:bg-primary-hover w-full py-3 rounded-b-xl text-black font-semibold text-sm"
-                                onClick={() => { router.push(`/compare/${comparison.url}`) }}
+                                onClick={() => {
+                                    router.push(`
+                                    /compare/${car1.brand?.slug}--${car1.modelSlug}--${convertToSlug(car1.powertrain.powerTrain ?? "")}-vs-${car2.brand?.slug}--${car2.modelSlug}--${convertToSlug(car2.powertrain.powerTrain ?? "")}
+                                    `
+                                    )
+                                }}
                             >
                                 Compare Now
                             </button>

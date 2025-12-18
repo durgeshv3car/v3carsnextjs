@@ -19,6 +19,8 @@ export default function CarLoanEMITab({ onLoanDataChange }: CarLoanEMITabProps) 
     const [selectedVariantPrice, setSelectedVariantPrice] = useState<number>(500000);
     const [searchQuery, setSearchQuery] = useState("");
 
+    console.log(setSelectedVariantPrice);
+
     return (
         <div className=" relative">
             <div className={`absolute -top-16 md:-top-14 w-full flex flex-col md:flex-row items-center gap-3 ${activeTab === "car" ? "justify-between" : "justify-center"} p-3 bg-[#F2F4F7] dark:bg-[#232323] rounded-t-xl z-30 shadow-md border dark:border-[#2e2e2e]`}>

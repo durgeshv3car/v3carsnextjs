@@ -50,14 +50,14 @@ const CityWiseFuelList = ({ type, data, slug }: CityWiseFuelListProps) => {
 
                     <tbody className="border border-gray-200 dark:border-[#2E2E2E]">
                         {visibleData.map((row) => {
-                            const isIncrease = row.change > 0;
-                            const isDecrease = row.change < 0;
+                            // const isIncrease = row.change > 0;
+                            // const isDecrease = row.change < 0;
 
-                            const changeClass = isIncrease
-                                ? "bg-red-200 text-red-700 dark:bg-red-900/30"
-                                : isDecrease
-                                    ? "bg-green-200 text-green-700 dark:bg-green-900/30"
-                                    : "bg-green-200 text-green-700 dark:bg-green-900/30";
+                            // const changeClass = isIncrease
+                            //     ? "bg-red-200 text-red-700 dark:bg-red-900/30"
+                            //     : isDecrease
+                            //         ? "bg-green-200 text-green-700 dark:bg-green-900/30"
+                            //         : "bg-green-200 text-green-700 dark:bg-green-900/30";
 
                             return (
                                 <tr

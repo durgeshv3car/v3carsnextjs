@@ -86,8 +86,8 @@ export default function FuelPriceGuide() {
 
             <p className="mb-2 font-medium">You can quickly check:</p>
             <ul className="list-disc pl-6 space-y-2 mb-6">
-                <li>Today's fuel price</li>
-                <li>Yesterday's price</li>
+                <li>Today&apos;s fuel price</li>
+                <li>Yesterday&apos;s price</li>
                 <li>Daily increase/decrease (₹ or %)</li>
                 <li>City or state-wise variations</li>
             </ul>
@@ -119,14 +119,14 @@ export default function FuelPriceGuide() {
 
             {/* Why Prices Differ */}
             <h2 className="text-xl font-semibold mb-3">Why Fuel Prices Differ Across Cities and States</h2>
-            <p className="mb-3">Fuel prices are not uniform across India. Here's why:</p>
+            <p className="mb-3">Fuel prices are not uniform across India. Here&apos;s why:</p>
 
 
             <ul className="list-disc pl-6 space-y-2 mb-6">
                 <li>
                     <strong>State-Level VAT</strong><br />
-                    The biggest reason for fuel price differences. For example, Maharashtra's levy is higher than
-                    Delhi's → Mumbai fuel prices are higher.
+                    The biggest reason for fuel price differences. For example, Maharashtra&apos;s levy is higher than
+                    Delhi&apos;s → Mumbai fuel prices are higher.
                 </li>
                 <li>
                     <strong>Local Transport Costs</strong><br />

@@ -155,7 +155,7 @@ function MainEMICalculatorComponent() {
                             </p>
 
                             <p>
-                                Utilize V3Cars' interactive auto loan EMI calculator to estimate your monthly car loan payments.
+                                Utilize V3Cars&apos; interactive auto loan EMI calculator to estimate your monthly car loan payments.
                                 Simply enter the required loan amount, the interest rate and the desired tenure period to obtain the car loan EMI.
                                 The instalment in the EMI calculator is computed on a reducing balance.
                             </p>
@@ -173,7 +173,7 @@ function MainEMICalculatorComponent() {
                             </p>
 
                             <p className="text-gray-400">
-                                <span className="font-semibold">Note:</span> The calculator's rate is only indicative and the actual rate may vary.
+                                <span className="font-semibold">Note:</span> The calculator&apos;s rate is only indicative and the actual rate may vary.
                             </p>
                         </div>
                     </div>

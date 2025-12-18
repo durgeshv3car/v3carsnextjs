@@ -1,6 +1,5 @@
 'use client';
 
-import useIsMobile from "@/hooks/useIsMobile";
 import {
     useGetPopularComparisonsQuery,
 } from "@/redux/api/contentModuleApi";
@@ -31,7 +30,7 @@ function MainCompareCarComponent() {
     const dispatch = useDispatch();
     const [cityId, setCityId] = useState<number | null>(null)
     const [query, setQuery] = useState("");
-    const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: query! }, { skip: !query });
+    const { data: searchCityData } = useGetSearchCityQuery({ query: query! }, { skip: !query });
     const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
 
     const faqByModule = faqByModuleData?.rows ?? [];
@@ -40,8 +39,6 @@ function MainCompareCarComponent() {
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
 
     const popularComparisons = popularComparisonsData?.rows ?? [];
-
-    const isMobile = useIsMobile();
 
     return (
         <>

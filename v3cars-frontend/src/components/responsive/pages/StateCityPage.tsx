@@ -11,7 +11,7 @@ import StateWiseFuelList from "@/components/responsive/pages/StateWiseFuelList";
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
 import { useGetCityWiseFuelPriceQuery, useGetFuelPriceStateQuery, useGetList10DaysPriceQuery, useGetMetroCityFuelByCityQuery, useGetMonthlyTrendsQuery } from "@/redux/api/fuelModuleApi";
 import Link from "next/link";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import PriceInputSection from "./PriceInputSection";
@@ -31,16 +31,7 @@ export const getFuelTypeId = (fuel: string): number => {
     return tab.find(t => t.fuel.toLowerCase() === fuel.toLowerCase())?.fuelType ?? 1;
 };
 
-interface CityFuelLatestPrice {
-    districtId: number;
-    cityName: string;
-    stateId: string;
-    isPopularCity: number;
-    price: number;
-    prevPrice: number;
-    change: number;
-    updatedAt: string;
-}
+
 interface PageProps {
     type: string;
     citySlug: string;
@@ -61,8 +52,6 @@ export default function StateCityPage({ type, citySlug, fuelType }: PageProps) {
 
     const faqByModule = faqByModuleData?.rows ?? [];
     const fuelPriceState = fuelPriceStateData?.rows ?? [];
-
-    const router = useRouter()
 
     if (!type || !citySlug || !fuelType) {
         notFound();
@@ -130,7 +119,7 @@ export default function StateCityPage({ type, citySlug, fuelType }: PageProps) {
                     <ToolsCommonSection
                         title={
                             <span className=" capitalize">
-                                Today's {fuelType} Prices in India - <span className="text-yellow-500">September 18, 2024</span>
+                                Today&apos;s {fuelType} Prices in India - <span className="text-yellow-500">September 18, 2024</span>
                             </span>
                         }
                         desc={`Looking for the latest fuel prices in India? Look no further! This page provides you with up-to-date information on fuel prices across major Indian cities (as of December 2, 2025). We understand fuel prices fluctuate, so we offer daily updates to help`}

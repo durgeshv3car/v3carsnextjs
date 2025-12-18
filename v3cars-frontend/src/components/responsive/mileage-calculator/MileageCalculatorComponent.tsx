@@ -87,10 +87,10 @@ export default function MileageCalculatorComponent({ inputs }: MileageCalculator
     }, [inputs.volume]);
 
     // Convert fuel to Liters
-    let fuelLiter = Number(fuel);
-    if (inputs.volume === "gal") {
-        fuelLiter = Number(fuel) * literToGallon;
-    }
+    // let fuelLiter = Number(fuel);
+    // if (inputs.volume === "gal") {
+    //     fuelLiter = Number(fuel) * literToGallon;
+    // }
 
     useEffect(() => {
         const calculateMileage = () => {

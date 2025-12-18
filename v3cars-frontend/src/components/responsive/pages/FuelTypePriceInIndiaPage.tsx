@@ -2,7 +2,7 @@
 
 import { useGetFAQByModuleQuery } from "@/redux/api/commonApi";
 import { useGetFuelPriceStateQuery, useGetList10DaysMetrosQuery, useGetMetroCityFuelQuery } from "@/redux/api/fuelModuleApi";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { useState } from "react";
 import FuelPrices from "./FuelPrices";
 import StateWiseFuelList from "./StateWiseFuelList";
@@ -72,6 +72,9 @@ export default function FuelTypePriceInIndiaPage({ fuelType }: PageProps) {
         notFound();
     }
 
+    console.log(cityId);
+    console.log(selectState);
+
     return (
         <>
             <div className='bg-[#18181b] text-white'>
@@ -119,7 +122,7 @@ export default function FuelTypePriceInIndiaPage({ fuelType }: PageProps) {
                     <ToolsCommonSection
                         title={
                             <span className=" capitalize">
-                                Today's {fuelType} Prices in India - <span className="text-yellow-500">September 18, 2024</span>
+                                Today&apos;s {fuelType} Prices in India - <span className="text-yellow-500">September 18, 2024</span>
                             </span>
                         }
                         desc={`Looking for the latest fuel prices in India? Look no further! This page provides you with up-to-date information on fuel prices across major Indian cities (as of December 2, 2025). We understand fuel prices fluctuate, so we offer daily updates to help`}

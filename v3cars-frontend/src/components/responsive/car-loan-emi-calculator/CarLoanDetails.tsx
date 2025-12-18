@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaLocationArrow } from 'react-icons/fa';
 import { IoPrintOutline } from 'react-icons/io5';
-import { TiLocationArrow } from 'react-icons/ti';
 import { Bar, BarChart, CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 interface MonthlyRow {

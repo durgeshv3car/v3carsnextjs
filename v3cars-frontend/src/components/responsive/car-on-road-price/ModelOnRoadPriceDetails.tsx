@@ -337,7 +337,7 @@ function PriceRow({ label, value }: { label: string | null; value: number | null
     );
 }
 
-function ActionBtn({ label, highlight, onClick }: { label: string; highlight?: boolean; onClick?: () => void }) {
+function ActionBtn({ label, onClick }: { label: string; onClick?: () => void }) {
     return (
         <button
             className={`p-5 rounded-lg border hover:bg-primary hover:dark:bg-primary hover:dark:text-black bg-white shadow-sm dark:bg-[#171717] dark:border-[#2e2e2e]`}

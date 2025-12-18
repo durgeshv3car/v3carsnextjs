@@ -125,7 +125,7 @@ export default function StatePage({ type, fuelType }: PageProps) {
                     <ToolsCommonSection
                         title={
                             <span className=" capitalize">
-                                Today's {fuelType} Prices in India - <span className="text-yellow-500">September 18, 2024</span>
+                                Today&apos;s {fuelType} Prices in India - <span className="text-yellow-500">September 18, 2024</span>
                             </span>
                         }
                         desc={`Looking for the latest fuel prices in India? Look no further! This page provides you with up-to-date information on fuel prices across major Indian cities (as of December 2, 2025). We understand fuel prices fluctuate, so we offer daily updates to help`}

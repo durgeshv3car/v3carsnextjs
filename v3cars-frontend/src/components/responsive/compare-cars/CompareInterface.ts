@@ -185,3 +185,79 @@ export interface CarBrand {
     serviceNetwork: boolean
     brandType: number
 }
+
+
+export interface ApiResponse {
+  success: boolean;
+  model: CarCompareModel;
+  segment: Segment;
+  rows: ModelRow[];
+}
+
+export interface CarCompareModel {
+  modelId: number;
+  name: string;
+  slug: string;
+  brand: Brand;
+  image: Image;
+  imageUrl: string;
+  priceRange: PriceRange;
+  quickSpecs: QuickSpecs;
+}
+
+interface Brand {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+interface PriceRange {
+  min: number;
+  max: number;
+}
+
+interface QuickSpecs {
+  powerPS: number;
+  torqueNM: number;
+  mileageKMPL: number;
+}
+
+interface Segment {
+  id: number;
+  name: string;
+}
+
+export interface ModelRow {
+  modelId: number;
+  name: string;
+  slug: string;
+  brand: Brand;
+  image: Image;
+  imageUrl: string;
+  priceRange: PriceRange;
+  quickSpecs: QuickSpecs;
+  ctaText: string;
+  cta: Cta;
+}
+
+interface Brand {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+interface PriceRange {
+  min: number;
+  max: number;
+}
+
+interface QuickSpecs {
+  powerPS: number;
+  torqueNM: number;
+  mileageKMPL: number;
+}
+
+interface Cta {
+  baseModelSlug: string;
+  compareModelSlug: string;
+}

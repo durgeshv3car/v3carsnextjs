@@ -121,10 +121,13 @@ function CommonBrandModelTool({ searchQuery, modelId, setModelId, url }: CommonB
                                             ${m.modelId === modelId ? "border-2 border-primary" : "border border-[#DBDBDB] dark:border-[#2e2e2e]"} 
                                         `}
                                     onClick={() => {
-                                        url === "/car-loan-emi-calculator" ?
-                                            setModelId(m.modelId)
-                                            :
-                                            router.push(`/${m.brand.slug}/${m.modelSlug}/on-road-price-in-${convertToSlug(selectedCity.cityName)}`)
+                                        if (url === "/car-loan-emi-calculator") {
+                                            setModelId(m.modelId);
+                                        } else {
+                                            router.push(
+                                                `/${m.brand.slug}/${m.modelSlug}/on-road-price-in-${convertToSlug(selectedCity.cityName)}`
+                                            );
+                                        }
                                     }}
                                 >
                                     <Image

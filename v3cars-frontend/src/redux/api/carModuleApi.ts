@@ -9,6 +9,7 @@ import { CarData } from "@/components/responsive/brand/model/overview/Overview";
 import { HeaderInfo, SpecSection } from "@/components/responsive/brand/model/overview/SpecsListTable";
 import { PriceListDetailsResponse } from "@/components/responsive/brand/model/price/OnRoadPriceTable";
 import { PowerTrainResponse } from "@/components/responsive/compare-cars/CarComparison";
+import { ApiResponse } from "@/components/responsive/compare-cars/CompareInterface";
 import { BASE_URL } from "@/utils/constant";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -335,8 +336,8 @@ export const carModuleApi = createApi({
             query: ({ modelId, powertrainId }) => `/cars/variants?modelId=${modelId}&powertrainId=${powertrainId}`,
         }),
         getCompareVariants: builder.query<
-            ModelCompetitorsQueryResponse,
-            { variantIds: string; cityId: number }
+        ModelCompetitorsQueryResponse,
+        { variantIds: string; cityId: number }
         >({
             query: ({ variantIds, cityId }) => ({
                 url: `/cars/models/compare`,
@@ -345,6 +346,9 @@ export const carModuleApi = createApi({
                     cityId,
                 },
             }),
+        }),
+        getSegmentCompare: builder.query<ApiResponse, { modelId: number | string }>({
+            query: ({ modelId }) => `/cars/models/${modelId}/segment-compare`,
         }),
     }),
 });
@@ -385,6 +389,7 @@ export const {
     useGetModelPowertrainsQuery,
     useGetVariantsByPowertrainsQuery,
     useGetCompareVariantsQuery,
+    useGetSegmentCompareQuery,
 } = carModuleApi;
 
 

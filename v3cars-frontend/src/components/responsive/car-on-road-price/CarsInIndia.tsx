@@ -1,7 +1,7 @@
 'use client'
 
 import CommonModelCard from '@/components/common/CommonCards/CommonModelCard';
-import { useGetPopularCarQuery, useGetTopSellingCarQuery } from '@/redux/api/carModuleApi'
+import { useGetTopSellingCarQuery } from '@/redux/api/carModuleApi'
 
 const CarInIndia: React.FC = () => {
     const { data: topSellingCarData } = useGetTopSellingCarQuery({ limit: 30 });

@@ -1,6 +1,5 @@
 'use client';
 
-import useIsMobile from "@/hooks/useIsMobile";
 import {
     useGetPopularComparisonsQuery,
 } from "@/redux/api/contentModuleApi";
@@ -44,7 +43,7 @@ function CostOfOwnerShip({ slug }: CostOfOwnerShipProps) {
     const dispatch = useDispatch();
     const [cityId, setCityId] = useState<number | null>(null)
     const [query, setQuery] = useState("");
-    const { data: searchCityData, isFetching: isSearching } = useGetSearchCityQuery({ query: query! }, { skip: !query });
+    const { data: searchCityData } = useGetSearchCityQuery({ query: query! }, { skip: !query });
     const items = useSelector(
         (state: RootState) => state.comparisonSlice.items
     );
@@ -62,8 +61,6 @@ function CostOfOwnerShip({ slug }: CostOfOwnerShipProps) {
     const faqByModule = faqByModuleData?.rows ?? [];
     const popularComparisons = popularComparisonsData?.rows ?? [];
     const cities = searchCityData?.rows ?? []
-
-    const isMobile = useIsMobile();
 
     const variantData = compareVariants.map(
         (variant) => ({
