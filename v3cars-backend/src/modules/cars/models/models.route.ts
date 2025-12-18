@@ -4,6 +4,8 @@ import { Router } from 'express';
 import { ModelsController } from './models.controller.js';
 import { setCache } from '../../../middlewares/cacheHeaders.js';
 
+
+
 const r = Router();
 const c = new ModelsController();
 
@@ -30,8 +32,8 @@ r.get('/models/:id/images', setCache(1800, 120), (req, res) => c.images(req, res
 r.get('/models/:id/pow-wise-service-cost', setCache(1800, 120), (req, res) => c.serviceCostpow(req, res));
 r.get('/models/segments/:segment/top-selling', setCache(1800, 120), (req, res) => c.segmentTopSellingByMonth(req, res ));
 r.get('/models/:id/powertrains', setCache(1800, 120), (req, res) => c.powertrains(req, res));
+r.get('/models/:id/segment-compare', setCache(600, 60), (req, res) => c.segmentCompare(req, res));
 
-    
 export const modelsRouter = r;
 
 

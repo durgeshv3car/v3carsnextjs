@@ -295,4 +295,116 @@ export class ModelsRepo {
       LIMIT ${limit}
     `);
     }
+    async getCompareDataByVariantIds(variantIds) {
+        if (!variantIds?.length) {
+            return {
+                variants: [],
+                models: [],
+                powertrains: [],
+                modelColors: [],
+                colors: [],
+                prosCons: [],
+            };
+        }
+        const variants = await prisma.tblvariants.findMany({
+            where: { variantId: { in: variantIds } },
+            select: {
+                variantId: true,
+                variantName: true,
+                modelId: true,
+                modelPowertrainId: true,
+                variantPrice: true,
+                csdPrice: true,
+            },
+        });
+        const modelIds = Array.from(new Set(variants
+            .map((v) => v.modelId)
+            .filter((x) => typeof x === 'number')));
+        const powertrainIds = Array.from(new Set(variants
+            .map((v) => v.modelPowertrainId)
+            .filter((x) => typeof x === 'number')));
+        const models = modelIds.length
+            ? await prisma.tblmodels.findMany({
+                where: { modelId: { in: modelIds } },
+                select: {
+                    modelId: true,
+                    modelName: true,
+                    length: true,
+                    width: true,
+                    height: true,
+                    wheelBase: true,
+                    bootSpace: true,
+                    groundClearance: true,
+                    tyreSize: true,
+                },
+            })
+            : [];
+        const powertrains = powertrainIds.length
+            ? await prisma.tblmodelpowertrains.findMany({
+                where: { modelPowertrainId: { in: powertrainIds } },
+                select: {
+                    modelPowertrainId: true,
+                    modelId: true,
+                    fuelType: true,
+                    fuelTypeSubCategory: true,
+                    powerTrain: true,
+                    engineDisplacement: true,
+                    cubicCapacity: true,
+                    cylinders: true,
+                    powerPS: true,
+                    powerMinRPM: true,
+                    powerMaxRPM: true,
+                    torqueNM: true,
+                    torqueMinRPM: true,
+                    torqueMaxRPM: true,
+                    transmissionType: true,
+                    kerbWeight: true,
+                    powerWeight: true,
+                    torqueWeight: true,
+                    claimedFE: true,
+                    realWorldMileage: true,
+                    claimedRange: true,
+                    fuelTankCapacity: true,
+                    standardWarrantyKm: true,
+                    standardWarrantyYear: true,
+                },
+            })
+            : [];
+        const modelColors = modelIds.length
+            ? await prisma.tblmodelcolors.findMany({
+                where: { modelId: { in: modelIds } },
+                select: {
+                    modelId: true,
+                    colorId: true,
+                    fileName: true,
+                },
+            })
+            : [];
+        const colorIds = Array.from(new Set(modelColors
+            .map((mc) => mc.colorId)
+            .filter((x) => typeof x === 'number')));
+        const colors = colorIds.length
+            ? await prisma.tblcolors.findMany({
+                where: { colorId: { in: colorIds } },
+                select: {
+                    colorId: true,
+                    colorName: true,
+                    colorCode: true,
+                    imageFileName: true,
+                },
+            })
+            : [];
+        const prosCons = modelIds.length
+            ? await prisma.tblmodelproscons.findMany({
+                where: { modelId: { in: modelIds } },
+                select: {
+                    modelId: true,
+                    prosConsDesc: true,
+                    prosConsHeading: true,
+                    type: true,
+                },
+            })
+            : [];
+        return { variants, models, powertrains, modelColors, colors, prosCons };
+    }
 }

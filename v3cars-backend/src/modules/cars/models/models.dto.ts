@@ -148,3 +148,8 @@ export const compareModelsQueryDto = z.object({
   // 🆕 optional cityId from query
   cityId: z.coerce.number().int().positive().optional(),
 });
+
+
+export const modelSegmentCompareQueryDto = paginationQuery.merge(z.object({}));
+
+

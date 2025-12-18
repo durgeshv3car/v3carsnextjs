@@ -1,5 +1,5 @@
 import { ModelsService } from './models.service.js';
-import { modelsListQueryDto, upcomingMonthlyCountDto, topSellingMonthlyDto, modelPriceListQueryDto, modelBestVariantQueryDto, modelMsfQueryDto, modelOffersQueryDto, modelDimensionsQueryDto, modelFuelEfficiencyQueryDto, modelCsdVsOnroadQueryDto, modelMonthlySalesQueryDto, modelUpcomingByBrandDto, modelOthersQueryDto, modelImagesQueryDto, modelServiceCostQueryDto, modelSegmentTopSellingQueryDto } from './models.dto.js';
+import { modelsListQueryDto, upcomingMonthlyCountDto, topSellingMonthlyDto, modelPriceListQueryDto, modelBestVariantQueryDto, modelMsfQueryDto, modelOffersQueryDto, modelDimensionsQueryDto, modelFuelEfficiencyQueryDto, modelCsdVsOnroadQueryDto, modelMonthlySalesQueryDto, modelUpcomingByBrandDto, modelOthersQueryDto, modelImagesQueryDto, modelServiceCostQueryDto, modelSegmentTopSellingQueryDto, compareModelsQueryDto, modelSegmentCompareQueryDto } from './models.dto.js';
 const svc = new ModelsService();
 export class ModelsController {
     /** id or slug → numeric modelId resolver */
@@ -173,6 +173,29 @@ export class ModelsController {
             return res.status(400).json({ success: false, message: 'Missing segment' });
         const q = modelSegmentTopSellingQueryDto.parse(req.query); // year/month/limit optional
         const data = await svc.segmentTopSellingByMonthFromPath(seg, q);
+        res.json({ success: true, ...data });
+    }
+    async powertrains(req, res) {
+        const id = await this.resolve(req, res); // id or slug → numeric modelId
+        if (!id)
+            return;
+        const data = await svc.powertrainsOptions(id);
+        res.json(data);
+    }
+    async compare(req, res) {
+        const { variantIds, cityId } = compareModelsQueryDto.parse(req.query);
+        const data = await svc.compareByVariantIds(variantIds, cityId);
+        res.json({ success: true, ...data });
+    }
+    async segmentCompare(req, res) {
+        const id = await this.resolve(req, res);
+        if (!id)
+            return;
+        const q = modelSegmentCompareQueryDto.parse(req.query);
+        const data = await svc.segmentCompareInSegment(id, {
+            page: q.page,
+            limit: q.limit,
+        });
         res.json({ success: true, ...data });
     }
 }

@@ -522,6 +522,8 @@ export class ModelsService {
     }, ttlMs);
   }
 
+
+
   async upcomingMonthlyCount(opts: { months?: number; brandId?: number; bodyTypeId?: number }) {
     const horizon = Math.max(1, Math.min(opts.months ?? 12, 24)); // next N months
     const key = cacheKey({
@@ -561,7 +563,7 @@ export class ModelsService {
   }
 
   
-  /** 🆕 Top selling list for a given month (with brand slug, primary image, % change) */
+
   async topSellingModelsByMonth(opts: { year: number; month: number; limit?: number }) {
     const key = cacheKey({ ns: 'models:topSelling', v: 1, year: opts.year, month: opts.month, limit: opts.limit ?? 25 });
     const ttlMs = 30 * 60 * 1000; // 30 min
@@ -873,7 +875,7 @@ export class ModelsService {
   }
 
 
-  // --- bestVariantToBuy (cached) ---
+
   async bestVariantToBuy(modelId: number, q: ModelBestVariantQuery) {
     const key = cacheKey({
       ns: 'models:bestVariantToBuy',
@@ -1124,7 +1126,7 @@ export class ModelsService {
   }
 
 
-  // --- mileageSpecsFeatures (cached) ---
+
   async mileageSpecsFeatures(modelId: number, q: { powertrainId?: number }) {
     const key = cacheKey({
       ns: 'models:mileageSpecsFeatures',
@@ -1329,8 +1331,7 @@ export class ModelsService {
   }
 
 
-// --- fuelEfficiency (cached) ---
-// replace the existing fuelEfficiency(...) with this version
+
 
 async fuelEfficiency(
   modelId: number,
@@ -1454,7 +1455,6 @@ async fuelEfficiency(
 }
 
 
-  // --- REPLACE ENTIRE FUNCTION ---
 async csdVsOnroad(
     modelId: number,
     q: { cityId: number; fuelType?: string; transmissionType?: string; expandVariantId?: number; isLoan?: boolean }
@@ -1774,7 +1774,6 @@ async monthlySales(modelId: number, q: { months?: number }) {
 }
 
 
-// ⬇️ Add this method inside ModelsService class
 async upcomingByBrand(
   modelId: number,
   opts?: { limit?: number }
@@ -1859,7 +1858,7 @@ async upcomingByBrand(
 }
 
 
-// ⬇️ add this method inside ModelsService class
+
 async othersOnSale(
   modelId: number,
   q?: { limit?: number }
@@ -1967,7 +1966,6 @@ async serviceCost(modelId: number) {
 }
 
 
-// inside ModelsService
 async colours(modelId: number) {
   const key = cacheKey({ ns: 'model:colours', v: 1, modelId });
   const ttlMs = 30 * 60 * 1000;
@@ -2018,7 +2016,6 @@ async colours(modelId: number) {
 }
 
 
-// add inside ModelsService
 async gallery(
   modelId: number,
   q?: { type?: 'all' | 'interior' | 'exterior' | 'other'; limit?: number }
@@ -2305,7 +2302,6 @@ async powertrainsOptions(modelId: number) {
 }
 
 
-// inside ModelsService
 async compareByVariantIds(variantIds: number[], cityId?: number) {
   const ids = Array.from(
     new Set(
@@ -2314,11 +2310,11 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
         .filter((n) => Number.isFinite(n) && n > 0)
     )
   );
-  if (!ids.length) return { items: [] };
+  if (!ids.length) return { items: [], expertVerdict: null };
 
   const key = cacheKey({
     ns: 'models:compareByVariantIds',
-    v: 1,
+    v: 2,                // 🔼 bumped for Expert Verdict
     ids,
     cityId: cityId ?? null,
   });
@@ -2519,7 +2515,7 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
             }
           : null,
 
-        // === Feature Comparison (abhi data nahi, isliye null) ===
+        // === Feature Comparison (abhi feature table nahi, isliye null) ===
         features: null as null,
 
         // === Colours ===
@@ -2555,13 +2551,30 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
       };
     });
 
-    // ---------- Dynamic summaries ----------
-
+    // ---------- Helper for labels ----------
     const carLabel = (item: (typeof items)[number]) =>
       item.variantName || item.modelName || 'this car';
 
-    // Price Summary
+    // ---------- Dynamic summaries + expert verdict ----------
+
     let priceSummary: string | null = null;
+    let performanceSummary: string | null = null;
+    let dimensionsSummary: string | null = null;
+    let colourSummary: string | null = null;
+    let ownershipSummary: string | null = null;
+
+    let priceValueLine: string | null = null;
+    let perfLine: string | null = null;
+    let spaceLine: string | null = null;
+    let featureSafetyLine: string | null = null;
+    let whichToBuyLine: string | null = null;
+
+    let cheapestItem: (typeof items)[number] | null = null;
+    let costliestItem: (typeof items)[number] | null = null;
+    let mostPowerfulItem: (typeof items)[number] | null = null;
+    let mostEfficientItem: (typeof items)[number] | null = null;
+
+    // Price Summary + basic stats
     const priced = items.filter((i) => i.price.onRoadPrice != null);
     if (priced.length >= 2) {
       const sorted = [...priced].sort(
@@ -2569,6 +2582,9 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
       );
       const best = sorted[0];
       const worst = sorted[sorted.length - 1];
+
+      cheapestItem = best;
+      costliestItem = worst;
 
       const emis = priced
         .map((i) => i.price.estimatedEmi)
@@ -2594,10 +2610,11 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
           worst
         )} is the costliest.`;
       }
+
+      priceValueLine = `${carLabel(best)} is more affordable to buy.`;
     }
 
     // Performance Summary
-    let performanceSummary: string | null = null;
     const perfItems = items.filter(
       (i) =>
         i.enginePerformance &&
@@ -2617,13 +2634,19 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
       const effItems = perfItems.filter(
         (i) => i.enginePerformance!.claimedFE != null
       );
-      if (effItems.length) {
-        const mostEfficient = [...effItems].sort(
-          (a, b) =>
-            (b.enginePerformance!.claimedFE ?? 0) -
-            (a.enginePerformance!.claimedFE ?? 0)
-        )[0];
+      const mostEfficient =
+        effItems.length > 0
+          ? [...effItems].sort(
+              (a, b) =>
+                (b.enginePerformance!.claimedFE ?? 0) -
+                (a.enginePerformance!.claimedFE ?? 0)
+            )[0]
+          : null;
 
+      mostPowerfulItem = mostPowerful || null;
+      mostEfficientItem = mostEfficient || null;
+
+      if (mostPowerful && mostEfficient && mostPowerful !== mostEfficient) {
         performanceSummary = `In terms of outright performance, ${carLabel(
           mostPowerful
         )} produces the highest power and torque, while ${carLabel(
@@ -2633,11 +2656,21 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
         )} has a clear edge; for lower running costs, ${carLabel(
           mostEfficient
         )} will be more suitable.`;
+
+        perfLine = `${carLabel(
+          mostPowerful
+        )} delivers better performance with more power and torque, whereas ${carLabel(
+          mostEfficient
+        )} focuses on efficiency and lower running costs.`;
+      } else if (mostPowerful) {
+        performanceSummary = `${carLabel(
+          mostPowerful
+        )} offers the strongest overall performance among the selected variants.`;
+        perfLine = performanceSummary;
       }
     }
 
     // Space & Size Summary
-    let dimensionsSummary: string | null = null;
     const dimItems = items.filter((i) => i.dimensionsSpace);
     if (dimItems.length) {
       const longest = [...dimItems].sort((a, b) => {
@@ -2674,18 +2707,19 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
           : null;
 
       if (bestGc && bestBoot) {
-        dimensionsSummary = `${carLabel(
+        const text = `${carLabel(
           longest
         )} is the longest and widest of the group, which should translate to better cabin space, while ${carLabel(
           bestGc
         )} offers the highest ground clearance—useful for poor roads and speed breakers. Boot space is largest in ${carLabel(
           bestBoot
         )}, making it more practical for luggage.`;
+        dimensionsSummary = text;
+        spaceLine = text;
       }
     }
 
     // Colour Summary
-    let colourSummary: string | null = null;
     const colourItems = items
       .map((i) => ({ item: i, count: i.colours.options.length }))
       .filter((x) => x.count > 0);
@@ -2714,7 +2748,6 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
     }
 
     // Ownership Summary
-    let ownershipSummary: string | null = null;
     const mileageItems = items
       .map((i) => {
         const m =
@@ -2751,6 +2784,63 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
       }
     }
 
+    // Features & Safety (using pros/cons as proxy)
+    const featureRanked = items
+      .map((i) => ({
+        item: i,
+        pros: i.prosCons.pros.length,
+        cons: i.prosCons.cons.length,
+      }))
+      .filter((x) => x.pros > 0 || x.cons > 0);
+
+    if (featureRanked.length) {
+      const mostLoaded = [...featureRanked].sort((a, b) => {
+        if (b.pros !== a.pros) return b.pros - a.pros;
+        return a.cons - b.cons;
+      })[0];
+
+      const leastEquipped = [...featureRanked].sort((a, b) => {
+        if (b.cons !== a.cons) return b.cons - a.cons;
+        return a.pros - b.pros;
+      })[0];
+
+      if (mostLoaded && leastEquipped && mostLoaded.item !== leastEquipped.item) {
+        featureSafetyLine = `Feature-wise, ${carLabel(
+          mostLoaded.item
+        )} offers the richest equipment list. ${carLabel(
+          leastEquipped.item
+        )} misses out on some basic safety, functional or convenience features that rivals provide.`;
+      }
+    }
+
+    // Which one should you buy?
+    if (items.length >= 2 && cheapestItem) {
+      const valueCar = cheapestItem;
+      const perfCar = mostPowerfulItem && mostPowerfulItem !== valueCar
+        ? mostPowerfulItem
+        : costliestItem && costliestItem !== valueCar
+        ? costliestItem
+        : valueCar;
+
+      const allRounder =
+        mostEfficientItem &&
+        mostEfficientItem !== valueCar &&
+        mostEfficientItem !== perfCar
+          ? mostEfficientItem
+          : valueCar;
+
+      whichToBuyLine =
+        `Choose ${carLabel(
+          valueCar
+        )} if you prioritise affordability and lower upfront cost. ` +
+        `${perfCar !== valueCar ? `Go for ${carLabel(
+          perfCar
+        )} if you want stronger performance and don't mind a higher budget. ` : ''}` +
+        `Overall, ${carLabel(
+          allRounder
+        )} emerges as the most balanced choice for most buyers.`;
+    }
+
     // attach summaries to each item section
     for (const item of items) {
       item.price.summary = priceSummary;
@@ -2764,16 +2854,222 @@ async compareByVariantIds(variantIds: number[], cityId?: number) {
       item.ownership.summary = ownershipSummary;
     }
 
-    return { items };
+    const expertVerdict =
+      priceValueLine ||
+      perfLine ||
+      spaceLine ||
+      featureSafetyLine ||
+      whichToBuyLine
+        ? {
+            priceValue: priceValueLine,
+            performanceMileage: perfLine,
+            spaceComfort: spaceLine,
+            featuresSafety: featureSafetyLine,
+            whichToBuy: whichToBuyLine,
+          }
+        : null;
+
+    return { items, expertVerdict };
   }, ttlMs);
 }
 
+ async segmentCompareInSegment(modelId: number, q: { page?: number; limit?: number }) {
+    const page = Math.max(1, Number(q.page ?? 1));
+    const pageSize = Math.max(1, Math.min(Number(q.limit ?? 12), 24));
 
+    const key = cacheKey({
+      ns: 'models:segmentCompare',
+      v: 1,
+      modelId,
+      page,
+      pageSize,
+    });
+    const ttlMs = 30 * 60 * 1000;
+
+    return withCache(key, async () => {
+      const base = await prisma.tblmodels.findFirst({
+        where: { modelId, is_deleted: false },
+        select: {
+          modelId: true,
+          modelName: true,
+          modelSlug: true,
+          brandId: true,
+          segmentId: true,
+          expectedBasePrice: true,
+          expectedTopPrice: true,
+          totalViews: true,
+        },
+      });
+
+      if (!base) {
+        return {
+          model: null,
+          segment: null,
+          rows: [],
+          page,
+          pageSize,
+          total: 0,
+          totalPages: 0,
+        };
+      }
+
+      const segment = base.segmentId
+        ? await prisma.tblsegments.findFirst({
+            where: { segmentId: base.segmentId },
+            select: { segmentId: true, segmentName: true },
+          })
+        : null;
+
+      // no segment → nothing to compare, but base model still return
+      if (!base.segmentId) {
+        const [brands, imgMap, bands, specsMap] = await Promise.all([
+          base.brandId ? brandsSvc.findByIds([base.brandId]) : Promise.resolve([]),
+          imagesSvc.getPrimaryByModelIds([base.modelId]),
+          variantsSvc.getPriceBandsByModelIds([base.modelId]),
+          powertrainsSvc.getSpecsByModelIds([base.modelId]),
+        ]);
+
+        const brandMap = new Map(brands.map((b) => [b.brandId, b]));
+        const shape = (m: typeof base) => {
+          const b = m.brandId ? brandMap.get(m.brandId) : undefined;
+          const band = bands.get(m.modelId) ?? { min: null, max: null };
+          const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+          const img = imgMap.get(m.modelId) ?? { url: null, alt: null, name: null };
+
+          const priceMin =
+            (typeof band.min === 'number' ? band.min : null) ??
+            (typeof m.expectedBasePrice === 'number' && m.expectedBasePrice > 0 ? m.expectedBasePrice : null);
+
+          const priceMax =
+            (typeof band.max === 'number' ? band.max : null) ??
+            (typeof m.expectedTopPrice === 'number' && m.expectedTopPrice > 0 ? m.expectedTopPrice : null);
+
+          return {
+            modelId: m.modelId,
+            name: m.modelName ?? null,
+            slug: m.modelSlug ?? null,
+            brand: b ? { id: b.brandId, name: b.brandName ?? null, slug: b.brandSlug ?? null } : null,
+            image: img,
+            imageUrl: img.url ?? null,
+            priceRange: { min: priceMin, max: priceMax },
+            quickSpecs: {
+              powerPS: specs.powerPS ?? null,
+              torqueNM: specs.torqueNM ?? null,
+              mileageKMPL: specs.mileageKMPL ?? null,
+            },
+          };
+        };
+
+        return {
+          model: shape(base),
+          segment: segment ? { id: segment.segmentId, name: segment.segmentName ?? null } : null,
+          rows: [],
+          page,
+          pageSize,
+          total: 0,
+          totalPages: 0,
+        };
+      }
+
+      const whereSimilar: any = {
+        is_deleted: false,
+        isUpcoming: false,
+        segmentId: base.segmentId,
+        modelId: { not: base.modelId },
+      };
+
+      const total = await prisma.tblmodels.count({ where: whereSimilar });
+      const totalPages = total > 0 ? Math.ceil(total / pageSize) : 0;
+
+      const similar = await prisma.tblmodels.findMany({
+        where: whereSimilar,
+        select: {
+          modelId: true,
+          modelName: true,
+          modelSlug: true,
+          brandId: true,
+          expectedBasePrice: true,
+          expectedTopPrice: true,
+          totalViews: true,
+        },
+        orderBy: [{ totalViews: 'desc' }, { modelId: 'asc' }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      });
+
+      const allModelIds = [base.modelId, ...similar.map((m) => m.modelId)];
+      const allBrandIds = Array.from(
+        new Set(
+          [base.brandId, ...similar.map((m) => m.brandId)].filter((x): x is number => typeof x === 'number')
+        )
+      );
+
+      const [brands, imgMap, bands, specsMap] = await Promise.all([
+        brandsSvc.findByIds(allBrandIds),
+        imagesSvc.getPrimaryByModelIds(allModelIds),
+        variantsSvc.getPriceBandsByModelIds(allModelIds),
+        powertrainsSvc.getSpecsByModelIds(allModelIds),
+      ]);
+
+      const brandMap = new Map(brands.map((b) => [b.brandId, b]));
+
+      const shapeCard = (m: {
+        modelId: number;
+        modelName: string | null;
+        modelSlug: string | null;
+        brandId: number | null;
+        expectedBasePrice: number | null;
+        expectedTopPrice: number | null;
+      }) => {
+        const b = m.brandId ? brandMap.get(m.brandId) : undefined;
+        const band = bands.get(m.modelId) ?? { min: null, max: null };
+        const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+        const img = imgMap.get(m.modelId) ?? { url: null, alt: null, name: null };
+
+        const priceMin =
+          (typeof band.min === 'number' ? band.min : null) ??
+          (typeof m.expectedBasePrice === 'number' && m.expectedBasePrice > 0 ? m.expectedBasePrice : null);
+
+        const priceMax =
+          (typeof band.max === 'number' ? band.max : null) ??
+          (typeof m.expectedTopPrice === 'number' && m.expectedTopPrice > 0 ? m.expectedTopPrice : null);
+
+        return {
+          modelId: m.modelId,
+          name: m.modelName ?? null,
+          slug: m.modelSlug ?? null,
+          brand: b ? { id: b.brandId, name: b.brandName ?? null, slug: b.brandSlug ?? null } : null,
+          image: img,
+          imageUrl: img.url ?? null,
+          priceRange: { min: priceMin, max: priceMax },
+          quickSpecs: {
+            powerPS: specs.powerPS ?? null,
+            torqueNM: specs.torqueNM ?? null,
+            mileageKMPL: specs.mileageKMPL ?? null,
+          },
+        };
+      };
+
+      const baseCard = shapeCard(base);
+
+      const rows = similar.map((m) => ({
+        ...shapeCard(m),
+        ctaText: `Compare ${baseCard.name ?? 'Car'} vs ${m.modelName ?? 'Car'}`,
+        cta: { baseModelSlug: baseCard.slug, compareModelSlug: m.modelSlug ?? null },
+      }));
+
+      return {
+        model: baseCard,
+        segment: segment ? { id: segment.segmentId, name: segment.segmentName ?? null } : null,
+        rows,
+        page,
+        pageSize,
+        total,
+        totalPages,
+      };
+    }, ttlMs);
+  }
 
 }
 
- 
 
-
-
-  

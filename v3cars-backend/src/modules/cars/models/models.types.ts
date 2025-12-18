@@ -11,7 +11,6 @@ export interface ModelsListQuery extends CommonFilters, Pagination, SortInput {
   // are inherited from CommonFilters
 }
 
-
 export interface ModelPriceListQuery extends Pagination, SortInput {
   fuelType?: string;
   transmissionType?: string;

@@ -17,7 +17,8 @@ import {
   modelImagesQueryDto,
   modelServiceCostQueryDto,
   modelSegmentTopSellingQueryDto,
-  compareModelsQueryDto
+  compareModelsQueryDto,
+  modelSegmentCompareQueryDto
 } from './models.dto.js';
 
 
@@ -230,6 +231,19 @@ export class ModelsController {
     const { variantIds, cityId } = compareModelsQueryDto.parse(req.query);
 
     const data = await svc.compareByVariantIds(variantIds, cityId);
+
+    res.json({ success: true, ...data });
+  }
+  
+   async segmentCompare(req: Request, res: Response) {
+    const id = await this.resolve(req, res);
+    if (!id) return;
+
+    const q = modelSegmentCompareQueryDto.parse(req.query);
+    const data = await svc.segmentCompareInSegment(id, {
+      page: q.page,
+      limit: q.limit,
+    });
 
     res.json({ success: true, ...data });
   }

@@ -7,6 +7,7 @@ import { prisma } from '../../../lib/prisma.js';
 // ⬇️ Cache façade (adapter-aware: Redis if available, else in-memory)
 import { withCache, cacheKey } from '../../../lib/cache.js';
 import { OnRoadService } from '../../tools/onroad/onroad.service.js';
+import { extractPriceBand } from '../variants/price.util.js';
 const repo = new ModelsRepo();
 const brandsSvc = new BrandsService();
 const variantsSvc = new VariantsService();
@@ -474,7 +475,6 @@ export class ModelsService {
             return out;
         }, ttlMs);
     }
-    /** 🆕 Top selling list for a given month (with brand slug, primary image, % change) */
     async topSellingModelsByMonth(opts) {
         const key = cacheKey({ ns: 'models:topSelling', v: 1, year: opts.year, month: opts.month, limit: opts.limit ?? 25 });
         const ttlMs = 30 * 60 * 1000; // 30 min
@@ -573,20 +573,22 @@ export class ModelsService {
             return { rows, total: rows.length };
         }, ttlMs);
     }
-    // src/modules/cars/models/models.service.ts
     async priceList(modelId, q) {
         const ftRaw = (q.fuelType || '').trim().toLowerCase();
         const trRaw = (q.transmissionType || '').trim().toLowerCase();
+        const variantIdFilter = q.variantId ?? undefined;
+        const expandId = q.expandVariantId ?? variantIdFilter; // 🆕 variantId pe bhi breakdown
         const key = cacheKey({
             ns: 'models:priceList',
-            v: 4, // ⬅️ bump: CSD basis + CSD-aware sorting
+            v: 4, // ⬅️ CSD basis + CSD-aware sorting
             modelId,
             fuelType: ftRaw || undefined,
             transmissionType: trRaw || undefined,
             priceType: q.priceType ?? 'ex',
             cityId: q.cityId ?? undefined,
             citySlug: q.citySlug ?? undefined,
-            expandVariantId: q.expandVariantId ?? undefined,
+            expandVariantId: expandId ?? undefined, // 🔁 expand + variantId together
+            variantId: variantIdFilter ?? undefined, // 🆕 include in cache key
             isLoan: q.isLoan ? 1 : 0,
             sortBy: q.sortBy ?? 'price_asc',
             page: q.page ?? 1,
@@ -603,7 +605,8 @@ export class ModelsService {
                             ft === 'electric' ? 'Electric' : undefined;
             const isManual = tr === 'manual';
             const isAutomatic = tr === 'automatic';
-            const dbTransmissionType = isManual ? 'MT' : undefined;
+            // manual/automatic buckets ke case me DB ko transmissionType mat bhejo
+            const dbTransmissionType = !isManual && !isAutomatic && tr ? tr : undefined;
             const variants = await variantsSvc.list({
                 modelId,
                 page: 1,
@@ -619,7 +622,7 @@ export class ModelsService {
                 // raw CSD (nullable)
                 const csdRaw = v.csdPrice;
                 const csdPrice = csdRaw == null ? null : (typeof csdRaw === 'number' ? csdRaw : Number(csdRaw));
-                // 🆕 primary price basis controlled by priceType
+                // primary price basis controlled by priceType
                 const useCsd = q.priceType === 'csd';
                 const exShowroom = useCsd ? csdPrice : bandMin;
                 const exShowroomMax = useCsd ? csdPrice : bandMax;
@@ -637,7 +640,8 @@ export class ModelsService {
                     onRoad,
                     updatedDate: v.updatedDate ?? null,
                 };
-                if (q.expandVariantId && v.variantId === q.expandVariantId && typeof bandMin === 'number') {
+                // 🆕 breakdown: expandVariantId ya variantId dono me se koi bhi match ho
+                if (expandId && v.variantId === expandId && typeof bandMin === 'number') {
                     base.breakdown = onroadSvc.quote({
                         exShowroom: bandMin,
                         cityId: q.cityId,
@@ -647,26 +651,35 @@ export class ModelsService {
                 return base;
             });
             // transmission filter (manual/automatic buckets or substring)
-            if (isManual || isAutomatic) {
+            if (isManual || isAutomatic || tr) {
+                const needle = tr ? tr.toUpperCase() : '';
                 rows = rows.filter(r => {
                     const raw = (r.powertrain?.transmissionType || '').toString().toUpperCase();
+                    const hasAuto = autoTokens.some(tok => raw.includes(tok));
+                    // manual bucket → jo auto tokens nahi hain sab manual
                     if (isManual) {
-                        const isMt = raw.includes('MT');
-                        const hasAuto = autoTokens.some(tok => raw.includes(tok));
-                        return isMt && !hasAuto;
+                        return raw !== '' && !hasAuto;
                     }
-                    return autoTokens.some(tok => raw.includes(tok));
+                    // automatic bucket
+                    if (isAutomatic) {
+                        return hasAuto;
+                    }
+                    // custom string filter, e.g. "DCT", "CVT"
+                    if (needle) {
+                        return raw.includes(needle);
+                    }
+                    return true;
                 });
-            }
-            else if (tr) {
-                const needle = tr.toUpperCase();
-                rows = rows.filter(r => (r.powertrain?.transmissionType || '').toString().toUpperCase().includes(needle));
             }
             // fuel filter
             if (fuelNorm) {
                 rows = rows.filter(r => (r.powertrain?.fuelType || '').toString().toLowerCase().includes(fuelNorm.toLowerCase()));
             }
-            // 🆕 final sort (CSD-aware for price_asc/desc)
+            // 🆕 variantId filter – sab filtering ke baad sirf ek hi variant rakho
+            if (variantIdFilter) {
+                rows = rows.filter(r => r.variantId === variantIdFilter);
+            }
+            // final sort (CSD-aware for price_asc/desc)
             const sortBy = q.sortBy || 'price_asc';
             rows.sort((a, b) => {
                 const nameCmp = (x, y) => (x ?? '').localeCompare(y ?? '', undefined, { sensitivity: 'base' });
@@ -694,7 +707,6 @@ export class ModelsService {
             };
         }, ttlMs);
     }
-    // --- bestVariantToBuy (cached) ---
     async bestVariantToBuy(modelId, q) {
         const key = cacheKey({
             ns: 'models:bestVariantToBuy',
@@ -917,7 +929,6 @@ export class ModelsService {
             };
         }, ttlMs);
     }
-    // --- mileageSpecsFeatures (cached) ---
     async mileageSpecsFeatures(modelId, q) {
         const key = cacheKey({
             ns: 'models:mileageSpecsFeatures',
@@ -1098,8 +1109,6 @@ export class ModelsService {
             return { success: true, items };
         }, ttlMs);
     }
-    // --- fuelEfficiency (cached) ---
-    // replace the existing fuelEfficiency(...) with this version
     async fuelEfficiency(modelId, q) {
         const fuelQ = q?.fuelType?.trim() || undefined;
         const transQ = q?.transmissionType?.trim() || undefined;
@@ -1190,7 +1199,6 @@ export class ModelsService {
             return { success: true, rows };
         }, ttlMs);
     }
-    // --- REPLACE ENTIRE FUNCTION ---
     async csdVsOnroad(modelId, q) {
         const ft = q.fuelType?.trim();
         const tr = q.transmissionType?.trim();
@@ -1451,7 +1459,6 @@ export class ModelsService {
             };
         }, ttlMs);
     }
-    // ⬇️ Add this method inside ModelsService class
     async upcomingByBrand(modelId, opts) {
         const limit = Math.max(1, Math.min(opts?.limit ?? 5, 50));
         const key = cacheKey({
@@ -1520,7 +1527,6 @@ export class ModelsService {
             return { rows, total: rows.length };
         }, ttlMs);
     }
-    // ⬇️ add this method inside ModelsService class
     async othersOnSale(modelId, q) {
         // find current model to get brandId
         const cur = await prisma.tblmodels.findFirst({
@@ -1606,7 +1612,6 @@ export class ModelsService {
             };
         }, ttlMs);
     }
-    // inside ModelsService
     async colours(modelId) {
         const key = cacheKey({ ns: 'model:colours', v: 1, modelId });
         const ttlMs = 30 * 60 * 1000;
@@ -1650,7 +1655,6 @@ export class ModelsService {
             };
         }, ttlMs);
     }
-    // add inside ModelsService
     async gallery(modelId, q) {
         const type = (q?.type ?? 'all');
         const limit = Math.max(1, Math.min(q?.limit ?? 999, 2000));
@@ -1879,6 +1883,595 @@ export class ModelsService {
                 };
             });
             return { segmentId, segmentName, year, month, rows, total: rows.length };
+        }, ttlMs);
+    }
+    async powertrainsOptions(modelId) {
+        // PowertrainsService already caching use kar raha hai
+        const options = await powertrainsSvc.listForModel(modelId); // [{id,label,fuelType,transmissionType}]
+        return {
+            success: true,
+            modelId,
+            options,
+            total: options.length,
+        };
+    }
+    async compareByVariantIds(variantIds, cityId) {
+        const ids = Array.from(new Set((variantIds || [])
+            .map((n) => Number(n))
+            .filter((n) => Number.isFinite(n) && n > 0)));
+        if (!ids.length)
+            return { items: [], expertVerdict: null };
+        const key = cacheKey({
+            ns: 'models:compareByVariantIds',
+            v: 2, // 🔼 bumped for Expert Verdict
+            ids,
+            cityId: cityId ?? null,
+        });
+        const ttlMs = 30 * 60 * 1000; // 30 min
+        return withCache(key, async () => {
+            // City name (for summaries)
+            const [compareData, cityRow] = await Promise.all([
+                repo.getCompareDataByVariantIds(ids),
+                cityId
+                    ? prisma.tblcities.findFirst({
+                        where: { cityId },
+                        select: { cityName: true },
+                    })
+                    : Promise.resolve(null),
+            ]);
+            const cityName = cityRow?.cityName ?? null;
+            const { variants, models, powertrains, modelColors, colors, prosCons } = compareData;
+            const modelMap = new Map(models.map((m) => [m.modelId, m]));
+            const ptMap = new Map(powertrains.map((p) => [p.modelPowertrainId, p]));
+            const colorMap = new Map(colors.map((c) => [c.colorId, c]));
+            const mcByModel = new Map();
+            for (const mc of modelColors) {
+                if (!mc.modelId)
+                    continue;
+                const arr = mcByModel.get(mc.modelId) ?? [];
+                arr.push(mc);
+                mcByModel.set(mc.modelId, arr);
+            }
+            const prosConsByModel = new Map();
+            for (const pc of prosCons) {
+                if (!pc.modelId)
+                    continue;
+                const arr = prosConsByModel.get(pc.modelId) ?? [];
+                arr.push(pc);
+                prosConsByModel.set(pc.modelId, arr);
+            }
+            // primary images per model
+            const modelIds = models.map((m) => m.modelId);
+            const imageMap = await imagesSvc.getPrimaryByModelIds(modelIds);
+            // EMI helper (5 years @ 9.5% p.a.)
+            const calcEmi = (principal) => {
+                if (!principal || principal <= 0)
+                    return null;
+                const r = 0.095 / 12; // monthly rate
+                const n = 5 * 12; // 5 years
+                const pow = Math.pow(1 + r, n);
+                const emi = (principal * r * pow) / (pow - 1);
+                return Math.round(emi);
+            };
+            const items = variants.map((v) => {
+                const model = v.modelId ? modelMap.get(v.modelId) ?? null : null;
+                const pt = v.modelPowertrainId
+                    ? ptMap.get(v.modelPowertrainId) ?? null
+                    : null;
+                const band = extractPriceBand(v.variantPrice ?? '');
+                const exMin = band?.min ?? null;
+                const exMax = band?.max ?? null;
+                // colours
+                const mcList = v.modelId ? mcByModel.get(v.modelId) ?? [] : [];
+                const colourOptions = mcList
+                    .map((mc) => {
+                    if (!mc.colorId)
+                        return null;
+                    const c = colorMap.get(mc.colorId);
+                    if (!c)
+                        return null;
+                    return {
+                        colorId: c.colorId,
+                        name: c.colorName ?? null,
+                        code: c.colorCode ?? null,
+                        imageFileName: mc.fileName ?? c.imageFileName ?? null,
+                    };
+                })
+                    .filter((x) => !!x);
+                // pros & cons
+                const pcList = v.modelId ? prosConsByModel.get(v.modelId) ?? [] : [];
+                const pros = pcList
+                    .filter((x) => x.type === 1)
+                    .map((x) => ({
+                    heading: x.prosConsHeading ?? null,
+                    desc: x.prosConsDesc ?? null,
+                }));
+                const cons = pcList
+                    .filter((x) => x.type === 2)
+                    .map((x) => ({
+                    heading: x.prosConsHeading ?? null,
+                    desc: x.prosConsDesc ?? null,
+                }));
+                // primary model image
+                const img = model?.modelId != null
+                    ? imageMap.get(model.modelId) ?? { name: null, alt: null, url: null }
+                    : { name: null, alt: null, url: null };
+                // On-road + insurance via OnRoadService (if cityId + exMin available)
+                let onRoadPrice = null;
+                let insuranceFirstYear = null;
+                if (cityId && exMin != null) {
+                    const breakdown = onroadSvc.quote({
+                        exShowroom: exMin,
+                        cityId,
+                        isLoan: true,
+                    });
+                    onRoadPrice =
+                        breakdown && typeof breakdown.total === 'number'
+                            ? breakdown.total
+                            : null;
+                    insuranceFirstYear =
+                        breakdown && typeof breakdown.insurance === 'number'
+                            ? breakdown.insurance
+                            : null;
+                }
+                const emiPrincipal = onRoadPrice ?? exMin ?? null;
+                const estimatedEmi = calcEmi(emiPrincipal);
+                return {
+                    variantId: v.variantId,
+                    variantName: v.variantName ?? null,
+                    modelId: model?.modelId ?? null,
+                    modelName: model?.modelName ?? null,
+                    image: img,
+                    imageUrl: img.url ?? null,
+                    // === Price & On-Road Cost Comparison ===
+                    price: {
+                        exShowroomMin: exMin,
+                        exShowroomMax: exMax,
+                        csdPriceRaw: v.csdPrice ?? null,
+                        estimatedEmi,
+                        insuranceFirstYear,
+                        onRoadPrice,
+                        summary: null,
+                    },
+                    // === Engine & Performance Comparison ===
+                    enginePerformance: pt
+                        ? {
+                            powertrainId: pt.modelPowertrainId,
+                            engineFuelType: pt.powerTrain ?? pt.fuelType ?? null,
+                            fuelType: pt.fuelType ?? null,
+                            fuelTypeSubCategory: pt.fuelTypeSubCategory ?? null,
+                            transmissionType: pt.transmissionType ?? null,
+                            engineDisplacement: pt.engineDisplacement == null
+                                ? null
+                                : Number(pt.engineDisplacement),
+                            cubicCapacity: pt.cubicCapacity ?? null,
+                            cylinders: pt.cylinders ?? null,
+                            powerPS: pt.powerPS ?? null,
+                            powerMinRPM: pt.powerMinRPM ?? null,
+                            powerMaxRPM: pt.powerMaxRPM ?? null,
+                            torqueNM: pt.torqueNM ?? null,
+                            torqueMinRPM: pt.torqueMinRPM ?? null,
+                            torqueMaxRPM: pt.torqueMaxRPM ?? null,
+                            kerbWeight: pt.kerbWeight ?? null,
+                            powerToWeight: pt.powerWeight == null ? null : Number(pt.powerWeight),
+                            torqueToWeight: pt.torqueWeight == null ? null : Number(pt.torqueWeight),
+                            claimedFE: pt.claimedFE == null ? null : Number(pt.claimedFE),
+                            claimedRange: pt.claimedRange ?? null,
+                            topSpeed: null,
+                            zeroToHundred: null,
+                            summary: null,
+                        }
+                        : null,
+                    // === Dimensions & Space ===
+                    dimensionsSpace: model
+                        ? {
+                            length: model.length ?? null,
+                            width: model.width ?? null,
+                            height: model.height ?? null,
+                            wheelbase: model.wheelBase ?? null,
+                            groundClearance: model.groundClearance ?? null,
+                            bootSpace: model.bootSpace ?? null,
+                            tyreSize: model.tyreSize ?? null,
+                            fuelTankCapacity: pt?.fuelTankCapacity ?? null,
+                            summary: null,
+                        }
+                        : null,
+                    // === Feature Comparison (abhi feature table nahi, isliye null) ===
+                    features: null,
+                    // === Colours ===
+                    colours: {
+                        options: colourOptions,
+                        summary: null,
+                    },
+                    // === Ownership & Running Cost ===
+                    ownership: {
+                        claimedMileage: pt?.claimedFE == null ? null : Number(pt.claimedFE),
+                        realWorldMileage: pt?.realWorldMileage == null
+                            ? null
+                            : Number(pt.realWorldMileage),
+                        fuelPricePerUnit: null,
+                        runningCost: null,
+                        serviceAndMaintenanceCost: null,
+                        serviceInterval: null,
+                        serviceNetwork: null,
+                        standardWarrantyKm: pt?.standardWarrantyKm ?? null,
+                        standardWarrantyYear: pt?.standardWarrantyYear ?? null,
+                        carOwnershipCost: null,
+                        summary: null,
+                    },
+                    // === Pros & Cons ===
+                    prosCons: {
+                        pros,
+                        cons,
+                    },
+                };
+            });
+            // ---------- Helper for labels ----------
+            const carLabel = (item) => item.variantName || item.modelName || 'this car';
+            // ---------- Dynamic summaries + expert verdict ----------
+            let priceSummary = null;
+            let performanceSummary = null;
+            let dimensionsSummary = null;
+            let colourSummary = null;
+            let ownershipSummary = null;
+            let priceValueLine = null;
+            let perfLine = null;
+            let spaceLine = null;
+            let featureSafetyLine = null;
+            let whichToBuyLine = null;
+            let cheapestItem = null;
+            let costliestItem = null;
+            let mostPowerfulItem = null;
+            let mostEfficientItem = null;
+            // Price Summary + basic stats
+            const priced = items.filter((i) => i.price.onRoadPrice != null);
+            if (priced.length >= 2) {
+                const sorted = [...priced].sort((a, b) => (a.price.onRoadPrice ?? 0) - (b.price.onRoadPrice ?? 0));
+                const best = sorted[0];
+                const worst = sorted[sorted.length - 1];
+                cheapestItem = best;
+                costliestItem = worst;
+                const emis = priced
+                    .map((i) => i.price.estimatedEmi)
+                    .filter((n) => typeof n === 'number');
+                const emiDiff = emis.length >= 2
+                    ? Math.max(...emis) - Math.min(...emis)
+                    : null;
+                const cityPart = cityName ? ` in ${cityName}` : '';
+                if (emiDiff != null) {
+                    priceSummary = `Among the selected variants, ${carLabel(best)} offers the lowest on-road price${cityPart}, while ${carLabel(worst)} is the costliest. The EMI difference between the options is about ₹${emiDiff.toLocaleString('en-IN')} per month.`;
+                }
+                else {
+                    priceSummary = `Among the selected variants, ${carLabel(best)} offers the lowest on-road price${cityPart}, while ${carLabel(worst)} is the costliest.`;
+                }
+                priceValueLine = `${carLabel(best)} is more affordable to buy.`;
+            }
+            // Performance Summary
+            const perfItems = items.filter((i) => i.enginePerformance &&
+                (i.enginePerformance.powerPS != null ||
+                    i.enginePerformance.torqueNM != null));
+            if (perfItems.length) {
+                const mostPowerful = [...perfItems].sort((a, b) => {
+                    const ap = a.enginePerformance.powerPS ?? 0;
+                    const bp = b.enginePerformance.powerPS ?? 0;
+                    if (bp !== ap)
+                        return bp - ap;
+                    const at = a.enginePerformance.torqueNM ?? 0;
+                    const bt = b.enginePerformance.torqueNM ?? 0;
+                    return bt - at;
+                })[0];
+                const effItems = perfItems.filter((i) => i.enginePerformance.claimedFE != null);
+                const mostEfficient = effItems.length > 0
+                    ? [...effItems].sort((a, b) => (b.enginePerformance.claimedFE ?? 0) -
+                        (a.enginePerformance.claimedFE ?? 0))[0]
+                    : null;
+                mostPowerfulItem = mostPowerful || null;
+                mostEfficientItem = mostEfficient || null;
+                if (mostPowerful && mostEfficient && mostPowerful !== mostEfficient) {
+                    performanceSummary = `In terms of outright performance, ${carLabel(mostPowerful)} produces the highest power and torque, while ${carLabel(mostEfficient)} offers the best claimed fuel efficiency. If you prioritise performance, ${carLabel(mostPowerful)} has a clear edge; for lower running costs, ${carLabel(mostEfficient)} will be more suitable.`;
+                    perfLine = `${carLabel(mostPowerful)} delivers better performance with more power and torque, whereas ${carLabel(mostEfficient)} focuses on efficiency and lower running costs.`;
+                }
+                else if (mostPowerful) {
+                    performanceSummary = `${carLabel(mostPowerful)} offers the strongest overall performance among the selected variants.`;
+                    perfLine = performanceSummary;
+                }
+            }
+            // Space & Size Summary
+            const dimItems = items.filter((i) => i.dimensionsSpace);
+            if (dimItems.length) {
+                const longest = [...dimItems].sort((a, b) => {
+                    const al = a.dimensionsSpace.length ?? 0;
+                    const bl = b.dimensionsSpace.length ?? 0;
+                    if (bl !== al)
+                        return bl - al;
+                    const aw = a.dimensionsSpace.width ?? 0;
+                    const bw = b.dimensionsSpace.width ?? 0;
+                    return bw - aw;
+                })[0];
+                const gcItems = dimItems.filter((i) => i.dimensionsSpace.groundClearance != null);
+                const bestGc = gcItems.length > 0
+                    ? [...gcItems].sort((a, b) => (b.dimensionsSpace.groundClearance ?? 0) -
+                        (a.dimensionsSpace.groundClearance ?? 0))[0]
+                    : null;
+                const bootItems = dimItems.filter((i) => i.dimensionsSpace.bootSpace != null);
+                const bestBoot = bootItems.length > 0
+                    ? [...bootItems].sort((a, b) => (b.dimensionsSpace.bootSpace ?? 0) -
+                        (a.dimensionsSpace.bootSpace ?? 0))[0]
+                    : null;
+                if (bestGc && bestBoot) {
+                    const text = `${carLabel(longest)} is the longest and widest of the group, which should translate to better cabin space, while ${carLabel(bestGc)} offers the highest ground clearance—useful for poor roads and speed breakers. Boot space is largest in ${carLabel(bestBoot)}, making it more practical for luggage.`;
+                    dimensionsSummary = text;
+                    spaceLine = text;
+                }
+            }
+            // Colour Summary
+            const colourItems = items
+                .map((i) => ({ item: i, count: i.colours.options.length }))
+                .filter((x) => x.count > 0);
+            if (colourItems.length >= 2) {
+                const sorted = [...colourItems].sort((a, b) => b.count - a.count);
+                const best = sorted[0];
+                const others = sorted.slice(1);
+                const bestLabel = carLabel(best.item);
+                const count = best.count;
+                const otherNames = others.map((o) => carLabel(o.item));
+                const otherCarsText = otherNames.length === 1
+                    ? otherNames[0]
+                    : `${otherNames.slice(0, -1).join(', ')} and ${otherNames[otherNames.length - 1]}`;
+                const otherCounts = others.map((o) => o.count);
+                const minC = Math.min(...otherCounts);
+                const maxC = Math.max(...otherCounts);
+                const countsText = minC === maxC ? `${minC}` : `${minC}–${maxC}`;
+                colourSummary = `${bestLabel} offers the widest colour range with ${count} options, while ${otherCarsText} are available in ${countsText} shades.`;
+            }
+            // Ownership Summary
+            const mileageItems = items
+                .map((i) => {
+                const m = i.ownership.realWorldMileage ?? i.ownership.claimedMileage ?? null;
+                return { item: i, mileage: m };
+            })
+                .filter((x) => x.mileage != null);
+            if (mileageItems.length) {
+                const lowestRunning = [...mileageItems].sort((a, b) => (b.mileage ?? 0) - (a.mileage ?? 0))[0];
+                const warrantyItems = items
+                    .map((i) => {
+                    const text = i.ownership.standardWarrantyYear ?? '';
+                    const match = text.match(/(\d+(\.\d+)?)/);
+                    const years = match ? Number(match[1]) : null;
+                    return { item: i, years };
+                })
+                    .filter((x) => x.years != null);
+                if (warrantyItems.length) {
+                    const bestMaintenance = [...warrantyItems].sort((a, b) => (b.years ?? 0) - (a.years ?? 0))[0];
+                    const cityPart = cityName ? ` in ${cityName}` : '';
+                    ownershipSummary = `Based on estimated mileage and current fuel prices${cityPart}, ${carLabel(lowestRunning.item)} has the lowest running cost, while long-term maintenance over 5 years is expected to be most affordable with ${carLabel(bestMaintenance.item)}.`;
+                }
+            }
+            // Features & Safety (using pros/cons as proxy)
+            const featureRanked = items
+                .map((i) => ({
+                item: i,
+                pros: i.prosCons.pros.length,
+                cons: i.prosCons.cons.length,
+            }))
+                .filter((x) => x.pros > 0 || x.cons > 0);
+            if (featureRanked.length) {
+                const mostLoaded = [...featureRanked].sort((a, b) => {
+                    if (b.pros !== a.pros)
+                        return b.pros - a.pros;
+                    return a.cons - b.cons;
+                })[0];
+                const leastEquipped = [...featureRanked].sort((a, b) => {
+                    if (b.cons !== a.cons)
+                        return b.cons - a.cons;
+                    return a.pros - b.pros;
+                })[0];
+                if (mostLoaded && leastEquipped && mostLoaded.item !== leastEquipped.item) {
+                    featureSafetyLine = `Feature-wise, ${carLabel(mostLoaded.item)} offers the richest equipment list. ${carLabel(leastEquipped.item)} misses out on some basic safety, functional or convenience features that rivals provide.`;
+                }
+            }
+            // Which one should you buy?
+            if (items.length >= 2 && cheapestItem) {
+                const valueCar = cheapestItem;
+                const perfCar = mostPowerfulItem && mostPowerfulItem !== valueCar
+                    ? mostPowerfulItem
+                    : costliestItem && costliestItem !== valueCar
+                        ? costliestItem
+                        : valueCar;
+                const allRounder = mostEfficientItem &&
+                    mostEfficientItem !== valueCar &&
+                    mostEfficientItem !== perfCar
+                    ? mostEfficientItem
+                    : valueCar;
+                whichToBuyLine =
+                    `Choose ${carLabel(valueCar)} if you prioritise affordability and lower upfront cost. ` +
+                        `${perfCar !== valueCar ? `Go for ${carLabel(perfCar)} if you want stronger performance and don't mind a higher budget. ` : ''}` +
+                        `Overall, ${carLabel(allRounder)} emerges as the most balanced choice for most buyers.`;
+            }
+            // attach summaries to each item section
+            for (const item of items) {
+                item.price.summary = priceSummary;
+                if (item.enginePerformance) {
+                    item.enginePerformance.summary = performanceSummary;
+                }
+                if (item.dimensionsSpace) {
+                    item.dimensionsSpace.summary = dimensionsSummary;
+                }
+                item.colours.summary = colourSummary;
+                item.ownership.summary = ownershipSummary;
+            }
+            const expertVerdict = priceValueLine ||
+                perfLine ||
+                spaceLine ||
+                featureSafetyLine ||
+                whichToBuyLine
+                ? {
+                    priceValue: priceValueLine,
+                    performanceMileage: perfLine,
+                    spaceComfort: spaceLine,
+                    featuresSafety: featureSafetyLine,
+                    whichToBuy: whichToBuyLine,
+                }
+                : null;
+            return { items, expertVerdict };
+        }, ttlMs);
+    }
+    async segmentCompareInSegment(modelId, q) {
+        const page = Math.max(1, Number(q.page ?? 1));
+        const pageSize = Math.max(1, Math.min(Number(q.limit ?? 12), 24));
+        const key = cacheKey({
+            ns: 'models:segmentCompare',
+            v: 1,
+            modelId,
+            page,
+            pageSize,
+        });
+        const ttlMs = 30 * 60 * 1000;
+        return withCache(key, async () => {
+            const base = await prisma.tblmodels.findFirst({
+                where: { modelId, is_deleted: false },
+                select: {
+                    modelId: true,
+                    modelName: true,
+                    modelSlug: true,
+                    brandId: true,
+                    segmentId: true,
+                    expectedBasePrice: true,
+                    expectedTopPrice: true,
+                    totalViews: true,
+                },
+            });
+            if (!base) {
+                return {
+                    model: null,
+                    segment: null,
+                    rows: [],
+                    page,
+                    pageSize,
+                    total: 0,
+                    totalPages: 0,
+                };
+            }
+            const segment = base.segmentId
+                ? await prisma.tblsegments.findFirst({
+                    where: { segmentId: base.segmentId },
+                    select: { segmentId: true, segmentName: true },
+                })
+                : null;
+            // no segment → nothing to compare, but base model still return
+            if (!base.segmentId) {
+                const [brands, imgMap, bands, specsMap] = await Promise.all([
+                    base.brandId ? brandsSvc.findByIds([base.brandId]) : Promise.resolve([]),
+                    imagesSvc.getPrimaryByModelIds([base.modelId]),
+                    variantsSvc.getPriceBandsByModelIds([base.modelId]),
+                    powertrainsSvc.getSpecsByModelIds([base.modelId]),
+                ]);
+                const brandMap = new Map(brands.map((b) => [b.brandId, b]));
+                const shape = (m) => {
+                    const b = m.brandId ? brandMap.get(m.brandId) : undefined;
+                    const band = bands.get(m.modelId) ?? { min: null, max: null };
+                    const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+                    const img = imgMap.get(m.modelId) ?? { url: null, alt: null, name: null };
+                    const priceMin = (typeof band.min === 'number' ? band.min : null) ??
+                        (typeof m.expectedBasePrice === 'number' && m.expectedBasePrice > 0 ? m.expectedBasePrice : null);
+                    const priceMax = (typeof band.max === 'number' ? band.max : null) ??
+                        (typeof m.expectedTopPrice === 'number' && m.expectedTopPrice > 0 ? m.expectedTopPrice : null);
+                    return {
+                        modelId: m.modelId,
+                        name: m.modelName ?? null,
+                        slug: m.modelSlug ?? null,
+                        brand: b ? { id: b.brandId, name: b.brandName ?? null, slug: b.brandSlug ?? null } : null,
+                        image: img,
+                        imageUrl: img.url ?? null,
+                        priceRange: { min: priceMin, max: priceMax },
+                        quickSpecs: {
+                            powerPS: specs.powerPS ?? null,
+                            torqueNM: specs.torqueNM ?? null,
+                            mileageKMPL: specs.mileageKMPL ?? null,
+                        },
+                    };
+                };
+                return {
+                    model: shape(base),
+                    segment: segment ? { id: segment.segmentId, name: segment.segmentName ?? null } : null,
+                    rows: [],
+                    page,
+                    pageSize,
+                    total: 0,
+                    totalPages: 0,
+                };
+            }
+            const whereSimilar = {
+                is_deleted: false,
+                isUpcoming: false,
+                segmentId: base.segmentId,
+                modelId: { not: base.modelId },
+            };
+            const total = await prisma.tblmodels.count({ where: whereSimilar });
+            const totalPages = total > 0 ? Math.ceil(total / pageSize) : 0;
+            const similar = await prisma.tblmodels.findMany({
+                where: whereSimilar,
+                select: {
+                    modelId: true,
+                    modelName: true,
+                    modelSlug: true,
+                    brandId: true,
+                    expectedBasePrice: true,
+                    expectedTopPrice: true,
+                    totalViews: true,
+                },
+                orderBy: [{ totalViews: 'desc' }, { modelId: 'asc' }],
+                skip: (page - 1) * pageSize,
+                take: pageSize,
+            });
+            const allModelIds = [base.modelId, ...similar.map((m) => m.modelId)];
+            const allBrandIds = Array.from(new Set([base.brandId, ...similar.map((m) => m.brandId)].filter((x) => typeof x === 'number')));
+            const [brands, imgMap, bands, specsMap] = await Promise.all([
+                brandsSvc.findByIds(allBrandIds),
+                imagesSvc.getPrimaryByModelIds(allModelIds),
+                variantsSvc.getPriceBandsByModelIds(allModelIds),
+                powertrainsSvc.getSpecsByModelIds(allModelIds),
+            ]);
+            const brandMap = new Map(brands.map((b) => [b.brandId, b]));
+            const shapeCard = (m) => {
+                const b = m.brandId ? brandMap.get(m.brandId) : undefined;
+                const band = bands.get(m.modelId) ?? { min: null, max: null };
+                const specs = specsMap.get(m.modelId) ?? { powerPS: null, torqueNM: null, mileageKMPL: null };
+                const img = imgMap.get(m.modelId) ?? { url: null, alt: null, name: null };
+                const priceMin = (typeof band.min === 'number' ? band.min : null) ??
+                    (typeof m.expectedBasePrice === 'number' && m.expectedBasePrice > 0 ? m.expectedBasePrice : null);
+                const priceMax = (typeof band.max === 'number' ? band.max : null) ??
+                    (typeof m.expectedTopPrice === 'number' && m.expectedTopPrice > 0 ? m.expectedTopPrice : null);
+                return {
+                    modelId: m.modelId,
+                    name: m.modelName ?? null,
+                    slug: m.modelSlug ?? null,
+                    brand: b ? { id: b.brandId, name: b.brandName ?? null, slug: b.brandSlug ?? null } : null,
+                    image: img,
+                    imageUrl: img.url ?? null,
+                    priceRange: { min: priceMin, max: priceMax },
+                    quickSpecs: {
+                        powerPS: specs.powerPS ?? null,
+                        torqueNM: specs.torqueNM ?? null,
+                        mileageKMPL: specs.mileageKMPL ?? null,
+                    },
+                };
+            };
+            const baseCard = shapeCard(base);
+            const rows = similar.map((m) => ({
+                ...shapeCard(m),
+                ctaText: `Compare ${baseCard.name ?? 'Car'} vs ${m.modelName ?? 'Car'}`,
+                cta: { baseModelSlug: baseCard.slug, compareModelSlug: m.modelSlug ?? null },
+            }));
+            return {
+                model: baseCard,
+                segment: segment ? { id: segment.segmentId, name: segment.segmentName ?? null } : null,
+                rows,
+                page,
+                pageSize,
+                total,
+                totalPages,
+            };
         }, ttlMs);
     }
 }
