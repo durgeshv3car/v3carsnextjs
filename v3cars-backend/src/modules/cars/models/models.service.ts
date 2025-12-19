@@ -1782,7 +1782,7 @@ async upcomingByBrand(
 
   const key = cacheKey({
     ns: 'models:upcomingByBrand',
-    v: 1,
+    v: 2, // bump: added confidencePercent in payload
     modelId,
     limit,
   });
@@ -1812,6 +1812,7 @@ async upcomingByBrand(
         launchDate: true,
         expectedBasePrice: true,
         expectedTopPrice: true,
+        confidencePercent: true,
       },
       orderBy: [
         { launchDate: 'asc' },
@@ -1850,6 +1851,7 @@ async upcomingByBrand(
         priceRange: { min: priceMin, max: priceMax },
         image: img,
         imageUrl: img.url,
+        confidencePercent: typeof m.confidencePercent === 'number' ? m.confidencePercent : null,
       };
     });
 
