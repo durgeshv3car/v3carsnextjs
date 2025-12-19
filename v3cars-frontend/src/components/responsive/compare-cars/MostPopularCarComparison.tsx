@@ -1,7 +1,6 @@
 'use client';
 
 import { IMAGE_URL } from '@/utils/constant';
-import { convertToSlug } from '@/utils/helperFunction';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FaBolt, FaRoad, FaTachometerAlt } from 'react-icons/fa';
@@ -48,6 +47,16 @@ interface MostPopularCarComparisonProps {
     title: string
     data: CarData[];
 }
+
+const convertSlug = (text: string): string => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")        // spaces → dash
+    .replace(/[^a-z0-9.-]/g, "") // dot allowed
+    .replace(/-+/g, "-");        // extra dashes clean
+};
+
 
 const MostPopularCarComparison = ({ title, data }: MostPopularCarComparisonProps) => {
 
@@ -166,7 +175,7 @@ const MostPopularCarComparison = ({ title, data }: MostPopularCarComparisonProps
                                 className="bg-primary hover:bg-primary-hover w-full py-3 rounded-b-xl text-black font-semibold text-sm"
                                 onClick={() => {
                                     router.push(`
-                                    /compare/${car1.brand?.slug}--${car1.modelSlug}--${convertToSlug(car1.powertrain.powerTrain ?? "")}-vs-${car2.brand?.slug}--${car2.modelSlug}--${convertToSlug(car2.powertrain.powerTrain ?? "")}
+                                    /compare/${car1.brand?.slug}--${car1.modelSlug}--${convertSlug(car1.powertrain.powerTrain ?? "")}-vs-${car2.brand?.slug}--${car2.modelSlug}--${convertSlug(car2.powertrain.powerTrain ?? "")}
                                     `
                                     )
                                 }}

@@ -55,7 +55,7 @@ function ComparePage({ slug }: ComparePageProps) {
         .filter((id): id is number => Boolean(id))
         .join(",");
 
-    const { data: compareVariantsData } = useGetCompareVariantsQuery({ variantIds: finalVariantIds, cityId: Number(selectedCity?.cityId) });
+    const { data: compareVariantsData } = useGetCompareVariantsQuery({ variantIds: finalVariantIds, cityId: Number(selectedCity?.cityId) }, { skip: !finalVariantIds });
     const { data: popularComparisonsData } = useGetPopularComparisonsQuery();
     const { data: faqByModuleData } = useGetFAQByModuleQuery({ moduleId: 12 });
     const cities = searchCityData?.rows ?? []

@@ -5,7 +5,7 @@ import { useGetBrandsQuery, useGetModelPowertrainsQuery, useGetModelsQuery, useG
 import { IMAGE_URL } from "@/utils/constant";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { buildCarSlug, parseMultiCompareSlug } from "./parseMultiCompareSlug";
 import { CarBrand, CarModel, Variant } from "./CompareInterface";
@@ -35,7 +35,7 @@ export default function CarComparison({ slug, setSelectedVariantIds }: CarCompar
     const path = usePathname()
     const router = useRouter();
 
-    const [compareSlug, setCompareSlug] = useState<string>(slug ?? "");
+    const [compareSlug, setCompareSlug] = useState<string>("");
     const [cards, setCards] = useState<(boolean | null)[]>([
         true,
         true,
@@ -133,7 +133,7 @@ const FilledCard = ({
     modelSlug,
     powertrainSlug,
     variantSlug,
-    setSelectedVariantIds
+    setSelectedVariantIds,
 }: {
     index: number;
     onCancel: () => void;
@@ -164,6 +164,7 @@ const FilledCard = ({
         powertrain?: string;
         variantName?: string;
     }>({});
+    const isUserActionRef = useRef(false);
 
     /* ---------- SLUG → ID MAPPING (CORE LOGIC) ---------- */
 
@@ -174,6 +175,10 @@ const FilledCard = ({
         );
         if (brand) {
             setBrandId(brand.brandId);
+            setSlugParts(prev => ({
+                ...prev,
+                brandSlug: brand.brandSlug
+            }));
         }
     }, [brandSlug, brands]);
 
@@ -185,26 +190,70 @@ const FilledCard = ({
         if (model) {
             setModelId(model.modelId);
             setModelData(model);
+            setSlugParts(prev => ({
+                ...prev,
+                modelSlug: model.modelSlug
+            }));
         }
     }, [modelSlug, models]);
 
     useEffect(() => {
-        if (!powertrainSlug || !modelPowertrains.length) return;
+        if (!modelPowertrains.length) return;
+
         const pt = modelPowertrains.find((p: Option) =>
-            p.label && normalize(p.label) === normalize(convertToName(powertrainSlug))
+            p.label &&
+            normalize(p.label) === normalize(convertToName(powertrainSlug))
         );
 
-        if (pt) setPowertrainId(pt.id);
+        if (pt) {
+            setPowertrainId(pt.id);
+            setSlugParts(prev => ({
+                ...prev,
+                powertrain: pt.label,
+            }));
+            return;
+        }
+
+        if (isUserActionRef.current) return;
+
+        if (!powertrainSlug) {
+            const first = modelPowertrains[0];
+            setPowertrainId(first.id);
+            setSlugParts(prev => ({
+                ...prev,
+                powertrain: first.label,
+            }));
+        }
     }, [powertrainSlug, modelPowertrains]);
 
     useEffect(() => {
-        if (!variantSlug || !variantsByPowertrains.length) return;
+        if (!variantsByPowertrains.length) return;
+
         const v = variantsByPowertrains.find(
             (x) =>
-                x.variantName && normalize(x.variantName) === normalize(convertToName(variantSlug))
+                x.variantName &&
+                normalize(x.variantName) === normalize(convertToName(variantSlug))
         );
 
-        if (v) setVariantId(v.variantId);
+        if (v) {
+            setVariantId(v.variantId);
+            setSlugParts(prev => ({
+                ...prev,
+                variantName: v.variantName,
+            }));
+            return;
+        }
+
+        if (isUserActionRef.current) return;
+
+        if (!variantSlug) {
+            const first = variantsByPowertrains[0];
+            setVariantId(first.variantId);
+            setSlugParts(prev => ({
+                ...prev,
+                variantName: first.variantName,
+            }));
+        }
     }, [variantSlug, variantsByPowertrains]);
 
     /* ---------- Compare Slug ---------- */
@@ -213,31 +262,24 @@ const FilledCard = ({
         const cardSlug = buildCarSlug(slugParts);
         if (!cardSlug) return;
 
-        setCompareSlug((prev) => {
+        setCompareSlug(prev => {
             const slugs = prev ? prev.split("-vs-") : [];
 
-            if (slugs[index]) {
-                slugs[index] = cardSlug;
-            } else {
-                slugs.push(cardSlug);
-            }
+            if (slugs[index] === cardSlug) return prev;
 
+            slugs[index] = cardSlug;
             return slugs.join("-vs-");
         });
-    }, [slugParts, index, setCompareSlug]);
+    }, [slugParts, index]);
 
     useEffect(() => {
-        if (!variantSlug) return;
+        if (!variantSlug && !variantId) return;
 
-        if (variantSlug) {
-            if (!variantId) return;
-
-            setSelectedVariantIds?.((prev: (number | null)[]) => {
-                const updated = [...prev];
-                updated[index] = variantId;
-                return updated;
-            });
-        }
+        setSelectedVariantIds?.((prev: (number | null)[]) => {
+            const updated = [...prev];
+            updated[index] = variantId;
+            return updated;
+        });
     }, [variantSlug, variantId, index, setSelectedVariantIds]);
 
     function normalizeBrandName(name: string) {
@@ -325,6 +367,7 @@ const FilledCard = ({
                             valueKey="brandId"
                             value={brandId}
                             onSelect={(value: CarBrand) => {
+                                isUserActionRef.current = true;
                                 setBrandId(value.brandId)
                                 setSlugParts((prev) => ({
                                     ...prev,
@@ -345,6 +388,7 @@ const FilledCard = ({
                             valueKey="modelId"
                             value={modelId}
                             onSelect={(value: CarModel) => {
+                                isUserActionRef.current = true;
                                 setModelId(value.modelId)
                                 setSlugParts((prev) => ({
                                     ...prev,
@@ -365,6 +409,7 @@ const FilledCard = ({
                             valueKey="id"
                             value={powertrainId}
                             onSelect={(value: Option) => {
+                                isUserActionRef.current = true;
                                 setPowertrainId(value.id)
                                 setSlugParts((prev) => ({
                                     ...prev,
@@ -385,6 +430,7 @@ const FilledCard = ({
                             valueKey="variantId"
                             value={variantId}
                             onSelect={(value: Variant) => {
+                                isUserActionRef.current = true;
                                 setVariantId(value.variantId)
                                 setSlugParts((prev) => ({
                                     ...prev,
