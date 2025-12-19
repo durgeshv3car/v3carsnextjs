@@ -264,40 +264,42 @@ model tblbrandpricechange {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model tblbrands {
-  brandId               Int       @id @default(autoincrement()) @db.UnsignedSmallInt
-  brandName             String?   @db.VarChar(100)
-  logoPath              String?   @db.VarChar(500)
-  unquieViews           String?   @db.VarChar(100)
-  popularity            String?   @db.VarChar(3)
-  brandSlug             String?   @db.VarChar(45)
-  brandDescription      String?   @db.Text
-  bannerImage           String?   @db.VarChar(255)
-  bannerImageAltTag     String?   @db.VarChar(255)
-  isFasttag             Int       @default(0) @db.TinyInt
-  brandType             Int       @default(0) @db.TinyInt
-  displayName           String?   @db.VarChar(100)
+  brandId               Int                 @id @default(autoincrement()) @db.UnsignedSmallInt
+  brandName             String?             @db.VarChar(100)
+  logoPath              String?             @db.VarChar(500)
+  unquieViews           String?             @db.VarChar(100)
+  popularity            String?             @db.VarChar(3)
+  brandSlug             String?             @db.VarChar(45)
+  brandDescription      String?             @db.Text
+  bannerImage           String?             @db.VarChar(255)
+  bannerImageAltTag     String?             @db.VarChar(255)
+  isFasttag             Int                 @default(0) @db.TinyInt
+  brandType             Int                 @default(0) @db.TinyInt
+  displayName           String?             @db.VarChar(100)
   roadsideAssistance    Int?
-  emailAddress          String?   @db.VarChar(100)
+  emailAddress          String?             @db.VarChar(100)
   stateId               Int?
   cityId                Int?
-  parentOrganization    String?   @db.VarChar(255)
-  products              String?   @db.VarChar(255)
-  founderName           String?   @db.VarChar(255)
-  customerService       String?   @db.VarChar(255)
-  serviceNetwork        Boolean?  @default(false)
-  websiteUrl            String?   @db.VarChar(255)
-  brandKeyPeople        String?   @db.Text
-  introContent          String?   @db.Text
-  brandOrganizationName String?   @db.VarChar(255)
-  websiteName           String?   @db.VarChar(255)
-  brandTitle            String?   @db.VarChar(25)
-  iconPath              String?   @db.VarChar(100)
-  brandStatus           Int?      @default(0) @db.TinyInt
-  similarBrand          String?   @db.VarChar(300)
-  is_deleted            Boolean?  @default(false)
-  deleted_at            DateTime? @db.DateTime(0)
-  expires_at            DateTime? @db.DateTime(0)
+  parentOrganization    String?             @db.VarChar(255)
+  products              String?             @db.VarChar(255)
+  founderName           String?             @db.VarChar(255)
+  customerService       String?             @db.VarChar(255)
+  serviceNetwork        Boolean?            @default(false)
+  websiteUrl            String?             @db.VarChar(255)
+  brandKeyPeople        String?             @db.Text
+  introContent          String?             @db.Text
+  brandOrganizationName String?             @db.VarChar(255)
+  websiteName           String?             @db.VarChar(255)
+  brandTitle            String?             @db.VarChar(25)
+  iconPath              String?             @db.VarChar(100)
+  brandStatus           Int?                @default(0) @db.TinyInt
+  similarBrand          String?             @db.VarChar(300)
+  is_deleted            Boolean?            @default(false)
+  deleted_at            DateTime?           @db.DateTime(0)
+  expires_at            DateTime?           @db.DateTime(0)
   deleted_by            Int?
+  redirectUrlId         Int?
+  tbluserFavourites     tbluserFavourites[]
 
   @@index([brandName(length: 10)], map: "brandName")
   @@index([brandSlug(length: 15)], map: "brandSlug")
@@ -1361,53 +1363,57 @@ model tblmodelpagetypes {
 }
 
 model tblmodelpowertrains {
-  modelPowertrainId    Int      @id @default(autoincrement())
-  modelId              Int      @default(0) @db.SmallInt
-  fuelTankCapacity     Int?     @db.SmallInt
-  kerbWeight           Int?     @db.SmallInt
-  engineDisplacement   Decimal? @db.Decimal(5, 2)
-  cubicCapacity        Int?     @db.SmallInt
-  fuelType             String?  @db.VarChar(255)
-  fuelTypeSubCategory  String?  @db.VarChar(255)
-  transmissionType     String?  @db.VarChar(100)
-  transmissionSubType  String?  @db.VarChar(100)
+  modelPowertrainId    Int       @id @default(autoincrement())
+  modelId              Int       @default(0) @db.SmallInt
+  fuelTankCapacity     Int?      @db.SmallInt
+  kerbWeight           Int?      @db.SmallInt
+  engineDisplacement   Decimal?  @db.Decimal(5, 2)
+  cubicCapacity        Int?      @db.SmallInt
+  fuelType             String?   @db.VarChar(255)
+  fuelTypeSubCategory  String?   @db.VarChar(255)
+  transmissionType     String?   @db.VarChar(100)
+  transmissionSubType  String?   @db.VarChar(100)
   isFourByFour         Boolean?
-  cylinders            Int?     @db.TinyInt
-  powerPS              Int?     @db.SmallInt
-  powerWeight          Decimal? @db.Decimal(5, 2)
-  powerMinRPM          Int?     @db.SmallInt
-  powerMaxRPM          Int?     @db.SmallInt
-  torqueNM             Int?     @db.SmallInt
-  torqueWeight         Decimal? @db.Decimal(6, 2)
-  torqueMinRPM         Int?     @db.SmallInt
-  torqueMaxRPM         Int?     @db.SmallInt
-  transmissionSpeed    Int?     @db.TinyInt
-  claimedFE            Decimal? @db.Decimal(5, 2)
-  realWorldMileage     Decimal? @db.Decimal(5, 2)
-  powerTrain           String?  @db.VarChar(100)
+  cylinders            Int?      @db.TinyInt
+  powerPS              Int?      @db.SmallInt
+  powerWeight          Decimal?  @db.Decimal(5, 2)
+  powerMinRPM          Int?      @db.SmallInt
+  powerMaxRPM          Int?      @db.SmallInt
+  torqueNM             Int?      @db.SmallInt
+  torqueWeight         Decimal?  @db.Decimal(6, 2)
+  torqueMinRPM         Int?      @db.SmallInt
+  torqueMaxRPM         Int?      @db.SmallInt
+  transmissionSpeed    Int?      @db.TinyInt
+  claimedFE            Decimal?  @db.Decimal(5, 2)
+  realWorldMileage     Decimal?  @db.Decimal(5, 2)
+  powerTrain           String?   @db.VarChar(100)
   numGears             Int?
   numMotors            Int?
-  batteryCapacity      Decimal? @default(0.0) @db.Decimal(5, 1)
-  acChargingOutput     Decimal? @db.Decimal(5, 1)
+  batteryCapacity      Decimal?  @default(0.0) @db.Decimal(5, 1)
+  acChargingOutput     Decimal?  @db.Decimal(5, 1)
   acChargingTime       Int?
-  dcChargingOutput     String?  @db.VarChar(255)
-  dcFastChargingTime   String?  @db.VarChar(255)
+  dcChargingOutput     String?   @db.VarChar(255)
+  dcFastChargingTime   String?   @db.VarChar(255)
   claimedRange         Int?
   realWorldRange       Int?
   batteryWarrantyKm    Int?
   batteryWarrantyYear  Int?
-  standardWarrantyKm   String?  @db.VarChar(255)
-  standardWarrantyYear String?  @db.VarChar(50)
-  motorType            String?  @db.VarChar(255)
-  drivetrain           Int?     @db.TinyInt
+  standardWarrantyKm   String?   @db.VarChar(255)
+  standardWarrantyYear String?   @db.VarChar(50)
+  motorType            String?   @db.VarChar(255)
+  drivetrain           Int?      @db.TinyInt
   motorWarrantyKm      Int?
   motorWarrantyYear    Int?
-  cylinderCapacity     Decimal? @db.Decimal(5, 1)
-  highwayMileage       String?  @db.VarChar(220)
-  cityMileage          String?  @db.VarChar(220)
-  realWorldUrl         String?  @db.VarChar(255)
-  cityUrl              String?  @db.VarChar(255)
-  highwayUrl           String?  @db.VarChar(255)
+  cylinderCapacity     Decimal?  @db.Decimal(5, 1)
+  highwayMileage       String?   @db.VarChar(220)
+  cityMileage          String?   @db.VarChar(220)
+  realWorldUrl         String?   @db.VarChar(255)
+  cityUrl              String?   @db.VarChar(255)
+  highwayUrl           String?   @db.VarChar(255)
+  deleted_by           Int       @default(0)
+  is_deleted           Int       @default(0)
+  deleted_at           DateTime? @db.DateTime(0)
+  expires_at           DateTime? @db.DateTime(0)
 
   @@index([modelId], map: "idx_tblmodelpowertrains_modelId")
 }
@@ -1448,43 +1454,45 @@ model tblmodelrivals {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model tblmodels {
-  modelId             Int       @id @default(autoincrement()) @db.SmallInt
-  modelName           String?   @db.VarChar(100)
-  brandId             Int?      @db.SmallInt
-  modelBodyTypeId     Int?      @db.SmallInt
-  modelTypeId         Int?      @db.SmallInt
+  modelId             Int                 @id @default(autoincrement()) @db.SmallInt
+  modelName           String?             @db.VarChar(100)
+  brandId             Int?                @db.SmallInt
+  modelBodyTypeId     Int?                @db.SmallInt
+  modelTypeId         Int?                @db.SmallInt
   isUpcoming          Boolean?
-  modelDesc           String?   @db.Text
-  launchDate          DateTime? @db.Date
-  length              Int?      @db.SmallInt
-  width               Int?      @db.SmallInt
-  height              Int?      @db.SmallInt
-  wheelBase           Int?      @db.SmallInt
-  bootSpace           Int?      @db.SmallInt
-  groundClearance     Int?      @db.SmallInt
-  tyreSize            String?   @db.VarChar(50)
-  tyreSizeTop         String?   @db.VarChar(255)
-  seats               Int?      @db.TinyInt
+  modelDesc           String?             @db.Text
+  launchDate          DateTime?           @db.Date
+  length              Int?                @db.SmallInt
+  width               Int?                @db.SmallInt
+  height              Int?                @db.SmallInt
+  wheelBase           Int?                @db.SmallInt
+  bootSpace           Int?                @db.SmallInt
+  groundClearance     Int?                @db.SmallInt
+  tyreSize            String?             @db.VarChar(50)
+  tyreSizeTop         String?             @db.VarChar(255)
+  seats               Int?                @db.TinyInt
   segmentId           Int?
-  safetyRating        String?   @db.VarChar(255)
-  brochurePath        String?   @db.VarChar(500)
-  isBaseModel         Boolean   @default(false)
-  numPowerTrain       Int?      @db.TinyInt
-  modelSlug           String?   @db.VarChar(45)
-  totalViews          Int       @default(0)
-  expectedBasePrice   Int?      @db.UnsignedInt
-  expectedTopPrice    Int?      @db.UnsignedInt
-  discontinuedYear    Int?      @db.Year
-  isGenFacelift       Int?      @db.TinyInt
-  linkedModelId       Int?      @default(0)
-  isAutoExpo          Int?      @default(0) @db.TinyInt
-  brandWebsiteModelId String?   @db.Text
-  combinedModelId     String?   @db.VarChar(45)
-  upcomingStatus      String?   @db.VarChar(45)
-  is_deleted          Boolean   @default(false)
-  deleted_at          DateTime? @db.DateTime(0)
-  expires_at          DateTime? @db.DateTime(0)
-  deleted_by          Int       @default(0)
+  safetyRating        String?             @db.VarChar(255)
+  brochurePath        String?             @db.VarChar(500)
+  isBaseModel         Boolean             @default(false)
+  numPowerTrain       Int?                @db.TinyInt
+  modelSlug           String?             @db.VarChar(45)
+  totalViews          Int                 @default(0)
+  expectedBasePrice   Int?                @db.UnsignedInt
+  expectedTopPrice    Int?                @db.UnsignedInt
+  discontinuedYear    Int?                @db.Year
+  isGenFacelift       Int?                @db.TinyInt
+  linkedModelId       Int?                @default(0)
+  isAutoExpo          Int?                @default(0) @db.TinyInt
+  brandWebsiteModelId String?             @db.Text
+  combinedModelId     String?             @db.VarChar(45)
+  upcomingStatus      String?             @db.VarChar(45)
+  is_deleted          Boolean             @default(false)
+  deleted_at          DateTime?           @db.DateTime(0)
+  expires_at          DateTime?           @db.DateTime(0)
+  deleted_by          Int                 @default(0)
+  confidencePercent   Int?                @db.UnsignedTinyInt
+  tbluserFavourites   tbluserFavourites[]
 
   @@index([brandId], map: "idx_tblmodels_brandId")
   @@index([isUpcoming], map: "idx_tblmodels_isUpcoming")
@@ -1513,8 +1521,8 @@ model tblmodels_view {
   modelId    Int
   dateTime   DateTime @default(now()) @db.DateTime(0)
 
-  @@index([modelId], map: "idx_tblmodels_view_modelId")
-  @@index([visitor_ip(length: 15)], map: "idx_tblmodels_view_visitor_ip")
+  @@index([modelId], map: "idx_tblmodels_view_modelId_1")
+  @@index([visitor_ip], map: "idx_tblmodels_view_visitor_ip\t_1")
   @@ignore
 }
 
@@ -1581,7 +1589,6 @@ model tblmonthlysales {
   @@index([month], map: "month")
   @@index([year], map: "year")
 }
-
 
 model tblmostavailablecars {
   id      Int     @id @default(autoincrement())
@@ -1836,9 +1843,12 @@ model tblratings {
 }
 
 model tblredirecturl {
-  urlId Int     @id @default(autoincrement())
-  url1  String? @db.VarChar(1000)
-  url2  String? @db.VarChar(1000)
+  urlId          Int       @id @default(autoincrement())
+  url1           String?   @db.VarChar(1000)
+  url2           String?   @db.VarChar(1000)
+  adminId        Int?
+  addedDatetime  DateTime  @default(now()) @db.DateTime(0)
+  updateDatetime DateTime? @db.DateTime(0)
 
   @@index([url2(length: 400)], map: "url2")
 }
@@ -1852,8 +1862,9 @@ model tblrtoState {
 }
 
 model tblrtolist {
-  rtoId   Int     @id @default(autoincrement())
-  rtoCode String? @db.VarChar(45)
+  rtoId    Int     @id @default(autoincrement())
+  rtoCode  String? @db.VarChar(45)
+  areaName String? @db.VarChar(255)
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -1970,6 +1981,7 @@ model tblsellcarlead {
   isPushedToClient      Boolean?  @default(false)
   apiResponse           String?   @db.VarChar(255)
   spinyapi              Int?      @default(0)
+  spinnyCronResponse    String?   @db.VarChar(500)
   spinnyPayload         String?   @db.Text
   spinnyCarPrice        String?   @db.VarChar(80)
   spinyapiresponse      String?   @db.VarChar(255)
@@ -1979,6 +1991,7 @@ model tblsellcarlead {
   isAppointmentBook     String?   @db.VarChar(45)
   apiFullResponse       String?   @db.LongText
   inspectionCity        String?   @db.VarChar(200)
+  inspectionType        String?   @db.VarChar(10)
   zoneId                Int?
   tokenResponse         String?   @db.LongText
   cars24LeadData        String?   @db.Text
@@ -2256,29 +2269,30 @@ model tblurls {
 }
 
 model tblusers {
-  userId            Int       @id @default(autoincrement())
-  username          String?   @db.VarChar(50)
-  displayName       String?   @db.VarChar(30)
-  mobilenumber      String?   @db.VarChar(15)
-  emailAddress      String?   @db.VarChar(100)
-  otpvalue          String?   @db.VarChar(6)
-  status            Int       @default(1) @db.TinyInt
-  gender            Int       @default(0) @db.TinyInt
-  dob               DateTime? @db.DateTime(0)
-  qualification     String?   @db.VarChar(30)
-  maritalStatus     Int       @default(0) @db.TinyInt
-  numOfCars         Int       @default(0) @db.TinyInt
-  modelId           Int       @default(0)
-  brandId           Int       @default(0) @db.MediumInt
-  countryId         Int       @default(0) @db.MediumInt
-  pincode           String?   @db.VarChar(10)
-  occupation        String?   @db.VarChar(30)
-  cityName          String?   @db.VarChar(50)
-  stateName         String?   @db.VarChar(50)
-  registerDateTime  DateTime? @default(now()) @db.DateTime(0)
-  lastLoginDateTime DateTime  @default(now()) @db.DateTime(0)
-  registerSource    String?   @db.VarChar(15)
-  industryId        Int?      @db.SmallInt
+  userId            Int                 @id @default(autoincrement())
+  username          String?             @db.VarChar(50)
+  displayName       String?             @db.VarChar(30)
+  mobilenumber      String?             @db.VarChar(15)
+  emailAddress      String?             @db.VarChar(100)
+  otpvalue          String?             @db.VarChar(6)
+  status            Int                 @default(1) @db.TinyInt
+  gender            Int                 @default(0) @db.TinyInt
+  dob               DateTime?           @db.DateTime(0)
+  qualification     String?             @db.VarChar(30)
+  maritalStatus     Int                 @default(0) @db.TinyInt
+  numOfCars         Int                 @default(0) @db.TinyInt
+  modelId           Int                 @default(0)
+  brandId           Int                 @default(0) @db.MediumInt
+  countryId         Int                 @default(0) @db.MediumInt
+  pincode           String?             @db.VarChar(10)
+  occupation        String?             @db.VarChar(30)
+  cityName          String?             @db.VarChar(50)
+  stateName         String?             @db.VarChar(50)
+  registerDateTime  DateTime?           @default(now()) @db.DateTime(0)
+  lastLoginDateTime DateTime            @default(now()) @db.DateTime(0)
+  registerSource    String?             @db.VarChar(15)
+  industryId        Int?                @db.SmallInt
+  tbluserFavourites tbluserFavourites[]
 
   @@index([mobilenumber], map: "idx_tblusers_mobilenumber")
   @@index([registerDateTime, lastLoginDateTime], map: "idx_tblusers_registerDateTime_lastLoginDateTime")
@@ -2469,6 +2483,8 @@ model tblimagebank {
   uploadTime    DateTime? @default(now()) @db.DateTime(0)
   updatedTime   DateTime? @default(now()) @db.DateTime(0)
   isDeleted     Boolean?  @default(true)
+  redirectTo    String?   @db.VarChar(255)
+  deletedAt     DateTime? @db.DateTime(0)
   isLogo        Boolean?  @default(false)
   isWatermarked Boolean?  @default(false)
 }
@@ -2550,6 +2566,56 @@ model tblwebsitecontent2 {
   @@index([moduleId], map: "idx_tblwebsitecontent2_moduleId")
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model tblmodels_view_backup {
+  visitor_ip String   @db.VarChar(50)
+  modelId    Int
+  dateTime   DateTime @default(now()) @db.DateTime(0)
+
+  @@index([modelId], map: "idx_tblmodels_view_modelId")
+  @@index([visitor_ip(length: 15)], map: "idx_tblmodels_view_visitor_ip")
+  @@ignore
+}
+
+model tblrtolist_test {
+  rtoId    Int     @id
+  rtoCode  String  @db.VarChar(50)
+  areaName String? @db.VarChar(255)
+}
+
+model tbluserFavourites {
+  favouriteId Int       @id @default(autoincrement())
+  userId      Int
+  brandId     Int       @db.UnsignedSmallInt
+  modelId     Int       @db.SmallInt
+  addDateTime DateTime  @default(now()) @db.Timestamp(0)
+  tblbrands   tblbrands @relation(fields: [brandId], references: [brandId], onDelete: Cascade, onUpdate: NoAction, map: "fk_fav_brand")
+  tblmodels   tblmodels @relation(fields: [modelId], references: [modelId], onDelete: Cascade, onUpdate: NoAction, map: "fk_fav_model")
+  tblusers    tblusers  @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction, map: "fk_fav_user")
+
+  @@unique([userId, brandId, modelId], map: "uniq_user_brand_model")
+  @@index([brandId], map: "idx_brand")
+  @@index([modelId], map: "idx_model")
+  @@index([userId], map: "idx_user")
+}
+
+model tblwebStories {
+  id          BigInt    @id @default(autoincrement())
+  storyId     BigInt
+  subStoryId  Int
+  authorId    BigInt
+  addedBy     BigInt
+  title       String    @db.VarChar(255)
+  slug        String    @db.VarChar(255)
+  contentSlug String    @db.VarChar(255)
+  status      Boolean?  @default(true)
+  createdAt   DateTime? @default(now()) @db.DateTime(0)
+  updatedAt   DateTime? @default(now()) @db.DateTime(0)
+
+  @@index([title, slug, contentSlug], map: "idx_filter")
+  @@index([storyId], map: "idx_story")
+}
+
 enum tblfeaturesnew_selectionType {
   Default
   Count
@@ -2586,8 +2652,3 @@ enum tblfeaturesnew_displayCount {
   Front @map(" Front")
   Rear  @map(" Rear")
 }
-
-
-
-
-

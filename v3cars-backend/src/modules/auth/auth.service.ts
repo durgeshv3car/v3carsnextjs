@@ -59,6 +59,8 @@ export class AuthService {
       emailAddress: user.emailAddress,
       status: user.status,
     };
+
+
   }
 
 
@@ -102,3 +104,4 @@ export class AuthService {
     };
   }
 }
+
