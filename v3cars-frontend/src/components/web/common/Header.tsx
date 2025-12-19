@@ -28,6 +28,7 @@ interface Location {
 const Header = () => {
     // Replace 'any, any, any' with your actual types if available
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
+    const loginUser = useSelector((state: RootState) => state.auth.user);
 
     const [hoverTab, setHoverTab] = useState<TabKey>(null);
     const [showLogin, setShowLogin] = useState(false);
@@ -273,13 +274,24 @@ const Header = () => {
                             </button>
                         </div>
 
-                        <button
-                            onClick={() => setShowLogin(true)}
-                            className="bg-primary hover:bg-primary-hover text-black px-4 py-2 rounded-full flex items-center gap-2 text-sm"
-                        >
-                            <HiOutlineUserCircle size={20} />
-                            Login / Signup
-                        </button>
+                        {
+                            loginUser?.emailAddress ? (
+                                <div className="flex items-center gap-1 border py-2 px-6 rounded-full">
+                                    <h2 className="text-xs">{loginUser?.displayName}</h2>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                    </svg>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => setShowLogin(true)}
+                                    className="bg-primary hover:bg-primary-hover text-black px-4 py-2 rounded-full flex items-center gap-2 text-sm"
+                                >
+                                    <HiOutlineUserCircle size={20} />
+                                    Login / Signup
+                                </button>
+                            )
+                        }
 
                         <ThemeToggle />
                     </div>

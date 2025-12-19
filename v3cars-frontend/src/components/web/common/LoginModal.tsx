@@ -6,6 +6,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { UserData, useRegisterMutation, useSendOTPMutation, useVerifyOTPMutation } from "@/redux/api/authModuleApi";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { useDispatch } from "react-redux";
+import { setLogin } from "@/redux/slices/authSlice";
 
 interface LoginModalProps {
   onClose: () => void;
@@ -50,6 +52,7 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
   const [register, { isLoading }] = useRegisterMutation();
   const [verifyOTP, { isLoading: verifyOTPLoading }] = useVerifyOTPMutation();
   const [sendOTP, { isLoading: sendOTPLoading }] = useSendOTPMutation();
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const timerId = setTimeout(() => setVisible(true), 10);
@@ -177,6 +180,14 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
       if (res.success) {
         alert("OTP verified successfully");
+        dispatch(setLogin({
+          userId: res.data.userId,
+          username: res.data.username,
+          displayName: res.data.displayName,
+          mobilenumber: res.data.mobilenumber,
+          emailAddress: res.data.emailAddress,
+          status: res.data.status,
+        }));
         onClose()
       }
     } catch (err) {
