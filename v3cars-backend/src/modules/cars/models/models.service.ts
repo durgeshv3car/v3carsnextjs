@@ -1454,7 +1454,6 @@ async fuelEfficiency(
   }, ttlMs);
 }
 
-
 async csdVsOnroad(
     modelId: number,
     q: { cityId: number; fuelType?: string; transmissionType?: string; expandVariantId?: number; isLoan?: boolean }
@@ -1508,6 +1507,7 @@ async csdVsOnroad(
         }
         // Specific gearbox tokens like 'CVT', 'DCT'
         return s.includes(trLower.toUpperCase());
+        
       };
 
       // Fuel + transmission filter in-memory (more tolerant than DB codes)

@@ -13,6 +13,7 @@ import { faqsRouter } from '../modules/faqs/faqs.route.js';
 import { fuelRouter } from '../modules/fuel/fuel.routes.js';
 import { websiteContentRouter } from '../modules/website-content/websiteContent.route.js';
 import { authRouter } from '../modules/auth/auth.routes.js';
+import { webStoriesRouter } from '../modules/webstories/webstories.route.js';
 const v1 = Router();
 
 
@@ -29,6 +30,7 @@ v1.use('/faqs', faqsRouter);
 v1.use('/fuel', fuelRouter);
 v1.use('/website-content', websiteContentRouter);
 v1.use('/auth', authRouter);
+v1.use('/webstories', webStoriesRouter);
 
 
 
