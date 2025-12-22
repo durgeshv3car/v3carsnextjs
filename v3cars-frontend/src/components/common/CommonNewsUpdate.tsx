@@ -131,7 +131,7 @@ const CommonNewsUpdate: React.FC<CommonNewsUpdateProps> = ({ title, view, newsLi
         </div>
       </div>
 
-      <div className=" grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[32.25%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
+      <div className=" grid grid-flow-col auto-cols-[100%] sm:auto-cols-[48.90%] lg:auto-cols-[32.25%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide" ref={scrollRef}>
         {newsList.map((item) => {
           // Clean shortDescription → remove inline styles
           const cleanDescription = DOMPurify.sanitize(item.shortDescription, {

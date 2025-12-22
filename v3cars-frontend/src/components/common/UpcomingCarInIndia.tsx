@@ -7,11 +7,28 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { IoMdStarOutline } from 'react-icons/io'
+import CustomTooltip from '../ui/custom-tooltip/CustomTooltip'
 
 const confidenceColor = (confidence: number): string => {
-  if (confidence >= 90) return "bg-[#3D923A]"
-  if (confidence >= 70) return "bg-[#F08200]"
+  if (confidence >= 70) return "bg-[#3D923A]"
+  if (confidence >= 40) return "bg-[#F08200]"
   return "bg-[#D40808]"
+}
+
+export function getLaunchProbability(confidence: number | null | undefined) {
+  if (confidence === null || confidence === undefined) {
+    return "Unlikely to Launch";
+  }
+
+  if (confidence >= 70) {
+    return "High Launch Probability";
+  }
+
+  if (confidence >= 40) {
+    return "Moderate Launch Probability";
+  }
+
+  return "Unlikely to Launch";
 }
 
 interface Brand {
@@ -35,6 +52,7 @@ interface CarProps {
   modelBodyTypeId: number
   isUpcoming: boolean
   launchDate: string
+  confidencePercent: number
   totalViews: number
   expectedBasePrice: number
   expectedTopPrice: number
@@ -66,10 +84,6 @@ interface UpcomingCarInIndiaProps {
 
 const mapToUIData = (cars: CarProps[]): CarUIProps[] => {
   return cars.map((car) => {
-    let confidence = 100
-    if (car.totalViews >= 50000) confidence = 95
-    else if (car.totalViews >= 10000) confidence = 80
-
     return {
       id: car.modelId,
       name: car.modelName,
@@ -81,7 +95,7 @@ const mapToUIData = (cars: CarProps[]): CarUIProps[] => {
         month: 'long',
         year: 'numeric',
       }),
-      confidence,
+      confidence: car.confidencePercent,
     }
   })
 }
@@ -203,38 +217,42 @@ const UpcomingCarInIndia: React.FC<UpcomingCarInIndiaProps> = ({ title, setUpcom
       {/* Cards */}
       <div
         ref={scrollRef}
-        className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[24%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide"
+        className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[49%] lg:auto-cols-[24%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide"
       >
         {allCars.map((car, index) => (
           <div
             key={index}
             ref={index === allCars.length - 6 ? triggerRef : null}
-            className={`cursor-pointer rounded-xl shadow-lg overflow-hidden h-auto lg:h-[290px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 90
+            className={`cursor-pointer rounded-xl shadow-lg h-auto lg:h-[290px] flex-shrink-0 flex flex-col border-b-[6px] ${car.confidence >= 70
               ? 'border-[#3D923A]'
-              : car.confidence >= 70
+              : car.confidence >= 40
                 ? 'border-[#F08200]'
                 : 'border-[#D40808]'}`}
             style={{ scrollSnapAlign: 'start' }}
             onClick={() => router.push(`${car.brandSlug}/${car.slug}`)}
           >
-            <div className="relative w-full">
+            <div className="relative w-full z-10">
               <Image
                 src={car.image ? `${IMAGE_URL}/media/model-imgs/${car.image}` : '/coming-soon-car.jpg'}
                 alt={car.name}
                 width={400}
                 height={184}
-                className="h-full w-full shadow-md rounded-md"
+                className="h-full w-full shadow-md rounded-md rounded-b-none"
               />
-              <div className="absolute top-2 left-2 flex items-center bg-[#E7E7E7] dark:bg-[#171717] px-2 py-1 rounded-full space-x-2">
-                <span className={`w-3 h-3 rounded-full ${confidenceColor(car.confidence)}`} />
-                <p className="text-xs">Confidence {car.confidence}%</p>
+              <div className="absolute top-2 left-2">
+                <CustomTooltip text={getLaunchProbability(car.confidence)} tooltipClassName='bg-white dark:bg-[#171717] dark:border-[#2e2e2e]'>
+                  <div className='flex items-center bg-[#E7E7E7] dark:bg-[#171717] px-2 py-1 rounded-full space-x-2'>
+                    <span className={`w-3 h-3 rounded-full ${confidenceColor(car.confidence)}`} />
+                    <p className="text-xs">Confidence {car.confidence === null ? "0" : car.confidence}%</p>
+                  </div>
+                </CustomTooltip>
               </div>
               <button className="absolute top-2 right-2 bg-[#E7E7E7] dark:bg-[#171717] rounded-full p-1 shadow">
                 <IoMdStarOutline />
               </button>
             </div>
 
-            <div className="grid grid-cols-2 items-center flex-grow bg-white dark:bg-[#171717] py-6 lg:py-0">
+            <div className="grid grid-cols-2 items-center flex-grow bg-white dark:bg-[#171717] py-6 lg:py-0 rounded-b-xl">
               <div className="border-r dark:border-[#2E2E2E] text-center mx-4 text-sm">
                 <p className="text-gray-500 font-medium truncate">{car.brand}</p>
                 <p className="font-semibold truncate">{car.name}</p>

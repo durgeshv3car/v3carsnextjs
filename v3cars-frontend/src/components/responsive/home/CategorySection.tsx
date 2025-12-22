@@ -36,7 +36,7 @@ const CategorySection: React.FC = () => {
                     Search By Category
                 </h2>
                 <div
-                    className="grid grid-flow-col auto-cols-[47.90%] gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-thin-yellow lg:grid-flow-row lg:grid-cols-8 lg:overflow-visible lg:snap-none">
+                    className="grid grid-flow-col auto-cols-[47.90%] sm:auto-cols-[23.30%] lg:auto-cols-[47.90%] gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-thin-yellow lg:grid-flow-row lg:grid-cols-8 lg:overflow-visible lg:snap-none">
                     {categories.map((category, index) => (
                         <div
                             key={index}

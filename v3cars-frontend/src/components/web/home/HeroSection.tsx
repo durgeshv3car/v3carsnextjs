@@ -208,7 +208,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
             <SwiperSlide key={index}>
               <div className=' absolute left-0 top-0 w-full h-full bg-gradient-to-r from-black/35 to-transparent' />
               <div
-                className="h-full w-full bg-cover bg-center"
+                className="h-full w-full bg-cover bg-no-repeat bg-center"
                 style={{ backgroundImage: `url(${slide.image})` }}
               />
             </SwiperSlide>

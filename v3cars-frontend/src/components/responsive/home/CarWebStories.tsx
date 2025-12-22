@@ -87,7 +87,7 @@ const CarWebStories: React.FC = () => {
                     </div>
 
 
-                    <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[15.70%] gap-4 snap-x snap-mandatory overflow-x-auto scrollbar-hide scroll-smooth">
+                    <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[48.90%] lg:auto-cols-[15.70%] gap-4 snap-x snap-mandatory overflow-x-auto scrollbar-hide scroll-smooth">
                         {stories.map((story) => (
                             <div
                                 key={story.id}

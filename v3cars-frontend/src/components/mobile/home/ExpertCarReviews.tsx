@@ -71,7 +71,7 @@ const MobileExpertCarReviews: React.FC<MobileExpertCarReviewsProps> = ({ newsLis
         </div>
 
         <div
-          className="grid grid-flow-col auto-cols-[100%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide"
+          className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[48.90%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide"
           ref={scrollRef}
         >
           {newsList.map((item) => {

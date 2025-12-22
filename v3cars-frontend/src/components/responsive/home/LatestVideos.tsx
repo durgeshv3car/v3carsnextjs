@@ -46,7 +46,7 @@ const LatestVideos: React.FC<LatestVideosProps> = ({ title, data, link }) => {
             </div>
 
             <div
-                className="grid grid-flow-col auto-cols-[100%] gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide lg:grid-flow-row lg:grid-cols-4 lg:overflow-visible lg:snap-none">
+                className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[48.90%] gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide lg:grid-flow-row lg:grid-cols-4 lg:overflow-visible lg:snap-none">
                 {data.map((video) => (
                     <div
                         key={video.id}

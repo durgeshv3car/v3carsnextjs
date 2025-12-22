@@ -100,7 +100,7 @@ const QuickLook: React.FC = () => {
                         </Link>
                     </div>
 
-                    <div className="border dark:border-[#2E2E2E] border-[#DEE2E6] rounded-lg">
+                    <div className="border dark:border-[#2E2E2E] border-[#DEE2E6] rounded-lg bg-white dark:bg-[#171717]">
                         <div className="flex justify-between items-center px-4 pt-4 border-b border-[#DEE2E6] dark:border-[#2E2E2E]">
                             {/* Tabs */}
                             <div className="flex">
@@ -158,11 +158,12 @@ const QuickLook: React.FC = () => {
 
                         <div
                             ref={scrollRef}
-                            className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[50%] lg:auto-cols-[24.10%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide m-3">
+                            className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[48.90%] lg:auto-cols-[24.10%] gap-4 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide m-3">
                             {quickLook.map((car) => (
                                 <div
                                     key={car.modelId}
-                                    className="rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-auto flex-shrink-0 flex flex-col"
+                                    className="rounded-xl border border-[#DEE2E6] dark:border-[#2E2E2E] overflow-hidden snap-start h-auto flex-shrink-0 flex flex-col cursor-pointer"
+                                    onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
                                 >
                                     {/* Image Section */}
                                     <div className="relative h-[225px] w-full rounded-md overflow-hidden">
@@ -202,7 +203,6 @@ const QuickLook: React.FC = () => {
                                         </p>
                                         <button
                                             className='p-3 font-semibold text-sm w-full text-black flex justify-between items-center cursor-pointer rounded-lg bg-primary'
-                                            onClick={() => { router.push(`/${car.brand.slug}/${car.modelSlug}`) }}
                                         >
                                             View Current Offers
                                             <FaArrowRight />
