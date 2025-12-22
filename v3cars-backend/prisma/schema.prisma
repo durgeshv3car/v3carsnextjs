@@ -2600,19 +2600,19 @@ model tbluserFavourites {
 }
 
 model tblwebStories {
-  id          BigInt    @id @default(autoincrement())
-  storyId     BigInt
-  subStoryId  Int
-  authorId    BigInt
-  addedBy     BigInt
-  title       String    @db.VarChar(255)
-  slug        String    @db.VarChar(255)
-  contentSlug String    @db.VarChar(255)
-  status      Boolean?  @default(true)
-  createdAt   DateTime? @default(now()) @db.DateTime(0)
-  updatedAt   DateTime? @default(now()) @db.DateTime(0)
+  id         BigInt    @id @default(autoincrement())
+  storyId    BigInt
+  subStoryId Int
+  authorId   BigInt
+  addedBy    BigInt
+  title      String    @db.VarChar(255)
+  mediaUrl   String    @db.VarChar(255)
+  contentUrl String    @db.VarChar(255)
+  status     Boolean?  @default(true)
+  createdAt  DateTime? @default(now()) @db.DateTime(0)
+  updatedAt  DateTime? @default(now()) @db.DateTime(0)
 
-  @@index([title, slug, contentSlug], map: "idx_filter")
+  @@index([title, mediaUrl, contentUrl], map: "idx_filter")
   @@index([storyId], map: "idx_story")
 }
 
