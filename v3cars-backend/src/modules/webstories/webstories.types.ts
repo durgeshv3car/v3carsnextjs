@@ -7,8 +7,8 @@ export interface WebStoryItem {
   id: number | string | null;
   subStoryId: number | null;
   title: string | null;
-  slug: string | null;
-  contentSlug: string | null;
+  mediaUrl: string | null;
+  contentUrl: string | null;
   authorId: string | null;
   addedBy: string | null;
   status: boolean | null;
@@ -19,7 +19,8 @@ export interface WebStoryItem {
 export interface WebStoryGroup {
   storyId: string;
   title: string | null;
-  slug: string | null;
+  mediaUrl: string | null;
+  contentUrl: string | null;
   authorId: string | null;
   status: boolean | null;
   createdAt: Date | null;
