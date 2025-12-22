@@ -4,71 +4,49 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import WebStoryCard from '../web-stories/webStory'
+import { useGetWebstoriesQuery } from '@/redux/api/webstoriesModuleApi'
+import { IMAGE_URL } from '@/utils/constant'
 
-type Story = {
-    id: number
-    image: string
-    badge?: string
-    label?: string
-    heading: string
-    date: string
+const isVideo = (url: string) => {
+    return /\.(mp4|webm|ogg)$/i.test(url);
+};
+
+export interface Story {
+    storyId: string;
+    title: string;
+    mediaUrl: string; // mp4
+    contentUrl: string;
+    authorId: string;
+    status: boolean;
+    createdAt: string; // ISO date string
+    items: StoryItem[];
 }
 
-const stories: Story[] = [
-    {
-        id: 1,
-        image: '/web-stories/thub1.png',
-        heading:
-            "'Richest star kid' Aryan Khan Net Worth: From Mercedes GLS S350D to Panchsheel Park property...",
-        date: 'July 11, 2024',
-    },
-    {
-        id: 2,
-        image: '/web-stories/thub2.png',
-        badge: '2.2L',
-        label: '100PS • 250Nm',
-        heading:
-            "'Richest star kid' Aryan Khan Net Worth: From Mercedes GLS S350D to Panchsheel Park property...",
-        date: 'July 11, 2024',
-    },
-    {
-        id: 3,
-        image: '/web-stories/thub3.png',
-        badge: 'digital shareable key',
-        heading:
-            "'Richest star kid' Aryan Khan Net Worth: From Mercedes GLS S350D to Panchsheel Park property...",
-        date: 'July 11, 2024',
-    },
-    {
-        id: 4,
-        image: '/web-stories/thub4.png',
-        badge: 'Tata Curvv',
-        label: 'PART 01: DIMENSIONS',
-        heading:
-            "'Richest star kid' Aryan Khan Net Worth: From Mercedes GLS S350D to Panchsheel Park property...",
-        date: 'July 11, 2024',
-    },
-    {
-        id: 5,
-        image: '/web-stories/thub5.png',
-        badge: 'Thar ROXX',
-        heading:
-            "'Richest star kid' Aryan Khan Net Worth: From Mercedes GLS S350D to Panchsheel Park property...",
-        date: 'July 11, 2024',
-    },
-    {
-        id: 6,
-        image: '/web-stories/thub6.png',
-        badge: 'TATA CURVV',
-        label: 'WHAT TO EXPECT',
-        heading:
-            "'Richest star kid' Aryan Khan Net Worth: From Mercedes GLS S350D to Panchsheel Park property...",
-        date: 'July 11, 2024',
-    },
-]
+export interface StoryItem {
+    id: string;
+    subStoryId: number;
+    title: string;
+    mediaUrl: string;
+    contentUrl: string;
+    authorId: string;
+    addedBy: string;
+    status: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
 
 const CarWebStories: React.FC = () => {
-    const [openStory, setOpenStory] = useState(false);
+    const [openStory, setOpenStory] = useState<{
+        open: boolean;
+        items: StoryItem[];
+    }>({
+        open: false,
+        items: [],
+    });
+
+    const { data: webstoriesData } = useGetWebstoriesQuery()
+
+    const webstories: Story[] = webstoriesData?.rows ?? []
 
     return (
         <>
@@ -88,25 +66,51 @@ const CarWebStories: React.FC = () => {
 
 
                     <div className="grid grid-flow-col auto-cols-[100%] sm:auto-cols-[48.90%] lg:auto-cols-[15.70%] gap-4 snap-x snap-mandatory overflow-x-auto scrollbar-hide scroll-smooth">
-                        {stories.map((story) => (
+                        {webstories.map((story) => (
                             <div
-                                key={story.id}
+                                key={story.storyId}
                                 className="relative snap-start aspect-[9/16] rounded-[10px] overflow-hidden bg-black"
                             >
-                                <Image
-                                    src={story.image}
-                                    alt={story.heading || "Story"}
-                                    fill
-                                    priority={false}
-                                    sizes="(max-width: 768px) 100vw, 270px"
-                                    className="object-contain cursor-pointer"
-                                    onClick={() => setOpenStory(true)}
-                                />
+                                {isVideo(story.mediaUrl) ? (
+                                    <video
+                                        src={`${IMAGE_URL}/uploads/webstories/${story.mediaUrl}`}
+                                        className="object-contain cursor-pointer w-full h-full"
+                                        muted
+                                        autoPlay
+                                        loop
+                                        playsInline
+                                        preload="metadata"
+                                        onClick={() =>
+                                            setOpenStory({
+                                                open: true,
+                                                items: story.items,
+                                            })
+                                        }
+                                    />
+                                ) : (
+                                    <Image
+                                        src={`${IMAGE_URL}/uploads/webstories/${story.mediaUrl}`}
+                                        alt={story.title || "Story"}
+                                        fill
+                                        priority={false}
+                                        sizes="(max-width: 768px) 100vw, 270px"
+                                        className="object-contain cursor-pointer"
+                                        onClick={() =>
+                                            setOpenStory({
+                                                open: true,
+                                                items: story.items,
+                                            })
+                                        }
+                                    />
+                                )}
 
                                 {/* Top-right mute icon */}
                                 <div
                                     className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-8 h-8 cursor-pointer"
-                                    onClick={() => setOpenStory(true)}
+                                    onClick={() => setOpenStory({
+                                        open: true,
+                                        items: story.items
+                                    })}
                                 >
                                     <Image
                                         src="/web-stories/mobile.png"
@@ -119,8 +123,8 @@ const CarWebStories: React.FC = () => {
 
                                 {/* Bottom Gradient + Text */}
                                 <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/90 to-transparent p-2 flex flex-col justify-end space-y-1">
-                                    <p className="text-sm font-medium text-white line-clamp-3">{story.heading}</p>
-                                    <p className="text-sm text-white">{story.date}</p>
+                                    <p className="text-sm font-medium text-white line-clamp-3">{story.title}</p>
+                                    <p className="text-sm text-white">{new Date(story.createdAt).toLocaleDateString()}</p>
                                 </div>
                             </div>
                         ))}
@@ -129,9 +133,21 @@ const CarWebStories: React.FC = () => {
                 </div>
             </div>
 
-            {openStory && (
-                <div className="fixed inset-0 z-[999] bg-gradient-to-br from-[#495463] to-[#6b775b] flex items-center justify-center" onClick={() => setOpenStory(false)}>
-                    <WebStoryCard onClose={() => setOpenStory(false)} openStory={openStory} />
+            {openStory.open && (
+                <div
+                    className="fixed inset-0 z-[999] bg-gradient-to-br from-[#495463] to-[#6b775b] flex items-center justify-center"
+                    onClick={() => setOpenStory({
+                        open: false,
+                        items: []
+                    })}
+                >
+                    <WebStoryCard
+                        onClose={() => setOpenStory({
+                            open: false,
+                            items: []
+                        })}
+                        openStory={openStory}
+                    />
                 </div>
             )}
         </>

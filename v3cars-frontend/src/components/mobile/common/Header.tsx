@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import LocationDropdown from "@/components/web/header/LocationDropdown";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { RxCrossCircled } from "react-icons/rx";
 
 type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
 
@@ -151,102 +152,109 @@ const MobileHeader = () => {
         </div>
 
         {/* Search bar */}
-        <div className="flex items-center mx-4 border dark:border-[#2E2E2E] rounded-full overflow-hidden mb-5">
+        <div className="flex items-center mx-4 px-0.5 border dark:border-[#2E2E2E] rounded-full overflow-hidden mb-5">
           <input
             type="text"
             placeholder="Search Car"
-            className="px-4 py-1 w-full outline-none text-sm bg-transparent"
+            className="px-4 py-3 w-full outline-none text-sm bg-transparent"
           />
-          <button className="bg-gray-700 p-2 px-6 text-white rounded-full">
+          <button className="bg-gray-700 py-3 px-6 text-white rounded-full">
             <FiSearch size={16} />
           </button>
         </div>
 
         {/* Drawer Overlay */}
         <div
-          className={`fixed inset-0 z-[100] bg-black/40 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          className={`fixed inset-0 z-[100] bg-black/80 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
             }`}
           onClick={() => setIsOpen(false)}
         />
 
         {/* Sidebar Drawer */}
-        <div
-          className={`fixed top-0 left-0 h-full w-[85%] bg-white dark:bg-[#171717] z-[101] shadow-md p-4 flex flex-col transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
-        >
-          {/* Top: Logo + Login */}
-          <div className="flex justify-between items-center mb-4">
-            <Image
-              src="/logo/header/v3logo.png"
-              alt="Logo"
-              width={90}
-              height={40}
-              className="block dark:hidden"
-            />
-            <Image
-              src="/logo/header/v3-white2.png"
-              alt="Logo"
-              width={90}
-              height={40}
-              className="hidden dark:block"
-            />
-            <div className="flex gap-2 items-center">
-              <button
-                onClick={() => setShowLogin(true)}
-                className="bg-primary text-black text-sm px-4 py-1 rounded-full font-medium"
-              >
-                Login
-              </button>
+        <div className={`flex justify-between fixed top-0 left-0 w-full h-full z-[101] transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}>
 
+          <div
+            className={`w-[85%] bg-white dark:bg-[#171717] shadow-md p-4 flex flex-col`}
+          >
+            {/* Top: Logo + Login */}
+            <div className="flex justify-between items-center mb-4">
+              <Image
+                src="/logo/header/v3logo.png"
+                alt="Logo"
+                width={90}
+                height={40}
+                className="block dark:hidden"
+              />
+              <Image
+                src="/logo/header/v3-white2.png"
+                alt="Logo"
+                width={90}
+                height={40}
+                className="hidden dark:block"
+              />
+              <div className="flex gap-2 items-center">
+                <button
+                  onClick={() => setShowLogin(true)}
+                  className="bg-primary text-black text-sm px-4 py-1 rounded-full font-medium"
+                >
+                  Login
+                </button>
+
+              </div>
+            </div>
+
+            {/* Menu Items */}
+            <div className="flex flex-col gap-2">
+              {["New Cars", "News, Reviews & Videos", "Variant Explained", "Tools"].map(
+                (item) => {
+                  const hasSubmenu = !!subMenus[item];
+
+                  return (
+                    <div key={item}>
+                      <button
+                        className="flex justify-between items-center w-full text-left font-medium py-2"
+                        onClick={() => hasSubmenu && toggleTab(item)}
+                      >
+                        {item}
+                        {hasSubmenu && (
+                          <IoChevronDownOutline
+                            size={16}
+                            className={`transition-transform duration-300 ${openTab === item ? "rotate-180" : ""
+                              }`}
+                          />
+                        )}
+                      </button>
+
+                      {/* Accordion submenu */}
+                      <div
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${openTab === item ? "max-h-[1000px]" : "max-h-0"
+                          }`}
+                      >
+                        {hasSubmenu && (
+                          <ul className="pl-4 text-sm space-y-2 py-2">
+                            {subMenus[item].map((link, idx) => (
+                              <li
+                                key={idx}
+                                className="border-b border-gray-100 dark:border-[#2E2E2E] pb-2"
+                              >
+                                <Link href={link.href} className="hover:underline">
+                                  {link.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+              )}
             </div>
           </div>
 
-          {/* Menu Items */}
-          <div className="flex flex-col gap-2">
-            {["New Cars", "News, Reviews & Videos", "Variant Explained", "Tools"].map(
-              (item) => {
-                const hasSubmenu = !!subMenus[item];
-
-                return (
-                  <div key={item}>
-                    <button
-                      className="flex justify-between items-center w-full text-left font-medium py-2"
-                      onClick={() => hasSubmenu && toggleTab(item)}
-                    >
-                      {item}
-                      {hasSubmenu && (
-                        <IoChevronDownOutline
-                          size={16}
-                          className={`transition-transform duration-300 ${openTab === item ? "rotate-180" : ""
-                            }`}
-                        />
-                      )}
-                    </button>
-
-                    {/* Accordion submenu */}
-                    <div
-                      className={`overflow-hidden transition-all duration-300 ease-in-out ${openTab === item ? "max-h-[1000px]" : "max-h-0"
-                        }`}
-                    >
-                      {hasSubmenu && (
-                        <ul className="pl-4 text-sm space-y-2 py-2">
-                          {subMenus[item].map((link, idx) => (
-                            <li
-                              key={idx}
-                              className="border-b border-gray-100 dark:border-[#2E2E2E] pb-2"
-                            >
-                              <Link href={link.href} className="hover:underline">
-                                {link.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </div>
-                );
-              }
-            )}
+          <div className=" relative">
+            <RxCrossCircled size={30} className=" absolute top-4 right-4 text-white" onClick={() => setIsOpen(false)} />
           </div>
         </div>
       </header>

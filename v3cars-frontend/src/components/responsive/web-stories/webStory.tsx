@@ -1,95 +1,65 @@
 "use client";
 import { FC, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useGetWebstoriesQuery } from "@/redux/api/webstoriesModuleApi";
+import { IMAGE_URL } from "@/utils/constant";
+
+const isVideo = (url: string) => /\.(mp4|webm|ogg)$/i.test(url);
 
 export interface StoryItem {
   id: string;
   subStoryId: number;
   title: string;
-  slug: string | null;
-  contentSlug: string | null;
+  mediaUrl: string;
+  contentUrl: string;
   authorId: string;
   addedBy: string;
   status: boolean;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface Story {
-  storyId: string;
-  title: string;
-  slug: string | null;
-  authorId: string;
-  status: boolean;
-  createdAt: string; // ISO date string
-  items: StoryItem[];
-}
-
-const stories = [
-  {
-    id: 1,
-    image: "/web-stories/thub1.png",
-    heading:
-      "'Richest star kid' Aryan Khan Net Worth: From Mercedes GLS S350D to Panchsheel Park property...",
-    date: "July 11, 2024",
-  },
-  {
-    id: 2,
-    image: "/web-stories/thub2.png",
-    heading:
-      "Another top celebrity lifestyle revealed: Cars, mansions, and investments.",
-    date: "July 12, 2024",
-  },
-  {
-    id: 3,
-    image: "/web-stories/thub3.png",
-    heading:
-      "Another top celebrity lifestyle revealed: Cars, mansions, and investments.",
-    date: "July 12, 2024",
-  },
-  {
-    id: 4,
-    image: "/web-stories/thub4.png",
-    heading:
-      "Another top celebrity lifestyle revealed: Cars, mansions, and investments.",
-    date: "July 12, 2024",
-  },
-  {
-    id: 5,
-    image: "/web-stories/thub5.png",
-    heading:
-      "Another top celebrity lifestyle revealed: Cars, mansions, and investments.",
-    date: "July 12, 2024",
-  },
-];
-
-const DURATION = 10_000; // 10 seconds
+const IMAGE_DURATION = 10_000; // image = 10 sec
 
 interface WebStoryProps {
   onClose: () => void;
   startIndex?: number;
-  openStory?: boolean;
+  openStory?: OpenStory;
 }
 
-const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory }) => {
-  const { data: webstoriesData } = useGetWebstoriesQuery()
+interface OpenStory {
+  open: boolean;
+  items: StoryItem[];
+}
 
-  const webstories: Story[] = webstoriesData?.rows ?? []
+const WebStoryCard: FC<WebStoryProps> = ({
+  onClose,
+  startIndex = 0,
+  openStory,
+}) => {
+  const stories = openStory?.items ?? [];
 
   const [currentStory, setCurrentStory] = useState(startIndex);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [currentDuration, setCurrentDuration] =
+    useState<number>(IMAGE_DURATION);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const progressRef = useRef(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const startProgress = () => {
-    const startTime = Date.now() - (progressRef.current * DURATION) / 100;
+    const startTime =
+      Date.now() - (progressRef.current * currentDuration) / 100;
+
     intervalRef.current = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      const percentage = Math.min((elapsed / DURATION) * 100, 100);
+      const percentage = Math.min(
+        (elapsed / currentDuration) * 100,
+        100
+      );
+
       setProgress(percentage);
       progressRef.current = percentage;
 
@@ -124,47 +94,48 @@ const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory })
   };
 
   useEffect(() => {
-    if (finished) {
-      onClose();
-    }
+    if (finished) onClose();
   }, [finished, onClose]);
 
   useEffect(() => {
-    if (isPlaying) startProgress();
-    else pauseProgress();
-    return () => pauseProgress();
-  }, [isPlaying, currentStory]);
+    pauseProgress();
 
-  useEffect(() => {
-    if (openStory) {
-      // Disable scroll
-      document.body.style.overflow = "hidden";
+    if (isPlaying) {
+      startProgress();
+      if (videoRef.current) {
+        videoRef.current.play().catch(() => { });
+      }
     } else {
-      // Enable scroll
-      document.body.style.overflow = "auto";
+      if (videoRef.current) videoRef.current.pause();
     }
 
+    return () => pauseProgress();
+  }, [isPlaying, currentStory, currentDuration]);
+
+  useEffect(() => {
+    document.body.style.overflow = openStory ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, []);
+  }, [openStory]);
 
   const handleShare = () => {
     const story = stories[currentStory];
+    if (!story) return;
+
     if (navigator.share) {
-      navigator
-        .share({
-          title: "Web Story",
-          text: story.heading,
-          url: window.location.href,
-        })
-        .catch(console.log);
-    } else {
-      alert("Share API not supported");
+      navigator.share({
+        title: "Web Story",
+        text: story.title,
+        url: window.location.href,
+      });
     }
   };
 
   const story = stories[currentStory];
+  if (!story) return null;
+
+  const isCurrentVideo = isVideo(story.mediaUrl);
 
   return (
     <div
@@ -179,7 +150,7 @@ const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory })
             className="flex-1 h-[2px] rounded-full bg-white/40 overflow-hidden"
           >
             <div
-              className={`h-full bg-white rounded-full transition-all duration-100`}
+              className="h-full bg-white rounded-full transition-all duration-100"
               style={{
                 width:
                   i < currentStory
@@ -188,12 +159,12 @@ const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory })
                       ? `${progress}%`
                       : "0%",
               }}
-            ></div>
+            />
           </div>
         ))}
       </div>
 
-      {/* Close (X) Button */}
+      {/* Close Button */}
       <button
         onClick={onClose}
         className="absolute top-4 left-4 z-30 bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
@@ -212,7 +183,6 @@ const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory })
 
       {/* Share & Pause/Play */}
       <div className="absolute top-6 right-4 z-20 flex gap-4">
-        {/* Pause/Play */}
         <button onClick={() => setIsPlaying(!isPlaying)}>
           {isPlaying ? (
             <svg
@@ -223,11 +193,7 @@ const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory })
               strokeWidth={2.5}
               stroke="currentColor"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 5.25v13.5m-7.5-13.5v13.5"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
             </svg>
           ) : (
             <svg
@@ -238,16 +204,11 @@ const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory })
               strokeWidth={2.5}
               stroke="currentColor"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
             </svg>
           )}
         </button>
 
-        {/* Share */}
         <button onClick={handleShare}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -266,33 +227,51 @@ const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory })
         </button>
       </div>
 
-      {/* Image */}
+      {/* Media */}
       <div className="relative h-screen lg:h-full bg-black">
-        <Image
-          src={story.image}
-          alt="Web Story"
-          fill
-          className="object-contain"
-        />
+        {isCurrentVideo ? (
+          <video
+            ref={videoRef}
+            src={`${IMAGE_URL}/uploads/webstories/${story.mediaUrl}`}
+            className="object-contain cursor-pointer w-full h-full"
+            muted
+            playsInline
+            autoPlay
+            preload="metadata"
+            onLoadedMetadata={(e) => {
+              setCurrentDuration(e.currentTarget.duration * 1000);
+            }}
+            onEnded={nextStory}
+          />
+        ) : (
+          <Image
+            src={`${IMAGE_URL}/uploads/webstories/${story.mediaUrl}`}
+            alt={story.title || "Story"}
+            fill
+            className="object-contain cursor-pointer"
+            onLoadingComplete={() => {
+              setCurrentDuration(IMAGE_DURATION);
+            }}
+          />
+        )}
       </div>
 
-      {/* Gradient + Text */}
+      {/* Text */}
       <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-3 h-[50%] flex flex-col justify-end space-y-2">
         <p className="font-medium text-white line-clamp-3">
-          {story.heading}
+          {story.title}
         </p>
-        <p className="text-white">{story.date}</p>
+        <p className="text-white">
+          {new Date(story.createdAt).toLocaleDateString()}
+        </p>
       </div>
 
       {/* Prev */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2">
-        <div
-          onClick={prevStory}
-          className="lg:bg-white lg:dark:bg-[#171717] lg:rounded-full lg:p-3 lg:shadow-md cursor-pointer"
-        >
+        <div onClick={prevStory} className="cursor-pointer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-6 text-white lg:dark:text-white lg:text-black"
+            className="size-6 text-white"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={2}
@@ -305,13 +284,10 @@ const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory })
 
       {/* Next */}
       <div className="absolute right-0 top-1/2 -translate-y-1/2">
-        <div
-          onClick={nextStory}
-          className="lg:bg-white lg:dark:bg-[#171717] lg:rounded-full lg:p-3 lg:shadow-md cursor-pointer"
-        >
+        <div onClick={nextStory} className="cursor-pointer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-6 text-white lg:dark:text-white lg:text-black"
+            className="size-6 text-white"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={2}

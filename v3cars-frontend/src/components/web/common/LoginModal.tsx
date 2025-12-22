@@ -303,68 +303,74 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
 
             {step === "login" && (
 
-              <>
-                <h2 className="text-4xl font-semibold text-center">
-                  Login to <span className="font-bold">V3Cars</span>
-                </h2>
-                <div>
-                  <p className="text-center text-gray-500">
-                    This is necessary to personalise results for you
-                  </p>
-                  {errors.error && <p className="error text-xs mt-1 text-red-500 text-center">{errors.error}</p>}
-                </div>
-
-                <div>
-                  <div className="flex items-center gap-2 border border-gray-200 bg-gray-200 dark:bg-[#171717] dark:border-[#2E2E2E] rounded-md px-4 py-3">
-                    <FiMail size={16} className="text-gray-500" />
-                    <input
-                      type="email"
-                      placeholder="Enter your email id"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full text-sm outline-none bg-transparent"
-                    />
+              <div className="space-y-12">
+                <div className="space-y-4">
+                  <h2 className="text-4xl text-center">
+                    Login to <span className="font-bold">V3Cars</span>
+                  </h2>
+                  <div>
+                    <p className="text-center text-gray-500">
+                      This is necessary to personalise results for you
+                    </p>
+                    {errors.error && <p className="error text-xs mt-1 text-red-500 text-center">{errors.error}</p>}
                   </div>
-                  {errors.email && <p className="error text-xs mt-1 text-red-500 text-center">{errors.email}</p>}
                 </div>
 
-                <button
-                  disabled={!email || sendOTPLoading}
-                  onClick={resendOtp}
-                  className="w-full bg-primary hover:bg-primary-hover text-black font-medium py-3 rounded-md text-sm disabled:opacity-50"
-                >
-                  Login with OTP
-                </button>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center gap-2 border border-gray-200 bg-gray-200 dark:bg-[#171717] dark:border-[#2E2E2E] rounded-md px-4 py-3">
+                      <FiMail size={16} className="text-gray-500" />
+                      <input
+                        type="email"
+                        placeholder="Enter your email id"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full text-sm outline-none bg-transparent"
+                      />
+                    </div>
+                    {errors.email && <p className="error text-xs mt-1 text-red-500 text-center">{errors.email}</p>}
+                  </div>
+
+                  <button
+                    disabled={!email || sendOTPLoading}
+                    onClick={resendOtp}
+                    className="w-full bg-primary hover:bg-primary-hover text-black font-medium py-3 rounded-md text-sm disabled:opacity-50"
+                  >
+                    Login with OTP
+                  </button>
+                </div>
 
                 <div className="flex items-center">
                   <hr className="flex-1 border-gray-300 dark:border-[#2E2E2E]" />
                   <div className="w-12 h-12 rounded-full flex justify-center items-center border dark:border-[#2E2E2E]">
-                    <span className="text-md text-gray-400">or</span>
+                    <span className="text-md text-gray-600">or</span>
                   </div>
                   <hr className="flex-1 border-gray-300 dark:border-[#2E2E2E]" />
                 </div>
 
-                <div className="flex gap-3 justify-center">
-                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
-                    <Image src="/common/google.svg" alt="Google" width={16} height={16} />
-                    Continue with Google
-                  </button>
-                  <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
-                    <Image src="/common/facebook.svg" alt="Facebook" width={16} height={16} />
-                    Continue with Facebook
-                  </button>
-                </div>
+                <div className="space-y-4">
+                  <div className="flex gap-3 justify-center">
+                    <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
+                      <Image src="/common/google.svg" alt="Google" width={16} height={16} />
+                      Continue with Google
+                    </button>
+                    <button className="flex items-center gap-2 border border-gray-200 rounded px-4 py-2 text-sm bg-white dark:bg-[#171717] dark:border-[#2E2E2E]">
+                      <Image src="/common/facebook.svg" alt="Facebook" width={16} height={16} />
+                      Continue with Facebook
+                    </button>
+                  </div>
 
-                <p className="text-center text-xs text-gray-500">
-                  Don&apos;t have an account?{" "}
-                  <span
-                    onClick={() => setStep("signup")}
-                    className="text-primary cursor-pointer font-medium"
-                  >
-                    Sign Up
-                  </span>
-                </p>
-              </>
+                  <p className="text-center text-xs text-gray-500">
+                    Don&apos;t have an account?{" "}
+                    <span
+                      onClick={() => setStep("signup")}
+                      className="text-primary cursor-pointer font-medium"
+                    >
+                      Sign Up
+                    </span>
+                  </p>
+                </div>
+              </div>
             )}
 
             {step === "otp" && (
