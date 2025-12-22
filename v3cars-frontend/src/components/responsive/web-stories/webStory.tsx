@@ -1,6 +1,30 @@
 "use client";
 import { FC, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useGetWebstoriesQuery } from "@/redux/api/webstoriesModuleApi";
+
+export interface StoryItem {
+  id: string;
+  subStoryId: number;
+  title: string;
+  slug: string | null;
+  contentSlug: string | null;
+  authorId: string;
+  addedBy: string;
+  status: boolean;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+}
+
+export interface Story {
+  storyId: string;
+  title: string;
+  slug: string | null;
+  authorId: string;
+  status: boolean;
+  createdAt: string; // ISO date string
+  items: StoryItem[];
+}
 
 const stories = [
   {
@@ -49,6 +73,10 @@ interface WebStoryProps {
 }
 
 const WebStoryCard: FC<WebStoryProps> = ({ onClose, startIndex = 0, openStory }) => {
+  const { data: webstoriesData } = useGetWebstoriesQuery()
+
+  const webstories: Story[] = webstoriesData?.rows ?? []
+
   const [currentStory, setCurrentStory] = useState(startIndex);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
