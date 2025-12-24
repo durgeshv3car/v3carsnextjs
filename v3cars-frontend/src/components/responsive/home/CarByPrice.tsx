@@ -58,8 +58,8 @@ export interface CarProps {
 }
 
 const CarByPrice: React.FC = () => {
-    const [carPriceTab, setCarPriceTab] = useState<{ id: string, label: string }>();
-    const { data: carByPriceData } = useGetCarByPriceQuery({ budget: carPriceTab?.id ?? "UNDER_5L", limit: 8, page: 1 });
+    const [carPriceTab, setCarPriceTab] = useState<{ id: string, label: string }>({ id: "UNDER_5L", label: "Under ₹5 Lakh" });
+    const { data: carByPriceData } = useGetCarByPriceQuery({ budget: carPriceTab?.id, limit: 8, page: 1 });
     const carByPrice: CarProps[] = carByPriceData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);

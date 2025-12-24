@@ -43,8 +43,8 @@ interface CarProps {
 }
 
 const CarByType: React.FC = () => {
-    const [carBodyTab, setCarBodyTab] = useState<{ id: number, label: string }>();
-    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: carBodyTab?.id || 1, limit: 15, page: 1 });
+    const [carBodyTab, setCarBodyTab] = useState<{ id: number, label: string }>({ id: 3, label: "SUV" });
+    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: carBodyTab?.id, limit: 15, page: 1 });
     const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
