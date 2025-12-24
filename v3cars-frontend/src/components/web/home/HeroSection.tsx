@@ -9,18 +9,9 @@ import 'swiper/css/pagination';
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { setBodyTypeIds, setBrandIds, setPriceBucket } from '@/redux/slices/advanceSearchSlice';
+import { setPriceBucket, toggleBodyType, toggleBrand } from '@/redux/slices/advanceSearchSlice';
 import { useGetHeroBannersQuery } from '@/redux/api/homeModuleApi';
-
-// Dummy Slides
-const slides = [
-  {
-    image: '/images/banner.png',
-    title: 'Tata Punch EV',
-    tagline: 'Power meets Efficiency',
-  },
-
-];
+import { IMAGE_URL } from '@/utils/constant';
 
 interface HeroSectionProps {
   selectBrand: number | null;
@@ -96,16 +87,26 @@ interface AllVehicleTypes {
   name: string
 }
 
+export interface Banner {
+  bannerId: number;
+  imagePath: string;
+  imageAltTag: string;
+  redirectLink: string;
+  startDate: string; // ISO date string
+  endDate: string;   // ISO date string
+}
+
 const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, data, models }) => {
   const { data: heroBannerData } = useGetHeroBannersQuery()
   const [modelId, setModelId] = useState<number | null>(null)
-  const [budget, setBudget] = useState<string>("")
-  const [vehicleType, setVehicleType] = useState<number | null>(null)
+  const [budget, setBudget] = useState<{ label: string, value: string }>()
+  const [vehicleType, setVehicleType] = useState<{ id: number, label: string }>()
+  const [selectSearchBrand, setSelectSearchBrand] = useState<{ id: number, label: string }>()
   const [activeTab, setActiveTab] = useState('budget');
   const router = useRouter()
   const dispatch = useDispatch();
 
-  console.log(heroBannerData);
+  const heroBanner: Banner[] = heroBannerData?.rows ?? []
 
   function normalizeBrandName(name: string) {
     const lower = name.toLowerCase();
@@ -128,16 +129,31 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
         return;
       }
 
-      dispatch(setPriceBucket(budget));
-      dispatch(setBodyTypeIds([vehicleType]));
+      dispatch(
+        setPriceBucket({
+          id: budget.value,
+          label: budget.label,
+        })
+      );
+      dispatch(
+        toggleBodyType({
+          id: vehicleType.id,
+          label: vehicleType.label,
+        })
+      );
 
     } else {
-      if (!selectBrand) {
+      if (!selectSearchBrand) {
         alert("Brand Not Selected");
         return;
       }
 
-      dispatch(setBrandIds([selectBrand]));
+      dispatch(
+        toggleBrand({
+          id: selectSearchBrand?.id,
+          label: selectSearchBrand?.label,
+        })
+      );
     }
 
     // 🔹 Common redirect
@@ -182,7 +198,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
     };
   }
 
-
   const { groupedOptions } = splitBrands(data)
 
   return (
@@ -193,7 +208,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
           modules={[Pagination, Autoplay]}
           loop
           autoplay={{
-            delay: 10000, // 10 seconds
+            delay: 5000, // 10 seconds
             disableOnInteraction: false, // keeps autoplay running even after swipe
           }}
           pagination={{
@@ -204,12 +219,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
           }}
           className="relative h-full w-full"
         >
-          {slides.map((slide, index) => (
+          {heroBanner.map((slide, index) => (
             <SwiperSlide key={index}>
-              <div className=' absolute left-0 top-0 w-full h-full bg-gradient-to-r from-black/35 to-transparent' />
+              <div className=' absolute left-0 top-0 w-full h-full bg-gradient-to-r from-black/35 to-transparent cursor-pointer' onClick={() => { router.push(`${slide.redirectLink}`) }} />
               <div
                 className="h-full w-full bg-cover bg-no-repeat bg-center"
-                style={{ backgroundImage: `url(${slide.image})` }}
+                style={{
+                  backgroundImage: `url(${slide.imagePath
+                    ? `${IMAGE_URL}/media/bannerimages/${slide.imagePath}`
+                    : "/images/banner.png"
+                    })`,
+                }}
+
               />
             </SwiperSlide>
           ))}
@@ -275,9 +296,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
                       placeholder="Select Budget"
                       labelKey="label"
                       valueKey="value"
-                      value={budget}
+                      value={budget?.value}
                       onSelect={(budget) => {
-                        setBudget(budget.value)
+                        setBudget({
+                          label: budget.label,
+                          value: budget.value
+                        })
                       }}
                     />
                   </div>
@@ -287,9 +311,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
                       placeholder="All Vehicle Types"
                       labelKey="name"
                       valueKey="id"
-                      value={vehicleType}
+                      value={vehicleType?.id}
                       onSelect={(bodyType: AllVehicleTypes) => {
-                        setVehicleType(bodyType.id)
+                        setVehicleType({
+                          id: bodyType.id,
+                          label: bodyType.name
+                        })
                       }}
                     />
                   </div>
@@ -303,7 +330,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ selectBrand, setSelectBrand, 
                       labelKey="displayName"
                       valueKey="brandId"
                       value={selectBrand}
-                      onSelect={(value: CarBrand) => { setSelectBrand(value.brandId) }}
+                      onSelect={(value: CarBrand) => {
+                        setSelectBrand(value.brandId)
+                        setSelectSearchBrand({
+                          id: value.brandId,
+                          label: value.brandName
+                        })
+                      }}
                     />
                   </div>
                   <div className='border-b dark:border-[#2E2E2E] w-full text-sm py-3 rounded-xl'>

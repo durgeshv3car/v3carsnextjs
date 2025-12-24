@@ -1,6 +1,7 @@
 'use client'
 
 import { IMAGE_URL } from "@/utils/constant"
+import Image from "next/image"
 
 interface LatestVideosProps {
     data: ReviewVideo[]
@@ -32,19 +33,21 @@ const LatestVideos: React.FC<LatestVideosProps> = ({ data }) => {
                 {data.map((video) => (
                     <div
                         key={video.id}
-                        className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg max-h-[142px] lg:max-h-[303px] shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
+                        className="bg-[#E2E2E2] dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg shadow-sm overflow-hidden hover:shadow-md transition p-2 flex flex-col"
                     >
                         {/* Thumbnail */}
-                        <div className="relative max-h-[100px] lg:max-h-[200px] group">
-                            <img
+                        <div className="relative group">
+                            <Image
                                 src={`${IMAGE_URL}${video.thumbnail.url}`}
                                 alt={video.thumbnail.alt}
-                                className="object-cover w-full h-full rounded"
+                                width={200}
+                                height={100}
+                                className="w-full h-full rounded"
                             />
                             <div className="absolute inset-0 group-hover:bg-black/30 rounded" />
                             <div className="absolute inset-0 flex items-center justify-center">
                                 {/* Play Icon */}
-                                <img
+                                <Image
                                     src={"/latest-video/youtube.png"}
                                     alt="Play"
                                     width={50}
@@ -55,8 +58,8 @@ const LatestVideos: React.FC<LatestVideosProps> = ({ data }) => {
                         </div>
 
                         {/* Content */}
-                        <div className="p-2">
-                            <h3 className="font-semibold line-clamp-2">{video.title}</h3>
+                        <div className="py-2">
+                            <h3 className="text-sm lg:text-base font-semibold line-clamp-2">{video.title}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                 By {video.author.name}
                             </p>

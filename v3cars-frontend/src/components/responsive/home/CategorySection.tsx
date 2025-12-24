@@ -1,12 +1,18 @@
 'use client';
 
-import { setBodyTypeIds } from '@/redux/slices/advanceSearchSlice';
+import { toggleBodyType } from '@/redux/slices/advanceSearchSlice';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-const categories = [
+interface Categories {
+    id: number;
+    label: string;
+    icon: string;
+}
+
+const categories: Categories[] = [
     { id: 3, label: 'SUV', icon: '/car-image/suv.png' },
     { id: 4, label: 'Sedan', icon: '/car-image/sedan.png' },
     { id: 1, label: 'Hatchback', icon: '/car-image/hatchback.png' },
@@ -21,11 +27,16 @@ const CategorySection: React.FC = () => {
     const router = useRouter()
     const dispatch = useDispatch();
 
-    function handleCategory(value: number) {
+    function handleCategory(value: Categories) {
         if (!value) {
             return alert("Something Went Worng. Try Again Later")
         }
-        dispatch(setBodyTypeIds([value]));
+        dispatch(
+            toggleBodyType({
+                id: value.id,
+                label: value.label,
+            })
+        );
         router.push("/search/new-cars");
     }
 
@@ -41,7 +52,7 @@ const CategorySection: React.FC = () => {
                         <div
                             key={index}
                             className="group bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] h-[104px] rounded-lg flex flex-col items-center justify-center text-center text-[12px] font-medium hover:shadow-sm transition-transform duration-300 cursor-pointer snap-start lg:snap-none"
-                            onClick={() => { handleCategory(category.id) }}
+                            onClick={() => { handleCategory(category) }}
                         >
                             <Image
                                 src={category.icon}

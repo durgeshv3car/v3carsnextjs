@@ -9,17 +9,11 @@ import { CiSearch } from 'react-icons/ci';
 import CustomSelect from '@/components/ui/custom-inputs/CustomSelect';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
-import { setBodyTypeIds, setBrandIds, setPriceBucket } from '@/redux/slices/advanceSearchSlice';
+import { setPriceBucket, toggleBodyType, toggleBrand } from '@/redux/slices/advanceSearchSlice';
 import { useRouter } from 'next/navigation';
 import { useGetHeroBannersQuery } from '@/redux/api/homeModuleApi';
-
-const slides = [
-    {
-        image: '/images/mobile-banner.webp',
-        title: 'Tata Altroz Racer',
-        tagline: 'More Performance,\nBig on Features',
-    },
-];
+import { Banner } from '@/components/web/home/HeroSection';
+import { IMAGE_URL } from '@/utils/constant';
 
 interface MobileHeroSectionProps {
     selectBrand: number | null;
@@ -98,13 +92,14 @@ interface AllVehicleTypes {
 const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setSelectBrand, data, models }) => {
     const { data: heroBannerData } = useGetHeroBannersQuery()
     const [modelId, setModelId] = useState<number | null>(null)
-    const [budget, setBudget] = useState<string>("")
-    const [vehicleType, setVehicleType] = useState<number | null>(null)
+    const [budget, setBudget] = useState<{ label: string, value: string }>()
+    const [vehicleType, setVehicleType] = useState<{ id: number, label: string }>()
+    const [selectSearchBrand, setSelectSearchBrand] = useState<{ id: number, label: string }>()
     const [activeTab, setActiveTab] = useState('budget');
     const dispatch = useDispatch();
     const router = useRouter()
 
-    console.log(heroBannerData);    
+    const heroBanner: Banner[] = heroBannerData?.rows ?? []
 
     function normalizeBrandName(name: string) {
         const lower = name.toLowerCase();
@@ -127,16 +122,31 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                 return;
             }
 
-            dispatch(setPriceBucket(budget));
-            dispatch(setBodyTypeIds([vehicleType]));
+            dispatch(
+                setPriceBucket({
+                    id: budget.value,
+                    label: budget.label,
+                })
+            );
+            dispatch(
+                toggleBodyType({
+                    id: vehicleType.id,
+                    label: vehicleType.label,
+                })
+            );
 
         } else {
-            if (!selectBrand) {
+            if (!selectSearchBrand) {
                 alert("Brand Not Selected");
                 return;
             }
 
-            dispatch(setBrandIds([selectBrand]));
+            dispatch(
+                toggleBrand({
+                    id: selectSearchBrand?.id,
+                    label: selectSearchBrand?.label,
+                })
+            );
         }
 
         // 🔹 Common redirect
@@ -195,17 +205,19 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                     bulletClass: 'swiper-custom-bullet',
                     bulletActiveClass: 'swiper-custom-bullet-active',
                 }}
-                className="h-[200px] w-full"
             >
-                {slides.map((slide, index) => (
+                {heroBanner.map((slide, index) => (
                     <SwiperSlide key={index}>
                         <Image
-                            src={slide.image}
+                            src={`${slide.imagePath
+                                ? `${IMAGE_URL}/media/bannerimages/${slide.imagePath}`
+                                : "/images/banner.png"}`}
                             alt={`Slide ${index + 1}`}
                             width={400}
                             height={200}
                             priority
-                            className=""
+                            className="w-full h-full cursor-pointer"
+                            onClick={() => { router.push(`${slide.redirectLink}`) }}
                         />
                     </SwiperSlide>
                 ))}
@@ -214,11 +226,12 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
             <div className="custom-pagination flex items-center gap-2" />
 
             {/* Feature Tiles */}
-            <div className="flex items-center h-[243px] gap-4">
+            <div className="flex items-center justify-evenly w-full h-[243px] gap-4">
                 {/* Left Tile */}
                 <div
-                    className="w-[150px] h-full bg-cover bg-center rounded-lg overflow-hidden"
+                    className="w-[150px] sm:w-full h-full bg-cover bg-center rounded-lg overflow-hidden"
                     style={{ backgroundImage: 'url("/images/on-road-price.png")' }}
+                    onClick={() => { router.push('/car-on-road-price-in-india') }}
                 >
                     <div className="bg-black/40 w-full h-full flex items-center justify-center px-2 text-white text-sm font-medium text-center">
                         Check on-road price
@@ -226,12 +239,14 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                 </div>
 
                 {/* Right Side Grid */}
-                <div className="w-[222px] h-full flex flex-col justify-between gap-4">
-                    <div className="h-[116px] bg-[#338177] relative rounded-lg overflow-hidden flex items-end justify-end">
+                <div className="w-[222px] sm:w-full h-full flex flex-col justify-between gap-4">
+                    <div
+                        className="h-[116px] bg-[#338177] relative rounded-lg overflow-hidden flex items-end justify-end"
+                        onClick={() => { router.push('/fuel-price-in-india') }}
+                    >
                         <span className="absolute top-2 left-2 text-white text-sm font-medium z-20">
                             Fuel price in India
                         </span>
-
 
                         <Image
                             src="/images/fuel-price-in-india.png"
@@ -247,7 +262,10 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                     {/* Bottom Two Tiles */}
                     <div className="flex gap-4 h-[116px]">
 
-                        <div className="bg-black flex-1 relative rounded-lg overflow-hidden flex flex-col border dark:border-[#262629]">
+                        <div
+                            className="bg-black flex-1 relative rounded-lg overflow-hidden flex flex-col border dark:border-[#262629]"
+                            onClick={() => { router.push('/fuel-cost-calculator') }}
+                        >
                             <span className="absolute top-2 left-2 text-white text-sm font-medium z-20">
                                 Fuel cost calculator
                             </span>
@@ -263,7 +281,10 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                         </div>
 
                         {/* Right Bottom Tile */}
-                        <div className="bg-[#FFC414] flex-1 relative rounded-lg overflow-hidden flex flex-col">
+                        <div
+                            className="bg-[#FFC414] flex-1 relative rounded-lg overflow-hidden flex flex-col"
+                            onClick={() => { router.push('/mileage-calculator') }}
+                        >
                             <span className="absolute top-2 left-2 text-sm font-medium z-20">
                                 Mileage calculator
                             </span>
@@ -317,9 +338,12 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                                     placeholder="Select Budget"
                                     labelKey="label"
                                     valueKey="value"
-                                    value={budget}
+                                    value={budget?.value}
                                     onSelect={(budget) => {
-                                        setBudget(budget.value)
+                                        setBudget({
+                                            label: budget.label,
+                                            value: budget.value
+                                        })
                                     }}
                                 />
                             </div>
@@ -330,9 +354,12 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                                     placeholder="All Vehicle Types"
                                     labelKey="name"
                                     valueKey="id"
-                                    value={vehicleType}
+                                    value={vehicleType?.id}
                                     onSelect={(bodyType: AllVehicleTypes) => {
-                                        setVehicleType(bodyType.id)
+                                        setVehicleType({
+                                            id: bodyType.id,
+                                            label: bodyType.name
+                                        })
                                     }}
                                 />
                             </div>
@@ -347,7 +374,13 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                                     labelKey="displayName"
                                     valueKey="brandId"
                                     value={selectBrand}
-                                    onSelect={(value: CarBrand) => { setSelectBrand(value.brandId) }}
+                                    onSelect={(value: CarBrand) => {
+                                        setSelectBrand(value.brandId)
+                                        setSelectSearchBrand({
+                                            id: value.brandId,
+                                            label: value.brandName
+                                        })
+                                    }}
                                 />
                             </div>
                             <div className='w-full border-b dark:border-[#2E2E2E]'>

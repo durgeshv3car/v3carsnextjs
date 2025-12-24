@@ -31,10 +31,20 @@ function MileageFilter({ openSection }: MileageFilterProps) {
         }
     }, [openSection]);
 
-    const handleCheckboxChange = (value: string) => {
-        // Toggle selection
-        const newValue = selectedMileage === value ? null : value;
-        dispatch(setMileage(newValue));
+    const handleCheckboxChange = (value: { label: string; value: string }) => {
+        const isSelected =
+            String(selectedMileage?.id) === String(value.value);
+
+        dispatch(
+            setMileage(
+                isSelected
+                    ? null
+                    : {
+                        id: value.value,
+                        label: value.label,
+                    }
+            )
+        );
     };
 
     return (
@@ -51,8 +61,8 @@ function MileageFilter({ openSection }: MileageFilterProps) {
                                 type="checkbox"
                                 className="sr-only peer"
                                 id={`mileage-${index}`}
-                                checked={selectedMileage === range.value}
-                                onChange={() => handleCheckboxChange(range.value)}
+                                checked={String(selectedMileage?.id) === String(range.value)}
+                                onChange={() => handleCheckboxChange(range)}
                             />
                             <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-primary peer-checked:border-primary relative transition-all duration-200">
                                 <svg

@@ -43,13 +43,13 @@ interface CarModel {
 }
 
 function AdvanceSearch() {
-    const selectedBrandIds = useSelector((state: RootState) => state.filters.brandIds);
+    const selectedBrands = useSelector((state: RootState) => state.filters.brands);
     const selectedPriceBucket = useSelector((state: RootState) => state.filters.priceBucket);
-    const selectedBodyTypeIds = useSelector((state: RootState) => state.filters.bodyTypeIds);
-    const selectedCylinders = useSelector((state: RootState) => state.filters.cylindersList);
+    const selectedBodyTypes = useSelector((state: RootState) => state.filters.bodyTypes);
+    const selectedCylinders = useSelector((state: RootState) => state.filters.cylinders);
     const selectedFuel = useSelector((state: RootState) => state.filters.fuelType);
     const selectedMileage = useSelector((state: RootState) => state.filters.mileage);
-    const selectedSeating = useSelector((state: RootState) => state.filters.seatingList);
+    const selectedSeating = useSelector((state: RootState) => state.filters.seating);
     const selectedTransmissionType = useSelector((state: RootState) => state.filters.transmissionType);
     const selectedEngineDisplacement = useSelector((state: RootState) => state.filters.engineDisplacement);
 
@@ -59,30 +59,72 @@ function AdvanceSearch() {
     const [filtersKey, setFiltersKey] = useState(0); // key to force refetch
 
     // Normalize filters so empty values become undefined
-    const normalizedFilters = useMemo(() => ({
-        page,
-        limit: 50,
-        sortBy,
-        priceBucket: selectedPriceBucket || undefined,
-        brandIds: selectedBrandIds?.length ? selectedBrandIds : undefined,
-        bodyTypeIds: selectedBodyTypeIds?.length ? selectedBodyTypeIds : undefined,
-        cylindersList: selectedCylinders?.length ? selectedCylinders : undefined,
-        seatingList: selectedSeating?.length ? selectedSeating : undefined,
-        mileage: selectedMileage || undefined,
-        transmissionType: selectedTransmissionType || undefined,
-        fuelType: selectedFuel || undefined,
-        engineDisplacement: selectedEngineDisplacement || undefined,
-        key: filtersKey, // force refetch when key changes
-    }), [
-        page, sortBy, selectedBrandIds, selectedPriceBucket, selectedBodyTypeIds,
-        selectedCylinders, selectedSeating, selectedMileage, selectedTransmissionType,
-        selectedFuel, selectedEngineDisplacement, filtersKey
-    ]);
+    const normalizedFilters = useMemo(
+        () => ({
+            page,
+            limit: 50,
+            sortBy: String(sortBy), // 👈 SearchOption → string
 
-    const { data: advanceSearchData, isFetching } = useGetAdvanceSearchDataQuery(
-        normalizedFilters,
-        { skip: !sortBy, refetchOnMountOrArgChange: true }
+            priceBucket: selectedPriceBucket
+                ? String(selectedPriceBucket.id)
+                : undefined,
+
+            brandIds: selectedBrands.length
+                ? selectedBrands.map((b) => Number(b.id))
+                : undefined,
+
+            bodyTypeIds: selectedBodyTypes.length
+                ? selectedBodyTypes.map((b) => Number(b.id))
+                : undefined,
+
+            cylindersList: selectedCylinders.length
+                ? selectedCylinders.map((c) => Number(c.id))
+                : undefined,
+
+            seatingList: selectedSeating.length
+                ? selectedSeating.map((s) => Number(s.id))
+                : undefined,
+
+            mileage: selectedMileage
+                ? String(selectedMileage.id)
+                : undefined,
+
+            transmissionType: selectedTransmissionType
+                ? String(selectedTransmissionType.id)
+                : undefined,
+
+            fuelType: selectedFuel
+                ? String(selectedFuel.id)
+                : undefined,
+
+            engineDisplacement: selectedEngineDisplacement.length
+                ? selectedEngineDisplacement.map((e) => String(e.id))
+                : undefined,
+
+            key: filtersKey,
+        }),
+        [
+            page,
+            sortBy,
+            selectedPriceBucket,
+            selectedBrands,
+            selectedBodyTypes,
+            selectedCylinders,
+            selectedSeating,
+            selectedMileage,
+            selectedTransmissionType,
+            selectedFuel,
+            selectedEngineDisplacement,
+            filtersKey,
+        ]
     );
+
+
+    const { data: advanceSearchData, isFetching } =
+        useGetAdvanceSearchDataQuery(normalizedFilters, {
+            skip: !sortBy,
+            refetchOnMountOrArgChange: true,
+        });
 
     // Append or replace items based on page
     useEffect(() => {
@@ -116,9 +158,9 @@ function AdvanceSearch() {
         setFiltersKey(prev => prev + 1); // force refetch immediately
     }, [
         sortBy,
-        selectedBrandIds,
+        selectedBrands,
         selectedPriceBucket,
-        selectedBodyTypeIds,
+        selectedBodyTypes,
         selectedCylinders,
         selectedFuel,
         selectedMileage,

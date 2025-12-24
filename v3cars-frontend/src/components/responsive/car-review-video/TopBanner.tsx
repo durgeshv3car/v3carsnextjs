@@ -5,11 +5,13 @@ import Image from "next/image";
 function TopBanner() {
     return (
         <>
-            <div className="lg:hidden min-h-[49px] mb-4">
-                <img
+            <div className="lg:hidden mb-4">
+                <Image
                     src={"/review-video-banner.png"}
                     alt="review-video-banner"
-                    className="w-full h-full object-cover"
+                    width={200}
+                    height={49}
+                    className="w-full h-full"
                 />
             </div>
             <div className="flex items-start lg:items-center gap-4 h-auto lg:h-[200px] border-b pb-2 w-full dark:border-[#2E2E2E]">

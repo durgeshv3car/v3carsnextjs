@@ -35,7 +35,7 @@ const CommonPopularVideo: React.FC<CommonPopularVideoProps> = ({ title, data }) 
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-2 gap-2 p-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 p-2">
                 {data.map((item, index) => (
                     <div key={index} className="relative overflow-hidden rounded-lg group cursor-pointer">
                         {/* Thumbnail */}
@@ -44,7 +44,7 @@ const CommonPopularVideo: React.FC<CommonPopularVideoProps> = ({ title, data }) 
                             alt={`Popular news ${index + 1}`}
                             width={300}
                             height={200}
-                            className="object-cover rounded-lg"
+                            className="rounded-lg"
                         />
 
                         {/* Overlay */}

@@ -196,30 +196,33 @@ const howItWorkData = [
     },
 ];
 
-
 const links = [
     {
         title: "On-Road Price Calculator",
         desc: "Get the full on-road price with all taxes & fees.",
         img: "/mileage-calculator/on-road.png",
         bg: "bg-[#E4F3FE]",
+        url: "/car-on-road-price-in-india"
     },
     {
         title: "Fuel Price in India",
         desc: "Check Latest Fuel Prices Across India",
         img: "/emicalculator/fuel.png",
         bg: "bg-[#FCEFFE]",
+        url: "/fuel-price-in-india"
     },
     {
         title: "Car Loan EMI Calculator",
         desc: "Calculate Your Monthly Car Loan EMI",
         img: "/emicalculator/emi.png",
         bg: "bg-[#FFF8C9]",
+        url: "/car-loan-emi-calculator"
     },
     {
         title: "Compare Cars",
         desc: "Compare Specs, Features & Prices",
         img: "/emicalculator/compare.png",
         bg: "bg-[#E0F8E8]",
+        url: "/compare-cars"
     },
 ];

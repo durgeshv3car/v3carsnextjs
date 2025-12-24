@@ -49,7 +49,7 @@ const CommonMobileReviewCard: React.FC<CommonMobileReviewCardProps> = ({ data })
                             className="border rounded-lg overflow-hidden min-h-[221px] shadow-sm dark:border-[#2E2E2E] bg-white dark:bg-[#171717]"
                         >
                             {/* Image */}
-                            <div className="max-h-[116px]">
+                            <div className="">
                                 <Image
                                     src={`${IMAGE_URL}${car.thumbnail.url}`}
                                     alt={car.thumbnail.alt}
@@ -67,7 +67,7 @@ const CommonMobileReviewCard: React.FC<CommonMobileReviewCardProps> = ({ data })
 
                                 {/* ✅ Sanitized HTML Description */}
                                 <div
-                                    className="text-xs line-clamp-3 prose prose-invert max-w-none"
+                                    className="line-clamp-3 text-sm/6 sm:text-sm/8 prose prose-invert max-w-none text-justify"
                                     dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
                                 />
 

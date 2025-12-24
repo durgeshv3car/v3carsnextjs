@@ -29,9 +29,19 @@ function TransmissionFilter({ openSection }: TransmissionFilterProps) {
     }, [openSection]);
 
     const handleTransmissionSelect = (value: string) => {
-        // Toggle logic: deselect if same value clicked
-        const newValue = selectedTransmission === value ? null : value;
-        dispatch(setTransmissionType(newValue));
+        const isSelected =
+            String(selectedTransmission?.id) === String(value);
+
+        dispatch(
+            setTransmissionType(
+                isSelected
+                    ? null
+                    : {
+                        id: value,
+                        label: value,
+                    }
+            )
+        );
     };
 
     return (
@@ -48,7 +58,7 @@ function TransmissionFilter({ openSection }: TransmissionFilterProps) {
                                 type="checkbox"
                                 className="sr-only peer"
                                 id={`transmission-${index}`}
-                                checked={selectedTransmission === type}
+                                checked={String(selectedTransmission?.id) === String(type)}
                                 onChange={() => handleTransmissionSelect(type)}
                             />
                             <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-primary peer-checked:border-primary relative transition-all duration-200">

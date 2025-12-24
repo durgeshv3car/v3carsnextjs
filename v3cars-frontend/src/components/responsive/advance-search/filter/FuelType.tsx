@@ -8,8 +8,14 @@ type FuelFilterProps = {
     openSection: string | null;
 };
 
+interface FuelTypeOption {
+    label: string;
+    value: string;
+    icon: string;
+}
+
 // Fuel options
-const fuelTypes = [
+const fuelTypes: FuelTypeOption[] = [
     { label: 'Petrol', value: 'Petrol', icon: '/car-image/suv.png' },
     { label: 'Diesel', value: 'Diesel', icon: '/car-image/sedan.png' },
     { label: 'CNG', value: 'CNG', icon: '/car-image/hatchback.png' },
@@ -33,10 +39,20 @@ const FuelTypeFilter = ({ openSection }: FuelFilterProps) => {
         }
     }, [openSection]);
 
-    const handleFuelClick = (value: string) => {
-        // Toggle selection
-        const newFuel = selectedFuel === value ? null : value;
-        dispatch(setFuelType(newFuel));
+    const handleFuelClick = (value: FuelTypeOption) => {
+        const isSelected =
+            String(selectedFuel?.id) === String(value.value);
+
+        dispatch(
+            setFuelType(
+                isSelected
+                    ? null
+                    : {
+                        id: value.value,
+                        label: value.label,
+                    }
+            )
+        );
     };
 
     return (
@@ -50,9 +66,9 @@ const FuelTypeFilter = ({ openSection }: FuelFilterProps) => {
                     {fuelTypes.map((type) => (
                         <div
                             key={type.value}
-                            onClick={() => handleFuelClick(type.value)}
+                            onClick={() => handleFuelClick(type)}
                             className={`flex flex-col min-w-[105px] min-h-[80px] items-center justify-center text-sm gap-1 border rounded-xl dark:border-[#2E2E2E] cursor-pointer
-                                ${selectedFuel === type.value ? 'border-primary bg-primary-light text-black' : ''}`}
+                                ${String(selectedFuel?.id) === String(type.value) ? 'border-primary bg-primary-light text-black' : ''}`}
                         >
                             <img
                                 src={type.icon}

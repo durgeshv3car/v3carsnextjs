@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { CiCalendarDate } from 'react-icons/ci'
 import { FaUserEdit } from 'react-icons/fa'
 import { IMAGE_URL } from '@/utils/constant'
+import Image from 'next/image'
 
 interface CommonReviewCardProps {
     title: string
@@ -50,13 +51,15 @@ const CommonReviewCard: React.FC<CommonReviewCardProps> = ({ title, viewAllLink,
                     return (
                         <div
                             key={item.id}
-                            className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg min-h-[371px] shadow-md overflow-hidden transition flex flex-col"
+                            className="bg-white dark:bg-[#171717] border dark:border-[#2E2E2E] rounded-lg shadow-md overflow-hidden transition flex flex-col"
                         >
                             {/* Fixed height image */}
-                            <div className="relative max-h-[200px] w-full">
-                                <img
+                            <div className="relative">
+                                <Image
                                     src={`${IMAGE_URL}${item.thumbnail.url}`}
                                     alt={item.thumbnail.alt}
+                                    width={500}
+                                    height={200}
                                     className="w-full h-full rounded-lg object-cover"
                                 />
                             </div>

@@ -36,13 +36,13 @@ const CommonMobileVideoCard: React.FC<CommonMobileVideoCardProps> = ({ data }) =
                         key={car.id}
                         className="border rounded-lg overflow-hidden shadow-sm dark:border-[#2E2E2E]"
                     >
-                        <div className="max-h-[116px]">
+                        <div className="">
                             <Image
                                 src={`${IMAGE_URL}${car.thumbnail.url}`}
                                 alt={car.thumbnail.alt}
-                                width={300}
-                                height={116}
-                                className="rounded-lg object-cover"
+                                width={200}
+                                height={100}
+                                className="rounded-lg w-full h-full"
                             />
                         </div>
                         <div className="p-3 space-y-2">

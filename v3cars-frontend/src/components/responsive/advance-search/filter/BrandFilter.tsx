@@ -4,7 +4,7 @@ import { useGetBrandsQuery } from '@/redux/api/carModuleApi';
 import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { setBrandIds } from '@/redux/slices/advanceSearchSlice';
+import { toggleBrand } from '@/redux/slices/advanceSearchSlice';
 
 interface Brand {
     brandId: number;
@@ -24,7 +24,7 @@ type BrandFilterProps = {
 
 function BrandFilter({ openSection }: BrandFilterProps) {
     const dispatch = useDispatch();
-    const selectedBrandIds = useSelector((state: RootState) => state.filters.brandIds);
+    const selectedBrandIds = useSelector((state: RootState) => state.filters.brands);
 
     const { data: brandsData, isLoading } = useGetBrandsQuery();
     const contentRef = useRef<HTMLDivElement>(null);
@@ -64,12 +64,13 @@ function BrandFilter({ openSection }: BrandFilterProps) {
         return unique.filter((b) => b.displayName.toLowerCase().includes(lower));
     }, [brands, searchTerm]);
 
-    const handleCheckboxChange = (brandId: number) => {
-        const updated = selectedBrandIds.includes(brandId)
-            ? selectedBrandIds.filter((id) => id !== brandId)
-            : [...selectedBrandIds, brandId];
-
-        dispatch(setBrandIds(updated));
+    const handleCheckboxChange = (brand: Brand) => {
+        dispatch(
+            toggleBrand({
+                id: brand.brandId,
+                label: brand.brandName,
+            })
+        );
     };
 
     if (isLoading) {
@@ -99,8 +100,8 @@ function BrandFilter({ openSection }: BrandFilterProps) {
                                     type="checkbox"
                                     className="sr-only peer"
                                     id={`brand-${index}`}
-                                    checked={selectedBrandIds.includes(brand.brandId)}
-                                    onChange={() => handleCheckboxChange(brand.brandId)}
+                                    checked={selectedBrandIds.some((b) => String(b.id) === String(brand.brandId))}
+                                    onChange={() => handleCheckboxChange(brand)}
                                 />
                                 <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-primary peer-checked:border-primary relative transition-all duration-200">
                                     <svg
