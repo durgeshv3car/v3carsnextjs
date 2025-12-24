@@ -13,8 +13,8 @@ const videos = new VideosService();
 export class HomeService {
     async heroBanners(q) {
         const limit = q.limit ?? 6;
-        const rows = await prisma.tblwebhomebanner.findMany({
-            where: { status: 2 },
+        return prisma.tblhomepagebanner.findMany({
+            where: { status: true },
             orderBy: { bannerId: 'desc' },
             take: limit,
             select: {
@@ -22,9 +22,10 @@ export class HomeService {
                 imagePath: true,
                 imageAltTag: true,
                 redirectLink: true,
+                startDate: true,
+                endDate: true,
             },
         });
-        return rows;
     }
     upcoming(q) {
         return models.list({
