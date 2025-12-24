@@ -135,6 +135,7 @@ const baseSelect = {
     brandId: true, modelBodyTypeId: true, isUpcoming: true,
     launchDate: true, totalViews: true,
     expectedBasePrice: true, expectedTopPrice: true,
+    confidencePercent: true,
     seats: true, // include seats so callers can use it without extra query
 };
 export class ModelsRepo {

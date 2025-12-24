@@ -1463,7 +1463,7 @@ export class ModelsService {
         const limit = Math.max(1, Math.min(opts?.limit ?? 5, 50));
         const key = cacheKey({
             ns: 'models:upcomingByBrand',
-            v: 1,
+            v: 2, // bump: added confidencePercent in payload
             modelId,
             limit,
         });
@@ -1491,6 +1491,7 @@ export class ModelsService {
                     launchDate: true,
                     expectedBasePrice: true,
                     expectedTopPrice: true,
+                    confidencePercent: true,
                 },
                 orderBy: [
                     { launchDate: 'asc' },
@@ -1522,6 +1523,7 @@ export class ModelsService {
                     priceRange: { min: priceMin, max: priceMax },
                     image: img,
                     imageUrl: img.url,
+                    confidencePercent: typeof m.confidencePercent === 'number' ? m.confidencePercent : null,
                 };
             });
             return { rows, total: rows.length };

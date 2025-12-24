@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
@@ -14,6 +15,7 @@
     "studio": "prisma studio",
     "prisma:sync": "prisma db pull && prisma generate"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -28,6 +30,7 @@
     "pino-http": "^10.5.0",
     "zod": "^4.1.5"
   },
+  
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
@@ -38,3 +41,4 @@
     "typescript": "^5.9.2"
   }
 }
+
