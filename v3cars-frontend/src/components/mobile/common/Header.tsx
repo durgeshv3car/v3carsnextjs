@@ -4,13 +4,15 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { FiMenu, FiMapPin, FiSearch } from "react-icons/fi";
 import { HiOutlineUserCircle } from "react-icons/hi2";
-import { IoChevronDownOutline } from "react-icons/io5";
+import { IoChevronDownOutline, IoChevronForwardOutline } from "react-icons/io5";
 import MobileLoginModal from "./MobileLoginModal";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import LocationDropdown from "@/components/web/header/LocationDropdown";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { RxCrossCircled } from "react-icons/rx";
+import { useUniversalSearchQuery } from "@/redux/api/searchModuleApi";
+import { convertToSlug } from "@/utils/helperFunction";
 
 type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
 
@@ -25,11 +27,16 @@ const MobileHeader = () => {
   const [openTab, setOpenTab] = useState<string | null>(null);
   const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
+  const path = usePathname();
   const [dropdownTop, setDropdownTop] = useState<number>(45);
   const fixedWrapStyle = { top: dropdownTop };
   const [hoverTab, setHoverTab] = useState<TabKey>(null);
   const headerRef = useRef<HTMLElement | null>(null);
   const [location, setLocation] = useState<Location>(selectedCity);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debounced, setDebounced] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -109,6 +116,52 @@ const MobileHeader = () => {
     };
   }, [hoverTab]);
 
+  // debounce search term
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(searchTerm.trim()), 220);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    const onDocClick = (e: MouseEvent | TouchEvent) => {
+      if (!searchRef.current) return;
+      if (!searchRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+        setSearchTerm("");
+        setDebounced("");
+      }
+    };
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("touchstart", onDocClick);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("touchstart", onDocClick);
+    };
+  }, [searchOpen]);
+
+  // reset search on route change
+  useEffect(() => {
+    setSearchOpen(false);
+    setSearchTerm("");
+    setDebounced("");
+  }, [path]);
+
+  const citySlug = convertToSlug(selectedCity.cityName || "delhi");
+  const { data: searchData, isFetching: isSearching } = useUniversalSearchQuery(
+    { q: debounced, citySlug, cityName: selectedCity.cityName, limit: 12 },
+    { skip: debounced.length < 2 }
+  );
+  const suggestions = searchData?.rows ?? [];
+
+  const handleSelectSuggestion = (href: string) => {
+    if (!href) return;
+    setSearchOpen(false);
+    setSearchTerm("");
+    setIsOpen(false);
+    router.push(href);
+  };
+
   return (
     <>
       <header className="w-full bg-white dark:bg-[#171717] z-40 relative">
@@ -152,22 +205,66 @@ const MobileHeader = () => {
         </div>
 
         {/* Search bar */}
-        <div className="flex items-center mx-4 px-0.5 border dark:border-[#2E2E2E] rounded-full overflow-hidden mb-5">
+        <div ref={searchRef} className="flex items-center mx-4 px-0.5 border dark:border-[#2E2E2E] rounded-full mb-2 bg-white dark:bg-[#171717] relative z-[200]">
           <input
             type="text"
-            placeholder="Search Car"
+            placeholder="Search Car, Model, Price..."
+            value={searchTerm}
+            onFocus={() => setSearchOpen(true)}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearchTerm(val);
+              setSearchOpen(val.trim().length > 0);
+            }}
             className="px-4 py-3 w-full outline-none text-sm bg-transparent"
           />
           <button className="bg-gray-700 py-3 px-6 text-white rounded-full">
             <FiSearch size={16} />
           </button>
+
+          {searchOpen && debounced.length >= 2 && (
+            <div
+              className="absolute top-14 left-0 right-0 w-screen -mx-4 bg-white dark:bg-[#171717] border border-[#e5e5e5] dark:border-[#2e2e2e] rounded-2xl shadow-xl overflow-hidden z-[500]"
+              onMouseDown={(e) => e.preventDefault()}
+              onTouchStart={(e) => e.stopPropagation()}
+            >
+              <div className="max-h-[420px] overflow-y-auto scrollbar-thin-yellow">
+                {isSearching && (
+                  <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
+                )}
+                {!isSearching && suggestions.length === 0 && (
+                  <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
+                )}
+                {!isSearching &&
+                  suggestions.map((item, idx) => (
+                    <button
+                      key={`${item.type}-${idx}-${item.href}`}
+                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#222] text-sm border-b border-gray-100 dark:border-[#2e2e2e] last:border-b-0"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handleSelectSuggestion(item.href)}
+                    >
+                      <span className="font-medium text-[13px]">{item.label}</span>
+                      <IoChevronForwardOutline size={16} className="text-gray-400" />
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Drawer Overlay */}
         <div
-          className={`fixed inset-0 z-[100] bg-black/80 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          className={`fixed inset-0 z-[90] bg-black/80 transition-opacity duration-300 ${(isOpen || searchOpen || hoverTab) ? "opacity-100 visible" : "opacity-0 invisible"
             }`}
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            if (searchOpen) {
+              setSearchOpen(false);
+              setSearchTerm("");
+              setDebounced("");
+            }
+            setIsOpen(false);
+            setHoverTab(null);
+          }}
         />
 
         {/* Sidebar Drawer */}

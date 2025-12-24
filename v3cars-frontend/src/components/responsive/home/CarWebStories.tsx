@@ -2,10 +2,9 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
-import WebStoryCard from '../web-stories/webStory'
 import { useGetWebstoriesQuery } from '@/redux/api/webstoriesModuleApi'
 import { IMAGE_URL } from '@/utils/constant'
+import { useRouter } from 'next/navigation'
 
 const isVideo = (url: string) => {
     return /\.(mp4|webm|ogg)$/i.test(url);
@@ -36,15 +35,8 @@ export interface StoryItem {
 }
 
 const CarWebStories: React.FC = () => {
-    const [openStory, setOpenStory] = useState<{
-        open: boolean;
-        items: StoryItem[];
-    }>({
-        open: false,
-        items: [],
-    });
-
     const { data: webstoriesData } = useGetWebstoriesQuery()
+    const router = useRouter();
 
     const webstories: Story[] = webstoriesData?.rows ?? []
 
@@ -55,7 +47,7 @@ const CarWebStories: React.FC = () => {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             <h2 className="text-lg font-medium">Car Web Stories</h2>
-                            <Link href="#" className="text-primary font-medium text-sm hover:underline flex gap-2 items-center">
+                            <Link href={webstories[0] ? `/web-stories/${webstories[0].storyId}` : "#"} className="text-primary font-medium text-sm hover:underline flex gap-2 items-center">
                                 View All Car Web Stories
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -80,12 +72,7 @@ const CarWebStories: React.FC = () => {
                                         loop
                                         playsInline
                                         preload="metadata"
-                                        onClick={() =>
-                                            setOpenStory({
-                                                open: true,
-                                                items: story.items,
-                                            })
-                                        }
+                                        onClick={() => router.push(`/web-stories/${story.storyId}`)}
                                     />
                                 ) : (
                                     <Image
@@ -95,22 +82,14 @@ const CarWebStories: React.FC = () => {
                                         priority={false}
                                         sizes="(max-width: 768px) 100vw, 270px"
                                         className="object-contain cursor-pointer"
-                                        onClick={() =>
-                                            setOpenStory({
-                                                open: true,
-                                                items: story.items,
-                                            })
-                                        }
+                                        onClick={() => router.push(`/web-stories/${story.storyId}`)}
                                     />
                                 )}
 
                                 {/* Top-right mute icon */}
                                 <div
                                     className="absolute top-2 right-2 bg-[#495057] dark:bg-[#171717] p-1.5 rounded-full w-8 h-8 cursor-pointer"
-                                    onClick={() => setOpenStory({
-                                        open: true,
-                                        items: story.items
-                                    })}
+                                    onClick={() => router.push(`/web-stories/${story.storyId}`)}
                                 >
                                     <Image
                                         src="/web-stories/mobile.png"
@@ -133,23 +112,6 @@ const CarWebStories: React.FC = () => {
                 </div>
             </div>
 
-            {openStory.open && (
-                <div
-                    className="fixed inset-0 z-[999] bg-gradient-to-br from-[#495463] to-[#6b775b] flex items-center justify-center"
-                    onClick={() => setOpenStory({
-                        open: false,
-                        items: []
-                    })}
-                >
-                    <WebStoryCard
-                        onClose={() => setOpenStory({
-                            open: false,
-                            items: []
-                        })}
-                        openStory={openStory}
-                    />
-                </div>
-            )}
         </>
     )
 }

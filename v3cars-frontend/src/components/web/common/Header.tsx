@@ -7,6 +7,7 @@ import { HiOutlineUserCircle } from "react-icons/hi2";
 import LocationDropdown from "../header/LocationDropdown";
 import NewCarsDropdown from "../header/NewCarsDropdown";
 import NewsVideosDropdown from "../header/NewsVideosDropdown";
+import { IoChevronForwardOutline } from "react-icons/io5";
 import LoginModal from "./LoginModal";
 import { usePathname, useRouter } from "next/navigation";
 import ToolsDropdown from "../header/ToolsDropdown.";
@@ -14,6 +15,8 @@ import ThemeToggle from "@/components/common/ThemeToggle";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Link from "next/link";
+import { useUniversalSearchQuery } from "@/redux/api/searchModuleApi";
+import { convertToSlug } from "@/utils/helperFunction";
 // import ThemeToggle from "@/components/common/ThemeToggle";
 
 type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
@@ -35,6 +38,10 @@ const Header = () => {
     const router = useRouter();
     const path = usePathname();
     const [location, setLocation] = useState<Location>(selectedCity);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [debounced, setDebounced] = useState("");
+    const [searchOpen, setSearchOpen] = useState(false);
+    const searchRef = useRef<HTMLDivElement | null>(null);
 
     // header height → position dropdowns just below
     const headerRef = useRef<HTMLElement | null>(null);
@@ -62,6 +69,9 @@ const Header = () => {
 
     useEffect(() => {
         setHoverTab(null);
+        setSearchOpen(false);
+        setSearchTerm("");
+        setDebounced("");
     }, [path]);
 
     useEffect(() => {
@@ -69,6 +79,44 @@ const Header = () => {
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
     }, []);
+
+    // debounce search term
+    useEffect(() => {
+        const t = setTimeout(() => setDebounced(searchTerm.trim()), 220);
+        return () => clearTimeout(t);
+    }, [searchTerm]);
+
+    useEffect(() => {
+        if (!searchOpen) return;
+        const onDocClick = (e: MouseEvent | TouchEvent) => {
+            if (!searchRef.current) return;
+            if (!searchRef.current.contains(e.target as Node)) {
+                setSearchOpen(false);
+                setSearchTerm("");
+                setDebounced("");
+            }
+        };
+        document.addEventListener("mousedown", onDocClick);
+        document.addEventListener("touchstart", onDocClick);
+        return () => {
+            document.removeEventListener("mousedown", onDocClick);
+            document.removeEventListener("touchstart", onDocClick);
+        };
+    }, [searchOpen]);
+
+    const citySlug = convertToSlug(selectedCity.cityName || "delhi");
+    const { data: searchData, isFetching: isSearching } = useUniversalSearchQuery(
+        { q: debounced, citySlug, cityName: selectedCity.cityName, limit: 12 },
+        { skip: debounced.length < 2 }
+    );
+    const suggestions = searchData?.rows ?? [];
+
+    const handleSelectSuggestion = (href: string) => {
+        if (!href) return;
+        setSearchOpen(false);
+        setSearchTerm("");
+        router.push(href);
+    };
 
     // ---------- NEW CARS: position exactly under the tab ----------
     const newCarsTriggerRef = useRef<HTMLDivElement | null>(null);
@@ -263,15 +311,49 @@ const Header = () => {
 
                     {/* Right */}
                     <div className="flex items-center gap-4">
-                        <div className="2xl:flex items-center hidden border border-[#e5e5e5] dark:border-[#3a3a3a] rounded-full overflow-hidden">
-                            <input
-                                type="text"
-                                placeholder="Search Car"
-                                className="px-4 py-1 w-48 outline-none bg-transparent text-sm rounded-l-full"
-                            />
-                            <button className="bg-gray-700 p-2 flex items-center justify-center h-full w-20 rounded-r-full rounded-l-full">
-                                <FiSearch size={18} color="#fff" />
-                            </button>
+                        <div className="2xl:flex items-center hidden relative" ref={searchRef}>
+                            <div className="flex items-center border border-[#e5e5e5] dark:border-[#3a3a3a] rounded-full overflow-hidden bg-white dark:bg-[#171717]">
+                                <input
+                                    type="text"
+                                    placeholder="Search Car, Model, Price..."
+                                    value={searchTerm}
+                                    onFocus={() => setSearchOpen(true)}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setSearchTerm(val);
+                                        setSearchOpen(val.trim().length > 0);
+                                    }}
+                                    className="px-4 py-1 w-60 outline-none bg-transparent text-sm rounded-l-full"
+                                />
+                                <button className="bg-gray-700 p-2 flex items-center justify-center h-full w-16 rounded-r-full rounded-l-full">
+                                    <FiSearch size={18} color="#fff" />
+                                </button>
+                            </div>
+
+                            {searchOpen && debounced.length >= 2 && (
+                                <div className="absolute top-12 left-0 w-[420px] bg-white dark:bg-[#171717] border border-[#e5e5e5] dark:border-[#2e2e2e] rounded-2xl shadow-xl overflow-hidden z-[300]">
+                                    <div className="max-h-[420px] overflow-y-auto scrollbar-thin-yellow">
+                                        {isSearching && (
+                                            <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
+                                        )}
+                                        {!isSearching && suggestions.length === 0 && (
+                                            <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
+                                        )}
+                                        {!isSearching &&
+                                            suggestions.map((item, idx) => (
+                                                <button
+                                                    key={`${item.type}-${idx}-${item.href}`}
+                                                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#222] text-sm border-b border-gray-100 dark:border-[#2e2e2e] last:border-b-0"
+                                                    onMouseDown={(e) => e.preventDefault()}
+                                                    onClick={() => handleSelectSuggestion(item.href)}
+                                                >
+                                                    <span className="font-medium text-[13px]">{item.label}</span>
+                                                    <IoChevronForwardOutline size={16} className="text-gray-400" />
+                                                </button>
+                                            ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {
@@ -296,13 +378,11 @@ const Header = () => {
                         <ThemeToggle />
                     </div>
 
-
-
                 </div>
             </header>
 
             <div
-                className={`fixed inset-0 z-[100] bg-black/50 transition-opacity duration-300 ${hoverTab !== null ? "opacity-100 visible" : "opacity-0 invisible"
+                className={`fixed inset-0 z-[100] bg-black/50 transition-opacity duration-300 ${(hoverTab !== null || searchOpen) ? "opacity-100 visible" : "opacity-0 invisible"
                     }`}
             />
 
