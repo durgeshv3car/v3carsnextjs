@@ -148,8 +148,6 @@ curl -X POST http://localhost:3121/v1/auth/register \
   }'
 ```
 
-
-
 ### Send Login OTP
 ```bash
 curl -X POST http://localhost:3121/v1/auth/send-otp-for-login \
