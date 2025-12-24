@@ -2616,6 +2616,29 @@ model tblwebStories {
   @@index([storyId], map: "idx_story")
 }
 
+model tblfindredirecturl {
+  urlId          Int       @id @default(autoincrement())
+  url1           String?   @db.VarChar(1000)
+  foundUrl       String?   @db.VarChar(1000)
+  adminId        Int?
+  addDatetime    DateTime  @default(now()) @db.DateTime(0)
+  updateDatetime DateTime? @default(now()) @db.DateTime(0)
+}
+
+model tblhomepagebanner {
+  bannerId     Int       @id @default(autoincrement())
+  imagePath    String?   @db.VarChar(255)
+  imageAltTag  String?   @db.VarChar(255)
+  redirectLink String?   @db.VarChar(255)
+  status       Boolean?  @default(true)
+  startDate    DateTime? @db.Date
+  endDate      DateTime? @db.Date
+  addedBy      Int?
+  isDeleted    Boolean?  @default(false)
+  addedAt      DateTime? @default(now()) @db.DateTime(0)
+  updateAt     DateTime? @default(now()) @db.DateTime(0)
+}
+
 enum tblfeaturesnew_selectionType {
   Default
   Count
