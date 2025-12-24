@@ -104,7 +104,7 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
     const dispatch = useDispatch();
     const router = useRouter()
 
-    console.log(heroBannerData);    
+    console.log(heroBannerData);
 
     function normalizeBrandName(name: string) {
         const lower = name.toLowerCase();
@@ -195,7 +195,6 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                     bulletClass: 'swiper-custom-bullet',
                     bulletActiveClass: 'swiper-custom-bullet-active',
                 }}
-                className="h-[200px] w-full"
             >
                 {slides.map((slide, index) => (
                     <SwiperSlide key={index}>
@@ -205,7 +204,7 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                             width={400}
                             height={200}
                             priority
-                            className=""
+                            className="w-full h-full"
                         />
                     </SwiperSlide>
                 ))}
@@ -214,11 +213,12 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
             <div className="custom-pagination flex items-center gap-2" />
 
             {/* Feature Tiles */}
-            <div className="flex items-center h-[243px] gap-4">
+            <div className="flex items-center justify-evenly w-full h-[243px] gap-4">
                 {/* Left Tile */}
                 <div
-                    className="w-[150px] h-full bg-cover bg-center rounded-lg overflow-hidden"
+                    className="w-[150px] sm:w-full h-full bg-cover bg-center rounded-lg overflow-hidden"
                     style={{ backgroundImage: 'url("/images/on-road-price.png")' }}
+                    onClick={() => { router.push('/car-on-road-price-in-india') }}
                 >
                     <div className="bg-black/40 w-full h-full flex items-center justify-center px-2 text-white text-sm font-medium text-center">
                         Check on-road price
@@ -226,12 +226,14 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                 </div>
 
                 {/* Right Side Grid */}
-                <div className="w-[222px] h-full flex flex-col justify-between gap-4">
-                    <div className="h-[116px] bg-[#338177] relative rounded-lg overflow-hidden flex items-end justify-end">
+                <div className="w-[222px] sm:w-full h-full flex flex-col justify-between gap-4">
+                    <div
+                        className="h-[116px] bg-[#338177] relative rounded-lg overflow-hidden flex items-end justify-end"
+                        onClick={() => { router.push('/fuel-price-in-india') }}
+                    >
                         <span className="absolute top-2 left-2 text-white text-sm font-medium z-20">
                             Fuel price in India
                         </span>
-
 
                         <Image
                             src="/images/fuel-price-in-india.png"
@@ -247,7 +249,10 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                     {/* Bottom Two Tiles */}
                     <div className="flex gap-4 h-[116px]">
 
-                        <div className="bg-black flex-1 relative rounded-lg overflow-hidden flex flex-col border dark:border-[#262629]">
+                        <div
+                            className="bg-black flex-1 relative rounded-lg overflow-hidden flex flex-col border dark:border-[#262629]"
+                            onClick={() => { router.push('/fuel-cost-calculator') }}
+                        >
                             <span className="absolute top-2 left-2 text-white text-sm font-medium z-20">
                                 Fuel cost calculator
                             </span>
@@ -263,7 +268,10 @@ const MobileHeroSection: React.FC<MobileHeroSectionProps> = ({ selectBrand, setS
                         </div>
 
                         {/* Right Bottom Tile */}
-                        <div className="bg-[#FFC414] flex-1 relative rounded-lg overflow-hidden flex flex-col">
+                        <div
+                            className="bg-[#FFC414] flex-1 relative rounded-lg overflow-hidden flex flex-col"
+                            onClick={() => { router.push('/mileage-calculator') }}
+                        >
                             <span className="absolute top-2 left-2 text-sm font-medium z-20">
                                 Mileage calculator
                             </span>

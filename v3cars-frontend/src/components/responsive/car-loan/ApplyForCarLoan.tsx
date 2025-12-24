@@ -167,10 +167,10 @@ export default function ApplyForCarLoan() {
 
   return (
     <section className=" px-4 py-6 bg-gradient-to-b from-gray-100 to-white border-t border-gray-300 dark:from-[#171717] dark:to-[#171717] dark:border-t  dark:border-gray-700">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center app-container mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full lg:app-container mx-auto">
 
         {/* Left: Form Card */}
-        <div className=" rounded-2xl p-5 sm:p-6 md:py-10 md:px-10">
+        <div className=" rounded-2xl">
 
           <h3 className="text-[20px] sm:text-[22px] font-semibold text-gray-800 dark:text-white mb-4">
             APPLY FOR CAR LOAN

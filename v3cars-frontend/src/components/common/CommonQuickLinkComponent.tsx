@@ -1,9 +1,14 @@
 'use client';
+
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 export interface LoanDetailCard {
-  title: string;
-  desc: string;
-  img: string;   // because you are passing JSX (<div>...</div>)
-  bg: string;        // background color (hex, rgb, etc.)
+    title: string;
+    desc: string;
+    img: string;   // because you are passing JSX (<div>...</div>)
+    bg: string;        // background color (hex, rgb, etc.)
+    url: string;
 }
 
 interface CommonQuickLinkComponentProps {
@@ -11,6 +16,7 @@ interface CommonQuickLinkComponentProps {
 }
 
 export default function CommonQuickLinkComponent({ data }: CommonQuickLinkComponentProps) {
+    const router = useRouter()
 
     return (
         <div>
@@ -20,10 +26,18 @@ export default function CommonQuickLinkComponent({ data }: CommonQuickLinkCompon
                 {data && data.map((item, index) => (
                     <div
                         key={index}
-                        className={`${item.bg} border rounded-xl p-6 flex flex-col items-center justify-between text-center shadow-sm hover:shadow-md transition`}
+                        className={`${item.bg} border rounded-xl p-6 flex flex-col items-center justify-between text-center shadow-sm hover:shadow-md transition cursor-pointer`}
+                        onClick={() => { router.push(`${item.url}`) }}
+
                     >
                         <div className="flex justify-center items-center flex-grow mb-4">
-                            <img src={item.img} alt={item.title} />
+                            <Image
+                                src={item.img}
+                                alt={item.title}
+                                width={60}
+                                height={60}
+                                className="w-full h-full"
+                            />
                         </div>
 
                         <div>

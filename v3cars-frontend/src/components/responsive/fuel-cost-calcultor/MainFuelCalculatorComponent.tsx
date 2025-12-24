@@ -94,7 +94,7 @@ export default function MainFuelCalculatorComponent() {
 
             <div className="relative mb-[470px] sm:mb-[300px] lg:mb-36">
                 <div className="absolute -top-12 left-0 w-full px-4 lg:px-10">
-                    <div className="w-full lg:app-container mx-auto">
+                    <div className="w-auto lg:app-container mx-auto">
                         <FuelInputSection onInputChange={handleInputChange} />
                     </div>
                 </div>
@@ -222,28 +222,32 @@ const howItWorkData = [
 ];
 
  const links = [
-        {
-            title: "Mileage Calculator",
-            desc: "Estimate Your Vehicle's Fuel Efficiency",
-            img: "/emicalculator/mileage.png",
-            bg: "bg-[#E4F3FE]",
-        },
-        {
-            title: "Fuel Price in India",
-            desc: "Check Latest Fuel Prices Across India",
-            img: "/emicalculator/fuel.png",
-            bg: "bg-[#FCEFFE]",
-        },
-        {
-            title: "Car Loan EMI Calculator",
-            desc: "Calculate Your Monthly Car Loan EMI",
-            img: "/emicalculator/emi.png",
-            bg: "bg-[#FFF8C9]",
-        },
-        {
-            title: "Compare Cars",
-            desc: "Compare Specs, Features & Prices",
-            img: "/emicalculator/compare.png",
-            bg: "bg-[#E0F8E8]",
-        },
-    ];
+    {
+        title: "Mileage Calculator",
+        desc: "Estimate Your Vehicle's Fuel Efficiency",
+        img: "/emicalculator/mileage.png",
+        bg: "bg-[#E4F3FE]",
+        url: "/mileage-calculator"
+    },
+    {
+        title: "Fuel Price in India",
+        desc: "Check Latest Fuel Prices Across India",
+        img: "/emicalculator/fuel.png",
+        bg: "bg-[#FCEFFE]",
+        url: "/fuel-price-in-india"
+    },
+    {
+        title: "Car Loan EMI Calculator",
+        desc: "Calculate Your Monthly Car Loan EMI",
+        img: "/emicalculator/emi.png",
+        bg: "bg-[#FFF8C9]",
+        url: "/car-loan-emi-calculator"
+    },
+    {
+        title: "Compare Cars",
+        desc: "Compare Specs, Features & Prices",
+        img: "/emicalculator/compare.png",
+        bg: "bg-[#E0F8E8]",
+        url: "/compare-cars"
+    },
+];

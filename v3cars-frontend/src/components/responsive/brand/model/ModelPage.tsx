@@ -31,10 +31,11 @@ import Marquee from "@/components/ui/Marquee";
 import { useGetBestVariantToBuyQuery, useGetDimensionsCapacityQuery, useGetModelDetailByFuelTypeQuery, useGetModelDetailsQuery, useGetModelOthersCarsQuery, useGetModelUpcomingCarsQuery } from "@/redux/api/carModuleApi";
 import { CarData } from "./overview/Overview";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { notFound } from "next/navigation";
 import ModelComparisonSimilarCars from "./overview/ModelComparisonSimilarCars";
+import { setActiveTab } from "@/redux/slices/carModelSlice";
 
 const data = [
     {
@@ -88,6 +89,7 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
     const modelReviewsVideos = modelReviewsVideosData?.rows ?? [];
     const modelUpcomingCars = modelUpcomingCarsData?.rows ?? [];
     const modelOthersCars = modelOthersCarsData?.items ?? [];
+    const dispatch = useDispatch()
 
     const isMobile = useIsMobile()
 
@@ -96,6 +98,8 @@ export default function ModelPage({ type, slug }: ModelPageProps) {
 
         if (!modelDetailsData?.data) {
             notFound()
+        } else {
+            dispatch(setActiveTab("Overview"))
         }
     }, [modelDetailsData, isLoading]);
 

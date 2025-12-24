@@ -91,11 +91,11 @@ function MainUpcomingComponent() {
                 <div className="w-full lg:app-container py-6 mx-auto">
 
                     <div className="flex flex-col lg:flex-row justify-between gap-5 w-full">
-                        <div className="w-auto lg:max-w-[74%]">
+                        <div className="w-full lg:min-w-[74%]">
                             <NewCarsLaunched selected={selected} />
                             <NewUpcomingCars />
                         </div>
-                        <div className="w-auto lg:min-w-[24%] mt-6 lg:mt-12 space-y-10">
+                        <div className="w-full lg:min-w-[24%] mt-6 lg:mt-12 space-y-10">
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
                             <SideBarAdSmall />

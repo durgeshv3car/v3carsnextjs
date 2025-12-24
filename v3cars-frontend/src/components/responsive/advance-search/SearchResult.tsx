@@ -4,7 +4,11 @@ import { useState } from 'react'
 import { FaThList } from 'react-icons/fa'
 import CarGridCard from './card-type-show/CarGridCard'
 import CarListCard from './card-type-show/CarListCard'
-import { IoGrid } from 'react-icons/io5'
+import { IoGrid, IoReloadSharp } from 'react-icons/io5'
+import { useDispatch } from 'react-redux'
+import { BiX } from 'react-icons/bi'
+import { resetFilters } from '@/redux/slices/advanceSearchSlice'
+import { useSelectedFilters } from './SelectedFilters'
 
 type SearchOption = 'price_asc' | 'price_desc' | 'name_asc' | 'name_desc' | 'popular' | 'latest';
 
@@ -48,11 +52,13 @@ interface SearchResultProps {
 }
 
 const SearchResult: React.FC<SearchResultProps> = ({ sortBy, setSortBy, data, count }) => {
+    const filters = useSelectedFilters();
     const [view, setView] = useState<"grid" | "list">("grid");
+    const dispatch = useDispatch()    
 
     return (
         <>
-            <div className="flex flex-col lg:flex-row justify-between lg:items-center mb-4">
+            <div className="flex flex-col lg:flex-row justify-between lg:items-center">
                 <div className='space-y-2'>
                     <h2 className="text-2xl font-bold">Your Search Result</h2>
                     <p>
@@ -88,7 +94,35 @@ const SearchResult: React.FC<SearchResultProps> = ({ sortBy, setSortBy, data, co
                         <IoGrid />
                     </button>
                 </div>
+
             </div>
+
+            {
+                filters.length > 0 && (
+                    <div className="flex items-center gap-3 flex-wrap my-4">
+                        {/* Clear All Button */}
+                        <button
+                            className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-black text-sm font-medium px-5 py-2 rounded transition"
+                            onClick={() => dispatch(resetFilters())}
+                        >
+                            <IoReloadSharp />
+                            Clear All
+                        </button>
+
+                        {/* Applied Filter Chip */}
+                        {
+                            filters.map((filter, idx) => (
+                                <div key={idx} className="flex items-center gap-1 bg-white dark:bg-[#171717] text-sm font-medium px-4 py-2 rounded-md">
+                                    <span>{filter.value}</span>
+                                    <button className="hover:text-primary-hover">
+                                        <BiX size={18} />
+                                    </button>
+                                </div>
+                            ))
+                        }
+                    </div>
+                )
+            }
 
             {view === "grid" ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

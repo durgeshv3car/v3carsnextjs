@@ -83,7 +83,7 @@ function MainPopularCarComponent() {
                         </div>
 
                         {/* sidebar */}
-                        <div className="w-auto lg:min-w-[24%] space-y-10 sticky top-20 self-start">
+                        <div className="w-auto lg:min-w-[24%] space-y-6 lg:sticky lg:top-20 lg:self-start">
                             <SideBarAdSmall />
                             <UpcomingCarByTopBrands />
                             <SideBarAdSmall />
