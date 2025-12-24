@@ -23,12 +23,10 @@ export type ModelTab =
 
 interface ModelTabsState {
   activeTab: ModelTab;
-  defaultTab: boolean;
 }
 
 const initialState: ModelTabsState = {
   activeTab: "Overview",
-  defaultTab: false,
 };
 
 const carModelSlice = createSlice({

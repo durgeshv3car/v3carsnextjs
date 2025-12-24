@@ -6,7 +6,7 @@ export const IMAGE_URL2 = "https://lms.v3cars.com"
 
 if (typeof window !== "undefined") {
   if (window.location.origin.includes("localhost")) {
-    BASE_URL = "http://localhost:3121/v1";
+    BASE_URL = "http://localhost:5006/v1";
   } else {
     BASE_URL = "https://dev2.v3cars.com/v1";
   }

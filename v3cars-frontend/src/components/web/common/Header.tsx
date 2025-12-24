@@ -14,6 +14,7 @@ import ThemeToggle from "@/components/common/ThemeToggle";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Link from "next/link";
+import { useGetUniversalSearchQuery } from "@/redux/api/searchModuleApi";
 // import ThemeToggle from "@/components/common/ThemeToggle";
 
 type TabKey = null | "location" | "newCars" | "news" | "tools" | "variant";
@@ -27,8 +28,14 @@ interface Location {
 
 const Header = () => {
     // Replace 'any, any, any' with your actual types if available
+    const [query, setQuery] = useState("")
     const selectedCity = useSelector((state: RootState) => state.common.selectedCity);
     const loginUser = useSelector((state: RootState) => state.auth.user);
+    const { data: universalSearchData } = useGetUniversalSearchQuery({ query: query, citySlug: selectedCity.cityName })
+
+    const universalSearch = universalSearchData?.rows ?? []
+
+    console.log(universalSearch);
 
     const [hoverTab, setHoverTab] = useState<TabKey>(null);
     const [showLogin, setShowLogin] = useState(false);
@@ -267,7 +274,9 @@ const Header = () => {
                             <input
                                 type="text"
                                 placeholder="Search Car"
+                                value={query}
                                 className="px-4 py-1 w-48 outline-none bg-transparent text-sm rounded-l-full"
+                                onChange={(e)=>{ setQuery(e.target.value) }}
                             />
                             <button className="bg-gray-700 p-2 flex items-center justify-center h-full w-20 rounded-r-full rounded-l-full">
                                 <FiSearch size={18} color="#fff" />
@@ -295,9 +304,6 @@ const Header = () => {
 
                         <ThemeToggle />
                     </div>
-
-
-
                 </div>
             </header>
 
