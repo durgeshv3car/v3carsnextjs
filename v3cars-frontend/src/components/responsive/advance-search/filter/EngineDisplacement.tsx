@@ -3,13 +3,18 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { setEngineDisplacement } from '@/redux/slices/advanceSearchSlice';
+import { toggleEngineDisplacement } from '@/redux/slices/advanceSearchSlice';
 
 type EngineDisplacementProps = {
     openSection: string | null;
 };
 
-const engineOptions = [
+interface EngineOptions {
+    label: string;
+    value: string;
+}
+
+const engineOptions: EngineOptions[] = [
     { label: '800cc cars', value: '800' },
     { label: '1000cc cars', value: '1000' },
     { label: '800cc to 1000cc cars', value: '800_1000' },
@@ -27,7 +32,7 @@ function EngineDisplacement({ openSection }: EngineDisplacementProps) {
     const dispatch = useDispatch();
     const selectedDisplacements = useSelector(
         (state: RootState) => state.filters.engineDisplacement
-    ) as string[]; // array of selected values
+    )
 
     useEffect(() => {
         if (openSection === 'engine' && contentRef.current) {
@@ -37,18 +42,13 @@ function EngineDisplacement({ openSection }: EngineDisplacementProps) {
         }
     }, [openSection]);
 
-    const handleSelect = (value: string) => {
-        let updatedList: string[];
-
-        if (selectedDisplacements.includes(value)) {
-            // Remove if already selected
-            updatedList = selectedDisplacements.filter((v) => v !== value);
-        } else {
-            // Add new selection
-            updatedList = [...selectedDisplacements, value];
-        }
-
-        dispatch(setEngineDisplacement(updatedList));
+    const handleSelect = (value: EngineOptions) => {
+        dispatch(
+            toggleEngineDisplacement({
+                id: value.value,
+                label: value.label,
+            })
+        );
     };
 
     return (
@@ -65,8 +65,8 @@ function EngineDisplacement({ openSection }: EngineDisplacementProps) {
                                 type="checkbox"
                                 className="sr-only peer"
                                 id={`engine-${index}`}
-                                checked={selectedDisplacements.includes(option.value)}
-                                onChange={() => handleSelect(option.value)}
+                                checked={selectedDisplacements.some((d) => String(d.id) === String(option.value))}
+                                onChange={() => handleSelect(option)}
                             />
                             <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-primary peer-checked:border-primary relative transition-all duration-200">
                                 <svg

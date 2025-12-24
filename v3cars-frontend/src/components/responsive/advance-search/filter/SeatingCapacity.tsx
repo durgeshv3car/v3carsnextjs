@@ -3,14 +3,19 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { setSeatingList } from '@/redux/slices/advanceSearchSlice';
+import { toggleSeating } from '@/redux/slices/advanceSearchSlice';
 
 type SeatingCapacityFilterProps = {
     openSection: string | null;
 };
 
+interface SeatingOption {
+    label: string;
+    value: number;
+}
+
 // label + value mapping
-const seatingOptions = [
+const seatingOptions: SeatingOption[] = [
     { label: '2 Seater', value: 2 },
     { label: '4 Seater', value: 4 },
     { label: '5 Seater', value: 5 },
@@ -22,7 +27,7 @@ const seatingOptions = [
 
 function SeatingCapacityFilter({ openSection }: SeatingCapacityFilterProps) {
     const dispatch = useDispatch();
-    const selectedSeats = useSelector((state: RootState) => state.filters.seatingList);
+    const selectedSeats = useSelector((state: RootState) => state.filters.seating);
     const contentRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<string>('0px');
 
@@ -34,18 +39,13 @@ function SeatingCapacityFilter({ openSection }: SeatingCapacityFilterProps) {
         }
     }, [openSection]);
 
-    const handleSeatToggle = (seatValue: number) => {
-        let updatedSeats;
-
-        if (selectedSeats.includes(seatValue)) {
-            // remove seat if already selected
-            updatedSeats = selectedSeats.filter((s: number) => s !== seatValue);
-        } else {
-            // add seat if not selected
-            updatedSeats = [...selectedSeats, seatValue];
-        }
-
-        dispatch(setSeatingList(updatedSeats));
+    const handleSeatToggle = (seat: SeatingOption) => {
+        dispatch(
+            toggleSeating({
+                id: seat.value,
+                label: seat.label,
+            })
+        );
     };
 
     return (
@@ -62,8 +62,8 @@ function SeatingCapacityFilter({ openSection }: SeatingCapacityFilterProps) {
                                 type="checkbox"
                                 className="sr-only peer"
                                 id={`seat-${index}`}
-                                checked={selectedSeats.includes(seat.value)}
-                                onChange={() => handleSeatToggle(seat.value)}
+                                checked={selectedSeats.some((s) => String(s.id) === String(seat.value))}
+                                onChange={() => handleSeatToggle(seat)}
                             />
                             <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-primary peer-checked:border-primary relative transition-all duration-200">
                                 <svg

@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { setCylindersList } from '@/redux/slices/advanceSearchSlice';
+import { toggleCylinder } from '@/redux/slices/advanceSearchSlice';
 
 type CylindersFilterProps = {
     openSection: string | null;
@@ -22,7 +22,7 @@ const cylinderRanges: { label: string; value: number }[] = [
 
 function CylindersFilter({ openSection }: CylindersFilterProps) {
     const dispatch = useDispatch();
-    const selectedCylinders = useSelector((state: RootState) => state.filters.cylindersList);
+    const selectedCylinders = useSelector((state: RootState) => state.filters.cylinders);
 
     const contentRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<string>('0px');
@@ -35,12 +35,13 @@ function CylindersFilter({ openSection }: CylindersFilterProps) {
         }
     }, [openSection]);
 
-    const handleCheckboxChange = (value: number) => {
-        const updated = selectedCylinders.includes(value)
-            ? selectedCylinders.filter((v: number) => v !== value)
-            : [...selectedCylinders, value];
-
-        dispatch(setCylindersList(updated));
+    const handleCheckboxChange = (value: { label: string; value: number }) => {
+        dispatch(
+            toggleCylinder({
+                id: value.value,
+                label: value.label,
+            })
+        );
     };
 
     return (
@@ -57,8 +58,8 @@ function CylindersFilter({ openSection }: CylindersFilterProps) {
                                 type="checkbox"
                                 className="sr-only peer"
                                 id={`cylinder-${index}`}
-                                checked={selectedCylinders.includes(cylinder.value)}
-                                onChange={() => handleCheckboxChange(cylinder.value)}
+                                checked={selectedCylinders.some((c) => String(c.id) === String(cylinder.value))}
+                                onChange={() => handleCheckboxChange(cylinder)}
                             />
                             <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-primary peer-checked:border-primary relative transition-all duration-200">
                                 <svg

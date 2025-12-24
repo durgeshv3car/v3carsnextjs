@@ -2,13 +2,19 @@
 import { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { setBodyTypeIds } from '@/redux/slices/advanceSearchSlice';
+import { toggleBodyType } from '@/redux/slices/advanceSearchSlice';
 
 type BodyFilterProps = {
     openSection: string | null;
 };
 
-const bodyTypes = [
+export interface BodyTypes {
+    id: number;
+    label: string;
+    icon: string;
+}
+
+const bodyTypes: BodyTypes[] = [
     { id: 3, label: 'SUV', icon: '/car-image/suv.png' },
     { id: 4, label: 'Sedan', icon: '/car-image/sedan.png' },
     { id: 1, label: 'Hatchback', icon: '/car-image/hatchback.png' },
@@ -21,7 +27,7 @@ const bodyTypes = [
 
 const BodyTypeFilter = ({ openSection }: BodyFilterProps) => {
     const dispatch = useDispatch();
-    const selectedBodyTypeIds = useSelector((state: RootState) => state.filters.bodyTypeIds);
+    const selectedBodyTypeIds = useSelector((state: RootState) => state.filters.bodyTypes);
 
     const contentRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState(0);
@@ -35,13 +41,17 @@ const BodyTypeFilter = ({ openSection }: BodyFilterProps) => {
         }
     }, [openSection]);
 
-    const handleBodyClick = (id: number) => {
-        const updated = selectedBodyTypeIds.includes(id)
-            ? selectedBodyTypeIds.filter((item) => item !== id)
-            : [...selectedBodyTypeIds, id];
-
-        dispatch(setBodyTypeIds(updated));
+    const handleBodyClick = (bodyType: BodyTypes) => {
+        dispatch(
+            toggleBodyType({
+                id: bodyType.id,
+                label: bodyType.label,
+            })
+        );
     };
+
+    const isBodyTypeSelected = (id: number | string) =>
+        selectedBodyTypeIds.some((b) => String(b.id) === String(id));
 
     return (
         <div
@@ -54,9 +64,9 @@ const BodyTypeFilter = ({ openSection }: BodyFilterProps) => {
                     {bodyTypes.map((type) => (
                         <div
                             key={type.id}
-                            onClick={() => handleBodyClick(type.id)}
+                            onClick={() => handleBodyClick(type)}
                             className={`flex flex-col min-w-[105px] min-h-[80px] items-center justify-center text-sm gap-1 border rounded-xl dark:border-[#2E2E2E] cursor-pointer
-                                ${selectedBodyTypeIds.includes(type.id) ? 'border-primary bg-primary-light text-black' : ''}`}
+                                ${isBodyTypeSelected(type.id) ? 'border-primary bg-primary-light text-black' : ''}`}
                         >
                             <img
                                 src={type.icon}

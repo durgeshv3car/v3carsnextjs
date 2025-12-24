@@ -1,74 +1,111 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export interface SelectOption {
+  id: number | string;
+  label: string;
+}
+
 interface FilterState {
-  priceBucket: string | null;
-  brandIds: number[];
-  bodyTypeIds: number[];
-  cylindersList: number[];
-  seatingList: number[];
-  mileage: string | null;
-  transmissionType: string | null;
-  fuelType: string | null;
-  engineDisplacement: string[];
+  priceBucket: SelectOption | null;
+
+  brands: SelectOption[];
+  bodyTypes: SelectOption[];
+  cylinders: SelectOption[];
+  seating: SelectOption[];
+
+  mileage: SelectOption | null;
+  transmissionType: SelectOption | null;
+  fuelType: SelectOption | null;
+
+  engineDisplacement: SelectOption[];
 }
 
 const initialState: FilterState = {
-  priceBucket: "",
-  brandIds: [],
-  bodyTypeIds: [],
-  cylindersList: [],
-  seatingList: [],
-  mileage: "",
-  transmissionType: "",
-  fuelType: "",
+  priceBucket: null,
+
+  brands: [],
+  bodyTypes: [],
+  cylinders: [],
+  seating: [],
+
+  mileage: null,
+  transmissionType: null,
+  fuelType: null,
+
   engineDisplacement: [],
 };
 
+/* 🔁 common toggle helper */
+const toggleItem = (list: SelectOption[], item: SelectOption) => {
+  const exists = list.some((i) => i.id === item.id);
+  return exists
+    ? list.filter((i) => i.id !== item.id)
+    : [...list, item];
+};
+
 const advanceSearchSlice = createSlice({
-  name: "advanceSearchSlice",
+  name: "advanceSearch",
   initialState,
   reducers: {
-    setPriceBucket: (state, action: PayloadAction<string | null>) => {
+    /* single select */
+    setPriceBucket(state, action: PayloadAction<SelectOption | null>) {
       state.priceBucket = action.payload;
     },
-    setBrandIds: (state, action: PayloadAction<number[]>) => {
-      state.brandIds = action.payload;
-    },
-    setBodyTypeIds: (state, action: PayloadAction<number[]>) => {
-      state.bodyTypeIds = action.payload;
-    },
-    setCylindersList: (state, action: PayloadAction<number[]>) => {
-      state.cylindersList = action.payload;
-    },
-    setSeatingList: (state, action: PayloadAction<number[]>) => {
-      state.seatingList = action.payload;
-    },
-    setMileage: (state, action: PayloadAction<string | null>) => {
+
+    setMileage(state, action: PayloadAction<SelectOption | null>) {
       state.mileage = action.payload;
     },
-    setTransmissionType: (state, action: PayloadAction<string | null>) => {
+
+    setTransmissionType(state, action: PayloadAction<SelectOption | null>) {
       state.transmissionType = action.payload;
     },
-    setFuelType: (state, action: PayloadAction<string | null>) => {
+
+    setFuelType(state, action: PayloadAction<SelectOption | null>) {
       state.fuelType = action.payload;
     },
-    setEngineDisplacement: (state, action: PayloadAction<string[]>) => {
-      state.engineDisplacement = action.payload;
+
+    /* multi select */
+    toggleBrand(state, action: PayloadAction<SelectOption>) {
+      state.brands = toggleItem(state.brands, action.payload);
     },
-    resetFilters: () => initialState,
+
+    toggleBodyType(state, action: PayloadAction<SelectOption>) {
+      state.bodyTypes = toggleItem(state.bodyTypes, action.payload);
+    },
+
+    toggleCylinder(state, action: PayloadAction<SelectOption>) {
+      state.cylinders = toggleItem(state.cylinders, action.payload);
+    },
+
+    toggleSeating(state, action: PayloadAction<SelectOption>) {
+      state.seating = toggleItem(state.seating, action.payload);
+    },
+
+    toggleEngineDisplacement(state, action: PayloadAction<SelectOption>) {
+      state.engineDisplacement = toggleItem(
+        state.engineDisplacement,
+        action.payload
+      );
+    },
+
+    resetFilters() {
+      return initialState;
+    },
   },
 });
 
 export const {
   setPriceBucket,
-  setBrandIds,
-  setBodyTypeIds,
-  setCylindersList,
-  setSeatingList,
   setMileage,
   setTransmissionType,
   setFuelType,
-  setEngineDisplacement,
+
+  toggleBrand,
+  toggleBodyType,
+  toggleCylinder,
+  toggleSeating,
+  toggleEngineDisplacement,
+
   resetFilters,
 } = advanceSearchSlice.actions;
 

@@ -58,8 +58,8 @@ export interface CarProps {
 }
 
 const CarByPrice: React.FC = () => {
-    const [carPriceTab, setCarPriceTab] = useState<CarPriceTab>('UNDER_5L');
-    const { data: carByPriceData } = useGetCarByPriceQuery({ budget: carPriceTab, limit: 8, page: 1 });
+    const [carPriceTab, setCarPriceTab] = useState<{ id: string, label: string }>();
+    const { data: carByPriceData } = useGetCarByPriceQuery({ budget: carPriceTab?.id ?? "UNDER_5L", limit: 8, page: 1 });
     const carByPrice: CarProps[] = carByPriceData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
@@ -100,7 +100,13 @@ const CarByPrice: React.FC = () => {
         if (!carPriceTab) {
             return alert("Something Went Wrong. Please Try Again")
         }
-        dispatch(setPriceBucket(carPriceTab));
+        dispatch(
+            setPriceBucket({
+                id: carPriceTab.id,
+                label: carPriceTab.label,
+            })
+        );
+
         router.push("/search/new-cars");
     }
 
@@ -113,7 +119,7 @@ const CarByPrice: React.FC = () => {
                         className="text-primary font-medium text-xs lg:text-sm hover:underline flex gap-2 items-center cursor-pointer"
                         onClick={handleCarPrice}
                     >
-                        View All Cars {PRICE_TABS.find(tab => tab.key === carPriceTab)?.value}
+                        View All Cars {carPriceTab?.label}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -134,8 +140,11 @@ const CarByPrice: React.FC = () => {
                             {PRICE_TABS.map((tab) => (
                                 <button
                                     key={tab.key}
-                                    onClick={() => setCarPriceTab(tab.key)}
-                                    className={`pb-4 px-6 font-semibold cursor-pointer text-nowrap capitalize transition-colors ${carPriceTab === tab.key ? 'border-b-4 border-primary' : 'text-gray-400'
+                                    onClick={() => setCarPriceTab({
+                                        id: tab.key,
+                                        label: tab.value
+                                    })}
+                                    className={`pb-4 px-6 font-semibold cursor-pointer text-nowrap capitalize transition-colors ${carPriceTab?.id === tab.key ? 'border-b-4 border-primary' : 'text-gray-400'
                                         }`}
                                 >
                                     {tab.value}

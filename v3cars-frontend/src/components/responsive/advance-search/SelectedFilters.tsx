@@ -1,71 +1,133 @@
+import { SelectOption } from "@/redux/slices/advanceSearchSlice";
 import { RootState } from "@/redux/store";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import {
+  toggleBrand,
+  toggleBodyType,
+  toggleCylinder,
+  toggleSeating,
+  toggleEngineDisplacement,
+  setFuelType,
+  setMileage,
+  setPriceBucket,
+  setTransmissionType,
+} from "@/redux/slices/advanceSearchSlice";
 
-interface SelectedFilter {
+export interface SelectedFilter {
   key: string;
-  value: any;
+  value: SelectOption | SelectOption[];
 }
 
 export const useSelectedFilters = (): SelectedFilter[] => {
-  const selectedBrandIds = useSelector((state: RootState) => state.filters.brandIds);
-  const selectedPriceBucket = useSelector((state: RootState) => state.filters.priceBucket);
-  const selectedBodyTypeIds = useSelector((state: RootState) => state.filters.bodyTypeIds);
-  const selectedCylinders = useSelector((state: RootState) => state.filters.cylindersList);
-  const selectedFuel = useSelector((state: RootState) => state.filters.fuelType);
-  const selectedMileage = useSelector((state: RootState) => state.filters.mileage);
-  const selectedSeating = useSelector((state: RootState) => state.filters.seatingList);
-  const selectedTransmissionType = useSelector((state: RootState) => state.filters.transmissionType);
-  const selectedEngineDisplacement = useSelector((state: RootState) => state.filters.engineDisplacement);
+  const selectedBrands = useSelector(
+    (state: RootState) => state.filters.brands
+  );
+
+  const selectedPriceBucket = useSelector(
+    (state: RootState) => state.filters.priceBucket
+  );
+
+  const selectedBodyTypes = useSelector(
+    (state: RootState) => state.filters.bodyTypes
+  );
+
+  const selectedCylinders = useSelector(
+    (state: RootState) => state.filters.cylinders
+  );
+
+  const selectedFuel = useSelector(
+    (state: RootState) => state.filters.fuelType
+  );
+
+  const selectedMileage = useSelector(
+    (state: RootState) => state.filters.mileage
+  );
+
+  const selectedSeating = useSelector(
+    (state: RootState) => state.filters.seating
+  );
+
+  const selectedTransmissionType = useSelector(
+    (state: RootState) => state.filters.transmissionType
+  );
+
+  const selectedEngineDisplacement = useSelector(
+    (state: RootState) => state.filters.engineDisplacement
+  );
 
   return useMemo(() => {
     const filters: SelectedFilter[] = [];
 
-    if (Array.isArray(selectedBrandIds) && selectedBrandIds.length > 0) {
-      filters.push({ key: "Brand", value: selectedBrandIds });
+    if (selectedBrands.length > 0) {
+      filters.push({
+        key: "Brand",
+        value: selectedBrands,
+      });
     }
 
-    if (
-      selectedPriceBucket &&
-      typeof selectedPriceBucket === "object" &&
-      Object.keys(selectedPriceBucket).length > 0
-    ) {
-      filters.push({ key: "Price", value: selectedPriceBucket });
+    if (selectedPriceBucket) {
+      filters.push({
+        key: "Price",
+        value: selectedPriceBucket,
+      });
     }
 
-    if (Array.isArray(selectedBodyTypeIds) && selectedBodyTypeIds.length > 0) {
-      filters.push({ key: "Body Type", value: selectedBodyTypeIds });
+    if (selectedBodyTypes.length > 0) {
+      filters.push({
+        key: "Body Type",
+        value: selectedBodyTypes,
+      });
     }
 
-    if (Array.isArray(selectedCylinders) && selectedCylinders.length > 0) {
-      filters.push({ key: "Cylinders", value: selectedCylinders });
+    if (selectedCylinders.length > 0) {
+      filters.push({
+        key: "Cylinders",
+        value: selectedCylinders,
+      });
     }
 
     if (selectedFuel) {
-      filters.push({ key: "Fuel", value: selectedFuel });
+      filters.push({
+        key: "Fuel",
+        value: selectedFuel,
+      });
     }
 
     if (selectedMileage) {
-      filters.push({ key: "Mileage", value: selectedMileage });
+      filters.push({
+        key: "Mileage",
+        value: selectedMileage,
+      });
     }
 
-    if (Array.isArray(selectedSeating) && selectedSeating.length > 0) {
-      filters.push({ key: "Seating", value: selectedSeating });
+    if (selectedSeating.length > 0) {
+      filters.push({
+        key: "Seating",
+        value: selectedSeating,
+      });
     }
 
     if (selectedTransmissionType) {
-      filters.push({ key: "Transmission", value: selectedTransmissionType });
+      filters.push({
+        key: "Transmission",
+        value: selectedTransmissionType,
+      });
     }
 
-    if (selectedEngineDisplacement) {
-      filters.push({ key: "Engine", value: selectedEngineDisplacement });
+    if (selectedEngineDisplacement.length > 0) {
+      filters.push({
+        key: "Engine",
+        value: selectedEngineDisplacement,
+      });
     }
 
     return filters;
   }, [
-    selectedBrandIds,
+    selectedBrands,
     selectedPriceBucket,
-    selectedBodyTypeIds,
+    selectedBodyTypes,
     selectedCylinders,
     selectedFuel,
     selectedMileage,
@@ -73,4 +135,55 @@ export const useSelectedFilters = (): SelectedFilter[] => {
     selectedTransmissionType,
     selectedEngineDisplacement,
   ]);
+};
+
+
+
+// Remove Handler Filter
+
+export const useRemoveFilter = () => {
+  const dispatch = useDispatch();
+
+  return (key: string, value: SelectOption | SelectOption[]) => {
+    if (key === "Brand") {
+      if (Array.isArray(value)) {
+        value.forEach((v) => dispatch(toggleBrand(v)));
+      }
+
+    } else if (key === "Body Type") {
+      if (Array.isArray(value)) {
+        value.forEach((v) => dispatch(toggleBodyType(v)));
+      }
+
+    } else if (key === "Cylinders") {
+      if (Array.isArray(value)) {
+        value.forEach((v) => dispatch(toggleCylinder(v)));
+      }
+
+    } else if (key === "Seating") {
+      if (Array.isArray(value)) {
+        value.forEach((v) => dispatch(toggleSeating(v)));
+      }
+
+    } else if (key === "Engine") {
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          dispatch(toggleEngineDisplacement(v))
+        );
+      }
+
+    } else if (key === "Fuel") {
+      dispatch(setFuelType(null));
+
+    } else if (key === "Mileage") {
+      dispatch(setMileage(null));
+
+    } else if (key === "Price") {
+      dispatch(setPriceBucket(null));
+
+    } else if (key === "Transmission") {
+      dispatch(setTransmissionType(null));
+    }
+  };
+
 };

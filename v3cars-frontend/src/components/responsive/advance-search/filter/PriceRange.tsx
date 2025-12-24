@@ -34,10 +34,20 @@ function PriceRangeFilter({ openSection }: PriceRangeFilterProps) {
         }
     }, [openSection]);
 
-    const handleCheckboxChange = (bucket: string) => {
-        // If the same bucket is clicked, deselect
-        const newBucket = selectedPriceBucket === bucket ? null : bucket;
-        dispatch(setPriceBucket(newBucket));
+    const handleCheckboxChange = (bucket: { label: string; bucket: string }) => {
+        const isSelected =
+            String(selectedPriceBucket?.id) === String(bucket.bucket);
+
+        dispatch(
+            setPriceBucket(
+                isSelected
+                    ? null
+                    : {
+                        id: bucket.bucket,
+                        label: bucket.label,
+                    }
+            )
+        );
     };
 
     return (
@@ -58,8 +68,8 @@ function PriceRangeFilter({ openSection }: PriceRangeFilterProps) {
                                     type="checkbox"
                                     className="sr-only peer"
                                     id={`price-${index}`}
-                                    checked={selectedPriceBucket === range.bucket}
-                                    onChange={() => handleCheckboxChange(range.bucket)}
+                                    checked={String(selectedPriceBucket?.id) === String(range.bucket)}
+                                    onChange={() => handleCheckboxChange(range)}
                                 />
                                 <div className="w-5 h-5 rounded-md border border-gray-400 peer-checked:bg-primary peer-checked:border-primary relative transition-all duration-200">
                                     <svg

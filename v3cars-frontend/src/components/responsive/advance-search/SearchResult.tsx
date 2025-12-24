@@ -8,7 +8,7 @@ import { IoGrid, IoReloadSharp } from 'react-icons/io5'
 import { useDispatch } from 'react-redux'
 import { BiX } from 'react-icons/bi'
 import { resetFilters } from '@/redux/slices/advanceSearchSlice'
-import { useSelectedFilters } from './SelectedFilters'
+import { useRemoveFilter, useSelectedFilters } from './SelectedFilters'
 
 type SearchOption = 'price_asc' | 'price_desc' | 'name_asc' | 'name_desc' | 'popular' | 'latest';
 
@@ -53,12 +53,13 @@ interface SearchResultProps {
 
 const SearchResult: React.FC<SearchResultProps> = ({ sortBy, setSortBy, data, count }) => {
     const filters = useSelectedFilters();
+    const removeFilter = useRemoveFilter();
     const [view, setView] = useState<"grid" | "list">("grid");
-    const dispatch = useDispatch()    
+    const dispatch = useDispatch()
 
     return (
         <>
-            <div className="flex flex-col lg:flex-row justify-between lg:items-center">
+            <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4 mb-4">
                 <div className='space-y-2'>
                     <h2 className="text-2xl font-bold">Your Search Result</h2>
                     <p>
@@ -99,7 +100,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ sortBy, setSortBy, data, co
 
             {
                 filters.length > 0 && (
-                    <div className="flex items-center gap-3 flex-wrap my-4">
+                    <div className="hidden lg:flex items-center gap-3 flex-wrap mb-4">
                         {/* Clear All Button */}
                         <button
                             className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-black text-sm font-medium px-5 py-2 rounded transition"
@@ -113,8 +114,13 @@ const SearchResult: React.FC<SearchResultProps> = ({ sortBy, setSortBy, data, co
                         {
                             filters.map((filter, idx) => (
                                 <div key={idx} className="flex items-center gap-1 bg-white dark:bg-[#171717] text-sm font-medium px-4 py-2 rounded-md">
-                                    <span>{filter.value}</span>
-                                    <button className="hover:text-primary-hover">
+                                    {Array.isArray(filter.value)
+                                        ? filter.value.map((v) => v.label).join(", ")
+                                        : filter.value.label}
+                                    <button
+                                        className="hover:text-primary-hover"
+                                        onClick={() => removeFilter(filter.key, filter.value)}
+                                    >
                                         <BiX size={18} />
                                     </button>
                                 </div>

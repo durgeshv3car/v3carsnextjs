@@ -1,7 +1,7 @@
 'use client'
 
 import { useGetCarByBodyTypeQuery } from '@/redux/api/homeModuleApi'
-import { setBodyTypeIds } from '@/redux/slices/advanceSearchSlice'
+import { toggleBodyType } from '@/redux/slices/advanceSearchSlice'
 import { IMAGE_URL } from '@/utils/constant'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -11,8 +11,6 @@ import { FaArrowRight } from 'react-icons/fa'
 import { IoMdStarOutline } from 'react-icons/io'
 import { PiEngine } from 'react-icons/pi'
 import { useDispatch } from 'react-redux'
-
-type CarBodyTab = 1 | 3 | 4 | 7;
 
 interface CarProps {
     modelId: number;
@@ -44,16 +42,9 @@ interface CarProps {
     imageUrl: string;
 }
 
-const tabNames: Record<CarBodyTab, string> = {
-    1: "Hatchback",
-    3: "SUV",
-    4: "Sedan",
-    7: "MUV",
-};
-
 const CarByType: React.FC = () => {
-    const [carBodyTab, setCarBodyTab] = useState<CarBodyTab>(3);
-    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: carBodyTab, limit: 15, page: 1 });
+    const [carBodyTab, setCarBodyTab] = useState<{ id: number, label: string }>();
+    const { data: carByBodyTypeData } = useGetCarByBodyTypeQuery({ id: carBodyTab?.id || 1, limit: 15, page: 1 });
     const carByBodyType: CarProps[] = carByBodyTypeData?.rows ?? [];
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
@@ -94,7 +85,12 @@ const CarByType: React.FC = () => {
         if (!carBodyTab) {
             return alert("Something Went Wrong. Please Try Again")
         }
-        dispatch(setBodyTypeIds([carBodyTab]));
+        dispatch(
+            toggleBodyType({
+                id: carBodyTab.id,
+                label: carBodyTab.label,
+            })
+        );
         router.push("/search/new-cars");
     }
 
@@ -107,7 +103,7 @@ const CarByType: React.FC = () => {
                         className="text-primary font-medium text-sm hover:underline flex gap-2 items-center"
                         onClick={handleBodyType}
                     >
-                        View All {tabNames[carBodyTab]}
+                        View All {carBodyTab?.label}
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>
@@ -126,8 +122,11 @@ const CarByType: React.FC = () => {
                             ].map((tab) => (
                                 <button
                                     key={tab.id}
-                                    onClick={() => setCarBodyTab(tab.id as CarBodyTab)}
-                                    className={`pb-4 px-6 font-semibold cursor-pointer capitalize transition-colors ${carBodyTab === tab.id ? 'border-b-4 border-primary' : 'text-gray-400'
+                                    onClick={() => setCarBodyTab({
+                                        id: tab.id,
+                                        label: tab.tab
+                                    })}
+                                    className={`pb-4 px-6 font-semibold cursor-pointer capitalize transition-colors ${carBodyTab?.id === tab.id ? 'border-b-4 border-primary' : 'text-gray-400'
                                         }`}
                                 >
                                     {tab.tab}
